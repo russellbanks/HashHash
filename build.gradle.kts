@@ -16,8 +16,10 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
+@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
 }
 
 tasks.withType<KotlinCompile> {

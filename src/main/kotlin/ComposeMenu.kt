@@ -26,7 +26,6 @@ fun ComposeMenu(
     Box(
         modifier = Modifier
             .wrapContentSize(Alignment.TopStart)
-            .padding(top = 10.dp)
             .border(0.5.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
             .clickable(
                 onClick = {

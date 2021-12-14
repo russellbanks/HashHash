@@ -1,4 +1,4 @@
-object MessageDigestAlgorithm {
+object Algorithm {
     const val MD2 = "MD2"
     const val MD5 = "MD5"
     const val SHA_1 = "SHA-1"

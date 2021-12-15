@@ -1,7 +1,31 @@
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 import java.security.MessageDigest
+import kotlin.experimental.and
 
-fun ByteArray.hash(algorithm: String): String {
-    return MessageDigest.getInstance(algorithm)
-        .digest(this)
-        .fold("") { str, it -> str + "%02x".format(it) }
+@Throws(IOException::class)
+fun File.hash(
+    algorithm: String
+): String {
+    val digest = MessageDigest.getInstance(algorithm)
+    val fis = FileInputStream(this)
+
+    val byteArray = ByteArray(1024)
+    var bytesCount: Int
+
+    while (fis.read(byteArray).also { bytesCount = it } != -1) {
+        digest.update(byteArray, 0, bytesCount)
+    }
+
+    fis.close()
+
+    val bytes = digest.digest()
+    val sb = StringBuilder()
+
+    for (i in bytes.indices) {
+        sb.append(((bytes[i] and 0xff.toByte()) + 0x100).toString(16).substring(1))
+    }
+
+    return sb.toString()
 }

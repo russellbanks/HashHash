@@ -1,12 +1,15 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.AwtWindow
 import androidx.compose.ui.window.Window
@@ -32,30 +35,42 @@ fun App() {
         var hashedOutput by remember { mutableStateOf("") }
         var providedHash by remember { mutableStateOf("") }
         var dropDownOpen by remember { mutableStateOf(false) }
-        var algorithm by remember { mutableStateOf(Algorithm.MD5) }
+        var algorithm by remember { mutableStateOf(Algorithms.MD5) }
         var selectedIndex by remember { mutableStateOf(1) }
-        val menuItems = listOf(
-            Algorithm.MD2,
-            Algorithm.MD5,
-            Algorithm.SHA_1,
-            Algorithm.SHA_224,
-            Algorithm.SHA_256,
-            Algorithm.SHA_384,
-            Algorithm.SHA_512,
-            Algorithm.SHA_512_224,
-            Algorithm.SHA_512_256,
-            Algorithm.SHA3_224,
-            Algorithm.SHA3_256,
-            Algorithm.SHA3_384,
-            Algorithm.SHA3_512
-        )
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
+
+        Box(Modifier.fillMaxSize()) {
+            SnackbarHost(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                hostState = snackbarHostState
+            ) { snackbarData: SnackbarData ->
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color.Black),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .wrapContentSize()
+                ) {
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(imageVector = Icons.Rounded.Check, contentDescription = null, tint = Color(0xFF4BB543))
+                        Text(text = snackbarData.message)
+                    }
+                }
+            }
+        }
 
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
@@ -72,20 +87,19 @@ fun App() {
                 }
             }
             ComposeMenu(
-                modifier = Modifier.padding(10.dp),
-                menuItems = menuItems,
+                menuItems = Algorithms.algorithmList,
                 menuExpandedState = dropDownOpen,
                 seletedIndex = selectedIndex,
                 updateMenuExpandStatus = { dropDownOpen = !dropDownOpen },
                 onDismissMenuView = { dropDownOpen = false }
             ) {
                 dropDownOpen = false
-                algorithm = menuItems[it]
+                algorithm = Algorithms.algorithmList[it]
                 selectedIndex = it
                 if (::file.isInitialized) CoroutineScope(Dispatchers.IO).launch { hashedOutput = file.hash(algorithm) }
             }
             Row(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
@@ -104,6 +118,9 @@ fun App() {
                                     StringSelection(hashedOutput.uppercase()),
                                     null
                                 )
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Copied to clipboard!")
+                            }
                         }
                     }
                 ) {
@@ -111,7 +128,7 @@ fun App() {
                 }
             }
             TextField(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier.fillMaxWidth(),
                 value = providedHash,
                 onValueChange = { providedHash = it },
                 isError = !providedHash.equals(hashedOutput, ignoreCase = true),

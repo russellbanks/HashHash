@@ -1,25 +1,22 @@
-// Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.AwtWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import kotlinx.coroutines.launch
 import java.awt.FileDialog
 import java.awt.Frame
-import java.awt.SystemColor.text
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.io.File
-
 
 lateinit var file: File
 
@@ -29,10 +26,7 @@ lateinit var file: File
 fun App() {
     MaterialTheme {
 
-        var cardColour by remember { mutableStateOf(Color.Transparent) }
-        var cardText by remember { mutableStateOf("") }
-        var buttonText by remember { mutableStateOf("Select File") }
-        var isOpen by remember { mutableStateOf(false) }
+        var isFileManagerOpen by remember { mutableStateOf(false) }
         var hashedOutput by remember { mutableStateOf("") }
         var providedHash by remember { mutableStateOf("") }
         var dropDownOpen by remember { mutableStateOf(false) }
@@ -53,96 +47,96 @@ fun App() {
             Algorithm.SHA3_384,
             Algorithm.SHA3_512
         )
+        val scope = rememberCoroutineScope()
 
-        Scaffold(
-            topBar = { SmallTopAppBar(title = { Text("HashHash") } ) }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(modifier = Modifier.fillMaxWidth(), onClick = { isOpen = true }) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                    Text(buttonText)
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-                ComposeMenu(
-                    menuItems = menuItems,
-                    menuExpandedState = dropDownOpen,
-                    seletedIndex = selectedIndex,
-                    updateMenuExpandStatus = { dropDownOpen = !dropDownOpen },
-                    onDismissMenuView = { dropDownOpen = false },
-                    onMenuItemclick = {
-                        dropDownOpen = false
-                        algorithm = menuItems[it]
-                        selectedIndex = it
-
-                        if (::file.isInitialized) {
-                            hashedOutput = file.readBytes().hash(algorithm)
-                            if(providedHash == hashedOutput) {
-                                cardColour = Color.Green
-                                cardText = "Match"
-                            }else {
-                                cardColour = Color.Yellow
-                                cardText = "No match"
-                            }
-                        }
-                    }
-                )
-                Spacer(modifier = Modifier.size(10.dp))
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = hashedOutput,
+                    modifier = Modifier.weight(9f),
+                    value = if (::file.isInitialized) file.path else "",
                     onValueChange = {},
-                    label = { Text("Hash") }
+                    label = { Text("Path") }
                 )
-                Spacer(modifier = Modifier.size(10.dp))
-                TextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = providedHash,
-                    onValueChange = {
-                        providedHash = it
-
-                        if(providedHash == hashedOutput) {
-                            cardColour = Color.Green
-                            cardText = "Match"
-                        }else {
-                            cardColour = Color.Yellow
-                            cardText = "No match"
-                        } },
-                    label = { Text("Provided Hash") }
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                Card (
-                    modifier = Modifier.background(cardColour)
-                        .fillMaxWidth()
-                        .height(20.dp)
+                IconButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { isFileManagerOpen = true }
                 ) {
-                    Text(modifier = Modifier.background(cardColour), text = cardText)
+                    Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
                 }
             }
-        }
-
-        if (isOpen) {
-            FileDialog(
-                onCloseRequest = {
-                    file = it
-                    isOpen = false
-                    buttonText = it.name
-
-                    hashedOutput = file.readBytes().hash(algorithm)
-                    if(providedHash == hashedOutput) {
-                        cardColour = Color.Green
-                        cardText = "Match"
-                    }else {
-                        cardColour = Color.Yellow
-                        cardText = "No match"
+            ComposeMenu(
+                modifier = Modifier.padding(10.dp),
+                menuItems = menuItems,
+                menuExpandedState = dropDownOpen,
+                seletedIndex = selectedIndex,
+                updateMenuExpandStatus = { dropDownOpen = !dropDownOpen },
+                onDismissMenuView = { dropDownOpen = false }
+            ) {
+                dropDownOpen = false
+                algorithm = menuItems[it]
+                selectedIndex = it
+                if (::file.isInitialized) scope.launch { hashedOutput = file.hash(algorithm) }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    modifier = Modifier.fillMaxWidth().weight(9f),
+                    value = hashedOutput.uppercase(),
+                    onValueChange = {},
+                    label = { Text("$algorithm Hash") }
+                )
+                IconButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        if (hashedOutput.isNotBlank()) {
+                            Toolkit.getDefaultToolkit()
+                                .systemClipboard
+                                .setContents(
+                                    StringSelection(hashedOutput.uppercase()),
+                                    null
+                                )
+                        }
                     }
+                ) {
+                    Icon(imageVector = Icons.Rounded.ContentCopy, contentDescription = null)
                 }
+            }
+            TextField(
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                value = providedHash,
+                onValueChange = { providedHash = it },
+                isError = !providedHash.equals(hashedOutput, ignoreCase = true),
+                trailingIcon = {
+                    if (hashedOutput.isNotBlank() && providedHash.isNotBlank()) {
+                        Icon(
+                            imageVector = if (providedHash.equals(hashedOutput, ignoreCase = true)) {
+                                Icons.Rounded.Check
+                            } else {
+                                Icons.Rounded.ErrorOutline
+                            },
+                            contentDescription = null
+                        )
+                    }
+                },
+                label = { Text("Provided Hash") }
             )
         }
 
-
+        if (isFileManagerOpen) {
+            FileDialog {
+                file = it
+                isFileManagerOpen = false
+                scope.launch { hashedOutput = it.hash(algorithm) }
+            }
+        }
     }
 }
 

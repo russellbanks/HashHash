@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.AwtWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.FileDialog
 import java.awt.Frame
@@ -47,7 +49,6 @@ fun App() {
             Algorithm.SHA3_384,
             Algorithm.SHA3_512
         )
-        val scope = rememberCoroutineScope()
 
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
@@ -81,7 +82,7 @@ fun App() {
                 dropDownOpen = false
                 algorithm = menuItems[it]
                 selectedIndex = it
-                if (::file.isInitialized) scope.launch { hashedOutput = file.hash(algorithm) }
+                if (::file.isInitialized) CoroutineScope(Dispatchers.IO).launch { hashedOutput = file.hash(algorithm) }
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -134,7 +135,7 @@ fun App() {
             FileDialog {
                 file = it
                 isFileManagerOpen = false
-                scope.launch { hashedOutput = it.hash(algorithm) }
+                CoroutineScope(Dispatchers.IO).launch { hashedOutput = it.hash(algorithm) }
             }
         }
     }

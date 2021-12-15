@@ -11,7 +11,7 @@ fun File.hash(
     val digest = MessageDigest.getInstance(algorithm)
     val fis = FileInputStream(this)
 
-    val byteArray = ByteArray(1024)
+    val byteArray = ByteArray(8192)
     var bytesCount: Int
 
     while (fis.read(byteArray).also { bytesCount = it } != -1) {

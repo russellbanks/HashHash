@@ -1,3 +1,6 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -5,7 +8,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.ContentCopy
+import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,14 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.AwtWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.awt.FileDialog
 import java.awt.Frame
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 lateinit var file: File
 
@@ -38,6 +47,8 @@ fun App() {
         var algorithm by remember { mutableStateOf(Algorithms.MD5) }
         var selectedIndex by remember { mutableStateOf(1) }
         val snackbarHostState = remember { SnackbarHostState() }
+        var hashTimer by remember { mutableStateOf("00:00") }
+        var timerVisible by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
 
         Box(Modifier.fillMaxSize()) {
@@ -96,7 +107,7 @@ fun App() {
                 dropDownOpen = false
                 algorithm = Algorithms.algorithmList[it]
                 selectedIndex = it
-                if (::file.isInitialized) CoroutineScope(Dispatchers.IO).launch { hashedOutput = file.hash(algorithm) }
+                if (::file.isInitialized) scope.launch(Dispatchers.IO) { hashedOutput = file.hash(algorithm) }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -146,13 +157,46 @@ fun App() {
                 },
                 label = { Text("Provided Hash") }
             )
+
+            AnimatedVisibility(
+                visible = timerVisible,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = hashTimer)
+                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                }
+            }
         }
 
         if (isFileManagerOpen) {
-            FileDialog {
-                file = it
+            FileDialog { chosenFile ->
+                file = chosenFile
                 isFileManagerOpen = false
-                CoroutineScope(Dispatchers.IO).launch { hashedOutput = it.hash(algorithm) }
+                val job = scope.launch {
+                    flow {
+                        System.currentTimeMillis().also { millisAtStart ->
+                            while(true) {
+                                delay(1000)
+                                emit(System.currentTimeMillis() - millisAtStart)
+                            }
+                        }
+                    }.collect { milliseconds ->
+                        val minutes = "%02d".format((milliseconds / 1000) / 60)
+                        val seconds = "%02d".format((milliseconds / 1000) % 60)
+                        hashTimer = "$minutes:$seconds"
+                    }
+                }
+                scope.launch(Dispatchers.IO) {
+                    timerVisible = true
+                    hashedOutput = chosenFile.hash(algorithm)
+                    job.cancel()
+                    timerVisible = false
+                }
             }
         }
     }

@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.AwtWindow
@@ -100,7 +102,7 @@ fun App() {
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Image(
                         painter = painterResource(
@@ -218,7 +220,10 @@ fun App() {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = hashTimer)
+                    Text(
+                        text = hashTimer,
+                        fontSize = 20.sp
+                    )
                     LinearProgressIndicator(Modifier.fillMaxWidth())
                 }
             }
@@ -228,8 +233,8 @@ fun App() {
             FileDialog { chosenFile ->
                 file = chosenFile
                 fileName = chosenFile.name
-                fileType = chosenFile.extension
-                fileSize = humanReadableByteCountBin(file.length())
+                fileType = getFileType(chosenFile)
+                fileSize = getFormattedBytes(file.length())
                 filePath = file.path
                 isFileManagerOpen = false
                 val job = scope.launch {
@@ -285,6 +290,8 @@ fun main() = singleWindowApplication(
     }
 }
 
+fun getFileType(file: File) = Files.probeContentType(file.toPath())?.capitalize(Locale.current) ?: file.extension
+
 @Composable
 fun FileDialog(
     parent: Frame? = null,
@@ -303,7 +310,7 @@ fun FileDialog(
     dispose = FileDialog::dispose
 )
 
-fun humanReadableByteCountBin(bytes: Long): String {
+fun getFormattedBytes(bytes: Long): String {
     val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
     if (absB < 1024) return "$bytes B"
     var value = absB

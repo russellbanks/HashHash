@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,8 @@ fun App() {
         var fileSize by remember { mutableStateOf("Size") }
         var filePath by remember { mutableStateOf("") }
         val scope = rememberCoroutineScope()
+        var trailingOnClick by remember { mutableStateOf( { isFileManagerOpen = true } ) }
+        var trailingIcon by remember { mutableStateOf(Icons.Rounded.Add) }
 
         Box(Modifier.fillMaxSize()) {
             SnackbarHost(
@@ -127,30 +130,19 @@ fun App() {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
-                    modifier = Modifier.weight(9f),
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
                     value = filePath,
                     onValueChange = {},
-                    label = { Text("Path") }
-                )
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = { isFileManagerOpen = true }
-                ) {
-                    Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
-                }
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        hashedOutput = ""
-                        fileSize = "Size"
-                        fileName = "File name"
-                        fileType = "Type"
-                        filePath = ""
+                    label = { Text("Path") },
+                    trailingIcon = {
+                        IconButton(
+                            onClick = trailingOnClick
+                        ) {
+                            Icon(imageVector = trailingIcon, contentDescription = null)
+                        }
                     }
-                ) {
-                    Icon(imageVector = Icons.Rounded.Clear, contentDescription = null)
-                }
+                )
             }
             ComposeMenu(
                 menuItems = Algorithms.algorithmList,
@@ -168,34 +160,34 @@ fun App() {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
+                OutlinedTextField(
                     modifier = Modifier.fillMaxWidth().weight(9f),
                     value = hashedOutput.uppercase(),
                     onValueChange = {},
-                    label = { Text("$algorithm Hash") }
-                )
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        if (hashedOutput.isNotBlank()) {
-                            Toolkit.getDefaultToolkit()
-                                .systemClipboard
-                                .setContents(
-                                    StringSelection(hashedOutput.uppercase()),
-                                    null
-                                )
-                            scope.launch { snackbarHostState.showSnackbar("Copied to clipboard!") }
+                    label = { Text("$algorithm Hash") },
+                    trailingIcon = {
+                        IconButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                if (hashedOutput.isNotBlank()) {
+                                    Toolkit.getDefaultToolkit()
+                                        .systemClipboard
+                                        .setContents(StringSelection(hashedOutput.uppercase()), null)
+                                    scope.launch { snackbarHostState.showSnackbar("Copied to clipboard!") }
+                                }
+                            }
+                        ) {
+                            Icon(imageVector = Icons.Rounded.ContentCopy, contentDescription = null)
                         }
                     }
-                ) {
-                    Icon(imageVector = Icons.Rounded.ContentCopy, contentDescription = null)
-                }
+                )
             }
-            TextField(
+            OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = comparisonHash,
                 onValueChange = { comparisonHash = it },
                 isError = !comparisonHash.equals(hashedOutput, ignoreCase = true),
+                label = { Text("Comparison Hash") },
                 trailingIcon = {
                     if (hashedOutput.isNotBlank() && comparisonHash.isNotBlank()) {
                         Icon(
@@ -207,8 +199,7 @@ fun App() {
                             contentDescription = null
                         )
                     }
-                },
-                label = { Text("Comparison Hash") }
+                }
             )
 
             AnimatedVisibility(
@@ -236,6 +227,16 @@ fun App() {
                 fileType = getFileType(chosenFile)
                 fileSize = getFormattedBytes(file.length())
                 filePath = file.path
+                trailingOnClick = {
+                    hashedOutput = ""
+                    fileSize = "Size"
+                    fileName = "File name"
+                    fileType = "Type"
+                    filePath = ""
+                    trailingIcon = Icons.Rounded.Add
+                    trailingOnClick = { isFileManagerOpen = true }
+                }
+                trailingIcon = Icons.Rounded.Clear
                 isFileManagerOpen = false
                 val job = scope.launch {
                     flow {

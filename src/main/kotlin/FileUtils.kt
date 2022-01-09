@@ -1,0 +1,44 @@
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.math.abs
+import kotlin.math.sign
+
+object FileUtils {
+
+    private fun getFormattedBytes(bytes: Long): String {
+        val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
+        if (absB < 1024) return "$bytes B"
+        var value = absB
+        val ci = "KMGTPE".iterator()
+        var i = 40
+        while (i >= 0 && absB > 0xfffccccccccccccL shr i) {
+            value = value shr 10
+            ci.next()
+            i -= 10
+        }
+        value *= bytes.sign.toLong()
+        return String.format("%.1f %ciB", value / 1024.0, ci.next())
+    }
+
+    private fun getAllFilesInResources(): MutableList<String> {
+        val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
+        val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources")
+        val list = mutableListOf<String>()
+        Files.walk(resourcesPath)
+            .filter { item -> Files.isRegularFile(item) }
+            .forEach { item -> list.add(item.fileName.toString()) }
+        return list
+    }
+
+    fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
+
+    fun getFileIcon(file: File) = if (getAllFilesInResources().contains("${file.extension}.png")) "${file.extension}.png" else "file.png"
+
+    fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())?.capitalize(Locale.current) ?: file.extension else "Type"
+
+    fun getFileName(file: File): String = if (file != emptyFile) file.name else "File name"
+
+}

@@ -18,10 +18,10 @@ fun ComposeMenu(
     modifier: Modifier = Modifier.wrapContentSize(),
     menuItems: List<String>,
     menuExpandedState: Boolean,
-    seletedIndex : Int,
+    selectedIndex : Int,
     updateMenuExpandStatus : () -> Unit,
     onDismissMenuView : () -> Unit,
-    onMenuItemclick : (Int) -> Unit,
+    onMenuItemClick : (Int) -> Unit,
 ) {
     Card(
         modifier = modifier,
@@ -32,7 +32,7 @@ fun ComposeMenu(
         Column(Modifier.padding(16.dp)) {
             Row {
                 Text(
-                    text = menuItems[seletedIndex],
+                    text = menuItems[selectedIndex],
                 )
                 Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
                     Icon(
@@ -51,7 +51,7 @@ fun ComposeMenu(
                     .background(MaterialTheme.colors.surface)
             ) {
                 menuItems.forEachIndexed { index, title ->
-                    DropdownMenuItem(onClick = { onMenuItemclick(index) }) {
+                    DropdownMenuItem(onClick = { onMenuItemClick(index) }) {
                         Text(text = title)
                     }
                 }

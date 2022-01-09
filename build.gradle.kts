@@ -21,10 +21,14 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
     implementation(compose.materialIconsExtended)
+    implementation(Aurora.window)
+    implementation(Aurora.component)
+    implementation(Aurora.theming)
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
+    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
 }
 
 compose.desktop {
@@ -36,4 +40,13 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+object Aurora {
+    private const val groupID = "org.pushing-pixels"
+    private const val version = "1.0.1"
+
+    const val window = "$groupID:aurora-window:$version"
+    const val component = "$groupID:aurora-component:$version"
+    const val theming = "$groupID:aurora-theming:$version"
 }

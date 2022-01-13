@@ -44,7 +44,7 @@ compose.desktop {
 
 object Aurora {
     private const val groupID = "org.pushing-pixels"
-    private const val version = "1.0.1"
+    private const val aurora_version = "1.0.1"
 
     const val window = "$groupID:aurora-window:$version"
     const val component = "$groupID:aurora-component:$version"

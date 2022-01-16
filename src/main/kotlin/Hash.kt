@@ -1,17 +1,17 @@
+import com.appmattus.crypto.Algorithm
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.security.MessageDigest
 import kotlin.experimental.and
 
 @Throws(IOException::class)
 fun File.hash(
-    algorithm: String
+    algorithm: Algorithm
 ): String {
-    val digest = MessageDigest.getInstance(algorithm)
+    val digest = algorithm.createDigest()
     val fis = FileInputStream(this)
 
-    val byteArray = ByteArray(8192)
+    val byteArray = ByteArray(32768)
     var bytesCount: Int
 
     while (fis.read(byteArray).also { bytesCount = it } != -1) {

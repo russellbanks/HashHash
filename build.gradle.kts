@@ -13,17 +13,16 @@ version = "1.0"
 repositories {
     google()
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
-    implementation(compose.materialIconsExtended)
     implementation(Aurora.window)
     implementation(Aurora.component)
     implementation(Aurora.theming)
+    implementation(Crypto.cryptohash)
 }
 
 tasks.withType<KotlinCompile> {
@@ -49,4 +48,11 @@ object Aurora {
     const val window = "$groupID:aurora-window:$aurora_version"
     const val component = "$groupID:aurora-component:$aurora_version"
     const val theming = "$groupID:aurora-theming:$aurora_version"
+}
+
+object Crypto {
+    private const val groupID = "com.appmattus.crypto"
+    private const val crypto_version = "0.7.0"
+
+    const val cryptohash = "$groupID:cryptohash:$crypto_version"
 }

@@ -1,31 +1,20 @@
-object Algorithms {
-    private const val MD2 = "MD2"
-    const val MD5 = "MD5"
-    private const val SHA_1 = "SHA-1"
-    private const val SHA_224 = "SHA-224"
-    private const val SHA_256 = "SHA-256"
-    private const val SHA_384 = "SHA-384"
-    private const val SHA_512 = "SHA-512"
-    private const val SHA_512_224 = "SHA-512/224"
-    private const val SHA_512_256 = "SHA-512/256"
-    private const val SHA3_224 = "SHA3-224"
-    private const val SHA3_256 = "SHA3-256"
-    private const val SHA3_384 = "SHA3-384"
-    private const val SHA3_512 = "SHA3-512"
+import com.appmattus.crypto.Algorithm
 
+object Algorithms {
     val algorithmList = listOf(
-        MD2,
-        MD5,
-        SHA_1,
-        SHA_224,
-        SHA_256,
-        SHA_384,
-        SHA_512,
-        SHA_512_224,
-        SHA_512_256,
-        SHA3_224,
-        SHA3_256,
-        SHA3_384,
-        SHA3_512
+        Algorithm.Adler32,
+        Algorithm.BLAKE224,
+        Algorithm.BLAKE256,
+        Algorithm.BLAKE384,
+        Algorithm.BLAKE512,
+        Algorithm.Blake2s_128,
+        Algorithm.Blake2s_160,
+        Algorithm.Blake2s_224,
+        Algorithm.Blake2s_160,
+        Algorithm.Blake2s_224,
+        Algorithm.Blake2s_256,
+        Algorithm.Blake2b_160,
+        Algorithm.Blake2b_256,
+        Algorithm.Blake3()
     )
 }

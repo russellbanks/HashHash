@@ -3,52 +3,53 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.AwtWindow
+import com.appmattus.crypto.Algorithm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.pushingpixels.aurora.component.model.Command
-import org.pushingpixels.aurora.component.model.CommandGroup
-import org.pushingpixels.aurora.component.model.CommandMenuContentModel
-import org.pushingpixels.aurora.theming.nightShadeSkin
-import org.pushingpixels.aurora.theming.painter.fill.AuroraFillPainter
+import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
+import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
+import org.pushingpixels.aurora.component.ScrollBarSizingConstants
+import org.pushingpixels.aurora.component.model.*
+import org.pushingpixels.aurora.component.projection.*
+import org.pushingpixels.aurora.theming.*
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import theme.HashHashTheme
 import java.awt.FileDialog
 import java.awt.Frame
-import java.awt.Toolkit
-import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.StringSelection
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
-import kotlin.math.abs
-import kotlin.math.sign
+import java.text.MessageFormat
 
 fun main() = auroraApplication {
     var isFileManagerOpen by remember { mutableStateOf(false) }
     AuroraWindow(
         skin = nightShadeSkin(),
         title = "HashHash",
+        icon = painterResource(resourcePath = "hash.png"),
         undecorated = true,
         onCloseRequest = ::exitApplication,
         menuCommands = CommandGroup(
@@ -68,7 +69,7 @@ fun main() = auroraApplication {
                 ),
                 Command(
                     text = "About",
-                    action = {  }
+                    action = {}
                 )
             )
         )
@@ -76,9 +77,7 @@ fun main() = auroraApplication {
         HashHashTheme {
             var hashedOutput by remember { mutableStateOf("") }
             var comparisonHash by remember { mutableStateOf("") }
-            var dropDownOpen by remember { mutableStateOf(false) }
-            var algorithm by remember { mutableStateOf(Algorithms.MD5) }
-            var selectedIndex by remember { mutableStateOf(1) }
+            val algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
             val snackbarHostState = remember { SnackbarHostState() }
             var hashTimer by remember { mutableStateOf("00:00") }
             var timerVisible by remember { mutableStateOf(false) }
@@ -102,7 +101,11 @@ fun main() = auroraApplication {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            Icon(imageVector = Icons.Rounded.Check, contentDescription = null, tint = Color(0xFF4BB543))
+                            Image(
+                                painter = painterResource(resourcePath = "check.png"),
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
                             Text(text = snackbarData.message)
                         }
                     }
@@ -110,61 +113,112 @@ fun main() = auroraApplication {
             }
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(40.dp),
+                modifier = Modifier.fillMaxSize().padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 FileInfoCard(file)
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = if (file != emptyFile) file.path else "",
-                    onValueChange = {},
-                    label = { Text("Path") },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                if (hashedOutput.isBlank()) isFileManagerOpen = true else {
-                                    hashedOutput = ""
-                                    file = emptyFile
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    TextFieldValueProjection(
+                        contentModel = TextFieldValueContentModel(
+                            value = TextFieldValue(annotatedString = AnnotatedString(text = hashedOutput.uppercase())),
+                            placeholder = "${algorithm.algorithmName} Hash",
+                            readOnly = true,
+                            onValueChange = {}
+                        ),
+                        presentationModel = TextFieldPresentationModel(showBorder = false)
+                    ).project(Modifier.fillMaxWidth(0.8f))
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Copy",
+                            icon = painterResource(resourcePath = "copy.png"),
+                            action = {
+                                if (hashedOutput.isNotBlank()) {
+                                    Clipboard.setContent(hashedOutput.uppercase())
+                                    scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
                                 }
                             }
-                        ) {
-                            Icon(imageVector = if (hashedOutput.isBlank()) Icons.Rounded.Add else Icons.Rounded.Clear, contentDescription = null)
-                        }
-                    }
-                )
-                ComposeMenu(
-                    menuItems = Algorithms.algorithmList,
-                    menuExpandedState = dropDownOpen,
-                    selectedIndex = selectedIndex,
-                    updateMenuExpandStatus = { dropDownOpen = !dropDownOpen },
-                    onDismissMenuView = { dropDownOpen = false }
+                        )
+                    ).project(Modifier.weight(0.1f))
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Clear",
+                            icon = painterResource(resourcePath = "eraser.png"),
+                            action = {
+                                hashedOutput = ""
+                                file = emptyFile
+                            }
+                        )
+                    ).project(Modifier.weight(0.1f))
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    TextFieldValueProjection(
+                        contentModel = TextFieldValueContentModel(
+                            value = TextFieldValue(annotatedString = AnnotatedString(text = comparisonHash)),
+                            placeholder = "Comparison Hash",
+                            onValueChange = { comparisonHash = it.text }
+                        ),
+                        presentationModel = TextFieldPresentationModel(showBorder = false)
+                    ).project(Modifier.fillMaxWidth(0.8f))
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Paste",
+                            icon = painterResource(resourcePath = "paste.png"),
+                            action = { comparisonHash = Clipboard.readContent() }
+                        )
+                    ).project(Modifier.weight(0.1f))
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Clear",
+                            icon = painterResource(resourcePath = "eraser.png"),
+                            action = {
+                                comparisonHash = ""
+                            }
+                        )
+                    ).project(Modifier.weight(0.1f))
+                }
+                Row(
+                    modifier = Modifier.height(50.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    dropDownOpen = false
-                    algorithm = Algorithms.algorithmList[it]
-                    selectedIndex = it
-                    if (file != emptyFile) {
-                        runHash(
-                            scope = scope,
-                            onTimerSecond = { time -> hashTimer = "${time.first}:${time.second}" },
-                            createHashOutput = { file.hash(algorithm) },
-                            timerVisibleTrue =  { timerVisible = true },
-                            timerVisibleFalse =  { timerVisible = false }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.8f).height(50.dp).clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = when {
+                                hashedOutput.isNotBlank() && comparisonHash.isBlank() -> "Done"
+                                hashedOutput.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase() -> "Hashes match"
+                                hashedOutput.lowercase() != comparisonHash.lowercase() -> "Hashes do not match"
+                                else -> "No hash"
+                            }
+                        )
+                        Image(
+                            painter = painterResource(resourcePath = if (hashedOutput.lowercase() == comparisonHash.lowercase()) "check.png" else "cross.png"),
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp)
                         )
                     }
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Calculate",
+                            action = {
+                                if (file != emptyFile) {
+                                    runHash(
+                                        scope = scope,
+                                        onTimerSecond = { hashTimer = "${it.first}:${it.second}" },
+                                        createHashOutput = { hashedOutput = file.hash(algorithm) },
+                                        timerVisibleTrue =  { timerVisible = true },
+                                        timerVisibleFalse =  { timerVisible = false }
+                                    )
+                                }
+                            }
+                        ),
+                        presentationModel = CommandButtonPresentationModel(
+                            presentationState = CommandButtonPresentationState.Medium
+                        )
+                    ).project(Modifier.weight(0.2f).fillMaxHeight())
                 }
-                OutputHashField(
-                    hashedOutput = hashedOutput,
-                    algorithm = algorithm,
-                    snackbarHostState = snackbarHostState,
-                    scope = scope
-                )
-                ComparisonHashField(
-                    hashedOutput = hashedOutput,
-                    comparisonHash = comparisonHash,
-                    onValueChange = { comparisonHash = it },
-                    onTrailingIconClick = { comparisonHash = if (comparisonHash.isBlank()) Clipboard.readClipboard() else "" }
-                )
                 HashTimer(
                     timerVisible = timerVisible,
                     hashTimer = hashTimer
@@ -175,13 +229,6 @@ fun main() = auroraApplication {
                 FileDialog { chosenFile ->
                     isFileManagerOpen = false
                     file = chosenFile
-                    runHash(
-                        scope = scope,
-                        onTimerSecond = { hashTimer = "${it.first}:${it.second}" },
-                        createHashOutput = { hashedOutput = chosenFile.hash(algorithm) },
-                        timerVisibleTrue =  { timerVisible = true },
-                        timerVisibleFalse =  { timerVisible = false }
-                    )
                 }
             }
         }
@@ -218,61 +265,6 @@ fun runHash(
 }
 
 @Composable
-fun OutputHashField(
-    hashedOutput: String,
-    algorithm: String,
-    snackbarHostState: SnackbarHostState,
-    scope: CoroutineScope = rememberCoroutineScope()
-) {
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = hashedOutput.uppercase(),
-        onValueChange = {},
-        label = { Text("$algorithm Hash") },
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    if (hashedOutput.isNotBlank()) {
-                        Clipboard.setClipboard(hashedOutput.uppercase())
-                        if (snackbarHostState.currentSnackbarData == null) scope.launch {
-                            snackbarHostState.showSnackbar("Copied to clipboard!")
-                        }
-                    }
-                }
-            ) {
-                Icon(imageVector = Icons.Rounded.ContentCopy, contentDescription = null)
-            }
-        }
-    )
-}
-
-@Composable
-fun ComparisonHashField(
-    hashedOutput: String,
-    comparisonHash: String,
-    onValueChange: (name: String) -> Unit,
-    onTrailingIconClick: () -> Unit
-) {
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = comparisonHash,
-        onValueChange = { onValueChange(it) },
-        isError = if (comparisonHash.isNotBlank()) !comparisonHash.equals(hashedOutput, ignoreCase = true) else false,
-        label = { Text("Comparison Hash") },
-        trailingIcon = {
-            IconButton(
-                onClick = { onTrailingIconClick() }
-            ) {
-                Icon(
-                    imageVector = if (comparisonHash.isBlank()) Icons.Rounded.ContentPaste else Icons.Rounded.Clear,
-                    contentDescription = null
-                )
-            }
-        }
-    )
-}
-
-@Composable
 fun HashTimer(timerVisible: Boolean, hashTimer: String) {
     AnimatedVisibility(
         visible = timerVisible,
@@ -287,7 +279,7 @@ fun HashTimer(timerVisible: Boolean, hashTimer: String) {
                 text = hashTimer,
                 fontSize = 20.sp
             )
-            LinearProgressIndicator(Modifier.fillMaxWidth())
+            IndeterminateLinearProgressProjection().project(Modifier.fillMaxWidth())
         }
     }
 }
@@ -312,13 +304,11 @@ fun FileDialog(
 
 @Composable
 fun FileInfoCard(file: File) {
-    Card(
-        shape = RoundedCornerShape(4.dp),
-        border = BorderStroke(1.dp, Color.Black),
-        modifier = Modifier.fillMaxWidth().height(100.dp)
+    Box(
+        modifier = Modifier.fillMaxWidth().height(80.dp).clip(RoundedCornerShape(4.dp)).auroraBackground()
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(14.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
@@ -329,7 +319,7 @@ fun FileInfoCard(file: File) {
                 SelectionContainer { Text(text = FileUtils.getFileName(file), fontSize = 20.sp) }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     SelectionContainer { Text(text = FileUtils.getFileType(file)) }
-                    Text(text = "|")
+                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                     SelectionContainer { Text(text = FileUtils.getFormattedBytes(file)) }
                 }
             }

@@ -39,6 +39,8 @@ HashHash is a Multiplatform Graphical User Interface for hashing files, written 
 
 * [Compose for Desktop](https://www.jetbrains.com/lp/compose-mpp/)
 * [Kotlin](https://kotlinlang.org/)
+* [Aurora](https://github.com/kirill-grouchnikov/aurora)
+* [crypto](https://github.com/appmattus/crypto)
 
 ## Getting Started
 

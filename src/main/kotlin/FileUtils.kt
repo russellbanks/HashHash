@@ -8,7 +8,9 @@ import kotlin.math.sign
 
 object FileUtils {
 
-    private fun getFormattedBytes(bytes: Long): String {
+    val emptyFile = File("")
+
+    fun getFormattedBytes(bytes: Long): String {
         val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
         if (absB < 1024) return "$bytes B"
         var value = absB

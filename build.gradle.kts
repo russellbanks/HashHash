@@ -18,7 +18,6 @@ repositories {
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation(compose.material3)
     implementation(Aurora.window)
     implementation(Aurora.component)
     implementation(Aurora.theming)

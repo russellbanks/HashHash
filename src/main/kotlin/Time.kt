@@ -16,7 +16,7 @@ object Time {
             seconds in 1..59 -> "$seconds ${getSecondsFormat(seconds)}, ${milliseconds % 1000} ${getMillisecondsFormat(milliseconds % 1000)}"
             minutes in 1..59 -> "$minutes ${getMinutesFormat(minutes)}, ${seconds % 60} ${getSecondsFormat(seconds % 60)}"
             hours in 1..23 -> "$hours ${getHoursFormat(hours)}, ${minutes % 60} ${getMinutesFormat(minutes % 60)}, ${seconds % 3600}, ${getSecondsFormat(seconds % 3600)}"
-            days in 1..6 -> "$days ${getDaysFormat(days)}, $hours, ${getHoursFormat(hours % 24)}, $minutes ${getMinutesFormat(minutes % 1440)}"
+            days >= 1 -> "$days ${getDaysFormat(days)}, $hours, ${getHoursFormat(hours % 24)}, $minutes ${getMinutesFormat(minutes % 1440)}"
             else -> "$nanoSeconds ${getNanosecondsFormat(nanoSeconds)}"
         }
     }

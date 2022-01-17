@@ -7,7 +7,7 @@ object Menus {
     fun cascadingAlgorithmMenu(onClick: (Algorithm) -> Unit) = listOf(
         Command(text = Algorithm.Adler32.algorithmName, action = { onClick(Algorithm.Adler32) }),
         Command(
-            text = "BLAKE",
+            text = Algorithm.BLAKE224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -20,7 +20,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Blake2b",
+            text = Algorithm.Blake2b().algorithmName.dropLast(4),
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -33,7 +33,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Blake2s",
+            text = Algorithm.Blake2s().algorithmName.dropLast(4),
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -45,9 +45,9 @@ object Menus {
                 )
             )
         ),
-        Command(text = "Blake3"),
+        Command(text = Algorithm.Blake3().algorithmName, action = { onClick(Algorithm.Blake3()) }),
         Command(
-            text = "BMW",
+            text = Algorithm.BMW224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -59,9 +59,19 @@ object Menus {
                 )
             )
         ),
-        Command(text = "cSHAKE"),
         Command(
-            text = "CubeHash",
+            text = Algorithm.cSHAKE128().algorithmName.filter { it.isLetter() },
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(text = Algorithm.cSHAKE128().algorithmName, action = { onClick(Algorithm.cSHAKE128()) }),
+                        Command(text = Algorithm.cSHAKE256().algorithmName, action = { onClick(Algorithm.cSHAKE256()) }),
+                    )
+                )
+            )
+        ),
+        Command(
+            text = Algorithm.CubeHash224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -74,7 +84,7 @@ object Menus {
             )
         ),
         Command(
-            text = "ECHO",
+            text = Algorithm.ECHO224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -87,7 +97,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Fugue",
+            text = Algorithm.Fugue224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -100,7 +110,7 @@ object Menus {
             )
         ),
         Command(
-            text = "GOST3411",
+            text = Algorithm.GOST3411_94.algorithmName,
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -112,7 +122,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Groestl",
+            text = Algorithm.Groestl224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -125,7 +135,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Hamsi",
+            text = Algorithm.Hamsi224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -138,7 +148,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Haraka",
+            text = Algorithm.Haraka256_256.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -149,163 +159,163 @@ object Menus {
             )
         ),
         Command(
-            text = "HAVAL",
+            text = Algorithm.HAVAL_3_128.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
                         Command(text = Algorithm.HAVAL_3_128.algorithmName, action = { onClick(Algorithm.HAVAL_3_128) }),
                         Command(text = Algorithm.HAVAL_3_160.algorithmName, action = { onClick(Algorithm.HAVAL_3_160) }),
-                        Command(text = Algorithm.HAVAL_3_192.algorithmName),
-                        Command(text = Algorithm.HAVAL_3_224.algorithmName),
-                        Command(text = Algorithm.HAVAL_3_256.algorithmName),
-                        Command(text = Algorithm.HAVAL_4_128.algorithmName),
-                        Command(text = Algorithm.HAVAL_4_160.algorithmName),
-                        Command(text = Algorithm.HAVAL_4_192.algorithmName),
-                        Command(text = Algorithm.HAVAL_4_224.algorithmName),
-                        Command(text = Algorithm.HAVAL_5_128.algorithmName),
-                        Command(text = Algorithm.HAVAL_5_160.algorithmName),
-                        Command(text = Algorithm.HAVAL_5_192.algorithmName),
-                        Command(text = Algorithm.HAVAL_5_224.algorithmName),
-                        Command(text = Algorithm.HAVAL_5_256.algorithmName)
+                        Command(text = Algorithm.HAVAL_3_192.algorithmName, action = { onClick(Algorithm.HAVAL_3_192) }),
+                        Command(text = Algorithm.HAVAL_3_224.algorithmName, action = { onClick(Algorithm.HAVAL_3_224) }),
+                        Command(text = Algorithm.HAVAL_3_256.algorithmName, action = { onClick(Algorithm.HAVAL_3_256) }),
+                        Command(text = Algorithm.HAVAL_4_128.algorithmName, action = { onClick(Algorithm.HAVAL_4_128) }),
+                        Command(text = Algorithm.HAVAL_4_160.algorithmName, action = { onClick(Algorithm.HAVAL_4_160) }),
+                        Command(text = Algorithm.HAVAL_4_192.algorithmName, action = { onClick(Algorithm.HAVAL_4_192) }),
+                        Command(text = Algorithm.HAVAL_4_224.algorithmName, action = { onClick(Algorithm.HAVAL_4_224) }),
+                        Command(text = Algorithm.HAVAL_5_128.algorithmName, action = { onClick(Algorithm.HAVAL_5_128) }),
+                        Command(text = Algorithm.HAVAL_5_160.algorithmName, action = { onClick(Algorithm.HAVAL_5_160) }),
+                        Command(text = Algorithm.HAVAL_5_192.algorithmName, action = { onClick(Algorithm.HAVAL_5_192) }),
+                        Command(text = Algorithm.HAVAL_5_224.algorithmName, action = { onClick(Algorithm.HAVAL_5_224) }),
+                        Command(text = Algorithm.HAVAL_5_256.algorithmName, action = { onClick(Algorithm.HAVAL_5_256) })
                     )
                 )
             )
         ),
         Command(
-            text = "JH",
+            text = Algorithm.JH224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.JH224.algorithmName),
-                        Command(text = Algorithm.JH256.algorithmName),
-                        Command(text = Algorithm.JH384.algorithmName),
-                        Command(text = Algorithm.JH512.algorithmName)
+                        Command(text = Algorithm.JH224.algorithmName, action = { onClick(Algorithm.JH224) }),
+                        Command(text = Algorithm.JH256.algorithmName, action = { onClick(Algorithm.JH256) }),
+                        Command(text = Algorithm.JH384.algorithmName, action = { onClick(Algorithm.JH384) }),
+                        Command(text = Algorithm.JH512.algorithmName, action = { onClick(Algorithm.JH512) })
                     )
                 )
             )
         ),
         Command(
-            text = "Keccak",
+            text = Algorithm.Keccak224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.Keccak224.algorithmName),
-                        Command(text = Algorithm.Keccak256.algorithmName),
-                        Command(text = Algorithm.Keccak288.algorithmName),
-                        Command(text = Algorithm.Keccak384.algorithmName),
-                        Command(text = Algorithm.Keccak512.algorithmName)
+                        Command(text = Algorithm.Keccak224.algorithmName, action = { onClick(Algorithm.Keccak224) }),
+                        Command(text = Algorithm.Keccak256.algorithmName, action = { onClick(Algorithm.Keccak256) }),
+                        Command(text = Algorithm.Keccak288.algorithmName, action = { onClick(Algorithm.Keccak288) }),
+                        Command(text = Algorithm.Keccak384.algorithmName, action = { onClick(Algorithm.Keccak384) }),
+                        Command(text = Algorithm.Keccak512.algorithmName, action = { onClick(Algorithm.Keccak512) })
                     )
                 )
             )
         ),
         Command(
-            text = "Kupyna",
+            text = Algorithm.Kupyna_256.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.Kupyna_256.algorithmName),
-                        Command(text = Algorithm.Kupyna_384.algorithmName),
-                        Command(text = Algorithm.Kupyna_512.algorithmName)
+                        Command(text = Algorithm.Kupyna_256.algorithmName, action = { onClick(Algorithm.Kupyna_256) }),
+                        Command(text = Algorithm.Kupyna_384.algorithmName, action = { onClick(Algorithm.Kupyna_384) }),
+                        Command(text = Algorithm.Kupyna_512.algorithmName, action = { onClick(Algorithm.Kupyna_512) })
                     )
                 )
             )
         ),
         Command(
-            text = "Luffa",
+            text = Algorithm.Luffa224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.Luffa224.algorithmName),
-                        Command(text = Algorithm.Luffa256.algorithmName),
-                        Command(text = Algorithm.Luffa384.algorithmName),
-                        Command(text = Algorithm.Luffa512.algorithmName)
+                        Command(text = Algorithm.Luffa224.algorithmName, action = { onClick(Algorithm.Luffa224) }),
+                        Command(text = Algorithm.Luffa256.algorithmName, action = { onClick(Algorithm.Luffa256) }),
+                        Command(text = Algorithm.Luffa384.algorithmName, action = { onClick(Algorithm.Luffa384) }),
+                        Command(text = Algorithm.Luffa512.algorithmName, action = { onClick(Algorithm.Luffa512) })
                     )
                 )
             )
         ),
         Command(
-            text = "MD",
+            text = Algorithm.MD2.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.MD2.algorithmName),
-                        Command(text = Algorithm.MD4.algorithmName),
-                        Command(text = Algorithm.MD5.algorithmName)
+                        Command(text = Algorithm.MD2.algorithmName, action = { onClick(Algorithm.MD2) }),
+                        Command(text = Algorithm.MD4.algorithmName, action = { onClick(Algorithm.MD4) }),
+                        Command(text = Algorithm.MD5.algorithmName, action = { onClick(Algorithm.MD5) })
                     )
                 )
             )
         ),
-        Command(text = "PANAMA"),
+        Command(text = Algorithm.PANAMA.algorithmName),
         Command(
-            text = "RadioGatun",
+            text = Algorithm.RadioGatun32.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.RadioGatun32.algorithmName),
-                        Command(text = Algorithm.RadioGatun64.algorithmName)
+                        Command(text = Algorithm.RadioGatun32.algorithmName, action = { onClick(Algorithm.RadioGatun32) }),
+                        Command(text = Algorithm.RadioGatun64.algorithmName, action = { onClick(Algorithm.RadioGatun64) })
                     )
                 )
             )
         ),
         Command(
-            text = "RIPEMD",
+            text = Algorithm.RipeMD.algorithmName,
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
-                        Command(text = Algorithm.RipeMD.algorithmName),
-                        Command(text = Algorithm.RipeMD128.algorithmName),
-                        Command(text = Algorithm.RipeMD160.algorithmName),
-                        Command(text = Algorithm.RipeMD256.algorithmName),
-                        Command(text = Algorithm.RipeMD320.algorithmName)
+                        Command(text = Algorithm.RipeMD.algorithmName, action = { onClick(Algorithm.RipeMD) }),
+                        Command(text = Algorithm.RipeMD128.algorithmName, action = { onClick(Algorithm.RipeMD128) }),
+                        Command(text = Algorithm.RipeMD160.algorithmName, action = { onClick(Algorithm.RipeMD160) }),
+                        Command(text = Algorithm.RipeMD256.algorithmName, action = { onClick(Algorithm.RipeMD256) }),
+                        Command(text = Algorithm.RipeMD320.algorithmName, action = { onClick(Algorithm.RipeMD320) })
                     )
                 )
             )
         ),
         Command(
-            text = "SHA",
+            text = Algorithm.SHA_0.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
                         Command(text = Algorithm.SHA_0.algorithmName, action = { onClick(Algorithm.SHA_0) }),
-                        Command(text = Algorithm.SHA_1.algorithmName),
-                        Command(text = Algorithm.SHA_224.algorithmName),
-                        Command(text = Algorithm.SHA_384.algorithmName),
-                        Command(text = Algorithm.SHA_512.algorithmName),
-                        Command(text = Algorithm.SHA_512_224.algorithmName),
-                        Command(text = Algorithm.SHA_512_256.algorithmName)
+                        Command(text = Algorithm.SHA_1.algorithmName, action = { onClick(Algorithm.SHA_1) }),
+                        Command(text = Algorithm.SHA_224.algorithmName, action = { onClick(Algorithm.SHA_224) }),
+                        Command(text = Algorithm.SHA_384.algorithmName, action = { onClick(Algorithm.SHA_384) }),
+                        Command(text = Algorithm.SHA_512.algorithmName, action = { onClick(Algorithm.SHA_512) }),
+                        Command(text = Algorithm.SHA_512_224.algorithmName, action = { onClick(Algorithm.SHA_512_224) }),
+                        Command(text = Algorithm.SHA_512_256.algorithmName, action = { onClick(Algorithm.SHA_512_256) })
                     )
                 )
             )
         ),
         Command(
-            text = "SHA-3",
+            text = Algorithm.SHA3_224.algorithmName.dropLast(4),
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
                         Command(text = Algorithm.SHA3_224.algorithmName, action = { onClick(Algorithm.SHA3_224) }),
-                        Command(text = Algorithm.SHA3_256.algorithmName),
-                        Command(text = Algorithm.SHA3_384.algorithmName),
-                        Command(text = Algorithm.SHA3_512.algorithmName)
+                        Command(text = Algorithm.SHA3_256.algorithmName, action = { onClick(Algorithm.SHA3_256) }),
+                        Command(text = Algorithm.SHA3_384.algorithmName, action = { onClick(Algorithm.SHA3_384) }),
+                        Command(text = Algorithm.SHA3_512.algorithmName, action = { onClick(Algorithm.SHA3_512) })
                     )
                 )
             )
         ),
         Command(
-            text = "Shabal",
+            text = Algorithm.Shabal192.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
                         Command(text = Algorithm.Shabal192.algorithmName, action = { onClick(Algorithm.Shabal192) }),
-                        Command(text = Algorithm.Shabal224.algorithmName),
-                        Command(text = Algorithm.Shabal256.algorithmName),
-                        Command(text = Algorithm.Shabal384.algorithmName),
-                        Command(text = Algorithm.Shabal512.algorithmName)
+                        Command(text = Algorithm.Shabal224.algorithmName, action = { onClick(Algorithm.Shabal224) }),
+                        Command(text = Algorithm.Shabal256.algorithmName, action = { onClick(Algorithm.Shabal256) }),
+                        Command(text = Algorithm.Shabal384.algorithmName, action = { onClick(Algorithm.Shabal384) }),
+                        Command(text = Algorithm.Shabal512.algorithmName, action = { onClick(Algorithm.Shabal512) })
                     )
                 )
             )
         ),
         Command(
-            text = "SHAKE",
+            text = Algorithm.SHAKE128.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -316,7 +326,7 @@ object Menus {
             )
         ),
         Command(
-            text = "SHAvite",
+            text = Algorithm.SHAvite224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -329,7 +339,7 @@ object Menus {
             )
         ),
         Command(
-            text = "SIMD",
+            text = Algorithm.SIMD224.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -342,7 +352,7 @@ object Menus {
             )
         ),
         Command(
-            text = "Skein",
+            text = Algorithm.Skein256_128.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -367,13 +377,35 @@ object Menus {
         Command(text = Algorithm.Tiger.algorithmName, action = { onClick(Algorithm.Tiger) }),
         Command(text = Algorithm.Tiger2.algorithmName, action = { onClick(Algorithm.Tiger2) }),
         Command(
-            text = "Whirlpool",
+            text = Algorithm.Whirlpool.algorithmName,
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
                         Command(text = Algorithm.Whirlpool.algorithmName, action = { onClick(Algorithm.Whirlpool) }),
                         Command(text = Algorithm.Whirlpool0.algorithmName, action = { onClick(Algorithm.Whirlpool0) }),
                         Command(text = Algorithm.WhirlpoolT.algorithmName, action = { onClick(Algorithm.WhirlpoolT) })
+                    )
+                )
+            )
+        ),
+        Command(
+            text = Algorithm.XXHash32().algorithmName.filter { it.isLetter() },
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(text = Algorithm.XXHash32().algorithmName, action = { onClick(Algorithm.XXHash32()) }),
+                        Command(text = Algorithm.XXHash64().algorithmName, action = { onClick(Algorithm.XXHash64()) })
+                    )
+                )
+            )
+        ),
+        Command(
+            text = Algorithm.XXH3_64().algorithmName.dropLast(3),
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(text = Algorithm.XXH3_64().algorithmName, action = { onClick(Algorithm.XXH3_64()) }),
+                        Command(text = Algorithm.XXH3_128().algorithmName, action = { onClick(Algorithm.XXH3_128()) })
                     )
                 )
             )

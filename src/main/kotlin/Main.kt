@@ -241,7 +241,12 @@ fun main() = auroraApplication {
                         text = algorithm.algorithmName,
                         secondaryContentModel = CommandMenuContentModel(
                             group = CommandGroup(
-                                commands = Menus.cascadingAlgorithmMenu() { algorithm = it }
+                                commands = Menus.cascadingAlgorithmMenu() {
+                                    if (it != algorithm) {
+                                        algorithm = it
+                                        hashedOutput = ""
+                                    }
+                                }
                             )
                         )
                     ),

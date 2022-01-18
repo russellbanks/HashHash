@@ -7,11 +7,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -22,11 +20,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.AwtWindow
-import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
@@ -35,10 +31,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
-import org.pushingpixels.aurora.theming.BackgroundAppearanceStrategy
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
@@ -48,17 +42,12 @@ import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.concurrent.TimeUnit
-
 
 fun main() = auroraApplication {
     var isFileManagerOpen by remember { mutableStateOf(false) }
-    val state = rememberWindowState(
-        position = WindowPosition.Aligned(Alignment.Center),
-    )
     AuroraWindow(
         skin = nightShadeSkin(),
-        state = state,
+        state = rememberWindowState(position = WindowPosition.Aligned(Alignment.Center)),
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         undecorated = true,
@@ -126,11 +115,30 @@ fun main() = auroraApplication {
                 }
             }
 
-            Column(
-                modifier = Modifier.fillMaxSize().padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                FileInfoCard(file)
+            Column(modifier = Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(modifier = Modifier.height(80.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    FileInfoCard(file)
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = algorithm.algorithmName,
+                            icon = painterResource(resourcePath = "algorithm.png"),
+                            secondaryContentModel = CommandMenuContentModel(
+                                group = CommandGroup(
+                                    commands = Menus.cascadingAlgorithmMenu() {
+                                        if (it != algorithm) {
+                                            algorithm = it
+                                            hashedOutput = ""
+                                        }
+                                    }
+                                )
+                            )
+                        ),
+                        presentationModel = CommandButtonPresentationModel(
+                            presentationState = CommandButtonPresentationState.Big,
+                            popupMenuPresentationModel = CommandPopupMenuPresentationModel(maxVisibleMenuCommands = 8)
+                        )
+                    ).project(Modifier.weight(0.2f).fillMaxHeight())
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     TextFieldValueProjection(
                         contentModel = TextFieldValueContentModel(
@@ -236,24 +244,6 @@ fun main() = auroraApplication {
                     ).project(Modifier.weight(0.2f).fillMaxHeight())
                 }
                 OutputConsole(timeBeforeHashVisibility, timeAfterHashVisibility, timeBeforeHash, timeAfterHash, timeTaken, hashedOutput, algorithm, file)
-                CommandButtonProjection(
-                    contentModel = Command(
-                        text = algorithm.algorithmName,
-                        secondaryContentModel = CommandMenuContentModel(
-                            group = CommandGroup(
-                                commands = Menus.cascadingAlgorithmMenu() {
-                                    if (it != algorithm) {
-                                        algorithm = it
-                                        hashedOutput = ""
-                                    }
-                                }
-                            )
-                        )
-                    ),
-                    presentationModel = CommandButtonPresentationModel(
-                        popupMenuPresentationModel = CommandPopupMenuPresentationModel(maxVisibleMenuCommands = 8)
-                    )
-                ).project()
             }
 
             if (isFileManagerOpen) {
@@ -299,7 +289,7 @@ fun FileDialog(
 
 @Composable
 fun FileInfoCard(file: File) {
-    Box(modifier = Modifier.fillMaxWidth().height(100.dp).clip(RoundedCornerShape(4.dp)).auroraBackground()) {
+    Box(modifier = Modifier.fillMaxWidth(0.8f).fillMaxHeight().clip(RoundedCornerShape(4.dp)).auroraBackground()) {
         Row(modifier = Modifier.padding(14.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Image(painter = painterResource(resourcePath = FileUtils.getFileIcon(file)), contentDescription = null)
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
@@ -326,28 +316,38 @@ fun OutputConsole(
     file: File
 ) {
     val fontSize = 13.sp
-    SelectionContainer(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp)
+    Column(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            AnimatedVisibility(visible = file != emptyFile, enter = fadeIn(), exit = fadeOut()) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(text = "File path and name: ${file.absolutePath}", fontSize = fontSize)
-                    Text(text = "Name: ${file.name}", fontSize = fontSize)
-                    Text(text = "Type: ${file.extension}", fontSize = fontSize)
-                    Text(text = "Size: ${getFormattedBytes(file.length())}", fontSize = fontSize)
-                    Text(text = "Last modified: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(file.lastModified())}", fontSize = fontSize)
-                    Text(text = "${algorithm.algorithmName}: $hashedOutput", fontSize = fontSize)
+        Text(text = "Console output")
+        SelectionContainer {
+            Column(
+                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 210.dp).border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                AnimatedVisibility(visible = file != emptyFile, enter = fadeIn(), exit = fadeOut()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(text = "File path and name: ${file.absolutePath}", fontSize = fontSize)
+                        Text(text = "Name: ${file.name}", fontSize = fontSize)
+                        Text(text = "Type: ${file.extension}", fontSize = fontSize)
+                        Text(text = "Size: ${getFormattedBytes(file.length())}", fontSize = fontSize)
+                        Text(text = "Last modified: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(file.lastModified())}", fontSize = fontSize)
+                        Text(text = "${algorithm.algorithmName}: $hashedOutput", fontSize = fontSize)
+                    }
                 }
-            }
-            AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                Text(text = timeBeforeHash, fontSize = fontSize)
-            }
-            AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                Text(text = timeAfterHash, fontSize = fontSize)
-            }
-            AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                Text(text = timeTaken, fontSize = fontSize)
+                AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth().padding(vertical = 4.dp))
+                        Text(text = timeBeforeHash, fontSize = fontSize)
+                    }
+                }
+                AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(text = timeAfterHash, fontSize = fontSize)
+                        Text(text = timeTaken, fontSize = fontSize)
+                    }
+                }
             }
         }
     }

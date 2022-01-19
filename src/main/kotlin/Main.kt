@@ -328,6 +328,7 @@ fun OutputConsole(
         "Last modified: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(file.lastModified())}",
         "${algorithm.algorithmName}: $hashedOutput"
     )
+    val timeList = listOf(timeBeforeHash, timeAfterHash, timeTaken)
     Column(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -351,15 +352,13 @@ fun OutputConsole(
                         androidx.compose.animation.AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 HorizontalSeparatorProjection().project(Modifier.fillMaxWidth().padding(vertical = 4.dp))
-                                Text(text = timeBeforeHash, fontSize = fontSize)
                             }
                         }
                     }
-                    item {
+                    items(timeList) {
                         androidx.compose.animation.AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(text = timeAfterHash, fontSize = fontSize)
-                                Text(text = timeTaken, fontSize = fontSize)
+                                Text(text = it, fontSize = fontSize)
                             }
                         }
                     }

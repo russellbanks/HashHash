@@ -9,6 +9,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
@@ -31,6 +35,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.theming.auroraBackground
@@ -51,6 +56,7 @@ fun main() = auroraApplication {
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         undecorated = true,
+        resizable = false,
         onCloseRequest = ::exitApplication,
         menuCommands = CommandGroup(
             commands = listOf(
@@ -115,7 +121,7 @@ fun main() = auroraApplication {
                 }
             }
 
-            Column(modifier = Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(modifier = Modifier.fillMaxSize().padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(modifier = Modifier.height(80.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     FileInfoCard(file)
                     CommandButtonProjection(
@@ -289,16 +295,14 @@ fun FileDialog(
 
 @Composable
 fun FileInfoCard(file: File) {
-    Box(modifier = Modifier.fillMaxWidth(0.8f).fillMaxHeight().clip(RoundedCornerShape(4.dp)).auroraBackground()) {
-        Row(modifier = Modifier.padding(14.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Image(painter = painterResource(resourcePath = FileUtils.getFileIcon(file)), contentDescription = null)
-            Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
-                SelectionContainer { Text(text = getFileName(file), fontSize = 20.sp) }
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    SelectionContainer { Text(text = FileUtils.getFileType(file)) }
-                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                    SelectionContainer { Text(text = getFormattedBytes(file)) }
-                }
+    Row(modifier = Modifier.fillMaxWidth(0.8f).clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Image(painter = painterResource(resourcePath = FileUtils.getFileIcon(file)), contentDescription = null)
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+            SelectionContainer { Text(text = getFileName(file), fontSize = 20.sp) }
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                SelectionContainer { Text(text = FileUtils.getFileType(file)) }
+                VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
+                SelectionContainer { Text(text = getFormattedBytes(file)) }
             }
         }
     }
@@ -316,38 +320,55 @@ fun OutputConsole(
     file: File
 ) {
     val fontSize = 13.sp
+    val fileInfo = listOf(
+        "File path and name: ${file.absolutePath}",
+        "Name: ${file.name}",
+        "Type: ${file.extension}",
+        "Size: ${getFormattedBytes(file.length())}",
+        "Last modified: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(file.lastModified())}",
+        "${algorithm.algorithmName}: $hashedOutput"
+    )
     Column(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(text = "Console output")
         SelectionContainer {
-            Column(
-                modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 210.dp).border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                AnimatedVisibility(visible = file != emptyFile, enter = fadeIn(), exit = fadeOut()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = "File path and name: ${file.absolutePath}", fontSize = fontSize)
-                        Text(text = "Name: ${file.name}", fontSize = fontSize)
-                        Text(text = "Type: ${file.extension}", fontSize = fontSize)
-                        Text(text = "Size: ${getFormattedBytes(file.length())}", fontSize = fontSize)
-                        Text(text = "Last modified: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(file.lastModified())}", fontSize = fontSize)
-                        Text(text = "${algorithm.algorithmName}: $hashedOutput", fontSize = fontSize)
+            Box(Modifier.fillMaxSize()) {
+                val lazyListState = rememberLazyListState()
+                LazyColumn (
+                    modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 10.dp),
+                    state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    item { Spacer(Modifier.size(4.dp)) }
+                    items(fileInfo) {
+                        androidx.compose.animation.AnimatedVisibility(visible = file != emptyFile, enter = fadeIn(), exit = fadeOut()) {
+                            Text(text = it, fontSize = fontSize)
+                        }
                     }
-                }
-                AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth().padding(vertical = 4.dp))
-                        Text(text = timeBeforeHash, fontSize = fontSize)
+                    item {
+                        androidx.compose.animation.AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
+                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                HorizontalSeparatorProjection().project(Modifier.fillMaxWidth().padding(vertical = 4.dp))
+                                Text(text = timeBeforeHash, fontSize = fontSize)
+                            }
+                        }
                     }
-                }
-                AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(text = timeAfterHash, fontSize = fontSize)
-                        Text(text = timeTaken, fontSize = fontSize)
+                    item {
+                        androidx.compose.animation.AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
+                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text(text = timeAfterHash, fontSize = fontSize)
+                                Text(text = timeTaken, fontSize = fontSize)
+                            }
+                        }
                     }
+                    item { Spacer(Modifier.size(4.dp)) }
                 }
+                AuroraVerticalScrollbar(
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(2.dp),
+                    adapter = rememberScrollbarAdapter(scrollState = lazyListState)
+                )
             }
         }
     }

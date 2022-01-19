@@ -245,7 +245,7 @@ object Menus {
                 )
             )
         ),
-        Command(text = Algorithm.PANAMA.algorithmName),
+        Command(text = Algorithm.PANAMA.algorithmName, action = { onClick(Algorithm.PANAMA) } ),
         Command(
             text = Algorithm.RadioGatun32.algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(

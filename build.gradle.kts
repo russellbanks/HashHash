@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.compose") version "1.2.0-alpha01-dev620"
 }
 
-group = "org.bandev"
+group = "com.russellbanks"
 version = "1.0"
 
 repositories {

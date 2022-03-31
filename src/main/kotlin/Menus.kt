@@ -20,7 +20,7 @@ object Menus {
             )
         ),
         Command(
-            text = Algorithm.Blake2b().algorithmName.dropLast(4),
+            text = Algorithm.Blake2b().algorithmName.replaceAfter("-", "").filter { it.isLetterOrDigit() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -33,7 +33,7 @@ object Menus {
             )
         ),
         Command(
-            text = Algorithm.Blake2s().algorithmName.dropLast(4),
+            text = Algorithm.Blake2s().algorithmName.replaceAfter("-", "").filter { it.isLetterOrDigit() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -245,6 +245,32 @@ object Menus {
                 )
             )
         ),
+        Command(text = Algorithm.MurmurHash1().algorithmName, action = { onClick(Algorithm.MurmurHash1()) } ),
+        Command(
+            text = Algorithm.MurmurHash2().algorithmName,
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(text = Algorithm.MurmurHash2().algorithmName, action = { onClick(Algorithm.MurmurHash2()) }),
+                        Command(text = Algorithm.MurmurHash64A().algorithmName, action = { onClick(Algorithm.MurmurHash64A()) }),
+                        Command(text = Algorithm.MurmurHash64B().algorithmName, action = { onClick(Algorithm.MurmurHash64B()) }),
+                        Command(text = Algorithm.MurmurHash2A().algorithmName, action = { onClick(Algorithm.MurmurHash2A()) })
+                    )
+                )
+            )
+        ),
+        Command(
+            text = Algorithm.MurmurHash3_X64_128().algorithmName.replaceAfter("-", "").filter { it.isLetterOrDigit() },
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(text = Algorithm.MurmurHash3_X86_32().algorithmName, action = { onClick(Algorithm.MurmurHash3_X86_32()) }),
+                        Command(text = Algorithm.MurmurHash3_X86_128().algorithmName, action = { onClick(Algorithm.MurmurHash3_X86_128()) }),
+                        Command(text = Algorithm.MurmurHash3_X64_128().algorithmName, action = { onClick(Algorithm.MurmurHash3_X64_128()) })
+                    )
+                )
+            )
+        ),
         Command(text = Algorithm.PANAMA.algorithmName, action = { onClick(Algorithm.PANAMA) } ),
         Command(
             text = Algorithm.RadioGatun32.algorithmName.filter { it.isLetter() },
@@ -288,7 +314,7 @@ object Menus {
             )
         ),
         Command(
-            text = Algorithm.SHA3_224.algorithmName.dropLast(4),
+            text = Algorithm.SHA3_224.algorithmName.replaceAfter("-", "").filter { it.isLetterOrDigit() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(
@@ -400,7 +426,7 @@ object Menus {
             )
         ),
         Command(
-            text = Algorithm.XXH3_64().algorithmName.dropLast(3),
+            text = Algorithm.XXH3_64().algorithmName.replaceAfter("-", "").filter { it.isLetterOrDigit() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(
                     commands = listOf(

@@ -51,7 +51,7 @@ object Aurora {
 
 object Crypto {
     private const val groupID = "com.appmattus.crypto"
-    private const val crypto_version = "0.7.0"
+    private const val crypto_version = "0.10.0"
 
     const val cryptohash = "$groupID:cryptohash:$crypto_version"
 }

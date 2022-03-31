@@ -1,3 +1,5 @@
+package components
+
 import com.appmattus.crypto.Algorithm
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup

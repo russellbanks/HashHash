@@ -1,5 +1,9 @@
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.window.AwtWindow
+import java.awt.FileDialog
+import java.awt.Frame
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -39,8 +43,28 @@ object FileUtils {
 
     fun getFileIcon(file: File) = if (getAllFilesInResources().contains("${file.extension}.png")) "${file.extension}.png" else "file.png"
 
-    fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())?.capitalize(Locale.current) ?: file.extension else "Type"
+    fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())
+        ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+        ?: file.extension else "Type"
 
     fun getFileName(file: File): String = if (file != emptyFile) file.name else "File name"
+
+    @Composable
+    fun FileDialog(
+        parent: Frame? = null,
+        onCloseRequest: (result: File) -> Unit
+    ) = AwtWindow(
+        create = {
+            object : FileDialog(parent, "Choose a file", LOAD) {
+                override fun setVisible(value: Boolean) {
+                    super.setVisible(value)
+                    if (value) {
+                        if (files.isNotEmpty()) onCloseRequest(files[0])
+                    }
+                }
+            }
+        },
+        dispose = FileDialog::dispose
+    )
 
 }

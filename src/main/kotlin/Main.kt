@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -15,7 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,14 +26,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.AwtWindow
-import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
@@ -50,13 +46,12 @@ import java.text.SimpleDateFormat
 
 fun main() = auroraApplication {
     var isFileManagerOpen by remember { mutableStateOf(false) }
+    var isAboutWindowOpen by remember { mutableStateOf(false) }
     AuroraWindow(
         skin = nightShadeSkin(),
-        state = rememberWindowState(position = WindowPosition.Aligned(Alignment.Center)),
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         undecorated = true,
-        resizable = false,
         onCloseRequest = ::exitApplication,
         menuCommands = CommandGroup(
             commands = listOf(
@@ -68,14 +63,14 @@ fun main() = auroraApplication {
                                 Command(
                                     text = "Open",
                                     action = { isFileManagerOpen = true }
-                                ),
+                                )
                             )
                         )
                     )
                 ),
                 Command(
                     text = "About",
-                    action = {}
+                    action = { isAboutWindowOpen = true }
                 )
             )
         )
@@ -84,7 +79,6 @@ fun main() = auroraApplication {
             var hashedOutput by remember { mutableStateOf("") }
             var comparisonHash by remember { mutableStateOf("") }
             var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-            val snackbarHostState = remember { SnackbarHostState() }
             var hashTimer by remember { mutableStateOf("00:00") }
             var timerVisible by remember { mutableStateOf(false) }
             var file by remember { mutableStateOf(emptyFile) }
@@ -94,32 +88,6 @@ fun main() = auroraApplication {
             var timeBeforeHashVisibility by remember { mutableStateOf(false) }
             var timeAfterHashVisibility by remember { mutableStateOf(false) }
             var timeTaken by remember { mutableStateOf("00:00") }
-
-            Box(Modifier.fillMaxSize()) {
-                SnackbarHost(
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    hostState = snackbarHostState
-                ) { snackbarData: SnackbarData ->
-                    Card(
-                        shape = RoundedCornerShape(8.dp),
-                        border = BorderStroke(1.dp, Color.Black),
-                        modifier = Modifier.padding(16.dp).wrapContentSize()
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(resourcePath = "check.png"),
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Text(text = snackbarData.message)
-                        }
-                    }
-                }
-            }
 
             Column(modifier = Modifier.fillMaxSize().padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(modifier = Modifier.height(80.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -160,10 +128,7 @@ fun main() = auroraApplication {
                             text = "Copy",
                             icon = painterResource(resourcePath = "copy.png"),
                             action = {
-                                if (hashedOutput.isNotBlank()) {
-                                    Clipboard.setContent(hashedOutput.uppercase())
-                                    scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
-                                }
+                                if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput.uppercase())
                             }
                         )
                     ).project(Modifier.weight(0.1f))
@@ -210,35 +175,37 @@ fun main() = auroraApplication {
                         contentModel = Command(
                             text = "Calculate",
                             action = {
-                                if (file != emptyFile) {
-                                    val job = scope.launch {
-                                        flow {
-                                            System.currentTimeMillis().also { millisAtStart ->
-                                                while (true) {
-                                                    delay(1000)
-                                                    emit(System.currentTimeMillis() - millisAtStart)
+                                if (file.exists()) {
+                                    if (file != emptyFile) {
+                                        val job = scope.launch {
+                                            flow {
+                                                System.currentTimeMillis().also { millisAtStart ->
+                                                    while (currentCoroutineContext().isActive) {
+                                                        delay(1000)
+                                                        emit(System.currentTimeMillis() - millisAtStart)
+                                                    }
                                                 }
+                                            }.collect { milliseconds ->
+                                                val minutes = "%02d".format((milliseconds / 1000) / 60)
+                                                val seconds = "%02d".format((milliseconds / 1000) % 60)
+                                                hashTimer = "$minutes:$seconds"
                                             }
-                                        }.collect { milliseconds ->
-                                            val minutes = "%02d".format((milliseconds / 1000) / 60)
-                                            val seconds = "%02d".format((milliseconds / 1000) % 60)
-                                            hashTimer = "$minutes:$seconds"
                                         }
-                                    }
-                                    scope.launch(Dispatchers.IO) {
-                                        timerVisible = true
-                                        System.nanoTime().also { nanosAtStart ->
-                                            timeBeforeHash = "Started at: " + SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                            timeBeforeHashVisibility = true
-                                            hashedOutput = file.hash(algorithm)
-                                            System.nanoTime().also { nanosAtEnd ->
-                                                timeAfterHash = "Ended at: " + SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                timeTaken = "Time taken: ${Time.formatElapsedTime(nanosAtEnd - nanosAtStart)}"
+                                        scope.launch(Dispatchers.IO) {
+                                            timerVisible = true
+                                            System.nanoTime().also { nanosAtStart ->
+                                                timeBeforeHash = "Started at: " + SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                                timeBeforeHashVisibility = true
+                                                hashedOutput = file.hash(algorithm)
+                                                System.nanoTime().also { nanosAtEnd ->
+                                                    timeAfterHash = "Ended at: " + SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                                    timeTaken = "Time taken: ${Time.formatElapsedTime(nanosAtEnd - nanosAtStart)}"
+                                                }
+                                                timeAfterHashVisibility = true
+                                                job.cancel()
+                                                hashTimer = "00:00"
+                                                timerVisible = false
                                             }
-                                            timeAfterHashVisibility = true
-                                            job.cancel()
-                                            hashTimer = "00:00"
-                                            timerVisible = false
                                         }
                                     }
                                 }
@@ -259,6 +226,22 @@ fun main() = auroraApplication {
                     timeBeforeHashVisibility = false
                     timeAfterHashVisibility = false
                     file = chosenFile
+                }
+            }
+
+            if (isAboutWindowOpen) {
+                AuroraWindow(
+                    skin = nightShadeSkin(),
+                    onCloseRequest = { isAboutWindowOpen = false },
+                    state = rememberWindowState(width = 400.dp, height = 400.dp),
+                    title = "About",
+                    icon = painterResource(resourcePath = "hash.png"),
+                    undecorated = true,
+                    resizable = false
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("HashHash")
+                    }
                 }
             }
         }

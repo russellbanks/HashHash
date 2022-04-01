@@ -124,30 +124,12 @@ fun main() = auroraApplication {
                         )
                     ).project(Modifier.weight(0.1f))
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TextFieldValueProjection(
-                        contentModel = TextFieldValueContentModel(
-                            value = TextFieldValue(annotatedString = AnnotatedString(text = comparisonHash)),
-                            placeholder = "Comparison Hash",
-                            onValueChange = { comparisonHash = it.text }
-                        ),
-                        presentationModel = TextFieldPresentationModel(showBorder = false)
-                    ).project(Modifier.fillMaxWidth(0.8f))
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = "Paste",
-                            icon = painterResource(resourcePath = "paste.png"),
-                            action = { comparisonHash = Clipboard.readContent() }
-                        )
-                    ).project(Modifier.weight(0.1f))
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = "Clear",
-                            icon = painterResource(resourcePath = "eraser.png"),
-                            action = { comparisonHash = "" }
-                        )
-                    ).project(Modifier.weight(0.1f))
-                }
+                ComparisonRow(
+                    givenHash = comparisonHash,
+                    onComparisonValueChange = { comparisonHash = it.text },
+                    pasteAction = { comparisonHash = Clipboard.readContent() },
+                    clearAction = { comparisonHash = "" }
+                )
                 Row(modifier = Modifier.height(50.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     ProgressCard(hashedOutput, comparisonHash, hashTimer, timerVisible, file)
                     CalculateButton(

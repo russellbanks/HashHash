@@ -87,7 +87,7 @@ fun main() = auroraApplication {
                             )
                         ),
                         presentationModel = CommandButtonPresentationModel(
-                            presentationState = CommandButtonPresentationState.Big,
+                            presentationState = CommandButtonPresentationState.TileFitToIcon,
                             popupMenuPresentationModel = CommandPopupMenuPresentationModel(maxVisibleMenuCommands = 8)
                         )
                     ).project(Modifier.weight(0.2f).fillMaxHeight())

@@ -13,13 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
-import components.FileInfoCard
-import components.Menus
-import components.OutputConsole
-import components.ProgressCard
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import components.*
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.IndeterminateLinearProgressProjection
@@ -68,7 +62,6 @@ fun main() = auroraApplication {
             var hashTimer by remember { mutableStateOf("00:00") }
             var timerVisible by remember { mutableStateOf(false) }
             var file by remember { mutableStateOf(FileUtils.emptyFile) }
-            val scope = rememberCoroutineScope()
             var timeBeforeHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
             var timeAfterHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
             var timeBeforeHashVisibility by remember { mutableStateOf(false) }
@@ -157,50 +150,27 @@ fun main() = auroraApplication {
                 }
                 Row(modifier = Modifier.height(50.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     ProgressCard(hashedOutput, comparisonHash, hashTimer, timerVisible, file)
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = "Calculate",
-                            action = {
-                                if (file.exists()) {
-                                    if (file != FileUtils.emptyFile) {
-                                        val job = scope.launch {
-                                            flow {
-                                                System.currentTimeMillis().also { millisAtStart ->
-                                                    while (currentCoroutineContext().isActive) {
-                                                        delay(1000)
-                                                        emit(System.currentTimeMillis() - millisAtStart)
-                                                    }
-                                                }
-                                            }.collect { milliseconds ->
-                                                val minutes = "%02d".format((milliseconds / 1000) / 60)
-                                                val seconds = "%02d".format((milliseconds / 1000) % 60)
-                                                hashTimer = "$minutes:$seconds"
-                                            }
-                                        }
-                                        scope.launch(Dispatchers.IO) {
-                                            timerVisible = true
-                                            System.nanoTime().also { nanosAtStart ->
-                                                timeBeforeHash = "Started at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
-                                                timeBeforeHashVisibility = true
-                                                hashedOutput = file.hash(algorithm)
-                                                System.nanoTime().also { nanosAtEnd ->
-                                                    timeAfterHash = "Ended at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
-                                                    timeTaken = "Time taken: ${Time.formatElapsedTime(nanosAtEnd - nanosAtStart)}"
-                                                }
-                                                timeAfterHashVisibility = true
-                                                job.cancel()
-                                                hashTimer = "00:00"
-                                                timerVisible = false
-                                            }
-                                        }
-                                    }
+                    CalculateButton(
+                        modifier = Modifier.weight(0.2f).fillMaxHeight(),
+                        file = file,
+                        timerCall = { hashTimer = "${it.first}${it.second}" },
+                        hashCall = { job ->
+                            timerVisible = true
+                            System.nanoTime().also { nanosAtStart ->
+                                timeBeforeHash = "Started at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
+                                timeBeforeHashVisibility = true
+                                hashedOutput = file.hash(algorithm)
+                                System.nanoTime().also { nanosAtEnd ->
+                                    timeAfterHash = "Ended at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
+                                    timeTaken = "Time taken: ${Time.formatElapsedTime(nanosAtEnd - nanosAtStart)}"
                                 }
+                                timeAfterHashVisibility = true
+                                job.cancel()
+                                hashTimer = "00:00"
+                                timerVisible = false
                             }
-                        ),
-                        presentationModel = CommandButtonPresentationModel(
-                            presentationState = CommandButtonPresentationState.Medium
-                        )
-                    ).project(Modifier.weight(0.2f).fillMaxHeight())
+                        }
+                    )
                 }
                 OutputConsole(
                     timeBeforeHashVisibility = timeBeforeHashVisibility,

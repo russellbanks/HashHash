@@ -71,26 +71,15 @@ fun main() = auroraApplication {
             Column(modifier = Modifier.fillMaxSize().padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(modifier = Modifier.height(80.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     FileInfoCard(file)
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = algorithm.algorithmName,
-                            icon = painterResource(resourcePath = "algorithm.png"),
-                            secondaryContentModel = CommandMenuContentModel(
-                                group = CommandGroup(
-                                    commands = Menus.cascadingAlgorithmMenu {
-                                        if (it != algorithm) {
-                                            algorithm = it
-                                            hashedOutput = ""
-                                        }
-                                    }
-                                )
-                            )
-                        ),
-                        presentationModel = CommandButtonPresentationModel(
-                            presentationState = CommandButtonPresentationState.TileFitToIcon,
-                            popupMenuPresentationModel = CommandPopupMenuPresentationModel(maxVisibleMenuCommands = 8)
-                        )
-                    ).project(Modifier.weight(0.2f).fillMaxHeight())
+                    AlgorithmButton(
+                        modifier = Modifier.weight(0.2f).fillMaxHeight(),
+                        algorithm = algorithm
+                    ) { selectedAlgorithm ->
+                        if (selectedAlgorithm != algorithm) {
+                            algorithm = selectedAlgorithm
+                            hashedOutput = ""
+                        }
+                    }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     TextFieldValueProjection(

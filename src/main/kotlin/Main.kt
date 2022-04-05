@@ -1,22 +1,20 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
 import components.*
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
-import org.pushingpixels.aurora.component.projection.IndeterminateLinearProgressProjection
 import org.pushingpixels.aurora.component.projection.TextFieldValueProjection
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
@@ -179,16 +177,6 @@ fun main() = auroraApplication {
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun HashTimer(timerVisible: Boolean, hashTimer: String) {
-    AnimatedVisibility(visible = timerVisible, enter = fadeIn(), exit = fadeOut()) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = hashTimer, fontSize = 20.sp)
-            IndeterminateLinearProgressProjection().project(Modifier.fillMaxWidth())
         }
     }
 }

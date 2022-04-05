@@ -1,7 +1,6 @@
 package components
 
 import FileUtils
-import HashTimer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn

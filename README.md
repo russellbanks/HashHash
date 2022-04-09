@@ -19,7 +19,7 @@ HashHash is a Multiplatform Graphical User Interface for hashing files, written 
 
 ## Supporting algorithms
 
-HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here]([crypto/cryptohash at main · appmattus/crypto · GitHub](https://github.com/appmattus/crypto/tree/main/cryptohash)).
+HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here](https://github.com/appmattus/crypto/tree/main/cryptohash).
 
 ## Built With
 

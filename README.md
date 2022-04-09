@@ -2,16 +2,14 @@
 <p align="center">
   <h3 align="center">HashHash</h3>
 
-  <p align="center">
+<p align="center">
     A Multiplatform GUI for Hashing, written in Compose for Desktop
     <br/>
     <br/>
     <a href="https://github.com/BanDev/HashHash/issues">Report Bug</a>
     .
     <a href="https://github.com/BanDev/HashHash/issues">Request Feature</a>
-  </p>
 </p>
-
 
 ![Contributors](https://img.shields.io/github/contributors/BanDev/HashHash?color=dark-green) ![Issues](https://img.shields.io/github/issues/BanDev/HashHash) ![License](https://img.shields.io/github/license/BanDev/HashHash)
 
@@ -21,19 +19,7 @@ HashHash is a Multiplatform Graphical User Interface for hashing files, written 
 
 ## Supporting algorithms
 
-| Name |
-| --- |
-| [MD2](https://en.wikipedia.org/wiki/MD2_(hash_function)) |
-| [MD5](https://en.wikipedia.org/wiki/MD5) |
-| [SHA-1](https://en.wikipedia.org/wiki/SHA-1) |
-| [SHA-224](https://en.wikipedia.org/wiki/SHA-2) |
-| [SHA-256](https://en.wikipedia.org/wiki/SHA-2) |
-| [SHA-384](https://en.wikipedia.org/wiki/SHA-2) |
-| [SHA-512](https://en.wikipedia.org/wiki/SHA-2) |
-| [SHA3-224](https://en.wikipedia.org/wiki/SHA-3) |
-| [SHA3-256](https://en.wikipedia.org/wiki/SHA-3) |
-| [SHA3-384](https://en.wikipedia.org/wiki/SHA-3) |
-| [SHA3-512](https://en.wikipedia.org/wiki/SHA-3) |
+HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here]([crypto/cryptohash at main · appmattus/crypto · GitHub](https://github.com/appmattus/crypto/tree/main/cryptohash)).
 
 ## Built With
 
@@ -62,18 +48,12 @@ To build HashHash, you will need OpenJDK 17 as this project is targets the JVM. 
 
 ## Usage
 
-Once HashHash has been ran, you can select your hashing algorithm of choice and then input a file from your operating system's file manager. The file will begin hashing straight away and output the result.
-
-## Roadmap
-
-- [x] Add all main hashes
-- [ ] Improve UI
-- [ ] Package installers for each targeted platform
-- [ ] Add further hashes
+Once HashHash has been ran, you can select your hashing algorithm of choice and then input a file from your operating system's file manager. Then, you can begin hashing the file by pressing the calculate button.
 
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
 * If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/BanDev/HashHash/issues/new) to discuss it, or directly create a pull request after you edit the *README.md* file with necessary changes.
 * Please make sure you check your spelling and grammar.
 * Create individual PR for each suggestion.
@@ -88,6 +68,7 @@ Contributions are what make the open source community such an amazing place to b
 5. Open a Pull Request
 
 ## License
+
 [![GNU GPLv3 Logo](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
 HashHash is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.

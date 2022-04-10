@@ -1,5 +1,6 @@
 <br/>
 <p align="center">
+  <img title="HashHash Logo" src="https://user-images.githubusercontent.com/74878137/162616364-9c72490e-cf45-4258-933d-5d4881bca2f0.png" alt="hash" width="80">
   <h3 align="center">HashHash</h3>
 
 <p align="center">

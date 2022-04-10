@@ -17,6 +17,8 @@
 
 HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash files whilst remaining multiplatform. By nature of Jetpack Compose for Desktop, it supports Windows, Linux and MacOS.
 
+<img title="HashHash main window" src="https://user-images.githubusercontent.com/74878137/162615267-1cbe8b10-656c-4489-a636-48e6cff06f4d.png" alt="HashHash screenshot" data-align="center">
+
 ## Supporting algorithms
 
 HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here](https://github.com/appmattus/crypto/tree/main/cryptohash).
@@ -67,13 +69,12 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+## Attribution
+
+- [Application Icon](https://www.flaticon.com/free-icon/hash_390926?term=hash&page=1&position=40&page=1&position=40&related_id=390926) - Freepik via Flaticon
+
 ## License
 
 [![GNU GPLv3 Logo](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
 HashHash is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-## Authors
-
-* **Russell Banks** - *Comp Sci Student* - [Russell Banks](https://github.com/russellbanks/)
-* **Jack Devey** - *Comp Sci Student* - [Jack Devey](https://github.com/jackdevey/)

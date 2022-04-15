@@ -18,10 +18,14 @@ repositories {
 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
     implementation(compose.desktop.currentOs)
-    implementation(Aurora.window)
-    implementation(Aurora.component)
-    implementation(Aurora.theming)
-    implementation(Crypto.cryptohash)
+
+    // Aurora - https://github.com/kirill-grouchnikov/aurora
+    implementation(libs.aurora.window)
+    implementation(libs.aurora.component)
+    implementation(libs.aurora.theming)
+
+    // Crypto - https://github.com/appmattus/crypto
+    implementation(libs.crypto.cryptohash)
 }
 
 tasks.withType<KotlinCompile> {
@@ -38,20 +42,4 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
-}
-
-object Aurora {
-    private const val groupID = "org.pushing-pixels"
-    private const val aurora_version = "1.1.0"
-
-    const val window = "$groupID:aurora-window:$aurora_version"
-    const val component = "$groupID:aurora-component:$aurora_version"
-    const val theming = "$groupID:aurora-theming:$aurora_version"
-}
-
-object Crypto {
-    private const val groupID = "com.appmattus.crypto"
-    private const val crypto_version = "0.10.0"
-
-    const val cryptohash = "$groupID:cryptohash:$crypto_version"
 }

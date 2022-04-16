@@ -1,0 +1,9 @@
+[versions]
+aurora = "1.1.0"
+crypto = "0.10.0"
+
+[libraries]
+aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "aurora" }
+aurora-component = { module = "org.pushing-pixels:aurora-component", version.ref = "aurora" }
+aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "aurora" }
+crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "crypto" }

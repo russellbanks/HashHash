@@ -100,7 +100,7 @@ fun main() = auroraApplication {
                     CalculateButton(
                         modifier = Modifier.weight(0.2f).fillMaxHeight(),
                         file = file,
-                        timerCall = { hashTimer = "${it.first}${it.second}" },
+                        timerCall = { hashTimer = "${it.first}:${it.second}" },
                         hashCall = { job ->
                             timerVisible = true
                             System.nanoTime().also { nanosAtStart ->

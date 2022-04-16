@@ -11,7 +11,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
 import components.*
-import org.pushingpixels.aurora.component.model.*
+import org.pushingpixels.aurora.component.model.Command
+import org.pushingpixels.aurora.component.model.CommandGroup
+import org.pushingpixels.aurora.component.model.CommandMenuContentModel
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -72,6 +74,8 @@ fun main() = auroraApplication {
                         if (selectedAlgorithm != algorithm) {
                             algorithm = selectedAlgorithm
                             hashedOutput = ""
+                            timeBeforeHashVisibility = false
+                            timeAfterHashVisibility = false
                         }
                     }
                 }
@@ -102,12 +106,16 @@ fun main() = auroraApplication {
                             System.nanoTime().also { nanosAtStart ->
                                 timeBeforeHash = "Started at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
                                 timeBeforeHashVisibility = true
-                                hashedOutput = file.hash(algorithm)
-                                System.nanoTime().also { nanosAtEnd ->
-                                    timeAfterHash = "Ended at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
-                                    timeTaken = "Time taken: ${Time.formatElapsedTime(nanosAtEnd - nanosAtStart)}"
+                                try {
+                                    hashedOutput = file.hash(algorithm)
+                                    System.nanoTime().also { nanosAtEnd ->
+                                        timeAfterHash = "Ended at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
+                                        timeTaken = "Time taken: ${Time.formatElapsedTime(nanosAtEnd - nanosAtStart)}"
+                                    }
+                                    timeAfterHashVisibility = true
+                                } catch(exception: Exception) {
+                                    timeBeforeHash = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
                                 }
-                                timeAfterHashVisibility = true
                                 job.cancel()
                                 hashTimer = "00:00"
                                 timerVisible = false

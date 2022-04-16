@@ -59,7 +59,7 @@ object FileUtils {
                 override fun setVisible(value: Boolean) {
                     super.setVisible(value)
                     if (value) {
-                        if (files.isNotEmpty()) onCloseRequest(files[0])
+                        if (files.isNotEmpty()) onCloseRequest(files.first())
                     }
                 }
             }

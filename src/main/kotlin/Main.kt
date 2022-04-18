@@ -56,7 +56,7 @@ fun main() = auroraApplication {
             var comparisonHash by remember { mutableStateOf("") }
             var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
             var hashTimer by remember { mutableStateOf("00:00") }
-            var timerVisible by remember { mutableStateOf(false) }
+            var isHashing by remember { mutableStateOf(false) }
             var file by remember { mutableStateOf(FileUtils.emptyFile) }
             var timeBeforeHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
             var timeAfterHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
@@ -96,13 +96,14 @@ fun main() = auroraApplication {
                     clearAction = { comparisonHash = "" }
                 )
                 Row(modifier = Modifier.height(50.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    ProgressCard(hashedOutput, comparisonHash, hashTimer, timerVisible, file)
+                    ProgressCard(hashedOutput, comparisonHash, hashTimer, isHashing, file)
                     CalculateButton(
                         modifier = Modifier.weight(0.2f).fillMaxHeight(),
                         file = file,
+                        isHashing = isHashing,
                         timerCall = { hashTimer = "${it.first}:${it.second}" },
                         hashCall = { job ->
-                            timerVisible = true
+                            isHashing = true
                             System.nanoTime().also { nanosAtStart ->
                                 timeBeforeHash = "Started at: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())}"
                                 timeBeforeHashVisibility = true
@@ -118,7 +119,7 @@ fun main() = auroraApplication {
                                 }
                                 job.cancel()
                                 hashTimer = "00:00"
-                                timerVisible = false
+                                isHashing = false
                             }
                         }
                     )

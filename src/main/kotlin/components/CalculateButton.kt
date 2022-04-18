@@ -16,6 +16,7 @@ import java.io.File
 fun CalculateButton(
     modifier: Modifier,
     file: File,
+    isHashing: Boolean,
     timerCall: (time: Pair<String, String>) -> Unit,
     hashCall: (job: Job) -> Unit
 ) {
@@ -24,25 +25,23 @@ fun CalculateButton(
         contentModel = Command(
             text = "Calculate",
             action = {
-                if (file.exists()) {
-                    if (file != FileUtils.emptyFile) {
-                        val job = scope.launch {
-                            flow {
-                                System.currentTimeMillis().also { millisAtStart ->
-                                    while (currentCoroutineContext().isActive) {
-                                        delay(1000)
-                                        emit(System.currentTimeMillis() - millisAtStart)
-                                    }
+                if (file.exists() && file != FileUtils.emptyFile && !isHashing) {
+                    val job = scope.launch {
+                        flow {
+                            System.currentTimeMillis().also { millisAtStart ->
+                                while (currentCoroutineContext().isActive) {
+                                    delay(1000)
+                                    emit(System.currentTimeMillis() - millisAtStart)
                                 }
-                            }.collect { milliseconds ->
-                                val minutes = "%02d".format((milliseconds / 1000) / 60)
-                                val seconds = "%02d".format((milliseconds / 1000) % 60)
-                                timerCall(Pair(minutes, seconds))
                             }
+                        }.collect { milliseconds ->
+                            val minutes = "%02d".format((milliseconds / 1000) / 60)
+                            val seconds = "%02d".format((milliseconds / 1000) % 60)
+                            timerCall(Pair(minutes, seconds))
                         }
-                        scope.launch(Dispatchers.IO) {
-                            hashCall(job)
-                        }
+                    }
+                    scope.launch(Dispatchers.IO) {
+                        hashCall(job)
                     }
                 }
             }

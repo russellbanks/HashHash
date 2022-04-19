@@ -2,7 +2,6 @@ import com.appmattus.crypto.Algorithm
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import kotlin.experimental.and
 
 @Throws(IOException::class)
 fun File.hash(
@@ -24,7 +23,7 @@ fun File.hash(
     val sb = StringBuilder()
 
     for (i in bytes.indices) {
-        sb.append(((bytes[i] and 0xff.toByte()) + 0x100).toString(16).substring(1))
+        sb.append(((bytes[i].toInt() and 0xff) + 0x100).toString(16).substring(1))
     }
 
     return sb.toString()

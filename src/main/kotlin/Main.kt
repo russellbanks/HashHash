@@ -9,8 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
 import components.*
 import org.pushingpixels.aurora.component.model.Command
@@ -31,12 +33,13 @@ import java.text.SimpleDateFormat
 fun main() = auroraApplication {
     var isFileManagerOpen by remember { mutableStateOf(false) }
     var isAboutWindowOpen by remember { mutableStateOf(false) }
+    val windowState = rememberWindowState(
+        position = WindowPosition(Alignment.Center),
+        size = DpSize(width = 1035.dp, height = 770.dp)
+    )
     AuroraWindow(
         skin = nightShadeSkin(),
-        state = WindowState(
-            position = WindowPosition(Alignment.Center),
-            size = DpSize(width = 1035.dp, height = 770.dp)
-        ),
+        state = windowState,
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
@@ -50,6 +53,29 @@ fun main() = auroraApplication {
                                 Command(
                                     text = "Open",
                                     action = { isFileManagerOpen = true }
+                                ),
+                                Command(
+                                    text = "Quit HashHash",
+                                    action = { exitApplication() }
+                                )
+                            )
+                        )
+                    )
+                ),
+                Command(
+                    text = "View",
+                    secondaryContentModel = CommandMenuContentModel(
+                        CommandGroup(
+                            commands = listOf(
+                                Command(
+                                    text = "Toggle Full Screen",
+                                    action = {
+                                        if (windowState.placement == WindowPlacement.Floating) {
+                                            windowState.placement = WindowPlacement.Fullscreen
+                                        } else {
+                                            windowState.placement = WindowPlacement.Floating
+                                        }
+                                    }
                                 )
                             )
                         )

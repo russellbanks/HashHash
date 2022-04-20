@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -170,13 +171,23 @@ fun main() = auroraApplication {
                     onCloseRequest = { isAboutWindowOpen = false },
                     state = WindowState(
                         position = WindowPosition(Alignment.Center),
-                        size = DpSize(width = 400.dp, height = 400.dp)
+                        size = DpSize(width = 500.dp, height = 500.dp)
                     ),
-                    title = "About",
+                    title = "About HashHash",
+                    icon = painterResource(resourcePath = "hash.png"),
                     resizable = false
                 ) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        LabelProjection(contentModel = LabelContentModel(text = "HashHash")).project()
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(resourcePath = "hash.png"),
+                            contentDescription = null,
+                            modifier = Modifier.size(150.dp).padding(10.dp)
+                        )
+                        LabelProjection(contentModel = LabelContentModel(text = "1.0.0")).project()
                     }
                 }
             }

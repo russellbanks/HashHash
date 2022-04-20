@@ -1,6 +1,6 @@
 package components
 
-import androidx.compose.animation.AnimatedVisibility
+import FileUtils
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
@@ -21,7 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
+import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.auroraBackground
 import java.io.File
 import java.text.SimpleDateFormat
@@ -51,7 +53,7 @@ fun OutputConsole(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = "Console output")
+        LabelProjection(contentModel = LabelContentModel(text = "Console output")).project()
         SelectionContainer {
             Box(Modifier.fillMaxSize()) {
                 val lazyListState = rememberLazyListState()
@@ -63,28 +65,22 @@ fun OutputConsole(
                     item { Spacer(Modifier.size(4.dp)) }
                     items(fileInfo) {
                         androidx.compose.animation.AnimatedVisibility(visible = file != FileUtils.emptyFile, enter = fadeIn(), exit = fadeOut()) {
-                            Text(text = it, fontSize = fontSize)
+                            LabelProjection(contentModel = LabelContentModel(text = it)).project()
                         }
                     }
                     item {
                         androidx.compose.animation.AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                HorizontalSeparatorProjection().project(Modifier.fillMaxWidth().padding(vertical = 4.dp))
-                            }
+                            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth().padding(vertical = 4.dp))
                         }
                     }
                     item {
                         androidx.compose.animation.AnimatedVisibility(visible = timeBeforeHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(text = timeBeforeHash, fontSize = fontSize)
-                            }
+                            LabelProjection(contentModel = LabelContentModel(text = timeBeforeHash)).project()
                         }
                     }
                     items(timeList) {
                         androidx.compose.animation.AnimatedVisibility(visible = timeAfterHashVisibility, enter = fadeIn(), exit = fadeOut()) {
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(text = it, fontSize = fontSize)
-                            }
+                            LabelProjection(contentModel = LabelContentModel(text = it)).project()
                         }
                     }
                     item { Spacer(Modifier.size(4.dp)) }

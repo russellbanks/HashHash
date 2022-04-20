@@ -8,13 +8,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.theming.auroraBackground
 import java.io.File
@@ -40,10 +41,15 @@ fun ProgressCard(
                 if (isHashing) {
                     HashTimer(timerVisible = true, hashTimer = hashTimer)
                 } else {
-                    Text(
-                        modifier = Modifier.padding(14.dp),
-                        text = if (hashedOutput.isNotBlank()) "Done!" else if (file != FileUtils.emptyFile) "No hash" else "No file selected"
-                    )
+                    LabelProjection(
+                        contentModel = LabelContentModel(
+                            text = when {
+                                hashedOutput.isNotBlank() -> "Done!"
+                                file != FileUtils.emptyFile -> "No hash"
+                                else -> "No file selected"
+                            }
+                        )
+                    ).project(Modifier.padding(14.dp))
                 }
             }
         }
@@ -54,10 +60,15 @@ fun ProgressCard(
         ) {
             VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    modifier = Modifier.padding(14.dp),
-                    text = if (hashedOutput.isNotBlank() && comparisonHash.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase()) "Hashes match" else  "Hashes do not match"
-                )
+                LabelProjection(
+                    contentModel = LabelContentModel(
+                        text = if (hashedOutput.isNotBlank() && comparisonHash.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase()) {
+                            "Hashes match"
+                        } else  {
+                            "Hashes do not match"
+                        }
+                    )
+                ).project(Modifier.padding(14.dp))
                 Image(
                     painter = painterResource(
                         resourcePath = if (hashedOutput.isNotBlank() && comparisonHash.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase()) "check.png" else "cross.png"

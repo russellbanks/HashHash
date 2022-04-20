@@ -1,5 +1,5 @@
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +14,8 @@ import components.*
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -27,7 +29,6 @@ fun main() = auroraApplication {
         skin = nightShadeSkin(),
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
-        undecorated = true,
         onCloseRequest = ::exitApplication,
         menuCommands = CommandGroup(
             commands = listOf(
@@ -152,11 +153,14 @@ fun main() = auroraApplication {
                     onCloseRequest = { isAboutWindowOpen = false },
                     state = rememberWindowState(width = 400.dp, height = 400.dp),
                     title = "About",
-                    undecorated = true,
                     resizable = false
                 ) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("HashHash")
+                        LabelProjection(
+                            contentModel = LabelContentModel(
+                                text = "HashHash"
+                            )
+                        ).project()
                     }
                 }
             }

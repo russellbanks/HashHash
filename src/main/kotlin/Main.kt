@@ -161,11 +161,7 @@ fun main() = auroraApplication {
                     resizable = false
                 ) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        LabelProjection(
-                            contentModel = LabelContentModel(
-                                text = "HashHash"
-                            )
-                        ).project()
+                        LabelProjection(contentModel = LabelContentModel(text = "HashHash")).project()
                     }
                 }
             }

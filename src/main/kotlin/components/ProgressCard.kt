@@ -58,11 +58,12 @@ fun ProgressCard(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
+            val hashesMatch = hashedOutput.isNotBlank() && comparisonHash.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase()
             VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = if (hashedOutput.isNotBlank() && comparisonHash.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase()) {
+                        text = if (hashesMatch) {
                             "Hashes match"
                         } else  {
                             "Hashes do not match"
@@ -71,7 +72,11 @@ fun ProgressCard(
                 ).project(Modifier.padding(14.dp))
                 Image(
                     painter = painterResource(
-                        resourcePath = if (hashedOutput.isNotBlank() && comparisonHash.isNotBlank() && hashedOutput.lowercase() == comparisonHash.lowercase()) "check.png" else "cross.png"
+                        resourcePath = if (hashesMatch) {
+                            "check.png"
+                        } else {
+                            "cross.png"
+                        }
                     ),
                     contentDescription = null,
                     modifier = Modifier.size(14.dp)

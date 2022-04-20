@@ -22,27 +22,15 @@ fun FileInfoCard(file: File) {
         Image(painter = painterResource(resourcePath = FileUtils.getFileIcon(file)), contentDescription = null)
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             SelectionContainer {
-                LabelProjection(
-                    contentModel = LabelContentModel(
-                        text = FileUtils.getFileName(file)
-                    )
-                ).project()
+                LabelProjection(contentModel = LabelContentModel(text = FileUtils.getFileName(file))).project()
             }
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 SelectionContainer {
-                    LabelProjection(
-                        contentModel = LabelContentModel(
-                            text = FileUtils.getFileType(file)
-                        )
-                    ).project()
+                    LabelProjection(contentModel = LabelContentModel(text = FileUtils.getFileType(file))).project()
                 }
                 VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                 SelectionContainer {
-                    LabelProjection(
-                        contentModel = LabelContentModel(
-                            text = FileUtils.getFormattedBytes(file)
-                        )
-                    ).project()
+                    LabelProjection(contentModel = LabelContentModel(text = FileUtils.getFormattedBytes(file))).project()
                 }
             }
         }

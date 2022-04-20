@@ -39,7 +39,6 @@ fun OutputConsole(
     algorithm: Algorithm,
     file: File
 ) {
-    val fontSize = 13.sp
     val fileInfo = listOf(
         "File path and name: ${file.absolutePath}",
         "Name: ${file.name}",

@@ -20,11 +20,7 @@ fun HashTimer(timerVisible: Boolean, hashTimer: String) {
     AnimatedVisibility(visible = timerVisible, enter = fadeIn(), exit = fadeOut()) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             SelectionContainer {
-                LabelProjection(
-                    contentModel = LabelContentModel(
-                        text = hashTimer
-                    )
-                ).project()
+                LabelProjection(contentModel = LabelContentModel(text = hashTimer)).project()
             }
             IndeterminateLinearProgressProjection().project(Modifier.fillMaxWidth())
         }

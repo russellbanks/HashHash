@@ -24,6 +24,8 @@ import org.pushingpixels.aurora.window.auroraApplication
 import theme.HashHashTheme
 import java.awt.Desktop
 import java.net.URI
+import java.net.URISyntaxException
+import java.net.URL
 import java.text.SimpleDateFormat
 
 fun main() = auroraApplication {
@@ -31,7 +33,10 @@ fun main() = auroraApplication {
     var isAboutWindowOpen by remember { mutableStateOf(false) }
     AuroraWindow(
         skin = nightShadeSkin(),
-        state = WindowState(position = WindowPosition(Alignment.Center)),
+        state = WindowState(
+            position = WindowPosition(Alignment.Center),
+            size = DpSize(width = 1035.dp, height = 770.dp)
+        ),
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
@@ -57,7 +62,7 @@ fun main() = auroraApplication {
                             commands = listOf(
                                 Command(
                                     text = "Go to GitHub",
-                                    action = { openWebpage(URI("https://github.com/russellbanks/hashhash")) }
+                                    action = { openWebpage(URL("https://github.com/russellbanks/hashhash")) }
                                 ),
                                 Command(
                                     text = "About",
@@ -204,6 +209,15 @@ fun openWebpage(uri: URI?): Boolean {
         } catch (exception: Exception) {
             exception.printStackTrace()
         }
+    }
+    return false
+}
+
+fun openWebpage(url: URL): Boolean {
+    try {
+        return openWebpage(url.toURI())
+    } catch (exception: URISyntaxException) {
+        exception.printStackTrace()
     }
     return false
 }

@@ -1,5 +1,4 @@
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -7,8 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.rememberWindowState
+import androidx.compose.ui.window.WindowPosition
+import androidx.compose.ui.window.WindowState
 import com.appmattus.crypto.Algorithm
 import components.*
 import org.pushingpixels.aurora.component.model.Command
@@ -27,6 +28,7 @@ fun main() = auroraApplication {
     var isAboutWindowOpen by remember { mutableStateOf(false) }
     AuroraWindow(
         skin = nightShadeSkin(),
+        state = WindowState(position = WindowPosition(Alignment.Center)),
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
@@ -151,7 +153,10 @@ fun main() = auroraApplication {
                 AuroraWindow(
                     skin = nightShadeSkin(),
                     onCloseRequest = { isAboutWindowOpen = false },
-                    state = rememberWindowState(width = 400.dp, height = 400.dp),
+                    state = WindowState(
+                        position = WindowPosition(Alignment.Center),
+                        size = DpSize(width = 400.dp, height = 400.dp)
+                    ),
                     title = "About",
                     resizable = false
                 ) {

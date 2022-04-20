@@ -49,17 +49,16 @@ fun OutputConsole(
     )
     val timeList = listOf(timeAfterHash, timeTaken)
     Column(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)).auroraBackground().padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         LabelProjection(contentModel = LabelContentModel(text = "Console output")).project()
         SelectionContainer {
             Box(Modifier.fillMaxSize()) {
                 val lazyListState = rememberLazyListState()
                 LazyColumn (
-                    modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 10.dp),
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp),
+                    state = lazyListState
                 ) {
                     item { Spacer(Modifier.size(4.dp)) }
                     items(fileInfo) {

@@ -21,6 +21,8 @@ import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import theme.HashHashTheme
+import java.awt.Desktop
+import java.net.URI
 import java.text.SimpleDateFormat
 
 fun main() = auroraApplication {
@@ -48,8 +50,21 @@ fun main() = auroraApplication {
                     )
                 ),
                 Command(
-                    text = "About",
-                    action = { isAboutWindowOpen = true }
+                    text = "Help",
+                    secondaryContentModel = CommandMenuContentModel(
+                        CommandGroup(
+                            commands = listOf(
+                                Command(
+                                    text = "Go to GitHub",
+                                    action = { openWebpage(URI("https://github.com/russellbanks/hashhash")) }
+                                ),
+                                Command(
+                                    text = "About",
+                                    action = { isAboutWindowOpen = true }
+                                )
+                            )
+                        )
+                    )
                 )
             )
         )
@@ -168,3 +183,17 @@ fun main() = auroraApplication {
         }
     }
 }
+
+fun openWebpage(uri: URI?): Boolean {
+    val desktop = if (Desktop.isDesktopSupported()) Desktop.getDesktop() else null
+    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+        try {
+            desktop.browse(uri)
+            return true
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+    return false
+}
+

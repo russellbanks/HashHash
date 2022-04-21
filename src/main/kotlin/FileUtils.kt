@@ -1,6 +1,4 @@
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.window.AwtWindow
 import java.awt.FileDialog
 import java.awt.Frame
@@ -14,7 +12,7 @@ object FileUtils {
 
     val emptyFile = File("")
 
-    fun getFormattedBytes(bytes: Long): String {
+    private fun getFormattedBytes(bytes: Long): String {
         val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
         if (absB < 1024) return "$bytes B"
         var value = absB
@@ -48,6 +46,10 @@ object FileUtils {
         ?: file.extension else "Type"
 
     fun getFileName(file: File): String = if (file != emptyFile) file.name else "File name"
+
+    fun getFileExtension(file: File) = if (file != emptyFile) file.extension else "Extensions"
+
+    fun getFilePath(file: File): String = if (file != emptyFile) file.absolutePath else "Path"
 
     @Composable
     fun FileDialog(

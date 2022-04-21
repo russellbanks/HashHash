@@ -417,6 +417,17 @@ object Menus {
             )
         ),
         Command(
+            text = Algorithm.Wyhash().algorithmName.filter { it.isLetter() },
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(text = Algorithm.Wyhash().algorithmName, action = { onClick(Algorithm.Wyhash()) }),
+                        Command(text = Algorithm.Wyhash32().algorithmName, action = { onClick(Algorithm.Wyhash32()) })
+                    )
+                )
+            )
+        ),
+        Command(
             text = Algorithm.XXHash32().algorithmName.filter { it.isLetter() },
             secondaryContentModel = CommandMenuContentModel(
                 CommandGroup(

@@ -15,7 +15,6 @@ repositories {
     mavenCentral()
 }
 
-@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 dependencies {
     implementation(compose.desktop.currentOs)
 

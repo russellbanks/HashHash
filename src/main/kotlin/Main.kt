@@ -329,11 +329,7 @@ fun main() = auroraApplication {
                             ).project(Modifier.weight(0.1f))
                         }
                         val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
-                        AnimatedVisibility(
-                            visible = areTextFieldsBlank,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
+                        AnimatedVisibility(visible = areTextFieldsBlank) {
                             val hashesMatch = areTextFieldsBlank && hashedOutput.lowercase() == comparisonHash.lowercase()
                             Row(
                                 modifier = Modifier.fillMaxWidth(),

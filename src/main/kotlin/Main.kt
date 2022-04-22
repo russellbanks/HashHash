@@ -66,6 +66,7 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import java.awt.Desktop
+import java.io.File
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
@@ -85,7 +86,7 @@ fun main() = auroraApplication {
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
-            openAction = { file = openFileDialogAndGetResult() },
+            openAction = { openFileDialogAndGetResult().also { if (it != null) file = File(it) } },
             quitAction = { exitApplication() },
             toggleFullScreenAction = {
                 if (windowState.placement == WindowPlacement.Floating) {
@@ -123,7 +124,7 @@ fun main() = auroraApplication {
                         CommandButtonProjection(
                             contentModel = Command(
                                 text = "Select file",
-                                action = { file = openFileDialogAndGetResult() }
+                                action = { openFileDialogAndGetResult().also { if (it != null) file = File(it) } }
                             )
                         ).project(Modifier.fillMaxWidth().height(40.dp))
                         Box(Modifier.fillMaxWidth()) {

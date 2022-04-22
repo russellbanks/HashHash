@@ -63,7 +63,7 @@ object FileUtils {
 
     fun getFilePath(file: File): String = if (file != emptyFile) file.absolutePath else "Path"
 
-    fun openFileDialogAndGetResult(): File {
+    fun openFileDialogAndGetResult(): String? {
         val outPath: PointerBuffer = MemoryUtil.memAllocPointer(1)
 
         var selectedFile: String? = null
@@ -76,7 +76,7 @@ object FileUtils {
         } finally {
             MemoryUtil.memFree(outPath)
         }
-        return File(selectedFile)
+        return selectedFile
     }
 
 

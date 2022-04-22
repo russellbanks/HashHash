@@ -24,12 +24,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +48,7 @@ import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
 import components.Header
+import components.NestedAlgorithm
 import components.algorithmList
 import flowlayout.FlowColumn
 import flowlayout.FlowMainAxisAlignment
@@ -135,23 +138,64 @@ fun main() = auroraApplication {
                                 state = lazyListState
                             ) {
                                 itemsIndexed(algorithmList) { index, item ->
-                                    AuroraBoxWithHighlights(
-                                        modifier = Modifier.fillMaxWidth().height(32.dp)
-                                            .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
-                                        selected = (algorithm == item),
-                                        onClick = {
-                                            if (item != algorithm) {
-                                                algorithm = item
-                                                hashedOutput = ""
-                                                timeBeforeHashVisibility = false
-                                                timeAfterHashVisibility = false
-                                            }
-                                        },
-                                        sides = Sides(straightSides = Side.values().toSet()),
-                                        content = {
+                                    if (item is Algorithm) {
+                                        AuroraBoxWithHighlights(
+                                            modifier = Modifier.fillMaxWidth().height(32.dp)
+                                                .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
+                                            selected = (algorithm == item),
+                                            onClick = {
+                                                if (item != algorithm) {
+                                                    algorithm = item
+                                                    hashedOutput = ""
+                                                    timeBeforeHashVisibility = false
+                                                    timeAfterHashVisibility = false
+                                                }
+                                            },
+                                            sides = Sides(straightSides = Side.values().toSet()),
+                                        ) {
                                             LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
                                         }
-                                    )
+                                    } else if (item is NestedAlgorithm) {
+                                        var nestedVisibility by rememberSaveable { mutableStateOf(false) }
+                                        AuroraBoxWithHighlights(
+                                            modifier = Modifier.fillMaxWidth().height(32.dp)
+                                                .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
+                                            onClick = { nestedVisibility = !nestedVisibility },
+                                            sides = Sides(straightSides = Side.values().toSet()),
+                                        ) {
+                                            Row {
+                                                Box(modifier = Modifier.fillMaxHeight().weight(1f), contentAlignment = Alignment.CenterStart) {
+                                                    LabelProjection(contentModel = LabelContentModel(text = item.name)).project()
+                                                }
+                                                LabelProjection(
+                                                    contentModel = LabelContentModel(text = Unicode.dropDown),
+                                                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
+                                                ).project(Modifier.padding(8.dp))
+                                            }
+                                        }
+                                        androidx.compose.animation.AnimatedVisibility(nestedVisibility) {
+                                            LazyColumn(Modifier.fillMaxWidth().height((32 * item.listOfAlgorithms.count()).dp)) {
+                                                items(item.listOfAlgorithms) { nestedItem ->
+                                                    AuroraBoxWithHighlights(
+                                                        modifier = Modifier.fillMaxWidth().height(32.dp)
+                                                            .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
+                                                        selected = (algorithm == nestedItem),
+                                                        onClick = {
+                                                            if (nestedItem != algorithm) {
+                                                                algorithm = nestedItem
+                                                                hashedOutput = ""
+                                                                timeBeforeHashVisibility = false
+                                                                timeAfterHashVisibility = false
+                                                            }
+                                                        },
+                                                        sides = Sides(straightSides = Side.values().toSet()),
+                                                    ) {
+                                                        LabelProjection(contentModel = LabelContentModel(text = "${Unicode.bulletPoint} ${nestedItem.algorithmName}")).project()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             AuroraVerticalScrollbar(

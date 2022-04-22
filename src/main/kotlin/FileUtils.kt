@@ -68,7 +68,7 @@ object FileUtils {
 
         var selectedFile: String? = null
         try {
-            val result: Int = NativeFileDialog.NFD_OpenDialog("*", null, outPath)
+            val result: Int = NativeFileDialog.NFD_OpenDialog("", null, outPath)
             if (result == NativeFileDialog.NFD_OKAY) {
                 selectedFile = outPath.getStringUTF8(0)
                 NativeFileDialog.nNFD_Free(outPath.get(0))

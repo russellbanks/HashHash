@@ -47,7 +47,7 @@ object FileUtils {
 
     fun getFileName(file: File): String = if (file != emptyFile) file.name else "File name"
 
-    fun getFileExtension(file: File) = if (file != emptyFile) file.extension else "Extensions"
+    fun getFileExtension(file: File) = if (file != emptyFile) file.extension else "Extension"
 
     fun getFilePath(file: File): String = if (file != emptyFile) file.absolutePath else "Path"
 

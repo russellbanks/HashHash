@@ -164,10 +164,12 @@ fun main() = auroraApplication {
                                             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
                                         selected = (algorithm == item),
                                         onClick = {
-                                            algorithm = item
-                                            hashedOutput = ""
-                                            timeBeforeHashVisibility = false
-                                            timeAfterHashVisibility = false
+                                            if (item != algorithm) {
+                                                algorithm = item
+                                                hashedOutput = ""
+                                                timeBeforeHashVisibility = false
+                                                timeAfterHashVisibility = false
+                                            }
                                         },
                                         sides = Sides(straightSides = Side.values().toSet()),
                                         content = {

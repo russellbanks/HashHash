@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
+import FileUtils.openFileDialogAndGetResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -71,8 +72,8 @@ import java.net.URL
 import java.text.SimpleDateFormat
 
 fun main() = auroraApplication {
-    var isFileManagerOpen by remember { mutableStateOf(false) }
     var isAboutWindowOpen by remember { mutableStateOf(false) }
+    var file by remember { mutableStateOf(FileUtils.emptyFile) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 770.dp)
@@ -84,7 +85,7 @@ fun main() = auroraApplication {
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
-            openAction = { isFileManagerOpen = true },
+            openAction = { file = openFileDialogAndGetResult() },
             quitAction = { exitApplication() },
             toggleFullScreenAction = {
                 if (windowState.placement == WindowPlacement.Floating) {
@@ -101,7 +102,6 @@ fun main() = auroraApplication {
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         var hashTimer by remember { mutableStateOf("00:00") }
         var isHashing by remember { mutableStateOf(false) }
-        var file by remember { mutableStateOf(FileUtils.emptyFile) }
         var timeBeforeHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
         var timeAfterHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
         var timeBeforeHashVisibility by remember { mutableStateOf(false) }
@@ -123,7 +123,7 @@ fun main() = auroraApplication {
                         CommandButtonProjection(
                             contentModel = Command(
                                 text = "Select file",
-                                action = { isFileManagerOpen = true }
+                                action = { file = openFileDialogAndGetResult() }
                             )
                         ).project(Modifier.fillMaxWidth().height(40.dp))
                         Box(Modifier.fillMaxWidth()) {
@@ -416,15 +416,6 @@ fun main() = auroraApplication {
             }
         }
 
-        if (isFileManagerOpen) {
-            FileUtils.FileDialog { chosenFile ->
-                isFileManagerOpen = false
-                hashedOutput = ""
-                timeBeforeHashVisibility = false
-                timeAfterHashVisibility = false
-                file = chosenFile
-            }
-        }
 
         if (isAboutWindowOpen) {
             AuroraWindow(
@@ -476,4 +467,3 @@ fun openWebpage(url: URL): Boolean {
     }
     return false
 }
-

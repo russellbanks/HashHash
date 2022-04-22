@@ -20,6 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.AwtWindow
+import org.lwjgl.PointerBuffer
+import org.lwjgl.system.MemoryUtil
+import org.lwjgl.util.nfd.NativeFileDialog
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
@@ -60,22 +63,21 @@ object FileUtils {
 
     fun getFilePath(file: File): String = if (file != emptyFile) file.absolutePath else "Path"
 
-    @Composable
-    fun FileDialog(
-        parent: Frame? = null,
-        onCloseRequest: (result: File) -> Unit
-    ) = AwtWindow(
-        create = {
-            object : FileDialog(parent, "Choose a file", LOAD) {
-                override fun setVisible(value: Boolean) {
-                    super.setVisible(value)
-                    if (value) {
-                        if (files.isNotEmpty()) onCloseRequest(files.first())
-                    }
-                }
+    fun openFileDialogAndGetResult(): File {
+        val outPath: PointerBuffer = MemoryUtil.memAllocPointer(1)
+
+        var selectedFile: String? = null
+        try {
+            val result: Int = NativeFileDialog.NFD_OpenDialog("*", null, outPath)
+            if (result == NativeFileDialog.NFD_OKAY) {
+                selectedFile = outPath.getStringUTF8(0)
+                NativeFileDialog.nNFD_Free(outPath.get(0))
             }
-        },
-        dispose = FileDialog::dispose
-    )
+        } finally {
+            MemoryUtil.memFree(outPath)
+        }
+        return File(selectedFile)
+    }
+
 
 }

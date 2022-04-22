@@ -359,8 +359,17 @@ fun main() = auroraApplication {
                                 text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "---"}")
                             ).project()
                         }
-                        AnimatedVisibility(visible = isHashing) {
-                            LabelProjection(contentModel = LabelContentModel(text = hashTimer)).project()
+                    }
+                    AnimatedVisibility(visible = isHashing) {
+                        Column(
+                            modifier = Modifier.padding(14.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            LabelProjection(
+                                contentModel = LabelContentModel(text = hashTimer),
+                                presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
+                            ).project()
+                            IndeterminateLinearProgressProjection().project(Modifier.fillMaxWidth())
                         }
                     }
                     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {

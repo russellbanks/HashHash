@@ -45,6 +45,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
+import components.Header
 import components.algorithmList
 import flowlayout.FlowColumn
 import flowlayout.FlowMainAxisAlignment
@@ -79,62 +80,17 @@ fun main() = auroraApplication {
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
-        menuCommands = CommandGroup(
-            commands = listOf(
-                Command(
-                    text = "File",
-                    secondaryContentModel = CommandMenuContentModel(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Open",
-                                    action = { isFileManagerOpen = true }
-                                ),
-                                Command(
-                                    text = "Quit HashHash",
-                                    action = { exitApplication() }
-                                )
-                            )
-                        )
-                    )
-                ),
-                Command(
-                    text = "View",
-                    secondaryContentModel = CommandMenuContentModel(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Toggle Full Screen",
-                                    action = {
-                                        if (windowState.placement == WindowPlacement.Floating) {
-                                            windowState.placement = WindowPlacement.Fullscreen
-                                        } else {
-                                            windowState.placement = WindowPlacement.Floating
-                                        }
-                                    }
-                                )
-                            )
-                        )
-                    )
-                ),
-                Command(
-                    text = "Help",
-                    secondaryContentModel = CommandMenuContentModel(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Go to GitHub",
-                                    action = { openWebpage(URL("https://github.com/russellbanks/hashhash")) }
-                                ),
-                                Command(
-                                    text = "About",
-                                    action = { isAboutWindowOpen = true }
-                                )
-                            )
-                        )
-                    )
-                )
-            )
+        menuCommands = Header.commands(
+            openAction = { isFileManagerOpen = true },
+            quitAction = { exitApplication() },
+            toggleFullScreenAction = {
+                if (windowState.placement == WindowPlacement.Floating) {
+                    windowState.placement = WindowPlacement.Fullscreen
+                } else {
+                    windowState.placement = WindowPlacement.Floating
+                }
+            },
+            aboutAction = { isAboutWindowOpen = true }
         )
     ) {
         var hashedOutput by remember { mutableStateOf("") }

@@ -26,10 +26,11 @@ HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) i
 
 ## Built With
 
-* [Compose for Desktop](https://www.jetbrains.com/lp/compose-mpp/)
+* [Compose for Desktop](https://github.com/JetBrains/compose-jb)
 * [Kotlin](https://kotlinlang.org/)
 * [Aurora](https://github.com/kirill-grouchnikov/aurora)
 * [crypto](https://github.com/appmattus/crypto)
+* [LWJGL](https://github.com/LWJGL/lwjgl3) - Java bindings to [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
 
 ## Getting Started
 

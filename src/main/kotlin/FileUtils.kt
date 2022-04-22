@@ -25,26 +25,15 @@ import java.awt.Frame
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.math.abs
-import kotlin.math.sign
 
 object FileUtils {
 
     val emptyFile = File("")
 
     private fun getFormattedBytes(bytes: Long): String {
-        val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
-        if (absB < 1024) return "$bytes B"
-        var value = absB
-        val ci = "KMGTPE".iterator()
-        var i = 40
-        while (i >= 0 && absB > 0xfffccccccccccccL shr i) {
-            value = value shr 10
-            ci.next()
-            i -= 10
-        }
-        value *= bytes.sign.toLong()
-        return String.format("%.1f %ciB", value / 1024.0, ci.next())
+        if (bytes < 1024) return "$bytes B"
+        val unitIndex = (63 - bytes.countLeadingZeroBits()) / 10
+        return String.format("%.1f %sB", bytes.toDouble() / (1L shl unitIndex * 10), " KMGTPE"[unitIndex])
     }
 
     private fun getAllFilesInResources(): MutableList<String> {

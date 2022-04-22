@@ -297,9 +297,9 @@ fun main() = auroraApplication {
                 Column {
                     Column(Modifier.weight(1f).padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            TextFieldValueProjection(
-                                contentModel = TextFieldValueContentModel(
-                                    value = TextFieldValue(annotatedString = AnnotatedString(text = hashedOutput.uppercase())),
+                            TextFieldStringProjection(
+                                contentModel = TextFieldStringContentModel(
+                                    value = hashedOutput.uppercase(),
                                     placeholder = "${algorithm.algorithmName} Hash",
                                     readOnly = true,
                                     onValueChange = {}
@@ -328,11 +328,11 @@ fun main() = auroraApplication {
                             ).project(Modifier.weight(0.1f))
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            TextFieldValueProjection(
-                                contentModel = TextFieldValueContentModel(
-                                    value = TextFieldValue(annotatedString = AnnotatedString(text = comparisonHash)),
+                            TextFieldStringProjection(
+                                contentModel = TextFieldStringContentModel(
+                                    value = comparisonHash,
                                     placeholder = "Comparison Hash",
-                                    onValueChange = { comparisonHash = it.text }
+                                    onValueChange = { comparisonHash = it }
                                 )
                             ).project(Modifier.fillMaxWidth(0.8f))
                             CommandButtonProjection(

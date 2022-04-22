@@ -22,8 +22,9 @@ dependencies {
     implementation(libs.aurora.window)
     implementation(libs.aurora.component)
     implementation(libs.aurora.theming)
-    implementation(platform(libs.lwjgl.bom))
 
+    // LWJGL - https://github.com/LWJGL/lwjgl3
+    implementation(platform(libs.lwjgl.bom))
     implementation(libs.lwjgl.core)
     implementation(libs.lwjgl.nfd)
     runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives())

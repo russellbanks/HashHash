@@ -1,7 +1,4 @@
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -350,21 +347,15 @@ fun main() = auroraApplication {
                             }
                         }
                         FlowColumn {
-                            Crossfade(timeBeforeHashVisibility) {
-                                LabelProjection(contentModel = LabelContentModel(
-                                    text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "---"}")
-                                ).project()
-                            }
-                            Crossfade(timeAfterHashVisibility) {
-                                LabelProjection(contentModel = LabelContentModel(
-                                    text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "---"}")
-                                ).project()
-                            }
-                            Crossfade(timeAfterHashVisibility) {
-                                LabelProjection(contentModel = LabelContentModel(
-                                    text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "---"}")
-                                ).project()
-                            }
+                            LabelProjection(contentModel = LabelContentModel(
+                                text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "---"}")
+                            ).project()
+                            LabelProjection(contentModel = LabelContentModel(
+                                text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "---"}")
+                            ).project()
+                            LabelProjection(contentModel = LabelContentModel(
+                                text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "---"}")
+                            ).project()
                         }
                         AnimatedVisibility(visible = isHashing) {
                             LabelProjection(contentModel = LabelContentModel(text = hashTimer)).project()

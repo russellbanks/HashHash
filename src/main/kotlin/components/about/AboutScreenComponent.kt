@@ -5,7 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 
 class AboutScreenComponent(
     private val componentContext: ComponentContext,
-    private val onGoClicked: (name: String) -> Unit
+    private val onGoClicked: () -> Unit
 ) : Component, ComponentContext by componentContext {
 
 

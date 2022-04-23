@@ -19,7 +19,7 @@ class NavHostComponent(
 ) : Component, ComponentContext by componentContext {
 
     private val router = router<ScreenConfig, Component>(
-        initialConfiguration = ScreenConfig.Input,
+        initialConfiguration = ScreenConfig.About,
         childFactory = ::createScreenComponent
     )
 
@@ -32,12 +32,12 @@ class NavHostComponent(
     ): Component {
         return when (screenConfig) {
 
-            is ScreenConfig.Input -> AboutScreenComponent(
+            is ScreenConfig.About -> AboutScreenComponent(
                 componentContext,
                 ::onGoClicked
             )
 
-            is ScreenConfig.Greeting -> LibrariesScreenComponent(
+            is ScreenConfig.Attribution -> AttributionScreenComponent(
                 componentContext,
                 ::onGoBackClicked
             )
@@ -48,8 +48,8 @@ class NavHostComponent(
     /**
      * Invoked when `GO` button clicked (InputScreen)
      */
-    private fun onGoClicked(name: String) {
-        router.push(ScreenConfig.Greeting(name))
+    private fun onGoClicked() {
+        router.push(ScreenConfig.Attribution)
     }
 
     /**
@@ -75,7 +75,7 @@ class NavHostComponent(
     }
 
     private sealed class ScreenConfig : Parcelable {
-        object Input : ScreenConfig()
-        data class Greeting(val name: String) : ScreenConfig()
+        object About : ScreenConfig()
+        object Attribution : ScreenConfig()
     }
 }

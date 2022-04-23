@@ -449,7 +449,7 @@ fun main() = auroraApplication {
                         Column {
                             Column(modifier = Modifier
                                 .weight(1f)
-                                .padding(start = 30.dp, top = 30.dp, end = 30.dp, bottom = 10.dp)
+                                .padding(30.dp)
                             ) {
                                 remember {
                                     DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent)

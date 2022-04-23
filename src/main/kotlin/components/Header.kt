@@ -39,15 +39,21 @@ object Header {
                 Command(
                     text = "File",
                     secondaryContentModel = CommandMenuContentModel(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Open",
-                                    action = openAction
-                                ),
-                                Command(
-                                    text = "Quit HashHash",
-                                    action = quitAction
+                        listOf(
+                            CommandGroup(
+                                commands = listOf(
+                                    Command(
+                                        text = "Open",
+                                        action = openAction
+                                    )
+                                )
+                            ),
+                            CommandGroup(
+                                commands = listOf(
+                                    Command(
+                                        text = "Quit HashHash",
+                                        action = quitAction
+                                    )
                                 )
                             )
                         )
@@ -69,19 +75,25 @@ object Header {
                 Command(
                     text = "Help",
                     secondaryContentModel = CommandMenuContentModel(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Report issue",
-                                    action = { openWebpage(URL("https://github.com/russellbanks/HashHash/issues/new/choose")) }
-                                ),
-                                Command(
-                                    text = "Go to GitHub",
-                                    action = { openWebpage(URL("https://github.com/russellbanks/HashHash")) }
-                                ),
-                                Command(
-                                    text = "About",
-                                    action = aboutAction
+                        listOf(
+                            CommandGroup(
+                                commands = listOf(
+                                    Command(
+                                        text = "Report issue",
+                                        action = { openWebpage(URL("https://github.com/russellbanks/HashHash/issues/new/choose")) }
+                                    ),
+                                    Command(
+                                        text = "Go to GitHub",
+                                        action = { openWebpage(URL("https://github.com/russellbanks/HashHash")) }
+                                    )
+                                )
+                            ),
+                            CommandGroup(
+                                commands = listOf(
+                                    Command(
+                                        text = "About",
+                                        action = aboutAction
+                                    )
                                 )
                             )
                         )

@@ -74,6 +74,9 @@ Contributions are what make the open source community such an amazing place to b
 ## Attribution
 
 - [Application Icon](https://www.flaticon.com/free-icon/hash_390926?term=hash&page=1&position=40&page=1&position=40&related_id=390926) - Freepik via Flaticon
+- [File types icon pack](https://www.flaticon.com/packs/file-types) - Smashicons via Flaticon
+- [Text Editor icon pack](https://www.flaticon.com/packs/text-editor-42) - Freepik via Flaticon
+- [Book Store icon pack](https://www.flaticon.com/packs/book-store-7) - Freepik via Flaticon
 
 ## License
 

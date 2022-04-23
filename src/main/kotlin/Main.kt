@@ -108,6 +108,7 @@ fun main() = auroraApplication {
         var timeAfterHashVisibility by remember { mutableStateOf(false) }
         var timeTaken by remember { mutableStateOf("00:00") }
         val scope = rememberCoroutineScope()
+        var error by remember { mutableStateOf("") }
 
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
             decorationAreaType = AuroraSkin.decorationAreaType
@@ -237,7 +238,7 @@ fun main() = auroraApplication {
                                                     }
                                                     timeAfterHashVisibility = true
                                                 } catch (exception: Exception) {
-                                                    timeBeforeHash = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
+                                                    error = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
                                                 }
                                                 job.cancel()
                                                 hashTimer = "00:00"
@@ -412,6 +413,7 @@ fun main() = auroraApplication {
                                 LabelProjection(
                                     contentModel = LabelContentModel(
                                         text = when {
+                                            error != "" -> error
                                             hashedOutput.isNotBlank() -> "Done!"
                                             isHashing -> "Hashing..."
                                             file != FileUtils.emptyFile -> "No hash"

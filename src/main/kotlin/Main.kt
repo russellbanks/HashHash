@@ -37,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,9 +44,11 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import components.Header
-import components.HyperLinkText
 import components.NestedAlgorithm
+import components.about.NavHostComponent
 import components.algorithmList
 import flowlayout.FlowColumn
 import flowlayout.FlowMainAxisAlignment
@@ -70,7 +71,6 @@ import java.net.URISyntaxException
 import java.net.URL
 import java.text.SimpleDateFormat
 
-@OptIn(ExperimentalAnimationApi::class)
 fun main() = auroraApplication {
     var isAboutOpen by remember { mutableStateOf(false) }
     var file by remember { mutableStateOf(FileUtils.emptyFile) }
@@ -438,7 +438,6 @@ fun main() = auroraApplication {
                 enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
                 exit = fadeOut() + slideOutVertically(targetOffsetY = { -it / 10 })
             ) {
-                var isAcknowledgementsOpen by remember { mutableStateOf(false) }
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Surface(
                         modifier = Modifier.width(450.dp).height(350.dp),
@@ -448,69 +447,13 @@ fun main() = auroraApplication {
                         elevation = 4.dp
                     ) {
                         Column {
-                            Column(
-                                modifier = Modifier.weight(1f).padding(start = 30.dp, top = 30.dp, end = 30.dp, bottom = 10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                AnimatedContent(targetState = isAcknowledgementsOpen,
-                                    transitionSpec = {
-                                        (
-                                            slideInHorizontally(
-                                                initialOffsetX = { fullWidth -> -fullWidth },) + fadeIn()
-                                                    with
-                                                    slideOutVertically(
-                                                        targetOffsetY = { fullHeight -> fullHeight }
-                                                    ) + fadeOut()
-                                            )
-                                    }
-                                ) {
-                                    Column (
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                                    ){
-                                        if (!it) {
-                                            Image(
-                                                painter = painterResource(resourcePath = "hash.png"),
-                                                contentDescription = "HashHash logo",
-                                                modifier = Modifier.size(50.dp)
-                                            )
-                                            LabelProjection(
-                                                contentModel = LabelContentModel(text = "HashHash"),
-                                                presentationModel = LabelPresentationModel(
-                                                    textStyle = TextStyle(
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                )
-                                            ).project()
-                                            Column(Modifier.weight(1f)) {
-                                                LabelProjection(
-                                                    contentModel = LabelContentModel(
-                                                        text = "Version v1.0.0"
-                                                    )
-                                                ).project()
-                                                LabelProjection(
-                                                    contentModel = LabelContentModel(
-                                                        text = "A Multiplatform GUI for Hashing, written in Compose for Desktop"
-                                                    )
-                                                ).project()
-                                            }
-                                            HyperLinkText(
-                                                modifier = Modifier.align(Alignment.Start),
-                                                text = "Acknowledgements",
-                                                onClick = { isAcknowledgementsOpen = true }
-                                            )
-                                        } else {
-                                            LabelProjection(
-                                                contentModel = LabelContentModel(text = "Attribution"),
-                                                presentationModel = LabelPresentationModel(
-                                                    textStyle = TextStyle(
-                                                        fontWeight = FontWeight.Bold
-                                                    )
-                                                )
-                                            ).project()
-                                        }
-                                    }
-                                }
+                            Column(modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 30.dp, top = 30.dp, end = 30.dp, bottom = 10.dp)
+                            ) {
+                                remember {
+                                    DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent)
+                                }.render()
                             }
                             Column {
                                 HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())

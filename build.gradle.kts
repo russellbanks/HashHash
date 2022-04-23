@@ -23,15 +23,19 @@ dependencies {
     implementation(libs.aurora.component)
     implementation(libs.aurora.theming)
 
+    // Crypto - https://github.com/appmattus/crypto
+    implementation(libs.crypto.cryptohash)
+
+    // Decompose - https://github.com/arkivanov/Decompose
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.desktop)
+
     // LWJGL - https://github.com/LWJGL/lwjgl3
     implementation(platform(libs.lwjgl.bom))
     implementation(libs.lwjgl.core)
     implementation(libs.lwjgl.nfd)
     runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives())
     runtimeOnly("org.lwjgl", "lwjgl-nfd", classifier = lwjglNatives())
-
-    // Crypto - https://github.com/appmattus/crypto
-    implementation(libs.crypto.cryptohash)
 }
 
 tasks.withType<KotlinCompile> {

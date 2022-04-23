@@ -1,6 +1,7 @@
 [versions]
 aurora = "1.1.0"
 crypto = "0.10.0"
+decompose = "0.6.0"
 lwjgl = "3.3.1"
 
 [libraries]
@@ -8,6 +9,8 @@ aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "au
 aurora-component = { module = "org.pushing-pixels:aurora-component", version.ref = "aurora" }
 aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "aurora" }
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "crypto" }
-lwjgl-core = { module = "org.lwjgl:lwjgl" }
+decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-desktop = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 lwjgl-bom = { module = "org.lwjgl:lwjgl-bom", version.ref = "lwjgl" }
+lwjgl-core = { module = "org.lwjgl:lwjgl" }
 lwjgl-nfd = { module = "org.lwjgl:lwjgl-nfd" }

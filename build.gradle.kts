@@ -48,6 +48,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            args += listOf("-static-libgcc", "-static-libstdc++")
             includeAllModules = true
             packageName = "HashHash"
             packageVersion = "1.0.0"

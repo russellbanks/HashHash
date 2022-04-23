@@ -72,8 +72,12 @@ object Header {
                         CommandGroup(
                             commands = listOf(
                                 Command(
+                                    text = "Report issue",
+                                    action = { openWebpage(URL("https://github.com/russellbanks/HashHash/issues/new/choose")) }
+                                ),
+                                Command(
                                     text = "Go to GitHub",
-                                    action = { openWebpage(URL("https://github.com/russellbanks/hashhash")) }
+                                    action = { openWebpage(URL("https://github.com/russellbanks/HashHash")) }
                                 ),
                                 Command(
                                     text = "About",

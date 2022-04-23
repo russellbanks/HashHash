@@ -48,6 +48,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            includeAllModules = true
             packageName = "HashHash"
             packageVersion = "1.0.0"
         }

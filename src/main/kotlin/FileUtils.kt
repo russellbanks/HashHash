@@ -18,13 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.window.AwtWindow
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.nfd.NativeFileDialog
-import java.awt.FileDialog
-import java.awt.Frame
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths

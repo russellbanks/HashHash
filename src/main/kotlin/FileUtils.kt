@@ -35,19 +35,36 @@ object FileUtils {
         return String.format("%.1f %sB", bytes.toDouble() / (1L shl unitIndex * 10), " KMGTPE"[unitIndex])
     }
 
-    private fun getAllFilesInResources(): MutableList<String> {
-        val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
-        val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources")
-        val list = mutableListOf<String>()
-        Files.walk(resourcesPath)
-            .filter { item -> Files.isRegularFile(item) }
-            .forEach { item -> list.add(item.fileName.toString()) }
-        return list
-    }
-
     fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
 
-    fun getFileIcon(file: File) = if (getAllFilesInResources().contains("${file.extension}.png")) "${file.extension}.png" else "file.png"
+    fun getFileIcon(file: File): String {
+        return when (file.extension) {
+            "ai" -> "ai.png"
+            "avi" -> "avi.png"
+            "css" -> "css.png"
+            "csv" -> "csv.png"
+            "dbf" -> "dbf.png"
+            "doc" -> "doc.png"
+            "dwg" -> "dwg.png"
+            "html" -> "html.png"
+            "iso" -> "iso.png"
+            "jpg" -> "jpg.png"
+            "js" -> "js.png"
+            "json" -> "json.png"
+            "mp3" -> "mp3.png"
+            "mp4" -> "mp4.png"
+            "pdf" -> "pdf.png"
+            "png" -> "png.png"
+            "ppt" -> "ppt.png"
+            "rtf" -> "rtf.png"
+            "svg" -> "svg.png"
+            "txt" -> "txt.png"
+            "xls" -> "xls.png"
+            "xml" -> "xml.png"
+            "zip" -> "zip.png"
+            else -> "file.png"
+        }
+    }
 
     fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())
         ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }

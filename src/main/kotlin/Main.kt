@@ -297,62 +297,70 @@ fun main() = auroraApplication {
                 Column {
                     Column(Modifier.weight(1f).padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            TextFieldStringProjection(
-                                contentModel = TextFieldStringContentModel(
-                                    value = hashedOutput.uppercase(),
-                                    placeholder = "${algorithm.algorithmName} Hash",
-                                    readOnly = true,
-                                    onValueChange = {}
-                                )
-                            ).project(Modifier.fillMaxWidth(0.8f))
-                            CommandButtonProjection(
-                                contentModel = Command(
-                                    text = "Copy",
-                                    icon = painterResource(resourcePath = "copy.png"),
-                                    action = {
-                                        if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput.uppercase())
-                                    }
-                                )
-                            ).project(Modifier.weight(0.1f))
-                            CommandButtonProjection(
-                                contentModel = Command(
-                                    text = "Clear",
-                                    icon = painterResource(resourcePath = "eraser.png"),
-                                    action = {
-                                        hashedOutput = ""
-                                        file = FileUtils.emptyFile
-                                        timeBeforeHashVisibility = false
-                                        timeAfterHashVisibility = false
-                                    }
-                                )
-                            ).project(Modifier.weight(0.1f))
+                            Box(Modifier.weight(1f)) {
+                                TextFieldStringProjection(
+                                    contentModel = TextFieldStringContentModel(
+                                        value = hashedOutput.uppercase(),
+                                        placeholder = "${algorithm.algorithmName} Hash",
+                                        readOnly = true,
+                                        onValueChange = {}
+                                    )
+                                ).project(Modifier.fillMaxWidth())
+                            }
+                            Row(modifier = Modifier.width(140.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                CommandButtonProjection(
+                                    contentModel = Command(
+                                        text = "Copy",
+                                        icon = painterResource(resourcePath = "copy.png"),
+                                        action = {
+                                            if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput.uppercase())
+                                        }
+                                    )
+                                ).project()
+                                CommandButtonProjection(
+                                    contentModel = Command(
+                                        text = "Clear",
+                                        icon = painterResource(resourcePath = "eraser.png"),
+                                        action = {
+                                            hashedOutput = ""
+                                            file = FileUtils.emptyFile
+                                            timeBeforeHashVisibility = false
+                                            timeAfterHashVisibility = false
+                                        }
+                                    )
+                                ).project()
+                            }
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            TextFieldStringProjection(
-                                contentModel = TextFieldStringContentModel(
-                                    value = comparisonHash,
-                                    placeholder = "Comparison Hash",
-                                    onValueChange = { comparisonHash = it }
-                                )
-                            ).project(Modifier.fillMaxWidth(0.8f))
-                            CommandButtonProjection(
-                                contentModel = Command(
-                                    text = "Paste",
-                                    icon = painterResource(resourcePath = "paste.png"),
-                                    action = { comparisonHash = Clipboard.readContent() }
-                                )
-                            ).project(Modifier.weight(0.1f))
-                            CommandButtonProjection(
-                                contentModel = Command(
-                                    text = "Clear",
-                                    icon = painterResource(resourcePath = "eraser.png"),
-                                    action = { comparisonHash = "" }
-                                )
-                            ).project(Modifier.weight(0.1f))
+                            Box(Modifier.weight(1f)) {
+                                TextFieldStringProjection(
+                                    contentModel = TextFieldStringContentModel(
+                                        value = comparisonHash,
+                                        placeholder = "Comparison Hash",
+                                        onValueChange = { comparisonHash = it }
+                                    )
+                                ).project(Modifier.fillMaxWidth())
+                            }
+                            Row(modifier = Modifier.width(140.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                CommandButtonProjection(
+                                    contentModel = Command(
+                                        text = "Paste",
+                                        icon = painterResource(resourcePath = "paste.png"),
+                                        action = { comparisonHash = Clipboard.readContent() }
+                                    )
+                                ).project()
+                                CommandButtonProjection(
+                                    contentModel = Command(
+                                        text = "Clear",
+                                        icon = painterResource(resourcePath = "eraser.png"),
+                                        action = { comparisonHash = "" }
+                                    )
+                                ).project()
+                            }
                         }
                         val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
                         AnimatedVisibility(visible = areTextFieldsBlank) {
-                            val hashesMatch = areTextFieldsBlank && hashedOutput.lowercase() == comparisonHash.lowercase()
+                            val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, true)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically

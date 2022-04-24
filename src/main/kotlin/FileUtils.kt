@@ -23,7 +23,6 @@ import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.nfd.NativeFileDialog
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Paths
 
 object FileUtils {
 
@@ -38,32 +37,13 @@ object FileUtils {
     fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
 
     fun getFileIcon(file: File): String {
-        return when (file.extension) {
-            "ai" -> "ai.png"
-            "avi" -> "avi.png"
-            "css" -> "css.png"
-            "csv" -> "csv.png"
-            "dbf" -> "dbf.png"
-            "doc" -> "doc.png"
-            "dwg" -> "dwg.png"
-            "html" -> "html.png"
-            "iso" -> "iso.png"
-            "jpg" -> "jpg.png"
-            "js" -> "js.png"
-            "json" -> "json.png"
-            "mp3" -> "mp3.png"
-            "mp4" -> "mp4.png"
-            "pdf" -> "pdf.png"
-            "png" -> "png.png"
-            "ppt" -> "ppt.png"
-            "rtf" -> "rtf.png"
-            "svg" -> "svg.png"
-            "txt" -> "txt.png"
-            "xls" -> "xls.png"
-            "xml" -> "xml.png"
-            "zip" -> "zip.png"
-            else -> "file.png"
-        }
+        return mapOf(
+            "ai" to "ai.png", "avi" to "avi.png", "css" to "css.png", "csv" to "csv.png", "dbf" to "dbf.png",
+            "doc" to "doc.png", "dwg" to "dwg.png", "exe" to "exe.png", "html" to "html.png", "iso" to "iso.png",
+            "jpg" to "jpg.png", "js" to "js.png", "json" to "json.png", "mp3" to "mp3.png", "mp4" to "mp4.png",
+            "pdf" to "pdf.png", "png" to "png.png", "ppt" to "ppt.png", "rtf" to "rtf.png", "svg" to "svg.png",
+            "txt" to "txt.png", "xls" to "xls.png", "xml" to "xml.png", "zip" to "zip.png"
+        )[file.extension] ?: "file.png"
     }
 
     fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())

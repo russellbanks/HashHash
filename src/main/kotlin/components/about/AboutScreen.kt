@@ -81,6 +81,6 @@ fun AboutScreen(
                 text = "Attribution",
                 action = { onGoClicked() }
             )
-        ).project(Modifier.width(150.dp))
+        ).project(Modifier.width(100.dp))
     }
 }

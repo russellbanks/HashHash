@@ -23,6 +23,7 @@ package components.about
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -71,7 +72,7 @@ fun AttributionScreen(
                 text = "Go back",
                 action = onGoBackClicked
             )
-        ).project()
+        ).project(Modifier.width(100.dp))
     }
 }
 

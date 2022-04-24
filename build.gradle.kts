@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.russellbanks"
-version = "1.0"
+version = "1.0.0"
 
 repositories {
     google()
@@ -47,11 +47,24 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            args += listOf("-static-libgcc", "-static-libstdc++")
-            includeAllModules = true
+            targetFormats(TargetFormat.Msi, TargetFormat.Deb)
+            modules("java.instrument", "jdk.unsupported")
+            javaHome = System.getenv("JDK_18")
             packageName = "HashHash"
             packageVersion = "1.0.0"
+            description = "A Multiplatform GUI for Hashing, written in Compose for Desktop."
+            licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))
+            args += listOf("-static-libgcc", "-static-libstdc++")
+            linux {
+                iconFile.set(project.file("src/main/resources/hash.png"))
+                menuGroup = "HashHash"
+            }
+            windows {
+                iconFile.set(project.file("src/main/resources/hash.ico"))
+                menuGroup = "HashHash"
+                dirChooser = true
+                upgradeUuid = "1A4C2D6B-AC84-47D4-A6EE-407A4AA8DED8"
+            }
         }
     }
 }

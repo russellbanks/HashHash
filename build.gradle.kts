@@ -47,12 +47,13 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe,TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             modules("java.instrument", "jdk.unsupported")
             javaHome = System.getenv("JDK_18")
             packageName = "HashHash"
             packageVersion = "1.0.0"
-            description = "A Multiplatform GUI for Hashing, written in Compose for Desktop."
+            description = "A Multiplatform GUI for Hashing."
+            vendor = "Russell Banks"
             licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))
             args += listOf("-static-libgcc", "-static-libstdc++")
             linux {

@@ -374,21 +374,12 @@ fun main() = auroraApplication {
                             val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
                             AnimatedVisibility(visible = areTextFieldsBlank) {
                                 val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, true)
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(
-                                            text = "Hashes${if (!hashesMatch) " do not" else ""} match"
-                                        )
-                                    ).project()
-                                    Image(
-                                        painter = painterResource(resourcePath = "${if (hashesMatch) "check" else "cross"}.png"),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(14.dp)
+                                LabelProjection(
+                                    contentModel = LabelContentModel(
+                                        text = "Hashes${if (!hashesMatch) " do not" else ""} match",
+                                        icon = painterResource(resourcePath = "${if (hashesMatch) "check" else "cross"}.png")
                                     )
-                                }
+                                ).project()
                             }
                             FlowColumn {
                                 LabelProjection(contentModel = LabelContentModel(

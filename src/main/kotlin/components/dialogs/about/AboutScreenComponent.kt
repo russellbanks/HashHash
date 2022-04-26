@@ -18,8 +18,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-object Unicode {
-    const val dropDown = "\uD83E\uDC93"
+package components.dialogs.about
 
-    const val bulletPoint = "\u2022"
+import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.ComponentContext
+
+class AboutScreenComponent(
+    private val componentContext: ComponentContext,
+    private val onGoClicked: () -> Unit
+) : Component, ComponentContext by componentContext {
+
+
+    @Composable
+    override fun render() {
+        AboutScreen(
+            onGoClicked = onGoClicked
+        )
+    }
+
 }

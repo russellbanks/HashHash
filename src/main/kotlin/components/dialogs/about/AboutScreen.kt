@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.about
+package components.dialogs.about
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

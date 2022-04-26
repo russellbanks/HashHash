@@ -18,22 +18,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.about
+package helper
 
-import androidx.compose.runtime.Composable
-import com.arkivanov.decompose.ComponentContext
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.StringSelection
 
-class AboutScreenComponent(
-    private val componentContext: ComponentContext,
-    private val onGoClicked: () -> Unit
-) : Component, ComponentContext by componentContext {
+object Clipboard {
+    fun readContent() = Toolkit.getDefaultToolkit().systemClipboard.getData(DataFlavor.stringFlavor) as String
 
-
-    @Composable
-    override fun render() {
-        AboutScreen(
-            onGoClicked = onGoClicked
-        )
-    }
-
+    fun setContent(string: String) = Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(string), null)
 }

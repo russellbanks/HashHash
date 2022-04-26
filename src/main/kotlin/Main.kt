@@ -18,23 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import FileUtils.openFileDialogAndGetResult
-import androidx.compose.animation.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Surface
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
@@ -44,31 +32,28 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import components.FileInfoSection
 import components.Header
-import components.NestedAlgorithm
-import components.about.NavHostComponent
-import components.algorithmList
+import components.controlpane.ControlPane
+import components.dialogs.AboutDialog
+import components.dialogs.TranslucentDialogOverlay
 import flowlayout.FlowColumn
-import flowlayout.FlowMainAxisAlignment
-import flowlayout.FlowRow
+import helper.Clipboard
+import helper.FileUtils
+import helper.FileUtils.openFileDialogAndGetResult
+import helper.Time
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
-import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
-import org.pushingpixels.aurora.theming.*
+import org.pushingpixels.aurora.theming.DecorationAreaType
+import org.pushingpixels.aurora.theming.auroraBackground
+import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraDecorationArea
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
-import java.awt.Desktop
 import java.io.File
-import java.net.URI
-import java.net.URISyntaxException
-import java.net.URL
 import java.text.SimpleDateFormat
 
 fun main() = auroraApplication {
@@ -110,194 +95,73 @@ fun main() = auroraApplication {
         val scope = rememberCoroutineScope()
         var error by remember { mutableStateOf("") }
 
-        val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
-            decorationAreaType = AuroraSkin.decorationAreaType
-        )
         Box {
             Row(Modifier.fillMaxSize()) {
-                AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(200.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            CommandButtonProjection(
-                                contentModel = Command(
-                                    text = "Select file",
-                                    action = { openFileDialogAndGetResult().also { if (it != null) file = File(it) } }
-                                )
-                            ).project(Modifier.fillMaxWidth().height(40.dp))
-                            Box(Modifier.fillMaxWidth()) {
-                                val lazyListState = rememberLazyListState()
-                                val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
-                                val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
-                                LazyColumn (
-                                    modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp),
-                                    state = lazyListState
-                                ) {
-                                    itemsIndexed(algorithmList) { index, item ->
-                                        if (item is Algorithm) {
-                                            AuroraBoxWithHighlights(
-                                                modifier = Modifier.fillMaxWidth().height(32.dp)
-                                                    .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
-                                                selected = (algorithm == item),
-                                                onClick = {
-                                                    if (item != algorithm) {
-                                                        algorithm = item
-                                                        hashedOutput = ""
-                                                        timeBeforeHashVisibility = false
-                                                        timeAfterHashVisibility = false
-                                                    }
-                                                },
-                                                sides = Sides(straightSides = Side.values().toSet())
-                                            ) {
-                                                LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
-                                            }
-                                        } else if (item is NestedAlgorithm) {
-                                            var nestedVisibility by rememberSaveable { mutableStateOf(false) }
-                                            AuroraBoxWithHighlights(
-                                                modifier = Modifier.fillMaxWidth().height(32.dp)
-                                                    .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
-                                                onClick = { nestedVisibility = !nestedVisibility },
-                                                sides = Sides(straightSides = Side.values().toSet()),
-                                            ) {
-                                                Row {
-                                                    Box(modifier = Modifier.fillMaxHeight().weight(1f), contentAlignment = Alignment.CenterStart) {
-                                                        LabelProjection(contentModel = LabelContentModel(text = item.name)).project()
-                                                    }
-                                                    LabelProjection(
-                                                        contentModel = LabelContentModel(text = Unicode.dropDown),
-                                                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                                                    ).project(Modifier.padding(8.dp))
-                                                }
-                                            }
-                                            androidx.compose.animation.AnimatedVisibility(nestedVisibility) {
-                                                LazyColumn(Modifier.fillMaxWidth().height((32 * item.listOfAlgorithms.count()).dp)) {
-                                                    items(item.listOfAlgorithms) { nestedItem ->
-                                                        AuroraBoxWithHighlights(
-                                                            modifier = Modifier.fillMaxWidth().height(32.dp)
-                                                                .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
-                                                            selected = (algorithm == nestedItem),
-                                                            onClick = {
-                                                                if (nestedItem != algorithm) {
-                                                                    algorithm = nestedItem
-                                                                    hashedOutput = ""
-                                                                    timeBeforeHashVisibility = false
-                                                                    timeAfterHashVisibility = false
-                                                                }
-                                                            },
-                                                            sides = Sides(straightSides = Side.values().toSet())
-                                                        ) {
-                                                            LabelProjection(
-                                                                contentModel = LabelContentModel(
-                                                                    text = "${Unicode.bulletPoint} ${nestedItem.algorithmName}"
-                                                                )
-                                                            ).project()
-                                                        }
-                                                    }
-                                                }
-                                            }
+                ControlPane(
+                    algorithm = algorithm,
+                    onSoloAlgorithmClick = { item ->
+                        if (item != algorithm) {
+                            algorithm = item
+                            hashedOutput = ""
+                            timeBeforeHashVisibility = false
+                            timeAfterHashVisibility = false
+                        }
+                    },
+                    onSubAlgorithmClick = { nestedItem ->
+                        if (nestedItem != algorithm) {
+                            algorithm = nestedItem
+                            hashedOutput = ""
+                            timeBeforeHashVisibility = false
+                            timeAfterHashVisibility = false
+                        }
+                    },
+                    onSelectFileResult = { result ->
+                        if (result != null) file = File(result)
+                    },
+                    onCalculateClick = {
+                        if (file.exists() && file != FileUtils.emptyFile && !isHashing) {
+                            val job = scope.launch {
+                                flow {
+                                    System.currentTimeMillis().also { millisAtStart ->
+                                        while (currentCoroutineContext().isActive) {
+                                            delay(1000)
+                                            emit(System.currentTimeMillis() - millisAtStart)
                                         }
                                     }
+                                }.collect { milliseconds ->
+                                    val minutes = "%02d".format((milliseconds / 1000) / 60)
+                                    val seconds = "%02d".format((milliseconds / 1000) % 60)
+                                    hashTimer = "$minutes:$seconds"
                                 }
-                                AuroraVerticalScrollbar(
-                                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(2.dp),
-                                    adapter = rememberScrollbarAdapter(scrollState = lazyListState)
-                                )
+                            }
+                            scope.launch(Dispatchers.IO) {
+                                isHashing = true
+                                System.nanoTime().also { nanosAtStart ->
+                                    timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                    timeBeforeHashVisibility = true
+                                    try {
+                                        hashedOutput = file.hash(algorithm)
+                                        System.nanoTime().also { nanosAtEnd ->
+                                            timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                            timeTaken = Time.formatElapsedTime(nanosAtEnd - nanosAtStart)
+                                        }
+                                        timeAfterHashVisibility = true
+                                    } catch (exception: Exception) {
+                                        error = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
+                                    }
+                                    job.cancel()
+                                    hashTimer = "00:00"
+                                    isHashing = false
+                                }
                             }
                         }
-                        CommandButtonProjection(
-                            contentModel = Command(
-                                text = "Calculate",
-                                action = {
-                                    if (file.exists() && file != FileUtils.emptyFile && !isHashing) {
-                                        val job = scope.launch {
-                                            flow {
-                                                System.currentTimeMillis().also { millisAtStart ->
-                                                    while (currentCoroutineContext().isActive) {
-                                                        delay(1000)
-                                                        emit(System.currentTimeMillis() - millisAtStart)
-                                                    }
-                                                }
-                                            }.collect { milliseconds ->
-                                                val minutes = "%02d".format((milliseconds / 1000) / 60)
-                                                val seconds = "%02d".format((milliseconds / 1000) % 60)
-                                                hashTimer = "$minutes:$seconds"
-                                            }
-                                        }
-                                        scope.launch(Dispatchers.IO) {
-                                            isHashing = true
-                                            System.nanoTime().also { nanosAtStart ->
-                                                timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                timeBeforeHashVisibility = true
-                                                try {
-                                                    hashedOutput = file.hash(algorithm)
-                                                    System.nanoTime().also { nanosAtEnd ->
-                                                        timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                        timeTaken = Time.formatElapsedTime(nanosAtEnd - nanosAtStart)
-                                                    }
-                                                    timeAfterHashVisibility = true
-                                                } catch (exception: Exception) {
-                                                    error = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
-                                                }
-                                                job.cancel()
-                                                hashTimer = "00:00"
-                                                isHashing = false
-                                            }
-                                        }
-                                    }
-                                }
-                            ),
-                            presentationModel = CommandButtonPresentationModel(
-                                presentationState = CommandButtonPresentationState.Medium
-                            )
-                        ).project(Modifier.fillMaxWidth().height(80.dp))
                     }
-                }
+                )
                 Column(Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.defaultMinSize(minHeight = 120.dp).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Image(
-                            painter = painterResource(resourcePath = FileUtils.getFileIcon(file)),
-                            contentDescription = null,
-                            modifier = Modifier.height(60.dp).align(Alignment.CenterVertically)
-                        )
-                        SelectionContainer {
-                            Box(modifier = Modifier.defaultMinSize(minHeight = 120.dp), contentAlignment = Alignment.Center) {
-                                FlowRow(mainAxisAlignment = FlowMainAxisAlignment.Center, mainAxisSpacing = 4.dp) {
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = FileUtils.getFileName(file)),
-                                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                                    ).project()
-                                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = FileUtils.getFileType(file)),
-                                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                                    ).project()
-                                    if (FileUtils.getFileType(file) != FileUtils.getFileExtension(file)) {
-                                        VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                                        LabelProjection(contentModel = LabelContentModel(
-                                            text = FileUtils.getFileExtension(file)),
-                                            presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                                        ).project()
-                                    }
-                                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = FileUtils.getFormattedBytes(file)),
-                                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                                    ).project()
-                                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = FileUtils.getFilePath(file)),
-                                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                                    ).project()
-                                }
-                            }
-                        }
-                    }
+                    FileInfoSection(
+                        modifier = Modifier.defaultMinSize(minHeight = 120.dp).padding(horizontal = 20.dp),
+                        file = file
+                    )
                     HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
                     Column {
                         Column(Modifier.weight(1f).padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -383,13 +247,13 @@ fun main() = auroraApplication {
                             }
                             FlowColumn {
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "---"}")
+                                    text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "⎯"}")
                                 ).project()
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "---"}")
+                                    text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "⎯"}")
                                 ).project()
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "---"}")
+                                    text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "⎯"}")
                                 ).project()
                             }
                         }
@@ -429,72 +293,8 @@ fun main() = auroraApplication {
                     }
                 }
             }
-            AnimatedVisibility(visible = isAboutOpen, enter = fadeIn(), exit = fadeOut()) {
-                Box(Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(0.5f))
-                    .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                        isAboutOpen = false
-                    }
-                )
-            }
-            AnimatedVisibility(
-                visible = isAboutOpen,
-                enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
-                exit = fadeOut() + slideOutVertically(targetOffsetY = { -it / 10 })
-            ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Surface(
-                        modifier = Modifier.width(450.dp).height(350.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        color = backgroundColorScheme.backgroundFillColor,
-                        border = BorderStroke(1.dp, Color.Black),
-                        elevation = 4.dp
-                    ) {
-                        Column {
-                            Column(modifier = Modifier
-                                .weight(1f)
-                                .padding(30.dp)
-                            ) {
-                                remember {
-                                    DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent)
-                                }.render()
-                            }
-                            Column {
-                                HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                                CommandButtonProjection(
-                                    contentModel = Command(
-                                        text = "Close",
-                                        action = { isAboutOpen = false }
-                                    )
-                                ).project(Modifier.width(150.dp).align(Alignment.End).padding(20.dp))
-                            }
-                        }
-                    }
-                }
-            }
+            TranslucentDialogOverlay(visible = isAboutOpen, onClick = { isAboutOpen = false})
+            AboutDialog(visible = isAboutOpen, onCloseRequest = { isAboutOpen = false })
         }
     }
-}
-
-fun openWebpage(uri: URI?): Boolean {
-    val desktop = if (Desktop.isDesktopSupported()) Desktop.getDesktop() else null
-    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-        try {
-            desktop.browse(uri)
-            return true
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-    }
-    return false
-}
-
-fun openWebpage(url: URL): Boolean {
-    try {
-        return openWebpage(url.toURI())
-    } catch (exception: URISyntaxException) {
-        exception.printStackTrace()
-    }
-    return false
 }

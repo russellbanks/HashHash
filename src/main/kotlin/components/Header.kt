@@ -20,7 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
-import openWebpage
+import helper.Browser
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
@@ -80,11 +80,11 @@ object Header {
                                 commands = listOf(
                                     Command(
                                         text = "Report issue",
-                                        action = { openWebpage(URL("https://github.com/russellbanks/HashHash/issues/new/choose")) }
+                                        action = { Browser.open(URL("https://github.com/russellbanks/HashHash/issues/new/choose")) }
                                     ),
                                     Command(
                                         text = "Go to GitHub",
-                                        action = { openWebpage(URL("https://github.com/russellbanks/HashHash")) }
+                                        action = { Browser.open(URL("https://github.com/russellbanks/HashHash")) }
                                     )
                                 )
                             ),

@@ -18,12 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import java.awt.Toolkit
-import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.StringSelection
+package helper
 
-object Clipboard {
-    fun readContent() = Toolkit.getDefaultToolkit().systemClipboard.getData(DataFlavor.stringFlavor) as String
+object Unicode {
+    const val dropDown = "\uD83E\uDC93"
 
-    fun setContent(string: String) = Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(string), null)
+    const val bulletPoint = "\u2022"
 }

@@ -312,29 +312,33 @@ fun main() = auroraApplication {
                                         )
                                     ).project(Modifier.fillMaxWidth())
                                 }
-                                Row(modifier = Modifier.width(140.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    CommandButtonProjection(
-                                        contentModel = Command(
-                                            text = "Copy",
-                                            icon = painterResource(resourcePath = "copy.png"),
-                                            action = {
-                                                if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput.uppercase())
-                                            }
+                                CommandButtonStripProjection(
+                                    contentModel = CommandGroup(
+                                        commands = listOf(
+                                            Command(
+                                                text = "Copy",
+                                                icon = painterResource(resourcePath = "copy.png"),
+                                                action = {
+                                                    if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput.uppercase())
+                                                }
+                                            ),
+                                            Command(
+                                                text = "Clear",
+                                                icon = painterResource(resourcePath = "eraser.png"),
+                                                action = {
+                                                    hashedOutput = ""
+                                                    file = FileUtils.emptyFile
+                                                    timeBeforeHashVisibility = false
+                                                    timeAfterHashVisibility = false
+                                                }
+                                            )
                                         )
-                                    ).project()
-                                    CommandButtonProjection(
-                                        contentModel = Command(
-                                            text = "Clear",
-                                            icon = painterResource(resourcePath = "eraser.png"),
-                                            action = {
-                                                hashedOutput = ""
-                                                file = FileUtils.emptyFile
-                                                timeBeforeHashVisibility = false
-                                                timeAfterHashVisibility = false
-                                            }
-                                        )
-                                    ).project()
-                                }
+                                    ),
+                                    presentationModel = CommandStripPresentationModel(
+                                        orientation = StripOrientation.Horizontal,
+                                        commandPresentationState = CommandButtonPresentationState.Medium
+                                    )
+                                ).project()
                             }
                             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Box(Modifier.weight(1f)) {
@@ -346,22 +350,26 @@ fun main() = auroraApplication {
                                         )
                                     ).project(Modifier.fillMaxWidth())
                                 }
-                                Row(modifier = Modifier.width(140.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    CommandButtonProjection(
-                                        contentModel = Command(
-                                            text = "Paste",
-                                            icon = painterResource(resourcePath = "paste.png"),
-                                            action = { comparisonHash = Clipboard.readContent() }
+                                CommandButtonStripProjection(
+                                    contentModel = CommandGroup(
+                                        commands = listOf(
+                                            Command(
+                                                text = "Paste",
+                                                icon = painterResource(resourcePath = "paste.png"),
+                                                action = { comparisonHash = Clipboard.readContent() }
+                                            ),
+                                            Command(
+                                                text = "Clear",
+                                                icon = painterResource(resourcePath = "eraser.png"),
+                                                action = { comparisonHash = "" }
+                                            )
                                         )
-                                    ).project()
-                                    CommandButtonProjection(
-                                        contentModel = Command(
-                                            text = "Clear",
-                                            icon = painterResource(resourcePath = "eraser.png"),
-                                            action = { comparisonHash = "" }
-                                        )
-                                    ).project()
-                                }
+                                    ),
+                                    presentationModel = CommandStripPresentationModel(
+                                        orientation = StripOrientation.Horizontal,
+                                        commandPresentationState = CommandButtonPresentationState.Medium
+                                    )
+                                ).project()
                             }
                             val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
                             AnimatedVisibility(visible = areTextFieldsBlank) {

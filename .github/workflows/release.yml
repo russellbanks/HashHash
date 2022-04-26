@@ -26,41 +26,26 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Package distributables for ${{ matrix.os }}
+      - name: Package distributables for ${{ runner.os }}
         run: ./gradlew package 
         
-      - name: Package UberJar for ${{ matrix.os }}
+      - name: Package UberJar for ${{ runner.os }}
         run: ./gradlew packageUberJarForCurrentOS
         
-      - name: Create standalone distributable for ${{ matrix.os }}
+      - name: Create standalone distributable for ${{ runner.os }}
         run: ./gradlew createDistributable
         
-      - name: Zip standalone distributable for Linux
-        if: matrix.os == 'ubuntu-latest' 
+      - name: Zip standalone distributable for ${{ runner.os }}
         run: |
           cd build/compose/binaries/main/app/ &&
-          7z a HashHash-linux-standalone.zip *
-    
-      - name: Zip standalone distributable for Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          cd build/compose/binaries/main/app/ &&
-          7z a HashHash-windows-standalone.zip *
-        
-      - name: Zip standalone distributable for MacOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          cd build/compose/binaries/main/app/ &&
-          7z a HashHash-macos-standalone.zip *
+          7z a HashHash-${{ runner.os }}-standalone.zip *
 
       - name: Upload artifacts
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            build/compose/binaries/main/app/HashHash-linux-standalone.zip
-            build/compose/binaries/main/app/HashHash-windows-standalone.zip
-            build/compose/binaries/main/app/HashHash-macos-standalone.zip
+            build/compose/binaries/main/app/HashHash-${{ runner.os }}-standalone.zip
             build/compose/binaries/main/dmg/*
             build/compose/binaries/main/exe/*
             build/compose/binaries/main/msi/*

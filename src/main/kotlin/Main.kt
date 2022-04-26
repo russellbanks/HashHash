@@ -259,14 +259,14 @@ fun main() = auroraApplication {
                     }
                 }
                 Column(Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.height(120.dp).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(modifier = Modifier.defaultMinSize(minHeight = 120.dp).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Image(
                             painter = painterResource(resourcePath = FileUtils.getFileIcon(file)),
                             contentDescription = null,
                             modifier = Modifier.height(60.dp).align(Alignment.CenterVertically)
                         )
                         SelectionContainer {
-                            Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
+                            Box(modifier = Modifier.defaultMinSize(minHeight = 120.dp), contentAlignment = Alignment.Center) {
                                 FlowRow(mainAxisAlignment = FlowMainAxisAlignment.Center, mainAxisSpacing = 4.dp) {
                                     LabelProjection(contentModel = LabelContentModel(
                                         text = FileUtils.getFileName(file)),

@@ -20,15 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.about
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -61,7 +61,9 @@ fun AttributionScreen(
                     )
                 )
             ).project()
-            LazyColumn {
+            LazyColumn (
+                modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp)
+            ) {
                 items(attributionList) {
                     LabelProjection(contentModel = LabelContentModel(text = it)).project()
                 }
@@ -72,7 +74,7 @@ fun AttributionScreen(
                 text = "Go back",
                 action = onGoBackClicked
             )
-        ).project(Modifier.width(100.dp))
+        ).project(Modifier.width(100.dp).padding(top = 20.dp))
     }
 }
 

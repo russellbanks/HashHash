@@ -153,7 +153,7 @@ fun main() = auroraApplication {
                                                         timeAfterHashVisibility = false
                                                     }
                                                 },
-                                                sides = Sides(straightSides = Side.values().toSet()),
+                                                sides = Sides(straightSides = Side.values().toSet())
                                             ) {
                                                 LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
                                             }
@@ -190,9 +190,13 @@ fun main() = auroraApplication {
                                                                     timeAfterHashVisibility = false
                                                                 }
                                                             },
-                                                            sides = Sides(straightSides = Side.values().toSet()),
+                                                            sides = Sides(straightSides = Side.values().toSet())
                                                         ) {
-                                                            LabelProjection(contentModel = LabelContentModel(text = "${Unicode.bulletPoint} ${nestedItem.algorithmName}")).project()
+                                                            LabelProjection(
+                                                                contentModel = LabelContentModel(
+                                                                    text = "${Unicode.bulletPoint} ${nestedItem.algorithmName}"
+                                                                )
+                                                            ).project()
                                                         }
                                                     }
                                                 }

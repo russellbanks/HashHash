@@ -93,6 +93,7 @@ fun main() = auroraApplication {
         var timeTaken by remember { mutableStateOf("00:00") }
         val scope = rememberCoroutineScope()
         var error by remember { mutableStateOf("") }
+        var hashProgress by remember { mutableStateOf(0F) }
 
         Box {
             Row(Modifier.fillMaxSize()) {
@@ -139,7 +140,10 @@ fun main() = auroraApplication {
                                     timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                     timeBeforeHashVisibility = true
                                     try {
-                                        hashedOutput = file.hash(algorithm).uppercase()
+                                        hashedOutput = file.hash(
+                                            algorithm,
+                                            hashCallBack = { hashProgress = it }
+                                        ).uppercase()
                                         System.nanoTime().also { nanosAtEnd ->
                                             timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                             timeTaken = Time.formatElapsedTime(nanosAtEnd - nanosAtStart)
@@ -290,7 +294,11 @@ fun main() = auroraApplication {
                                     contentModel = LabelContentModel(text = hashTimer),
                                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                                 ).project()
-                                IndeterminateLinearProgressProjection().project(Modifier.fillMaxWidth())
+                                DeterminateLinearProgressProjection(
+                                    contentModel = ProgressDeterminateContentModel(
+                                        progress = hashProgress
+                                    )
+                                ).project(Modifier.fillMaxWidth())
                             }
                         }
                         Footer(error = error, hashedOutput = hashedOutput, isHashing = isHashing, file = file)

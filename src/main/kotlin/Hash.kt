@@ -25,7 +25,8 @@ import java.io.IOException
 
 @Throws(IOException::class)
 fun File.hash(
-    algorithm: Algorithm
+    algorithm: Algorithm,
+    hashCallBack: (Float) -> Unit
 ): String {
     val digest = algorithm.createDigest()
     val fis = FileInputStream(this)
@@ -33,8 +34,11 @@ fun File.hash(
     val byteArray = ByteArray(32768)
     var bytesCount: Int
 
+    val totalRuns = ((length() / byteArray.size) + 1).toFloat()
+    var count = 0
     while (fis.read(byteArray).also { bytesCount = it } != -1) {
         digest.update(byteArray, 0, bytesCount)
+        hashCallBack(count++ / totalRuns)
     }
 
     fis.close()

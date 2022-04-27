@@ -73,7 +73,7 @@ fun ControlPane(
                 presentationModel = CommandButtonPresentationModel(
                     presentationState = CommandButtonPresentationState.Medium
                 )
-            ).project(Modifier.fillMaxWidth().height(80.dp))
+            ).project(Modifier.fillMaxWidth().height(40.dp))
         }
     }
 }

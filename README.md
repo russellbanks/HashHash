@@ -16,9 +16,10 @@
 
 ## About The Project
 
-HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash files whilst remaining multiplatform. By nature of Jetpack Compose for Desktop, it supports Windows, Linux and MacOS.
+HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash files whilst remaining multiplatform. It supports Windows, Linux and MacOS.
 
-![HashHash demo gif](https://user-images.githubusercontent.com/74878137/162618970-22d879ae-2f84-497e-b1d5-1b3b792340a7.gif)
+
+![HashHashd demo gif](https://user-images.githubusercontent.com/74878137/165340395-6378e52f-9ab3-4f35-bc16-6f6bbc9953df.gif)
 
 ## Supporting algorithms
 
@@ -32,23 +33,13 @@ HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) i
 * [crypto](https://github.com/appmattus/crypto)
 * [LWJGL](https://github.com/LWJGL/lwjgl3) - Java bindings to [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
 
-## Getting Started
+## Installation
 
-HashHash is currently in its early stages. All base features are implemented, however these likely contain bugs. Despite this, this project is stable enough to be used by anyone. No installers are currently provided, however they will be once the project is sufficiently stable. Until then, you are free to compile the project yourself.
+You can get the latest copy of HashHash from GitHub releases, or via WinGet
 
-### Prerequisites
-
-To build HashHash, you will need OpenJDK 17 as this project is targets the JVM. Personally, I use [Temurin](https://adoptium.net/) but any other would work. In addition to this, you will require the IntelliJ IDEA IDE.
-
-1. Install a JDK of your choice.
-
-2. Install [IntelliJ IDEA](https://www.jetbrains.com/idea/)
-
-### Installation
-
-1. Clone the repo
-
-2. Run the project in IntelliJ IDEA. The [Compose-JB GitHub documentation](https://github.com/JetBrains/compose-jb/tree/master/tutorials/Getting_Started#running-the-project) provides a more detailed explanation on how to do this.
+<pre>
+winget install RussellBanks.HashHash
+</pre>
 
 ## Usage
 

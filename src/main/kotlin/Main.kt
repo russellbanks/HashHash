@@ -142,7 +142,7 @@ fun main() = auroraApplication {
                                     try {
                                         hashedOutput = file.hash(
                                             algorithm,
-                                            hashCallBack = { hashProgress = it }
+                                            hashProgressCallback = { hashProgress = it }
                                         ).uppercase()
                                         System.nanoTime().also { nanosAtEnd ->
                                             timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())

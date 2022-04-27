@@ -82,5 +82,6 @@ val attributionList = listOf(
     "Application Icon - Freepik via Flaticon",
     "File types icon pack - Smashicons via Flaticon",
     "Text Editor icon pack - Freepik via Flaticon",
-    "Book Store icon pack - Freepik via Flaticon"
+    "Book Store icon pack - Freepik via Flaticon",
+    "Stationary icon pack - Freepik via Flaticon"
 )

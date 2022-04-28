@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -30,13 +31,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -83,11 +82,18 @@ fun AlgorithmSelectionList(
                         LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
                     }
                 } else if (item is NestedAlgorithm) {
+                    var rotate by remember { mutableStateOf(false) }
+                    val rotationAngle by animateFloatAsState(
+                        targetValue = if (rotate) 90F else 0F
+                    )
                     var nestedVisibility by rememberSaveable { mutableStateOf(false) }
                     AuroraBoxWithHighlights(
                         modifier = Modifier.fillMaxWidth().height(32.dp)
                             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
-                        onClick = { nestedVisibility = !nestedVisibility },
+                        onClick = {
+                            rotate = !rotate
+                            nestedVisibility = !nestedVisibility
+                                  },
                         sides = Sides(straightSides = Side.values().toSet()),
                     ) {
                         Row {
@@ -97,7 +103,7 @@ fun AlgorithmSelectionList(
                             LabelProjection(
                                 contentModel = LabelContentModel(text = Unicode.dropDown),
                                 presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                            ).project(Modifier.padding(8.dp))
+                            ).project(Modifier.rotate(rotationAngle).padding(8.dp))
                         }
                     }
                     AnimatedVisibility(nestedVisibility) {

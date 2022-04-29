@@ -65,9 +65,7 @@ fun AboutDialog(
                         .weight(1f)
                         .padding(30.dp)
                     ) {
-                        remember {
-                            DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent)
-                        }.render()
+                        remember { DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent) }.render()
                     }
                     Column {
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())

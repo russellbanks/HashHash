@@ -27,10 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
-import org.pushingpixels.aurora.component.model.Command
-import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
-import org.pushingpixels.aurora.component.model.CommandButtonPresentationState
+import components.Mode
+import org.pushingpixels.aurora.component.model.*
+import org.pushingpixels.aurora.component.projection.CheckBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
@@ -38,6 +39,8 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 @Composable
 fun ControlPane(
     algorithm: Algorithm,
+    mode: Mode,
+    onTriggerModeChange: (Boolean) -> Unit,
     onSoloAlgorithmClick: (Algorithm) -> Unit,
     onSubAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (String?) -> Unit,
@@ -59,8 +62,23 @@ fun ControlPane(
                         action = { openFileDialogAndGetResult().also { onSelectFileResult(it) } }
                     )
                 ).project(Modifier.fillMaxWidth().height(40.dp))
+                Row {
+                    Box(Modifier.weight(1f)) {
+                        LabelProjection(
+                            contentModel = LabelContentModel(text = "Simple mode")
+                        ).project()
+                    }
+                    CheckBoxProjection(
+                        contentModel = SelectorContentModel(
+                            text = "",
+                            selected = mode == Mode.SIMPLE,
+                            onTriggerSelectedChange = { onTriggerModeChange(it) }
+                        )
+                    ).project()
+                }
                 AlgorithmSelectionList(
                     algorithm = algorithm,
+                    mode = mode,
                     onSoloClick = { onSoloAlgorithmClick(it) },
                     onSubClick = { onSubAlgorithmClick(it) }
                 )

@@ -36,6 +36,7 @@ import com.appmattus.crypto.Algorithm
 import components.FileInfoSection
 import components.Footer
 import components.Header
+import components.Mode
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.TranslucentDialogOverlay
@@ -94,11 +95,14 @@ fun main() = auroraApplication {
         val scope = rememberCoroutineScope()
         var error by remember { mutableStateOf("") }
         var hashProgress by remember { mutableStateOf(0F) }
+        var mode by remember { mutableStateOf(Mode.SIMPLE) }
 
         Box {
             Row(Modifier.fillMaxSize()) {
                 ControlPane(
                     algorithm = algorithm,
+                    mode = mode,
+                    onTriggerModeChange = { mode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE },
                     onSoloAlgorithmClick = { item ->
                         if (item != algorithm) {
                             algorithm = item

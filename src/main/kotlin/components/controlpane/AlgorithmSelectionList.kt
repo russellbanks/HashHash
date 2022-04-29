@@ -41,8 +41,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
+import components.Mode
 import components.NestedAlgorithm
-import components.algorithmList
 import helper.Unicode
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
@@ -56,6 +56,7 @@ import org.pushingpixels.aurora.theming.Sides
 @Composable
 fun AlgorithmSelectionList(
     algorithm: Algorithm,
+    mode: Mode,
     onSoloClick: (item: Algorithm) -> Unit,
     onSubClick: (nestedItem: Algorithm) -> Unit
 ) {
@@ -66,11 +67,11 @@ fun AlgorithmSelectionList(
         )
         val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
         val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
-        LazyColumn (
-            modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp),
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)),
             state = lazyListState
         ) {
-            itemsIndexed(algorithmList) { index, item ->
+            itemsIndexed(if (mode == Mode.SIMPLE) AlgorithmList.simple else AlgorithmList.advanced) { index, item ->
                 if (item is Algorithm) {
                     AuroraBoxWithHighlights(
                         modifier = Modifier.fillMaxWidth().height(32.dp)
@@ -83,9 +84,7 @@ fun AlgorithmSelectionList(
                     }
                 } else if (item is NestedAlgorithm) {
                     var rotate by remember { mutableStateOf(false) }
-                    val rotationAngle by animateFloatAsState(
-                        targetValue = if (rotate) 90F else 0F
-                    )
+                    val rotationAngle by animateFloatAsState(targetValue = if (rotate) 90F else 0F)
                     var nestedVisibility by rememberSaveable { mutableStateOf(false) }
                     AuroraBoxWithHighlights(
                         modifier = Modifier.fillMaxWidth().height(32.dp)

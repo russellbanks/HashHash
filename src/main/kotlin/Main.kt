@@ -182,124 +182,122 @@ fun main() = auroraApplication {
                             file = file
                         )
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        Column {
-                            Column(
-                                modifier = Modifier.weight(1f).padding(20.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(text = "${algorithm.algorithmName} Hash"),
-                                        presentationModel = LabelPresentationModel(
-                                            textStyle = TextStyle(
-                                                fontSize = 15.sp,
-                                                fontWeight = FontWeight.SemiBold
+                        Column(
+                            modifier = Modifier.weight(1f).padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                LabelProjection(
+                                    contentModel = LabelContentModel(text = "${algorithm.algorithmName} Hash"),
+                                    presentationModel = LabelPresentationModel(
+                                        textStyle = TextStyle(
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    )
+                                ).project()
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Box(Modifier.weight(1f)) {
+                                        TextFieldStringProjection(
+                                            contentModel = TextFieldStringContentModel(
+                                                value = hashedOutput,
+                                                placeholder = "Output Hash",
+                                                readOnly = true,
+                                                onValueChange = {}
                                             )
+                                        ).project(Modifier.fillMaxWidth())
+                                    }
+                                    CommandButtonStripProjection(
+                                        contentModel = CommandGroup(
+                                            commands = listOf(
+                                                Command(
+                                                    text = "Copy",
+                                                    icon = painterResource(resourcePath = "copy.png"),
+                                                    action = {
+                                                        if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput)
+                                                    }
+                                                ),
+                                                Command(
+                                                    text = "Case",
+                                                    icon = painterResource(resourcePath = "switch.png"),
+                                                    action = {
+                                                        hashedOutput = if (hashedOutput == hashedOutput.uppercase()) {
+                                                            hashedOutput.lowercase()
+                                                        } else {
+                                                            hashedOutput.uppercase()
+                                                        }
+                                                    }
+                                                )
+                                            )
+                                        ),
+                                        presentationModel = CommandStripPresentationModel(
+                                            orientation = StripOrientation.Horizontal,
+                                            commandPresentationState = CommandButtonPresentationState.Medium
                                         )
                                     ).project()
-                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                        Box(Modifier.weight(1f)) {
-                                            TextFieldStringProjection(
-                                                contentModel = TextFieldStringContentModel(
-                                                    value = hashedOutput,
-                                                    placeholder = "Output Hash",
-                                                    readOnly = true,
-                                                    onValueChange = {}
-                                                )
-                                            ).project(Modifier.fillMaxWidth())
-                                        }
-                                        CommandButtonStripProjection(
-                                            contentModel = CommandGroup(
-                                                commands = listOf(
-                                                    Command(
-                                                        text = "Copy",
-                                                        icon = painterResource(resourcePath = "copy.png"),
-                                                        action = {
-                                                            if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput)
-                                                        }
-                                                    ),
-                                                    Command(
-                                                        text = "Case",
-                                                        icon = painterResource(resourcePath = "switch.png"),
-                                                        action = {
-                                                            hashedOutput = if (hashedOutput == hashedOutput.uppercase()) {
-                                                                hashedOutput.lowercase()
-                                                            } else {
-                                                                hashedOutput.uppercase()
-                                                            }
-                                                        }
-                                                    )
-                                                )
-                                            ),
-                                            presentationModel = CommandStripPresentationModel(
-                                                orientation = StripOrientation.Horizontal,
-                                                commandPresentationState = CommandButtonPresentationState.Medium
-                                            )
-                                        ).project()
-                                    }
                                 }
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(text = "Comparison Hash"),
-                                        presentationModel = LabelPresentationModel(
-                                            textStyle = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                            }
+                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                LabelProjection(
+                                    contentModel = LabelContentModel(text = "Comparison Hash"),
+                                    presentationModel = LabelPresentationModel(
+                                        textStyle = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                                    )
+                                ).project()
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Box(Modifier.weight(1f)) {
+                                        TextFieldStringProjection(
+                                            contentModel = TextFieldStringContentModel(
+                                                value = comparisonHash,
+                                                placeholder = "Comparison Hash",
+                                                onValueChange = { comparisonHash = it }
+                                            )
+                                        ).project(Modifier.fillMaxWidth())
+                                    }
+                                    CommandButtonStripProjection(
+                                        contentModel = CommandGroup(
+                                            commands = listOf(
+                                                Command(
+                                                    text = "Paste",
+                                                    icon = painterResource(resourcePath = "paste.png"),
+                                                    action = {
+                                                        runCatching { comparisonHash = Clipboard.readContent() }
+                                                    }
+                                                ),
+                                                Command(
+                                                    text = "Clear",
+                                                    icon = painterResource(resourcePath = "eraser.png"),
+                                                    action = { comparisonHash = "" }
+                                                )
+                                            )
+                                        ),
+                                        presentationModel = CommandStripPresentationModel(
+                                            orientation = StripOrientation.Horizontal,
+                                            commandPresentationState = CommandButtonPresentationState.Medium
                                         )
                                     ).project()
-                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                        Box(Modifier.weight(1f)) {
-                                            TextFieldStringProjection(
-                                                contentModel = TextFieldStringContentModel(
-                                                    value = comparisonHash,
-                                                    placeholder = "Comparison Hash",
-                                                    onValueChange = { comparisonHash = it }
-                                                )
-                                            ).project(Modifier.fillMaxWidth())
-                                        }
-                                        CommandButtonStripProjection(
-                                            contentModel = CommandGroup(
-                                                commands = listOf(
-                                                    Command(
-                                                        text = "Paste",
-                                                        icon = painterResource(resourcePath = "paste.png"),
-                                                        action = {
-                                                            runCatching { comparisonHash = Clipboard.readContent() }
-                                                        }
-                                                    ),
-                                                    Command(
-                                                        text = "Clear",
-                                                        icon = painterResource(resourcePath = "eraser.png"),
-                                                        action = { comparisonHash = "" }
-                                                    )
-                                                )
-                                            ),
-                                            presentationModel = CommandStripPresentationModel(
-                                                orientation = StripOrientation.Horizontal,
-                                                commandPresentationState = CommandButtonPresentationState.Medium
-                                            )
-                                        ).project()
-                                    }
-                                    val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
-                                    AnimatedVisibility(visible = areTextFieldsBlank) {
-                                        val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, true)
-                                        LabelProjection(
-                                            contentModel = LabelContentModel(
-                                                text = "Hashes${if (!hashesMatch) " do not" else ""} match",
-                                                icon = painterResource(resourcePath = "${if (hashesMatch) "check" else "cross"}.png")
-                                            )
-                                        ).project()
-                                    }
                                 }
-                                FlowColumn {
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "⎯"}")
-                                    ).project()
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "⎯"}")
-                                    ).project()
-                                    LabelProjection(contentModel = LabelContentModel(
-                                        text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "⎯"}")
+                                val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
+                                AnimatedVisibility(visible = areTextFieldsBlank) {
+                                    val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, true)
+                                    LabelProjection(
+                                        contentModel = LabelContentModel(
+                                            text = "Hashes${if (!hashesMatch) " do not" else ""} match",
+                                            icon = painterResource(resourcePath = "${if (hashesMatch) "check" else "cross"}.png")
+                                        )
                                     ).project()
                                 }
+                            }
+                            FlowColumn {
+                                LabelProjection(contentModel = LabelContentModel(
+                                    text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "⎯"}")
+                                ).project()
+                                LabelProjection(contentModel = LabelContentModel(
+                                    text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "⎯"}")
+                                ).project()
+                                LabelProjection(contentModel = LabelContentModel(
+                                    text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "⎯"}")
+                                ).project()
                             }
                         }
                     }

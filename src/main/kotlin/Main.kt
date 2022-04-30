@@ -116,6 +116,7 @@ fun main() = auroraApplication {
                             if (item != algorithm) {
                                 algorithm = item
                                 hashedOutput = ""
+                                error = null
                                 timeBeforeHashVisibility = false
                                 timeAfterHashVisibility = false
                             }
@@ -124,6 +125,7 @@ fun main() = auroraApplication {
                             if (nestedItem != algorithm) {
                                 algorithm = nestedItem
                                 hashedOutput = ""
+                                error = null
                                 timeBeforeHashVisibility = false
                                 timeAfterHashVisibility = false
                             }

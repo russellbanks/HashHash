@@ -46,6 +46,7 @@ import components.NestedAlgorithm
 import helper.Unicode
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
+import org.pushingpixels.aurora.component.ScrollBarSizingConstants
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
@@ -68,7 +69,7 @@ fun AlgorithmSelectionList(
         val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
         val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
         LazyColumn(
-            modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)),
+            modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(end = ScrollBarSizingConstants.DefaultScrollBarThickness),
             state = lazyListState
         ) {
             itemsIndexed(if (mode == Mode.SIMPLE) AlgorithmList.simple else AlgorithmList.advanced) { index, item ->

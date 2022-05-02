@@ -41,7 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
-import components.Mode
+import helper.mode.Mode
 import components.NestedAlgorithm
 import helper.Unicode
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights

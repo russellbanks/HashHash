@@ -37,7 +37,6 @@ import com.appmattus.crypto.Algorithm
 import components.FileInfoSection
 import components.Footer
 import components.Header
-import components.Mode
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
@@ -46,6 +45,8 @@ import helper.Clipboard
 import helper.FileUtils
 import helper.FileUtils.openFileDialogAndGetResult
 import helper.Time
+import helper.mode.Mode
+import helper.mode.ModeHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -107,14 +108,18 @@ fun main() = auroraApplication {
         var timeTaken by remember { mutableStateOf("00:00") }
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
-        var mode by remember { mutableStateOf(Mode.SIMPLE) }
+        var mode by remember { mutableStateOf(ModeHandler.getMode()) }
         Box {
             Column {
                 Row(Modifier.fillMaxSize().weight(1f)) {
                     ControlPane(
                         algorithm = algorithm,
                         mode = mode,
-                        onTriggerModeChange = { mode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE },
+                        onTriggerModeChange = {
+                            val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
+                            ModeHandler.putMode(newMode)
+                            mode = newMode
+                                              },
                         onSoloAlgorithmClick = { item ->
                             if (item != algorithm) {
                                 algorithm = item

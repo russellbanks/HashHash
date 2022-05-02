@@ -83,7 +83,7 @@ fun PreferencesDialog(
                         }
                         Row(Modifier.padding(30.dp)) {
                             Box(Modifier.weight(1f)) {
-                                LabelProjection(contentModel = LabelContentModel(text = "components.Theme")).project()
+                                LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
                             }
                             ComboBoxProjection(
                                 contentModel = ComboBoxContentModel(

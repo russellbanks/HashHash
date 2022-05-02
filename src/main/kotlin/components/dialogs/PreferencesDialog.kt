@@ -22,6 +22,7 @@ package components.dialogs
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -33,7 +34,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import components.Theme
+import theme.Theme
+import theme.ThemeHandler
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.theming.*
@@ -41,8 +43,8 @@ import org.pushingpixels.aurora.theming.*
 @Composable
 fun PreferencesDialog(
     visible: Boolean,
-    selectedTheme: AuroraSkinDefinition,
-    onThemeChange: (AuroraSkinDefinition) -> Unit,
+    systemDark: Boolean,
+    onThemeChange: (Pair<Theme, AuroraSkinDefinition>) -> Unit,
     onCloseRequest: () -> Unit
 ) {
     TranslucentDialogOverlay(
@@ -87,10 +89,17 @@ fun PreferencesDialog(
                             }
                             ComboBoxProjection(
                                 contentModel = ComboBoxContentModel(
-                                    items = listOf(Theme.LIGHT, Theme.DARK),
-                                    selectedItem = if (selectedTheme.displayName == nightShadeSkin().displayName) Theme.DARK else Theme.LIGHT,
+                                    items = listOf(Theme.LIGHT, Theme.DARK, Theme.SYSTEM),
+                                    selectedItem = ThemeHandler(systemDark).getTheme(),
                                     onTriggerItemSelectedChange = {
-                                        onThemeChange(if (it == Theme.DARK) nightShadeSkin() else dustSkin())
+                                        onThemeChange(
+                                            Pair(it, when (it) {
+                                                    Theme.LIGHT -> dustSkin()
+                                                    Theme.DARK -> nightShadeSkin()
+                                                    else -> if (systemDark) nightShadeSkin() else dustSkin()
+                                                }
+                                            )
+                                        )
                                     }
                                 ),
                                 presentationModel = ComboBoxPresentationModel(

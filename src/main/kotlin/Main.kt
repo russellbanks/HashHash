@@ -51,10 +51,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
+import theme.ThemeHandler
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -67,8 +66,9 @@ fun main() = auroraApplication {
         size = DpSize(width = 1035.dp, height = 770.dp)
     )
     var error: String? by remember { mutableStateOf(null) }
-    val defaultSkin = if (isSystemInDarkTheme()) nightShadeSkin() else dustSkin()
-    var auroraSkin by remember { mutableStateOf(defaultSkin) }
+    val systemDark = isSystemInDarkTheme()
+    val themeHandler = ThemeHandler(systemDark)
+    var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
@@ -316,8 +316,11 @@ fun main() = auroraApplication {
             }
             PreferencesDialog(
                 visible = isPreferencesOpen,
-                selectedTheme = auroraSkin,
-                onThemeChange = { auroraSkin = it },
+                systemDark = systemDark,
+                onThemeChange = {
+                    themeHandler.putTheme(it.first)
+                    auroraSkin = it.second
+                                },
                 onCloseRequest = { isPreferencesOpen = false }
             )
             AboutDialog(visible = isAboutOpen, onCloseRequest = { isAboutOpen = false })

@@ -18,9 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components
+package theme
 
 enum class Theme {
     LIGHT,
-    DARK
+    DARK,
+    SYSTEM
 }

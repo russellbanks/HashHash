@@ -71,6 +71,7 @@ fun main() = auroraApplication {
         skin = nightShadeSkin(),
         state = windowState,
         title = "HashHash",
+        undecorated = true,
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(

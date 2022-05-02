@@ -39,13 +39,18 @@ object FileUtils {
     fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
 
     fun getFileIcon(file: File): String {
+        return "filetypes/${getIconFromFile(file)}"
+    }
+
+    private fun getIconFromFile(file: File): String {
         return mapOf(
-            "ai" to "ai.png", "avi" to "avi.png", "css" to "css.png", "csv" to "csv.png", "dbf" to "dbf.png",
-            "doc" to "doc.png", "dwg" to "dwg.png", "exe" to "exe.png", "html" to "html.png", "iso" to "iso.png",
-            "jpg" to "jpg.png", "js" to "js.png", "json" to "json.png", "mp3" to "mp3.png", "mp4" to "mp4.png",
-            "pdf" to "pdf.png", "png" to "png.png", "ppt" to "ppt.png", "rtf" to "rtf.png", "svg" to "svg.png",
-            "txt" to "txt.png", "xls" to "xls.png", "xml" to "xml.png", "zip" to "zip.png"
-        )[file.extension] ?: "file.png"
+            "ai" to "ai.svg", "avi" to "avi.svg", "css" to "css.svg", "csv" to "csv.svg", "dbf" to "dbf.svg",
+            "doc" to "doc.svg", "docx" to "docx.svg", "dwg" to "dwg.svg", "exe" to "exe.svg", "html" to "html.svg",
+            "iso" to "iso.svg", "jpg" to "jpg.svg", "js" to "js.svg", "json" to "json.svg", "mp3" to "mp3.svg",
+            "mp4" to "mp4.svg", "msi" to "msi.svg", "pdf" to "pdf.svg", "png" to "png.svg", "ppt" to "ppt.svg",
+            "pptx" to "pptx.svg", "rtf" to "rtf.svg", "svg" to "svg.svg", "txt" to "txt.svg", "xls" to "xls.svg",
+            "xml" to "xml.svg", "zip" to "zip.svg"
+        )[file.extension] ?: "file.svg"
     }
 
     fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())

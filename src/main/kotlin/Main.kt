@@ -68,9 +68,9 @@ fun main() = auroraApplication {
     )
     var error: String? by remember { mutableStateOf(null) }
     val defaultSkin = if (isSystemInDarkTheme()) nightShadeSkin() else dustSkin()
-    var auroraSKin by remember { mutableStateOf(defaultSkin) }
+    var auroraSkin by remember { mutableStateOf(defaultSkin) }
     AuroraWindow(
-        skin = auroraSKin,
+        skin = auroraSkin,
         state = windowState,
         title = "HashHash",
         icon = painterResource(resourcePath = "hash.png"),
@@ -316,8 +316,8 @@ fun main() = auroraApplication {
             }
             PreferencesDialog(
                 visible = isPreferencesOpen,
-                selectedTheme = auroraSKin,
-                onThemeChange = { auroraSKin = it },
+                selectedTheme = auroraSkin,
+                onThemeChange = { auroraSkin = it },
                 onCloseRequest = { isPreferencesOpen = false }
             )
             AboutDialog(visible = isAboutOpen, onCloseRequest = { isAboutOpen = false })

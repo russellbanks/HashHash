@@ -41,7 +41,7 @@ object FileUtils {
     fun getFileIcon(file: File): String {
         listOf(
             "ai", "avi", "css", "csv", "dbf", "doc", "docx", "dwg", "exe", "html", "iso", "jpg", "js", "json", "mp3",
-            "mp4", "msi", "pdf", "png", "ppt", "pptx", "rtf", "svg", "txt", "xls", "xml", "zip"
+            "mp4", "msi", "odt", "pdf", "png", "ppt", "pptx", "rtf", "svg", "txt", "xls", "xml", "zip"
         ).also { return "filetypes/${it.getOrNull(it.indexOf(file.extension)) ?: "file"}.svg" }
     }
 

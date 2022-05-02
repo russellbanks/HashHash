@@ -26,22 +26,23 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import components.dialogs.about.NavHostComponent
-import org.pushingpixels.aurora.component.model.Command
-import org.pushingpixels.aurora.component.projection.CommandButtonProjection
-import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
-import org.pushingpixels.aurora.theming.AuroraSkin
+import androidx.compose.ui.unit.sp
+import components.Theme
+import org.pushingpixels.aurora.component.model.*
+import org.pushingpixels.aurora.component.projection.*
+import org.pushingpixels.aurora.theming.*
 
 @Composable
-fun AboutDialog(
+fun PreferencesDialog(
     visible: Boolean,
+    selectedTheme: AuroraSkinDefinition,
+    onThemeChange: (AuroraSkinDefinition) -> Unit,
     onCloseRequest: () -> Unit
 ) {
     TranslucentDialogOverlay(
@@ -67,9 +68,36 @@ fun AboutDialog(
                 Column {
                     Column(modifier = Modifier
                         .weight(1f)
-                        .padding(30.dp)
                     ) {
-                        remember { DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent) }.render()
+                        Column {
+                            LabelProjection(
+                                contentModel = LabelContentModel(text = "Preferences"),
+                                presentationModel = LabelPresentationModel(
+                                    textStyle = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
+                            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+                        }
+                        Row(Modifier.padding(30.dp)) {
+                            Box(Modifier.weight(1f)) {
+                                LabelProjection(contentModel = LabelContentModel(text = "components.Theme")).project()
+                            }
+                            ComboBoxProjection(
+                                contentModel = ComboBoxContentModel(
+                                    items = listOf(Theme.LIGHT, Theme.DARK),
+                                    selectedItem = if (selectedTheme.displayName == nightShadeSkin().displayName) Theme.DARK else Theme.LIGHT,
+                                    onTriggerItemSelectedChange = {
+                                        onThemeChange(if (it == Theme.DARK) nightShadeSkin() else dustSkin())
+                                    }
+                                ),
+                                presentationModel = ComboBoxPresentationModel(
+                                    displayConverter = { it.name.lowercase().replaceFirstChar { char -> char.titlecase() } }
+                                )
+                            ).project()
+                        }
                     }
                     Column {
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())

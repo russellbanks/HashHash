@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,7 +40,7 @@ import components.Header
 import components.Mode
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
-import components.dialogs.TranslucentDialogOverlay
+import components.dialogs.PreferencesDialog
 import flowlayout.FlowColumn
 import helper.Clipboard
 import helper.FileUtils
@@ -49,10 +50,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.pushingpixels.aurora.component.model.*
-import org.pushingpixels.aurora.component.projection.CommandButtonStripProjection
-import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
-import org.pushingpixels.aurora.component.projection.LabelProjection
-import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
+import org.pushingpixels.aurora.component.projection.*
+import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -61,17 +60,19 @@ import java.text.SimpleDateFormat
 
 fun main() = auroraApplication {
     var isAboutOpen by remember { mutableStateOf(false) }
+    var isPreferencesOpen by remember { mutableStateOf(false) }
     var file by remember { mutableStateOf(FileUtils.emptyFile) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 770.dp)
     )
     var error: String? by remember { mutableStateOf(null) }
+    val defaultSkin = if (isSystemInDarkTheme()) nightShadeSkin() else dustSkin()
+    var auroraSKin by remember { mutableStateOf(defaultSkin) }
     AuroraWindow(
-        skin = nightShadeSkin(),
+        skin = auroraSKin,
         state = windowState,
         title = "HashHash",
-        undecorated = true,
         icon = painterResource(resourcePath = "hash.png"),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
@@ -81,6 +82,7 @@ fun main() = auroraApplication {
                     error = null
                 }
                          },
+            preferencesAction = { isPreferencesOpen = true },
             quitAction = { exitApplication() },
             toggleFullScreenAction = {
                 if (windowState.placement == WindowPlacement.Floating) {
@@ -90,7 +92,8 @@ fun main() = auroraApplication {
                 }
             },
             aboutAction = { isAboutOpen = true }
-        )
+        ),
+        undecorated = true
     ) {
         var hashedOutput by remember { mutableStateOf("") }
         var comparisonHash by remember { mutableStateOf("") }
@@ -105,7 +108,6 @@ fun main() = auroraApplication {
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
         var mode by remember { mutableStateOf(Mode.SIMPLE) }
-
         Box {
             Column {
                 Row(Modifier.fillMaxSize().weight(1f)) {
@@ -177,6 +179,7 @@ fun main() = auroraApplication {
                             }
                         }
                     )
+                    VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                     Column(Modifier.fillMaxSize()) {
                         FileInfoSection(
                             modifier = Modifier.defaultMinSize(minHeight = 120.dp).padding(horizontal = 20.dp),
@@ -311,7 +314,12 @@ fun main() = auroraApplication {
                     file = file
                 )
             }
-            TranslucentDialogOverlay(visible = isAboutOpen, onClick = { isAboutOpen = false})
+            PreferencesDialog(
+                visible = isPreferencesOpen,
+                selectedTheme = auroraSKin,
+                onThemeChange = { auroraSKin = it },
+                onCloseRequest = { isPreferencesOpen = false }
+            )
             AboutDialog(visible = isAboutOpen, onCloseRequest = { isAboutOpen = false })
         }
     }

@@ -30,6 +30,7 @@ object Header {
 
     fun commands(
         openAction: () -> Unit,
+        preferencesAction: () -> Unit,
         quitAction: () -> Unit,
         toggleFullScreenAction: () -> Unit,
         aboutAction: () -> Unit
@@ -45,6 +46,14 @@ object Header {
                                     Command(
                                         text = "Open",
                                         action = openAction
+                                    )
+                                )
+                            ),
+                            CommandGroup(
+                                commands = listOf(
+                                    Command(
+                                        text = "Preferences",
+                                        action = preferencesAction
                                     )
                                 )
                             ),

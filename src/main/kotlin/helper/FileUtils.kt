@@ -39,18 +39,10 @@ object FileUtils {
     fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
 
     fun getFileIcon(file: File): String {
-        return "filetypes/${getIconFromFile(file)}"
-    }
-
-    private fun getIconFromFile(file: File): String {
-        return mapOf(
-            "ai" to "ai.svg", "avi" to "avi.svg", "css" to "css.svg", "csv" to "csv.svg", "dbf" to "dbf.svg",
-            "doc" to "doc.svg", "docx" to "docx.svg", "dwg" to "dwg.svg", "exe" to "exe.svg", "html" to "html.svg",
-            "iso" to "iso.svg", "jpg" to "jpg.svg", "js" to "js.svg", "json" to "json.svg", "mp3" to "mp3.svg",
-            "mp4" to "mp4.svg", "msi" to "msi.svg", "pdf" to "pdf.svg", "png" to "png.svg", "ppt" to "ppt.svg",
-            "pptx" to "pptx.svg", "rtf" to "rtf.svg", "svg" to "svg.svg", "txt" to "txt.svg", "xls" to "xls.svg",
-            "xml" to "xml.svg", "zip" to "zip.svg"
-        )[file.extension] ?: "file.svg"
+        listOf(
+            "ai", "avi", "css", "csv", "dbf", "doc", "docx", "dwg", "exe", "html", "iso", "jpg", "js", "json", "mp3",
+            "mp4", "msi", "pdf", "png", "ppt", "pptx", "rtf", "svg", "txt", "xls", "xml", "zip"
+        ).also { return "filetypes/${it.getOrNull(it.indexOf(file.extension)) ?: "file"}.svg" }
     }
 
     fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())

@@ -65,7 +65,7 @@ fun ControlPane(
                 Row {
                     Box(Modifier.weight(1f)) {
                         LabelProjection(
-                            contentModel = LabelContentModel(text = "Simple mode")
+                            contentModel = LabelContentModel(text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} mode")
                         ).project()
                     }
                     CheckBoxProjection(

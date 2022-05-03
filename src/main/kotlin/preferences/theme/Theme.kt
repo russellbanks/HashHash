@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package theme
+package preferences.theme
 
 enum class Theme {
     LIGHT,

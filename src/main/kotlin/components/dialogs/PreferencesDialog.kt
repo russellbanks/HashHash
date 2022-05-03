@@ -45,8 +45,8 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.AuroraSkinDefinition
 import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
-import theme.Theme
-import theme.ThemeHandler
+import preferences.theme.Theme
+import preferences.theme.ThemeHandler
 
 @Composable
 fun PreferencesDialog(

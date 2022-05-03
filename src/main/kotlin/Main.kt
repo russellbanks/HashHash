@@ -55,7 +55,7 @@ import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
-import theme.ThemeHandler
+import preferences.theme.ThemeHandler
 import java.io.File
 import java.text.SimpleDateFormat
 

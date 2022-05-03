@@ -89,7 +89,7 @@ fun PreferencesDialog(
                             }
                             ComboBoxProjection(
                                 contentModel = ComboBoxContentModel(
-                                    items = listOf(Theme.LIGHT, Theme.DARK, Theme.SYSTEM),
+                                    items = Theme.values().toList(),
                                     selectedItem = themeHandler.getTheme(),
                                     onTriggerItemSelectedChange = {
                                         onThemeChange(

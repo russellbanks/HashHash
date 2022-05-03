@@ -52,9 +52,11 @@ object FileUtils {
         )[file.extension] ?: PainterFile()
     }
 
-    fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())
-        ?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        ?: file.extension else "Type"
+    fun getFileType(file: File): String {
+        return if (file != emptyFile) {
+            Files.probeContentType(file.toPath())?.replaceFirstChar { it.titlecase() } ?: file.extension
+        } else "Type"
+    }
 
     fun getFileName(file: File): String = if (file != emptyFile) file.name else "File name"
 

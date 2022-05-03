@@ -46,6 +46,8 @@ import helper.FileUtils.openFileDialogAndGetResult
 import helper.Time
 import helper.mode.Mode
 import helper.mode.ModeHandler
+import helper.titlebar.TitleBar
+import helper.titlebar.TitleBarHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -71,6 +73,7 @@ fun main() = auroraApplication {
     )
     val themeHandler = ThemeHandler(isSystemInDarkTheme())
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
+    val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
@@ -98,7 +101,7 @@ fun main() = auroraApplication {
             },
             aboutAction = { isAboutOpen = true }
         ),
-        undecorated = true
+        undecorated = undecorated
     ) {
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }

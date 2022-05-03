@@ -22,23 +22,31 @@ package components.dialogs
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import helper.titlebar.TitleBar
+import helper.titlebar.TitleBarHandler
+import org.pushingpixels.aurora.component.model.*
+import org.pushingpixels.aurora.component.projection.ComboBoxProjection
+import org.pushingpixels.aurora.component.projection.CommandButtonProjection
+import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
+import org.pushingpixels.aurora.theming.AuroraSkin
+import org.pushingpixels.aurora.theming.AuroraSkinDefinition
+import org.pushingpixels.aurora.theming.dustSkin
+import org.pushingpixels.aurora.theming.nightShadeSkin
 import theme.Theme
 import theme.ThemeHandler
-import org.pushingpixels.aurora.component.model.*
-import org.pushingpixels.aurora.component.projection.*
-import org.pushingpixels.aurora.theming.*
 
 @Composable
 fun PreferencesDialog(
@@ -83,29 +91,68 @@ fun PreferencesDialog(
                             ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
                             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
                         }
-                        Row(Modifier.padding(30.dp)) {
-                            Box(Modifier.weight(1f)) {
-                                LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
-                            }
-                            ComboBoxProjection(
-                                contentModel = ComboBoxContentModel(
-                                    items = Theme.values().toList(),
-                                    selectedItem = themeHandler.getTheme(),
-                                    onTriggerItemSelectedChange = {
-                                        onThemeChange(
-                                            Pair(it, when (it) {
-                                                    Theme.LIGHT -> dustSkin()
-                                                    Theme.DARK -> nightShadeSkin()
-                                                    else -> if (themeHandler.isSystemDark()) nightShadeSkin() else dustSkin()
+                        Column(Modifier.padding(start = 30.dp, top = 30.dp, end = 30.dp, bottom = 10.dp)) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(20.dp)
+                            ) {
+                                Row {
+                                    Box(Modifier.weight(1f)) {
+                                        LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
+                                    }
+                                    ComboBoxProjection(
+                                        contentModel = ComboBoxContentModel(
+                                            items = Theme.values().toList(),
+                                            selectedItem = themeHandler.getTheme(),
+                                            onTriggerItemSelectedChange = {
+                                                onThemeChange(
+                                                    Pair(
+                                                        it, when (it) {
+                                                            Theme.LIGHT -> dustSkin()
+                                                            Theme.DARK -> nightShadeSkin()
+                                                            else -> if (themeHandler.isSystemDark()) nightShadeSkin() else dustSkin()
+                                                        }
+                                                    )
+                                                )
+                                            }
+                                        ),
+                                        presentationModel = ComboBoxPresentationModel(
+                                            displayConverter = { it.name.lowercase().replaceFirstChar { char -> char.titlecase() } }
+                                        )
+                                    ).project()
+                                }
+                                Column{
+                                    Row {
+                                        Box(Modifier.weight(1f)) {
+                                            LabelProjection(contentModel = LabelContentModel(text = "Title bar style")).project()
+                                        }
+                                        var selectedTitleBar by remember { mutableStateOf(TitleBarHandler.getTitleBar()) }
+                                        ComboBoxProjection(
+                                            contentModel = ComboBoxContentModel(
+                                                items = TitleBar.values().toList(),
+                                                selectedItem = selectedTitleBar,
+                                                onTriggerItemSelectedChange = {
+                                                    selectedTitleBar = it
+                                                    TitleBarHandler.putTitleBar(it)
                                                 }
+                                            ),
+                                            presentationModel = ComboBoxPresentationModel(
+                                                displayConverter = { it.name.lowercase().replaceFirstChar { char -> char.titlecase() } }
+                                            )
+                                        ).project()
+                                    }
+                                    LabelProjection(
+                                        contentModel = LabelContentModel(text = "Requires restart"),
+                                        presentationModel = LabelPresentationModel(
+                                            textStyle = TextStyle(
+                                                color = Color.Gray,
+                                                fontSize = 12.sp,
+                                                fontStyle = FontStyle.Italic
                                             )
                                         )
-                                    }
-                                ),
-                                presentationModel = ComboBoxPresentationModel(
-                                    displayConverter = { it.name.lowercase().replaceFirstChar { char -> char.titlecase() } }
-                                )
-                            ).project()
+                                    ).project()
+                                }
+                            }
                         }
                     }
                     Column {

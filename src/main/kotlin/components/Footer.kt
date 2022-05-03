@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import helper.FileUtils
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.ProgressDeterminateContentModel
 import org.pushingpixels.aurora.component.projection.DeterminateLinearProgressProjection
@@ -24,7 +23,7 @@ fun Footer(
     hashedOutput: String,
     isHashing: Boolean,
     hashProgress: Float,
-    file: File
+    file: File?
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(
@@ -47,7 +46,7 @@ fun Footer(
                             text = when {
                                 error != null -> error
                                 hashedOutput.isNotBlank() -> "Done!"
-                                file != FileUtils.emptyFile -> "No hash"
+                                file != null -> "No hash"
                                 else -> "No file selected"
                             }
                         )

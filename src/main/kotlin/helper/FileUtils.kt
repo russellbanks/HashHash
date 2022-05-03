@@ -30,17 +30,15 @@ import java.nio.file.Files
 
 object FileUtils {
 
-    val emptyFile = File("")
-
     private fun getFormattedBytes(bytes: Long): String {
         if (bytes < 1024) return "$bytes B"
         val unitIndex = (63 - bytes.countLeadingZeroBits()) / 10
         return String.format("%.1f %sB", bytes.toDouble() / (1L shl unitIndex * 10), " KMGTPE"[unitIndex])
     }
 
-    fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
+    fun getFormattedBytes(file: File?) = if (file != null) getFormattedBytes(file.length()) else "Size"
 
-    fun getFileIcon(file: File): Painter {
+    fun getFileIcon(file: File?): Painter {
         return mapOf(
             "ai" to PainterAi(), "avi" to PainterAvi(), "css" to PainterCss(), "csv" to PainterCsv(),
             "dbf" to PainterDbf(), "doc" to PainterDoc(), "docx" to PainterDocx(), "dwg" to PainterDwg(),
@@ -49,20 +47,20 @@ object FileUtils {
             "msi" to PainterMsi(), "odt" to PainterOdt(), "pdf" to PainterPdf(), "png" to PainterPng(),
             "ppt" to PainterPpt(), "pptx" to PainterPptx(), "rtf" to PainterRtf(), "svg" to PainterSvg(),
             "txt" to PainterTxt(), "xls" to PainterXls(), "xml" to PainterXml(), "zip" to PainterZip()
-        )[file.extension] ?: PainterFile()
+        )[file?.extension] ?: PainterFile()
     }
 
-    fun getFileType(file: File): String {
-        return if (file != emptyFile) {
+    fun getFileType(file: File?): String {
+        return if (file != null) {
             Files.probeContentType(file.toPath())?.replaceFirstChar { it.titlecase() } ?: file.extension
         } else "Type"
     }
 
-    fun getFileName(file: File): String = if (file != emptyFile) file.name else "File name"
+    fun getFileName(file: File?): String = file?.name ?: "File name"
 
-    fun getFileExtension(file: File) = if (file != emptyFile) file.extension else "Extension"
+    fun getFileExtension(file: File?) = file?.extension ?: "Extension"
 
-    fun getFilePath(file: File): String = if (file != emptyFile) file.absolutePath else "Path"
+    fun getFilePath(file: File?): String = file?.absolutePath ?: "Path"
 
     fun openFileDialogAndGetResult(): String? {
         val outPath: PointerBuffer = MemoryUtil.memAllocPointer(1)

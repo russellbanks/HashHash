@@ -42,7 +42,6 @@ import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import flowlayout.FlowColumn
 import helper.Clipboard
-import helper.FileUtils
 import helper.FileUtils.openFileDialogAndGetResult
 import helper.Time
 import helper.mode.Mode
@@ -65,7 +64,7 @@ fun main() = auroraApplication {
     var timeBeforeHash: String? by remember { mutableStateOf(null) }
     var timeAfterHash: String? by remember { mutableStateOf(null) }
     var error: String? by remember { mutableStateOf(null) }
-    var file by remember { mutableStateOf(FileUtils.emptyFile) }
+    var file: File? by remember { mutableStateOf(null) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 770.dp)
@@ -145,24 +144,26 @@ fun main() = auroraApplication {
                             error = null
                         },
                         onCalculateClick = {
-                            if (file.exists() && file != FileUtils.emptyFile && !isHashing) {
-                                scope.launch(Dispatchers.IO) {
-                                    isHashing = true
-                                    Clock.System.now().also { instantAtStart ->
-                                        timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                        try {
-                                            hashedOutput = file.hash(
-                                                algorithm,
-                                                hashProgressCallback = { hashProgress = it }
-                                            ).uppercase()
-                                            Clock.System.now().also { instantAtEnd ->
-                                                timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
+                            file?.let {
+                                if (it.exists() && !isHashing) {
+                                    scope.launch(Dispatchers.IO) {
+                                        isHashing = true
+                                        Clock.System.now().also { instantAtStart ->
+                                            timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                            try {
+                                                hashedOutput = it.hash(
+                                                    algorithm,
+                                                    hashProgressCallback = { float -> hashProgress = float }
+                                                ).uppercase()
+                                                Clock.System.now().also { instantAtEnd ->
+                                                    timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                                    timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
+                                                }
+                                            } catch (exception: Exception) {
+                                                error = "Error: ${exception.localizedMessage.replaceFirstChar { char -> char.titlecase() }}"
                                             }
-                                        } catch (exception: Exception) {
-                                            error = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
+                                            isHashing = false
                                         }
-                                        isHashing = false
                                     }
                                 }
                             }

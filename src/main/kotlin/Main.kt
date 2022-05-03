@@ -61,12 +61,15 @@ import java.text.SimpleDateFormat
 fun main() = auroraApplication {
     var isAboutOpen by remember { mutableStateOf(false) }
     var isPreferencesOpen by remember { mutableStateOf(false) }
+    var hashedOutput by remember { mutableStateOf("") }
+    var timeBeforeHash: String? by remember { mutableStateOf(null) }
+    var timeAfterHash: String? by remember { mutableStateOf(null) }
+    var error: String? by remember { mutableStateOf(null) }
     var file by remember { mutableStateOf(FileUtils.emptyFile) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 770.dp)
     )
-    var error: String? by remember { mutableStateOf(null) }
     val themeHandler = ThemeHandler(isSystemInDarkTheme())
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
     AuroraWindow(
@@ -79,6 +82,9 @@ fun main() = auroraApplication {
             openAction = {
                 openFileDialogAndGetResult().also {
                     if (it != null) file = File(it)
+                    hashedOutput = ""
+                    timeBeforeHash = null
+                    timeAfterHash = null
                     error = null
                 }
                          },
@@ -95,14 +101,9 @@ fun main() = auroraApplication {
         ),
         undecorated = true
     ) {
-        var hashedOutput by remember { mutableStateOf("") }
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         var isHashing by remember { mutableStateOf(false) }
-        var timeBeforeHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
-        var timeAfterHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
-        var timeBeforeHashVisibility by remember { mutableStateOf(false) }
-        var timeAfterHashVisibility by remember { mutableStateOf(false) }
         var timeTaken by remember { mutableStateOf("00:00") }
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
@@ -122,22 +123,25 @@ fun main() = auroraApplication {
                             if (item != algorithm) {
                                 algorithm = item
                                 hashedOutput = ""
+                                timeBeforeHash = null
+                                timeAfterHash = null
                                 error = null
-                                timeBeforeHashVisibility = false
-                                timeAfterHashVisibility = false
                             }
                         },
                         onSubAlgorithmClick = { nestedItem ->
                             if (nestedItem != algorithm) {
                                 algorithm = nestedItem
                                 hashedOutput = ""
+                                timeBeforeHash = null
+                                timeAfterHash = null
                                 error = null
-                                timeBeforeHashVisibility = false
-                                timeAfterHashVisibility = false
                             }
                         },
                         onSelectFileResult = { result ->
                             if (result != null) file = File(result)
+                            hashedOutput = ""
+                            timeBeforeHash = null
+                            timeAfterHash = null
                             error = null
                         },
                         onCalculateClick = {
@@ -146,7 +150,6 @@ fun main() = auroraApplication {
                                     isHashing = true
                                     Clock.System.now().also { instantAtStart ->
                                         timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                        timeBeforeHashVisibility = true
                                         try {
                                             hashedOutput = file.hash(
                                                 algorithm,
@@ -156,7 +159,6 @@ fun main() = auroraApplication {
                                                 timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                                 timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
                                             }
-                                            timeAfterHashVisibility = true
                                         } catch (exception: Exception) {
                                             error = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
                                         }
@@ -281,13 +283,13 @@ fun main() = auroraApplication {
                             }
                             FlowColumn {
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Started at: ${if (timeBeforeHashVisibility) timeBeforeHash else "⎯"}")
+                                    text = "Started at: ${if (timeBeforeHash != null) timeBeforeHash else "⎯"}")
                                 ).project()
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Finished at: ${if (timeAfterHashVisibility) timeAfterHash else "⎯"}")
+                                    text = "Finished at: ${if (timeAfterHash != null) timeAfterHash else "⎯"}")
                                 ).project()
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Time taken: ${if (timeAfterHashVisibility) timeTaken else "⎯"}")
+                                    text = "Time taken: ${if (timeAfterHash != null) timeTaken else "⎯"}")
                                 ).project()
                             }
                         }

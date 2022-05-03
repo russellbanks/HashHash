@@ -47,9 +47,9 @@ import helper.FileUtils.openFileDialogAndGetResult
 import helper.Time
 import helper.mode.Mode
 import helper.mode.ModeHandler
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.window.AuroraWindow
@@ -144,7 +144,7 @@ fun main() = auroraApplication {
                             if (file.exists() && file != FileUtils.emptyFile && !isHashing) {
                                 scope.launch(Dispatchers.IO) {
                                     isHashing = true
-                                    System.nanoTime().also { nanosAtStart ->
+                                    Clock.System.now().also { instantAtStart ->
                                         timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                         timeBeforeHashVisibility = true
                                         try {
@@ -152,9 +152,9 @@ fun main() = auroraApplication {
                                                 algorithm,
                                                 hashProgressCallback = { hashProgress = it }
                                             ).uppercase()
-                                            System.nanoTime().also { nanosAtEnd ->
+                                            Clock.System.now().also { instantAtEnd ->
                                                 timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                timeTaken = Time.formatElapsedTime(nanosAtEnd - nanosAtStart)
+                                                timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
                                             }
                                             timeAfterHashVisibility = true
                                         } catch (exception: Exception) {

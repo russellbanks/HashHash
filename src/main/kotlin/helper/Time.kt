@@ -20,17 +20,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 
 object Time {
 
-    fun formatElapsedTime(nanoSeconds: Long): String {
-        val microseconds = TimeUnit.MICROSECONDS.convert(nanoSeconds, TimeUnit.NANOSECONDS)
-        val milliseconds = TimeUnit.MILLISECONDS.convert(nanoSeconds, TimeUnit.NANOSECONDS)
-        val seconds = TimeUnit.SECONDS.convert(nanoSeconds, TimeUnit.NANOSECONDS)
-        val minutes = TimeUnit.MINUTES.convert(nanoSeconds, TimeUnit.NANOSECONDS)
-        val hours = TimeUnit.HOURS.convert(nanoSeconds, TimeUnit.NANOSECONDS)
-        val days = TimeUnit.DAYS.convert(nanoSeconds, TimeUnit.NANOSECONDS)
+    fun formatElapsedTime(duration: Duration): String {
+        val nanoseconds = duration.inWholeNanoseconds
+        val microseconds = duration.inWholeMicroseconds
+        val milliseconds = duration.inWholeMilliseconds
+        val seconds = duration.inWholeSeconds
+        val minutes = duration.inWholeMinutes
+        val hours = duration.inWholeHours
+        val days = duration.inWholeDays
 
         return when {
             microseconds in 1..999 -> "$microseconds ${getMicrosecondsFormat(microseconds)}"
@@ -39,7 +40,7 @@ object Time {
             minutes in 1..59 -> "$minutes ${getMinutesFormat(minutes)}, ${seconds % 60} ${getSecondsFormat(seconds % 60)}"
             hours in 1..23 -> "$hours ${getHoursFormat(hours)}, ${minutes % 60} ${getMinutesFormat(minutes % 60)}, ${seconds % 3600}, ${getSecondsFormat(seconds % 3600)}"
             days >= 1 -> "$days ${getDaysFormat(days)}, $hours, ${getHoursFormat(hours % 24)}, $minutes ${getMinutesFormat(minutes % 1440)}"
-            else -> "$nanoSeconds ${getNanosecondsFormat(nanoSeconds)}"
+            else -> "$nanoseconds ${getNanosecondsFormat(nanoseconds)}"
         }
     }
 

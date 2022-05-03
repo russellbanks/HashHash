@@ -30,6 +30,9 @@ dependencies {
     implementation(libs.decompose.core)
     implementation(libs.decompose.desktop)
 
+    // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
+    implementation(libs.kotlinx.datetime)
+
     // LWJGL - https://github.com/LWJGL/lwjgl3
     implementation(platform(libs.lwjgl.bom))
     implementation(libs.lwjgl.core)

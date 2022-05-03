@@ -67,8 +67,7 @@ fun main() = auroraApplication {
         size = DpSize(width = 1035.dp, height = 770.dp)
     )
     var error: String? by remember { mutableStateOf(null) }
-    val systemDark = isSystemInDarkTheme()
-    val themeHandler = ThemeHandler(systemDark)
+    val themeHandler = ThemeHandler(isSystemInDarkTheme())
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
     AuroraWindow(
         skin = auroraSkin,
@@ -321,7 +320,7 @@ fun main() = auroraApplication {
             }
             PreferencesDialog(
                 visible = isPreferencesOpen,
-                systemDark = systemDark,
+                themeHandler = themeHandler,
                 onThemeChange = {
                     themeHandler.putTheme(it.first)
                     auroraSkin = it.second

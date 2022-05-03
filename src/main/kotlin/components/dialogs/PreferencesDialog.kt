@@ -43,7 +43,7 @@ import org.pushingpixels.aurora.theming.*
 @Composable
 fun PreferencesDialog(
     visible: Boolean,
-    systemDark: Boolean,
+    themeHandler: ThemeHandler,
     onThemeChange: (Pair<Theme, AuroraSkinDefinition>) -> Unit,
     onCloseRequest: () -> Unit
 ) {
@@ -90,13 +90,13 @@ fun PreferencesDialog(
                             ComboBoxProjection(
                                 contentModel = ComboBoxContentModel(
                                     items = listOf(Theme.LIGHT, Theme.DARK, Theme.SYSTEM),
-                                    selectedItem = ThemeHandler(systemDark).getTheme(),
+                                    selectedItem = themeHandler.getTheme(),
                                     onTriggerItemSelectedChange = {
                                         onThemeChange(
                                             Pair(it, when (it) {
                                                     Theme.LIGHT -> dustSkin()
                                                     Theme.DARK -> nightShadeSkin()
-                                                    else -> if (systemDark) nightShadeSkin() else dustSkin()
+                                                    else -> if (themeHandler.isSystemDark()) nightShadeSkin() else dustSkin()
                                                 }
                                             )
                                         )

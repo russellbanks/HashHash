@@ -29,6 +29,8 @@ class ThemeHandler(private val systemDark: Boolean) {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
+    fun isSystemDark() = systemDark
+
     fun getTheme(): Theme {
         return when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
             Theme.LIGHT.ordinal -> Theme.LIGHT

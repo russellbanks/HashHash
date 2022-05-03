@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,9 +25,9 @@ fun FileInfoSection(
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Image(
-            painter = painterResource(resourcePath = FileUtils.getFileIcon(file)),
+            painter = FileUtils.getFileIcon(file),
             contentDescription = null,
-            modifier = Modifier.height(60.dp).align(Alignment.CenterVertically)
+            modifier = Modifier.size(60.dp).align(Alignment.CenterVertically)
         )
         SelectionContainer {
             Box(modifier = Modifier.defaultMinSize(minHeight = 120.dp), contentAlignment = Alignment.Center) {

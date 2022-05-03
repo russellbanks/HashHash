@@ -20,9 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import androidx.compose.ui.graphics.painter.Painter
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.nfd.NativeFileDialog
+import svg.filetypes.*
 import java.io.File
 import java.nio.file.Files
 
@@ -38,11 +40,16 @@ object FileUtils {
 
     fun getFormattedBytes(file: File) = if (file != emptyFile) getFormattedBytes(file.length()) else "Size"
 
-    fun getFileIcon(file: File): String {
-        listOf(
-            "ai", "avi", "css", "csv", "dbf", "doc", "docx", "dwg", "exe", "html", "iso", "jpg", "js", "json", "mp3",
-            "mp4", "msi", "odt", "pdf", "png", "ppt", "pptx", "rtf", "svg", "txt", "xls", "xml", "zip"
-        ).also { return "filetypes/${it.getOrNull(it.indexOf(file.extension)) ?: "file"}.svg" }
+    fun getFileIcon(file: File): Painter {
+        return mapOf(
+            "ai" to PainterAi(), "avi" to PainterAvi(), "css" to PainterCss(), "csv" to PainterCsv(),
+            "dbf" to PainterDbf(), "doc" to PainterDoc(), "docx" to PainterDocx(), "dwg" to PainterDwg(),
+            "exe" to PainterExe(), "html" to PainterHtml(), "iso" to PainterIso(), "jpg" to PainterJpg(),
+            "js" to PainterJs(), "json" to PainterJson(), "mp3" to PainterMp3(), "mp4" to PainterMp4(),
+            "msi" to PainterMsi(), "odt" to PainterOdt(), "pdf" to PainterPdf(), "png" to PainterPng(),
+            "ppt" to PainterPpt(), "pptx" to PainterPptx(), "rtf" to PainterRtf(), "svg" to PainterSvg(),
+            "txt" to PainterTxt(), "xls" to PainterXls(), "xml" to PainterXml(), "zip" to PainterZip()
+        )[file.extension] ?: PainterFile()
     }
 
     fun getFileType(file: File) = if (file != emptyFile) Files.probeContentType(file.toPath())

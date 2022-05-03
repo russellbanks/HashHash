@@ -98,7 +98,6 @@ fun main() = auroraApplication {
         var hashedOutput by remember { mutableStateOf("") }
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-        var hashTimer by remember { mutableStateOf("00:00") }
         var isHashing by remember { mutableStateOf(false) }
         var timeBeforeHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
         var timeAfterHash by remember { mutableStateOf(SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())) }
@@ -143,20 +142,6 @@ fun main() = auroraApplication {
                         },
                         onCalculateClick = {
                             if (file.exists() && file != FileUtils.emptyFile && !isHashing) {
-                                val job = scope.launch {
-                                    flow {
-                                        System.currentTimeMillis().also { millisAtStart ->
-                                            while (currentCoroutineContext().isActive) {
-                                                delay(1000)
-                                                emit(System.currentTimeMillis() - millisAtStart)
-                                            }
-                                        }
-                                    }.collect { milliseconds ->
-                                        val minutes = "%02d".format((milliseconds / 1000) / 60)
-                                        val seconds = "%02d".format((milliseconds / 1000) % 60)
-                                        hashTimer = "$minutes:$seconds"
-                                    }
-                                }
                                 scope.launch(Dispatchers.IO) {
                                     isHashing = true
                                     System.nanoTime().also { nanosAtStart ->
@@ -175,8 +160,6 @@ fun main() = auroraApplication {
                                         } catch (exception: Exception) {
                                             error = "Error: ${exception.localizedMessage.replaceFirstChar { it.titlecase() }}"
                                         }
-                                        job.cancel()
-                                        hashTimer = "00:00"
                                         isHashing = false
                                     }
                                 }

@@ -55,15 +55,17 @@ if (generalPath == null) {
 } else {
    generalPath!!.reset()
 }
-generalPath!!.moveTo(129.50488f, 0.0f)
-generalPath!!.cubicTo(89.86562f, 0.0f, 57.954094f, 31.911526f, 57.954094f, 71.55078f)
-generalPath!!.lineTo(57.954094f, 440.44922f)
-generalPath!!.cubicTo(57.954094f, 480.08847f, 89.865616f, 512.0f, 129.50488f, 512.0f)
-generalPath!!.lineTo(382.49512f, 512.0f)
-generalPath!!.cubicTo(422.13437f, 512.0f, 454.0459f, 480.08847f, 454.0459f, 440.44922f)
-generalPath!!.lineTo(454.0459f, 159.9375f)
-generalPath!!.lineTo(292.65527f, 0.0f)
-generalPath!!.close()
+generalPath?.run {
+    moveTo(129.50488f, 0.0f)
+    cubicTo(89.86562f, 0.0f, 57.954094f, 31.911526f, 57.954094f, 71.55078f)
+    lineTo(57.954094f, 440.44922f)
+    cubicTo(57.954094f, 480.08847f, 89.865616f, 512.0f, 129.50488f, 512.0f)
+    lineTo(382.49512f, 512.0f)
+    cubicTo(422.13437f, 512.0f, 454.0459f, 480.08847f, 454.0459f, 440.44922f)
+    lineTo(454.0459f, 159.9375f)
+    lineTo(292.65527f, 0.0f)
+    close()
+}
 shape = Outline.Generic(generalPath!!)
 brush = SolidColor(Color(200, 189, 184, 255))
 drawOutline(outline = shape!!, style=Fill, brush=brush!!, alpha=alpha, blendMode = blendMode)
@@ -79,9 +81,11 @@ if (generalPath == null) {
 } else {
    generalPath!!.reset()
 }
-generalPath!!.moveTo(454.0459f, 159.9375f)
-generalPath!!.lineTo(292.65527f, 159.9375f)
-generalPath!!.lineTo(292.65527f, 0.0f)
+generalPath?.run {
+    moveTo(454.0459f, 159.9375f)
+    lineTo(292.65527f, 159.9375f)
+    lineTo(292.65527f, 0.0f)
+}
 shape = Outline.Generic(generalPath!!)
 brush = SolidColor(Color(217, 215, 202, 255))
 drawOutline(outline = shape!!, style=Fill, brush=brush!!, alpha=alpha, blendMode = blendMode)

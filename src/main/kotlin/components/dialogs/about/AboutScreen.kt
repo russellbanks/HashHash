@@ -67,7 +67,7 @@ fun AboutScreen(
         ) {
             LabelProjection(
                 contentModel = LabelContentModel(
-                    text = "v1.0.0"
+                    text = "v1.1.0"
                 )
             ).project()
             LabelProjection(

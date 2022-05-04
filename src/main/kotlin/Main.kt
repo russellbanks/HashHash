@@ -85,11 +85,13 @@ fun main() = auroraApplication {
         menuCommands = Header.commands(
             openAction = {
                 openFileDialogAndGetResult().also {
-                    if (it != null) file = File(it)
-                    hashedOutput = ""
-                    timeBeforeHash = null
-                    timeAfterHash = null
-                    error = null
+                    if (it != null && file != File(it)) {
+                        file = File(it)
+                        hashedOutput = ""
+                        timeBeforeHash = null
+                        timeAfterHash = null
+                        error = null
+                    }
                 }
                          },
             preferencesAction = { isPreferencesOpen = true },
@@ -142,11 +144,13 @@ fun main() = auroraApplication {
                             }
                         },
                         onSelectFileResult = { result ->
-                            if (result != null) file = File(result)
-                            hashedOutput = ""
-                            timeBeforeHash = null
-                            timeAfterHash = null
-                            error = null
+                            if (result != null && file != File(result)) {
+                                file = File(result)
+                                hashedOutput = ""
+                                timeBeforeHash = null
+                                timeAfterHash = null
+                                error = null
+                            }
                         },
                         onCalculateClick = {
                             file?.let {

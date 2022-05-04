@@ -53,7 +53,7 @@ Matrix(values=floatArrayOf(
 -2.25010085105896f, -1.656294822692871f, 0.0f, 1.0f)
 ))}){
 // _0_0
-brush = SolidColor(Color(165, 235, 120, 255))
+brush = SolidColor(Color(0, 211, 106, 255))
 stroke = Stroke(width=4.21038f, cap=StrokeCap.Round, join=StrokeJoin.Round, miter=4.0f)
 if (generalPath == null) {
    generalPath = Path()

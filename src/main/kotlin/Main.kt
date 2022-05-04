@@ -58,6 +58,7 @@ import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
 import svg.PainterCheck
 import svg.PainterCross
+import svg.PainterSwitch
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -222,7 +223,7 @@ fun main() = auroraApplication {
                                                 ),
                                                 Command(
                                                     text = "Case",
-                                                    icon = painterResource(resourcePath = "switch.png"),
+                                                    icon = PainterSwitch(),
                                                     action = {
                                                         hashedOutput = if (hashedOutput == hashedOutput.uppercase()) {
                                                             hashedOutput.lowercase()

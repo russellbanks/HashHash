@@ -56,6 +56,8 @@ import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
+import svg.PainterCheck
+import svg.PainterCross
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -280,7 +282,7 @@ fun main() = auroraApplication {
                                     LabelProjection(
                                         contentModel = LabelContentModel(
                                             text = "Hashes${if (!hashesMatch) " do not" else ""} match",
-                                            icon = painterResource(resourcePath = "${if (hashesMatch) "check" else "cross"}.png")
+                                            icon = if (hashesMatch) PainterCheck() else PainterCross()
                                         )
                                     ).project()
                                 }

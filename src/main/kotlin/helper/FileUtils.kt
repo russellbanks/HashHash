@@ -43,10 +43,11 @@ object FileUtils {
             "ai" to PainterAi(), "avi" to PainterAvi(), "css" to PainterCss(), "csv" to PainterCsv(),
             "dbf" to PainterDbf(), "doc" to PainterDoc(), "docx" to PainterDocx(), "dwg" to PainterDwg(),
             "exe" to PainterExe(), "html" to PainterHtml(), "iso" to PainterIso(), "jpg" to PainterJpg(),
-            "js" to PainterJs(), "json" to PainterJson(), "mp3" to PainterMp3(), "mp4" to PainterMp4(),
-            "msi" to PainterMsi(), "odt" to PainterOdt(), "pdf" to PainterPdf(), "png" to PainterPng(),
-            "ppt" to PainterPpt(), "pptx" to PainterPptx(), "rtf" to PainterRtf(), "svg" to PainterSvg(),
-            "txt" to PainterTxt(), "xls" to PainterXls(), "xml" to PainterXml(), "zip" to PainterZip()
+            "js" to PainterJs(), "json" to PainterJson(), "md" to PainterMd(), "mp3" to PainterMp3(),
+            "mp4" to PainterMp4(), "msi" to PainterMsi(), "odt" to PainterOdt(), "pdf" to PainterPdf(),
+            "png" to PainterPng(), "ppt" to PainterPpt(), "pptx" to PainterPptx(), "rtf" to PainterRtf(),
+            "svg" to PainterSvg(), "txt" to PainterTxt(), "xls" to PainterXls(), "xml" to PainterXml(),
+            "zip" to PainterZip()
         )[file?.extension] ?: PainterFile()
     }
 

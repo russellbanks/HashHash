@@ -20,15 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.dialogs.about
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +32,7 @@ import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
+import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 
 @Composable
@@ -47,26 +43,25 @@ fun AttributionScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+        Column(modifier = Modifier
+            .weight(1f)
         ) {
-            LabelProjection(
-                contentModel = LabelContentModel("Attribution"),
-                presentationModel = LabelPresentationModel(
-                    textStyle = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+            Column {
+                LabelProjection(
+                    contentModel = LabelContentModel(text = "Preferences"),
+                    presentationModel = LabelPresentationModel(
+                        textStyle = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
-            ).project()
-            LazyColumn (
-                modifier = Modifier.fillMaxSize().border(1.dp, Color.Gray, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp)
-            ) {
-                items(attributionList) {
-                    LabelProjection(contentModel = LabelContentModel(text = it)).project()
-                }
+                ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
+                HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+            }
+            Column(Modifier.padding(30.dp)) {
+                LabelProjection(
+                    contentModel = LabelContentModel(text = "Application Icon - Freepik via Flaticon")
+                ).project()
             }
         }
         CommandButtonProjection(
@@ -74,13 +69,6 @@ fun AttributionScreen(
                 text = "Go back",
                 action = onGoBackClicked
             )
-        ).project(Modifier.width(100.dp).padding(top = 20.dp))
+        ).project(Modifier.width(100.dp).padding(bottom = 30.dp))
     }
 }
-
-val attributionList = listOf(
-    "Application Icon - Freepik via Flaticon",
-    "Text Editor icon pack - Freepik via Flaticon",
-    "Book Store icon pack - Freepik via Flaticon",
-    "Stationary icon pack - Freepik via Flaticon"
-)

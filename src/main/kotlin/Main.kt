@@ -56,9 +56,7 @@ import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
-import svg.PainterCheck
-import svg.PainterCross
-import svg.PainterSwitch
+import svg.*
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -216,7 +214,7 @@ fun main() = auroraApplication {
                                             commands = listOf(
                                                 Command(
                                                     text = "Copy",
-                                                    icon = painterResource(resourcePath = "copy.png"),
+                                                    icon = PainterCopy(),
                                                     action = {
                                                         if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput)
                                                     }
@@ -263,14 +261,14 @@ fun main() = auroraApplication {
                                             commands = listOf(
                                                 Command(
                                                     text = "Paste",
-                                                    icon = painterResource(resourcePath = "paste.png"),
+                                                    icon = PainterClipboard(),
                                                     action = {
                                                         runCatching { comparisonHash = Clipboard.readContent() }
                                                     }
                                                 ),
                                                 Command(
                                                     text = "Clear",
-                                                    icon = painterResource(resourcePath = "eraser.png"),
+                                                    icon = PainterEraser(),
                                                     action = { comparisonHash = "" }
                                                 )
                                             )

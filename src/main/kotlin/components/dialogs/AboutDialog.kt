@@ -65,10 +65,7 @@ fun AboutDialog(
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(modifier = Modifier
-                        .weight(1f)
-                        .padding(30.dp)
-                    ) {
+                    Column(modifier = Modifier.weight(1f)) {
                         remember { DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent) }.render()
                     }
                     Column {

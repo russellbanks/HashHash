@@ -291,13 +291,13 @@ fun main() = auroraApplication {
                             }
                             FlowColumn {
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Started at: ${if (timeBeforeHash != null) timeBeforeHash else "⎯"}")
+                                    text = "Started at: ${if (timeBeforeHash != null) timeBeforeHash else "-"}")
                                 ).project()
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Finished at: ${if (timeAfterHash != null) timeAfterHash else "⎯"}")
+                                    text = "Finished at: ${if (timeAfterHash != null) timeAfterHash else "-"}")
                                 ).project()
                                 LabelProjection(contentModel = LabelContentModel(
-                                    text = "Time taken: ${if (timeAfterHash != null) timeTaken else "⎯"}")
+                                    text = "Time taken: ${if (timeAfterHash != null) timeTaken else "-"}")
                                 ).project()
                             }
                         }

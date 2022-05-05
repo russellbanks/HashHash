@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   class="ionicon"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg6"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs10" />
+  <title
+     id="title2">Clipboard</title>
+  <path
+     d="M 375.46666,34.133333 H 363.29599 A 8.5333333,8.5333333 0 0 1 355.36,28.714667 44.992,44.992 0 0 0 313.46133,0 H 198.53866 a 44.992,44.992 0 0 0 -41.89867,28.714667 8.5333333,8.5333333 0 0 1 -7.936,5.418666 H 136.53333 A 68.266667,68.266667 0 0 0 68.266665,102.4 V 443.73333 A 68.266667,68.266667 0 0 0 136.53333,512 h 238.93333 a 68.266667,68.266667 0 0 0 68.26667,-68.26667 V 102.4 A 68.266667,68.266667 0 0 0 375.46666,34.133333 Z M 324.12799,102.4 h -136.256 a 17.066667,17.066667 0 0 1 0,-34.133333 h 136.256 a 17.066667,17.066667 0 0 1 0,34.133333 z"
+     id="path4"
+     style="stroke-width:1.06667;fill:#ff9533;fill-opacity:1" />
+  <metadata
+     id="metadata863">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Clipboard</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

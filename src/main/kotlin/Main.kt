@@ -56,7 +56,6 @@ import org.pushingpixels.aurora.component.projection.*
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
-import svg.*
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -214,14 +213,14 @@ fun main() = auroraApplication {
                                             commands = listOf(
                                                 Command(
                                                     text = "Copy",
-                                                    icon = PainterCopy(),
+                                                    icon = Icons.Utility.copy(),
                                                     action = {
                                                         if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput)
                                                     }
                                                 ),
                                                 Command(
                                                     text = "Case",
-                                                    icon = PainterSwitch(),
+                                                    icon = Icons.Utility.switch(),
                                                     action = {
                                                         hashedOutput = if (hashedOutput == hashedOutput.uppercase()) {
                                                             hashedOutput.lowercase()
@@ -261,14 +260,14 @@ fun main() = auroraApplication {
                                             commands = listOf(
                                                 Command(
                                                     text = "Paste",
-                                                    icon = PainterClipboard(),
+                                                    icon = Icons.Utility.clipboard(),
                                                     action = {
                                                         runCatching { comparisonHash = Clipboard.readContent() }
                                                     }
                                                 ),
                                                 Command(
                                                     text = "Clear",
-                                                    icon = PainterEraser(),
+                                                    icon = Icons.Utility.eraser(),
                                                     action = { comparisonHash = "" }
                                                 )
                                             )
@@ -285,7 +284,7 @@ fun main() = auroraApplication {
                                     LabelProjection(
                                         contentModel = LabelContentModel(
                                             text = "Hashes${if (!hashesMatch) " do not" else ""} match",
-                                            icon = if (hashesMatch) PainterCheck() else PainterCross()
+                                            icon = if (hashesMatch) Icons.Utility.check() else Icons.Utility.cross()
                                         )
                                     ).project()
                                 }

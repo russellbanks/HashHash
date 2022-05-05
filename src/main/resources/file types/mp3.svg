@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <g
+     id="layer1">
+    <path
+       id="rect31"
+       style="opacity:1;fill:#9c04cc;fill-opacity:1"
+       d="M 129.50489,0 C 89.86563,0 57.954104,31.911526 57.954104,71.550781 V 440.44922 C 57.954104,480.08847 89.86563,512 129.50489,512 h 252.99023 c 39.63926,0 71.55078,-31.91153 71.55078,-71.55078 V 159.9375 L 292.65528,0 Z" />
+    <path
+       id="rect2643"
+       d="M 454.0459,159.9375 H 292.65528 V 0"
+       style="fill:#cc74e4;fill-opacity:1;stroke-width:0.821988" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:136.063px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none"
+       x="252.74458"
+       y="402"
+       id="text4811"><tspan
+         id="tspan4809"
+         x="252.74458"
+         y="402"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:136.063px;font-family:'Microsoft YaHei';-inkscape-font-specification:'Microsoft YaHei Bold';text-align:center;text-anchor:middle;fill:#ffffff">MP3</tspan></text>
+  </g>
+</svg>

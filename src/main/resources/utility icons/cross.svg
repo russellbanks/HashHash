@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="currentColor"
+   stroke-width="2"
+   stroke-linecap="round"
+   stroke-linejoin="round"
+   class="feather feather-x"
+   version="1.1"
+   id="svg6"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs10" />
+  <line
+     x1="21.500202"
+     y1="2.4997973"
+     x2="2.4997973"
+     y2="21.500202"
+     id="line2"
+     style="stroke:#ff5440;stroke-width:4.99959;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <line
+     x1="2.4997971"
+     y1="2.4997971"
+     x2="21.500202"
+     y2="21.500202"
+     id="line4"
+     style="stroke:#ff5440;stroke-width:4.99959;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+</svg>

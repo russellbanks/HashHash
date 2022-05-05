@@ -25,7 +25,7 @@ fun FileInfoSection(
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Image(
-            painter = FileUtils.getFileIcon(file),
+            painter = Icons.FileTypes.getFileIcon(file),
             contentDescription = null,
             modifier = Modifier.size(60.dp).align(Alignment.CenterVertically)
         )

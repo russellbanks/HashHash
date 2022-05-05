@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="512" height="512" version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <path d="m129.5 0c-39.639 0-71.551 31.912-71.551 71.551v368.9c0 39.639 31.912 71.551 71.551 71.551h252.99c39.639 0 71.551-31.912 71.551-71.551v-280.51l-161.39-159.94z" fill="#ff751b"/>
+  <path d="m454.05 159.94h-161.39v-159.94" fill="#ff9752" stroke-width=".82199"/>
+  <text x="252.74458" y="402" fill="#000000" font-family="sans-serif" font-size="136.06px" style="line-height:1.25" xml:space="preserve"><tspan x="252.74458" y="402" fill="#ffffff" font-family="'Microsoft YaHei'" font-size="136.06px" font-weight="bold" text-align="center" text-anchor="middle">AI</tspan></text>
+ </g>
+</svg>

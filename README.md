@@ -32,7 +32,7 @@ HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) i
 * [Kotlin](https://kotlinlang.org/)
 * [Aurora](https://github.com/kirill-grouchnikov/aurora)
 * [crypto](https://github.com/appmattus/crypto)
-* [LWJGL](https://github.com/LWJGL/lwjgl3) - Java bindings to [Native File Dialog](https://github.com/mlabbe/nativefiledialog)
+* [LWJGL](https://github.com/LWJGL/lwjgl3) - Java bindings to [Tiny File Dialogs](https://sourceforge.net/projects/tinyfiledialogs/)
 
 ## Installation
 

@@ -31,11 +31,10 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     // LWJGL - https://github.com/LWJGL/lwjgl3
-    implementation(platform(libs.lwjgl.bom))
     implementation(libs.lwjgl.core)
-    implementation(libs.lwjgl.nfd)
-    runtimeOnly("org.lwjgl", "lwjgl", classifier = lwjglNatives())
-    runtimeOnly("org.lwjgl", "lwjgl-nfd", classifier = lwjglNatives())
+    implementation(libs.lwjgl.tinyfd)
+    runtimeOnly(libs.lwjgl.core.get().module.group, libs.lwjgl.core.get().module.name, classifier = lwjglNatives())
+    runtimeOnly(libs.lwjgl.tinyfd.get().module.group, libs.lwjgl.tinyfd.get().module.name, classifier = lwjglNatives())
 }
 
 tasks.withType<KotlinCompile> {
@@ -55,7 +54,6 @@ compose.desktop {
             description = "A Multiplatform GUI for Hashing."
             vendor = "Russell Banks"
             licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))
-            args += listOf("-static-libgcc", "-static-libstdc++")
             linux {
                 iconFile.set(project.file("src/main/resources/logo.png"))
                 menuGroup = "HashHash"

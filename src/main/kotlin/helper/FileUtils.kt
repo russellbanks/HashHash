@@ -21,8 +21,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package helper
 
 import org.lwjgl.PointerBuffer
-import org.lwjgl.system.MemoryUtil
-import org.lwjgl.util.nfd.NativeFileDialog
+import org.lwjgl.system.Checks.remainingSafe
+import org.lwjgl.system.MemoryStack.stackGet
+import org.lwjgl.system.MemoryUtil.*
+import org.lwjgl.system.NativeType
+import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_openFileDialog
 import java.io.File
 import java.nio.file.Files
 
@@ -48,21 +51,58 @@ object FileUtils {
 
     fun getFilePath(file: File?): String = file?.absolutePath ?: "Path"
 
-    fun openFileDialogAndGetResult(): String? {
-        val outPath: PointerBuffer = MemoryUtil.memAllocPointer(1)
-
-        var selectedFile: String? = null
-        try {
-            val result: Int = NativeFileDialog.NFD_OpenDialog("*", null, outPath)
-            if (result == NativeFileDialog.NFD_OKAY) {
-                selectedFile = outPath.getStringUTF8(0)
-                NativeFileDialog.nNFD_Free(outPath.get(0))
-            }
+    /**
+     * Displays a file open dialog.
+     *
+     * @param title                   the dialog title or {@code NULL}
+     * @param defaultPathAndFile      the default path and/or file or {@code NULL}
+     * @param filterPatterns          an array of file type patterns ({@code NULL} or {"*.jpg","*.png"}
+     * @param singleFilterDescription {@code NULL} or "image files"
+     * @param allowMultipleSelects    if true, multiple selections are allowed
+     *
+     * @return the file(s) selected or {@code NULL} on cancel. In case of multiple files, the separator is '|'.
+     */
+    @NativeType("char const *")
+    fun openTinyFileDialog(
+        @NativeType("char const *") title: CharSequence?,
+        @NativeType("char const *") defaultPathAndFile: CharSequence?,
+        @NativeType("char const * const *") filterPatterns: PointerBuffer?,
+        @NativeType("char const *") singleFilterDescription: CharSequence?,
+        @NativeType("int") allowMultipleSelects: Boolean
+    ): String? {
+        val stack = stackGet()
+        val stackPointer = stack.pointer
+        return try {
+            stack.nUTF8Safe(title, true)
+            val titleEncoded = if (title == null) NULL else stack.pointerAddress
+            stack.nUTF8Safe(defaultPathAndFile, true)
+            val defaultPathAndFileEncoded = if (defaultPathAndFile == null) NULL else stack.pointerAddress
+            stack.nUTF8Safe(singleFilterDescription, true)
+            val singleFilterDescriptionEncoded = if (singleFilterDescription == null) NULL else stack.pointerAddress
+            val result = ntinyfd_openFileDialog(
+                titleEncoded,
+                defaultPathAndFileEncoded,
+                remainingSafe(filterPatterns),
+                memAddressSafe(filterPatterns),
+                singleFilterDescriptionEncoded,
+                if (allowMultipleSelects) 1 else 0
+            )
+            memUTF8Safe(result)
         } finally {
-            MemoryUtil.memFree(outPath)
+            stack.pointer = stackPointer
         }
-        return selectedFile
     }
 
+    fun openFileDialogAndGetResult(): File? {
+        openTinyFileDialog(
+            title = "Open",
+            defaultPathAndFile = null,
+            filterPatterns = null,
+            singleFilterDescription = null,
+            allowMultipleSelects = false
+        ).also {
+            return if (it != null) File(it) else null
+        }
+    }
 
 }

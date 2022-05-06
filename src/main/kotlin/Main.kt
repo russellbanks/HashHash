@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -42,7 +41,7 @@ import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import flowlayout.FlowColumn
 import helper.Clipboard
-import helper.FileUtils.openFileDialogAndGetResult
+import helper.FileUtils
 import helper.Icons
 import helper.Time
 import helper.mode.Mode
@@ -83,9 +82,9 @@ fun main() = auroraApplication {
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
             openAction = {
-                openFileDialogAndGetResult().also {
-                    if (it != null && file != File(it)) {
-                        file = File(it)
+                FileUtils.openFileDialogAndGetResult().also {
+                    if (it != null && file != it) {
+                        file = it
                         hashedOutput = ""
                         timeBeforeHash = null
                         timeAfterHash = null
@@ -143,8 +142,8 @@ fun main() = auroraApplication {
                             }
                         },
                         onSelectFileResult = { result ->
-                            if (result != null && file != File(result)) {
-                                file = File(result)
+                            if (result != null && file != result) {
+                                file = result
                                 hashedOutput = ""
                                 timeBeforeHash = null
                                 timeAfterHash = null

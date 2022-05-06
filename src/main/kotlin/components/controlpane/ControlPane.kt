@@ -20,13 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.controlpane
 
-import helper.FileUtils.openFileDialogAndGetResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
+import helper.FileUtils
 import helper.mode.Mode
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
@@ -35,6 +35,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
+import java.io.File
 
 @Composable
 fun ControlPane(
@@ -43,7 +44,7 @@ fun ControlPane(
     onTriggerModeChange: (Boolean) -> Unit,
     onSoloAlgorithmClick: (Algorithm) -> Unit,
     onSubAlgorithmClick: (Algorithm) -> Unit,
-    onSelectFileResult: (String?) -> Unit,
+    onSelectFileResult: (File?) -> Unit,
     onCalculateClick: () -> Unit
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
@@ -59,7 +60,7 @@ fun ControlPane(
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Select file",
-                        action = { openFileDialogAndGetResult().also { onSelectFileResult(it) } }
+                        action = { FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(it) } }
                     )
                 ).project(Modifier.fillMaxWidth().height(40.dp))
                 Row {

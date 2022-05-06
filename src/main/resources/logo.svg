@@ -40,40 +40,33 @@
          id="path4853"
          style="fill:none;fill-opacity:1" />
       <line
-         x1="5.9375"
+         x1="6.4232388"
          y1="9"
-         x2="19.9375"
+         x2="18.421133"
          y2="9"
          id="line4855"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.34375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <line
-         x1="5"
+         x1="5.6732388"
          y1="15"
-         x2="19"
+         x2="17.671133"
          y2="15"
          id="line4857"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-opacity:1;stroke-width:2.34375004;stroke-miterlimit:4;stroke-dasharray:none" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <line
-         x1="11"
-         y1="4"
-         x2="7"
-         y2="20"
+         x1="11.147929"
+         y1="4.6333199"
+         x2="7.0395703"
+         y2="18.804176"
          id="line4859"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-opacity:1;stroke-width:2.34375004;stroke-miterlimit:4;stroke-dasharray:none" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <line
-         x1="17"
-         y1="4"
-         x2="13"
-         y2="20"
+         x1="17.05418"
+         y1="4.6333199"
+         x2="12.945821"
+         y2="18.804176"
          id="line4861"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-opacity:1;stroke-width:2.34375004;stroke-miterlimit:4;stroke-dasharray:none" />
-      <line
-         x1="7"
-         y1="20"
-         x2="11"
-         y2="4"
-         id="line839"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.34375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

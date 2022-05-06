@@ -40,33 +40,33 @@
          id="path4853"
          style="fill:none;fill-opacity:1" />
       <line
-         x1="6.4232388"
-         y1="9"
-         x2="18.421133"
-         y2="9"
+         x1="6.3760529"
+         y1="9.2812519"
+         x2="18.373947"
+         y2="9.2812519"
          id="line4855"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.4375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <line
-         x1="5.6732388"
-         y1="15"
-         x2="17.671133"
-         y2="15"
+         x1="5.6260529"
+         y1="15.281252"
+         x2="17.623947"
+         y2="15.281252"
          id="line4857"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.4375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <line
-         x1="11.147929"
-         y1="4.6333199"
-         x2="7.0395703"
-         y2="18.804176"
+         x1="11.100743"
+         y1="4.9145718"
+         x2="6.9923844"
+         y2="19.085428"
          id="line4859"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.4375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <line
-         x1="17.05418"
-         y1="4.6333199"
-         x2="12.945821"
-         y2="18.804176"
+         x1="17.006994"
+         y1="4.9145718"
+         x2="12.898635"
+         y2="19.085428"
          id="line4861"
-         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.43750004;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:none;fill-opacity:1;stroke:#263238;stroke-width:2.4375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

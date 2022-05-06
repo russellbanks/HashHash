@@ -1,7 +1,8 @@
 <br/>
 <p align="center">
-  <img title="HashHash Logo" src="https://user-images.githubusercontent.com/74878137/162616364-9c72490e-cf45-4258-933d-5d4881bca2f0.png" alt="hash" width="80">
+  <img title="HashHash Logo" src="src/main/resources/logo.svg" alt="hash" width="80">
   <h3 align="center">HashHash</h3>
+<p>
 
 <p align="center">
     A Multiplatform GUI for Hashing, written in Compose for Desktop

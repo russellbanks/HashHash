@@ -64,6 +64,7 @@ compose.desktop {
                 iconFile.set(project.file("src/main/resources/hash.ico"))
                 menuGroup = "HashHash"
                 dirChooser = true
+                console = true
                 upgradeUuid = "1A4C2D6B-AC84-47D4-A6EE-407A4AA8DED8"
             }
         }

@@ -57,11 +57,11 @@ compose.desktop {
             licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))
             args += listOf("-static-libgcc", "-static-libstdc++")
             linux {
-                iconFile.set(project.file("src/main/resources/hash.png"))
+                iconFile.set(project.file("src/main/resources/logo.png"))
                 menuGroup = "HashHash"
             }
             windows {
-                iconFile.set(project.file("src/main/resources/hash.ico"))
+                iconFile.set(project.file("src/main/resources/logo.ico"))
                 menuGroup = "HashHash"
                 dirChooser = true
                 console = true

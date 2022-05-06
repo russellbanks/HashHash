@@ -43,6 +43,7 @@ import components.dialogs.PreferencesDialog
 import flowlayout.FlowColumn
 import helper.Clipboard
 import helper.FileUtils.openFileDialogAndGetResult
+import helper.Icons
 import helper.Time
 import helper.mode.Mode
 import helper.mode.ModeHandler
@@ -78,7 +79,7 @@ fun main() = auroraApplication {
         skin = auroraSkin,
         state = windowState,
         title = "HashHash",
-        icon = painterResource(resourcePath = "hash.png"),
+        icon = Icons.logo(),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
             openAction = {

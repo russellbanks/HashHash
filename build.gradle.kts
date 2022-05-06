@@ -27,10 +27,6 @@ dependencies {
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
 
-    // Decompose - https://github.com/arkivanov/Decompose
-    implementation(libs.decompose.core)
-    implementation(libs.decompose.desktop)
-
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)
 

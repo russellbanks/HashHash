@@ -22,21 +22,25 @@ package components.dialogs
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import components.dialogs.about.NavHostComponent
+import androidx.compose.ui.unit.sp
+import helper.Icons
 import org.pushingpixels.aurora.component.model.Command
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
@@ -65,8 +69,37 @@ fun AboutDialog(
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(modifier = Modifier.weight(1f)) {
-                        remember { DefaultComponentContext(LifecycleRegistry()).let(::NavHostComponent) }.render()
+                    Column(
+                        modifier = Modifier.weight(1f).padding(30.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Image(
+                            painter = Icons.logo(),
+                            contentDescription = "HashHash logo",
+                            modifier = Modifier.size(60.dp)
+                        )
+                        LabelProjection(
+                            contentModel = LabelContentModel(text = "HashHash"),
+                            presentationModel = LabelPresentationModel(
+                                textStyle = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        ).project()
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            LabelProjection(
+                                contentModel = LabelContentModel(
+                                    text = "v1.1.0"
+                                )
+                            ).project()
+                            LabelProjection(
+                                contentModel = LabelContentModel(
+                                    text = "A Multiplatform GUI for Hashing, written in Compose for Desktop"
+                                )
+                            ).project()
+                        }
                     }
                     Column {
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())

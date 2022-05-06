@@ -1,7 +1,6 @@
 [versions]
 aurora = "1.1.0"
 cryptohash = "0.10.0"
-decompose = "0.6.0"
 kotlinx-datetime = "0.3.3"
 lwjgl = "3.3.1"
 
@@ -10,8 +9,6 @@ aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "au
 aurora-component = { module = "org.pushing-pixels:aurora-component", version.ref = "aurora" }
 aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "aurora" }
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "cryptohash" }
-decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
-decompose-desktop = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 lwjgl-bom = { module = "org.lwjgl:lwjgl-bom", version.ref = "lwjgl" }
 lwjgl-core = { module = "org.lwjgl:lwjgl" }

@@ -48,7 +48,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe,TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
-            modules("java.instrument", "jdk.unsupported")
+            modules("java.instrument", "java.prefs", "jdk.unsupported")
             javaHome = System.getenv("JDK_18")
             packageName = "HashHash"
             packageVersion = "1.1.0"

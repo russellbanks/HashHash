@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.russellbanks"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     google()
@@ -51,7 +51,7 @@ compose.desktop {
             modules("java.instrument", "java.prefs", "jdk.unsupported")
             javaHome = System.getenv("JDK_18")
             packageName = "HashHash"
-            packageVersion = "1.1.0"
+            packageVersion = "1.1.1"
             description = "A Multiplatform GUI for Hashing."
             vendor = "Russell Banks"
             licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))

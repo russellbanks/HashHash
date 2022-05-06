@@ -91,7 +91,7 @@ fun AboutDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             LabelProjection(
                                 contentModel = LabelContentModel(
-                                    text = "v1.1.0"
+                                    text = "v1.1.1"
                                 )
                             ).project()
                             LabelProjection(

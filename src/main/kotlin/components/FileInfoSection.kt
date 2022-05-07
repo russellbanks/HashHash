@@ -27,7 +27,7 @@ fun FileInfoSection(
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Image(
             painter = Icons.FileTypes.getFileIcon(file),
-            contentDescription = null,
+            contentDescription = "${(file?.extension ?: "file").lowercase().replaceFirstChar { it.titlecase() }} icon",
             modifier = Modifier.size(60.dp).align(Alignment.CenterVertically)
         )
         SelectionContainer {

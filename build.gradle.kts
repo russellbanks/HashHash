@@ -19,6 +19,9 @@ repositories {
 dependencies {
     implementation(compose.desktop.currentOs)
 
+    // Accompanist (Multiplatform fork) - https://github.com/Syer10/accompanist
+    implementation(libs.accompanist.flowlayouts)
+
     // Aurora - https://github.com/kirill-grouchnikov/aurora
     implementation(libs.aurora.window)
     implementation(libs.aurora.component)

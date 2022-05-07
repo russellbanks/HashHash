@@ -33,13 +33,13 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
+import com.google.accompanist.flowlayout.FlowColumn
 import components.FileInfoSection
 import components.Footer
 import components.Header
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
-import flowlayout.FlowColumn
 import helper.Clipboard
 import helper.FileUtils
 import helper.Icons

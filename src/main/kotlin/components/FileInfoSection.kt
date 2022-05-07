@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import flowlayout.FlowMainAxisAlignment
-import flowlayout.FlowRow
+import com.google.accompanist.flowlayout.FlowMainAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import helper.FileUtils
 import helper.Icons
 import org.pushingpixels.aurora.component.model.LabelContentModel

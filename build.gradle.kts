@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.6.21"
     id("org.jetbrains.compose") version "1.2.0-alpha01-dev679"
+    id("com.github.gmazzo.buildconfig") version "3.0.3"
 }
 
 group = "com.russellbanks"
@@ -31,7 +32,7 @@ dependencies {
     implementation(libs.crypto.cryptohash)
 
     // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
-    implementation(libs.kotlin.coroutines)
+    implementation(libs.coroutines.core)
 
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)
@@ -57,8 +58,8 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe,TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             modules("java.instrument", "java.prefs", "jdk.unsupported")
             javaHome = System.getenv("JDK_18")
-            packageName = "HashHash"
-            packageVersion = "1.1.2"
+            packageName = project.name
+            packageVersion = project.version.toString()
             description = "A Multiplatform GUI for Hashing."
             vendor = "Russell Banks"
             licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))
@@ -77,6 +78,11 @@ compose.desktop {
             }
         }
     }
+}
+
+buildConfig {
+    buildConfigField("String", "appName", "\"${project.name}\"")
+    buildConfigField("String", "appVersion", provider { "\"${project.version}\"" })
 }
 
 fun lwjglNatives() = Pair(

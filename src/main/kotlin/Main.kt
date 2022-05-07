@@ -34,6 +34,7 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
 import com.google.accompanist.flowlayout.FlowColumn
+import com.russellbanks.HashHash.BuildConfig
 import components.FileInfoSection
 import components.Footer
 import components.Header
@@ -80,7 +81,7 @@ fun main() = auroraApplication {
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
-        title = "HashHash",
+        title = BuildConfig.appName,
         icon = Icons.logo(),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(

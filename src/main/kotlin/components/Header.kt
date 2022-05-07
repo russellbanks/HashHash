@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
+import com.russellbanks.HashHash.BuildConfig
 import helper.Browser
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
@@ -60,7 +61,7 @@ object Header {
                             CommandGroup(
                                 commands = listOf(
                                     Command(
-                                        text = "Quit HashHash",
+                                        text = "Quit ${BuildConfig.appName}",
                                         action = quitAction
                                     )
                                 )

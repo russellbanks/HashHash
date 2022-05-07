@@ -34,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.russellbanks.HashHash.BuildConfig
 import helper.Icons
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -79,11 +80,11 @@ fun AboutDialog(
                         ) {
                             Image(
                                 painter = Icons.logo(),
-                                contentDescription = "HashHash logo",
+                                contentDescription = "${BuildConfig.appName} logo",
                                 modifier = Modifier.size(80.dp)
                             )
                             LabelProjection(
-                                contentModel = LabelContentModel(text = "HashHash"),
+                                contentModel = LabelContentModel(text = BuildConfig.appName),
                                 presentationModel = LabelPresentationModel(
                                     textStyle = TextStyle(
                                         fontSize = 16.sp,
@@ -93,7 +94,7 @@ fun AboutDialog(
                             ).project()
                             LabelProjection(
                                 contentModel = LabelContentModel(
-                                    text = "v1.1.2"
+                                    text = BuildConfig.appVersion
                                 )
                             ).project()
                         }

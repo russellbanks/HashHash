@@ -19,29 +19,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import com.appmattus.crypto.Algorithm
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 
 @Throws(IOException::class)
-fun File.hash(
+suspend fun File.hash(
     algorithm: Algorithm,
     hashProgressCallback: (Float) -> Unit
 ): String {
     val digest = algorithm.createDigest()
-    val fis = FileInputStream(this)
+    val fis = withContext(Dispatchers.IO) { FileInputStream(this@hash) }
 
     val byteArray = ByteArray(32768)
     var bytesCount: Int
 
     val totalRuns = ((length() / byteArray.size) + 1).toFloat()
     var count = 0
-    while (fis.read(byteArray).also { bytesCount = it } != -1) {
+    while (withContext(Dispatchers.IO) { fis.read(byteArray) }.also { bytesCount = it } != -1) {
         digest.update(byteArray, 0, bytesCount)
         hashProgressCallback(count++ / totalRuns)
     }
 
-    fis.close()
+    withContext(Dispatchers.IO) { fis.close() }
 
     val bytes = digest.digest()
     val sb = StringBuilder()

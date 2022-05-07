@@ -27,6 +27,9 @@ dependencies {
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
 
+    // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
+    implementation(libs.kotlin.coroutines)
+
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)
 

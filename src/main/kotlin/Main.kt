@@ -67,7 +67,7 @@ fun main() = auroraApplication {
     var hashedOutput by remember { mutableStateOf("") }
     var timeBeforeHash: String? by remember { mutableStateOf(null) }
     var timeAfterHash: String? by remember { mutableStateOf(null) }
-    var error: String? by remember { mutableStateOf(null) }
+    var error: Exception? by remember { mutableStateOf(null) }
     var file: File? by remember { mutableStateOf(null) }
     var hashjob: Job? by remember { mutableStateOf(null) }
     val windowState = rememberWindowState(
@@ -171,7 +171,7 @@ fun main() = auroraApplication {
                                             } catch (_: CancellationException) {
                                                 // Cancellations are intended
                                             } catch (exception: Exception) {
-                                                error = exception.localizedMessage.replaceFirstChar { char -> char.titlecase() }
+                                                error = exception
                                             }
                                         }
                                     }

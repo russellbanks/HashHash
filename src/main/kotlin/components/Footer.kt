@@ -20,7 +20,7 @@ import java.io.File
 
 @Composable
 fun Footer(
-    error: String?,
+    error: Exception?,
     hashedOutput: String,
     job: Job?,
     hashProgress: Float,
@@ -28,8 +28,8 @@ fun Footer(
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(horizontal = 8.dp, vertical = 6.dp)) {
-            Crossfade(targetState = job?.isActive ?: false) {
-                if (it) {
+            Crossfade(targetState = job?.isActive ?: false) { isHashing ->
+                if (isHashing) {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                         DeterminateLinearProgressProjection(
                             contentModel = ProgressDeterminateContentModel(
@@ -42,7 +42,7 @@ fun Footer(
                         LabelProjection(
                             contentModel = LabelContentModel(
                                 text = when {
-                                    error != null -> error
+                                    error != null -> error.localizedMessage.replaceFirstChar { it.titlecase() }
                                     hashedOutput.isNotBlank() -> "Done!"
                                     file != null -> "No hash"
                                     else -> "No file selected"

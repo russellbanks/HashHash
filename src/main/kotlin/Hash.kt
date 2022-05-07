@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import com.appmattus.crypto.Algorithm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -40,7 +39,6 @@ suspend fun File.hash(
     val totalRuns = ((length() / byteArray.size) + 1).toFloat()
     var count = 0
     while (withContext(Dispatchers.IO) { fis.read(byteArray) }.also { bytesCount = it } != -1) {
-        yield()
         digest.update(byteArray, 0, bytesCount)
         hashProgressCallback(count++ / totalRuns)
     }

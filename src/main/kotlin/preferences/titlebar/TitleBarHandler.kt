@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package helper.titlebar
+package preferences.titlebar
 
 import java.util.prefs.Preferences
 

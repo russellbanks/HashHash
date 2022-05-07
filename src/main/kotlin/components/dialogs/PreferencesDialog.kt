@@ -34,8 +34,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import helper.titlebar.TitleBar
-import helper.titlebar.TitleBarHandler
+import preferences.titlebar.TitleBar
+import preferences.titlebar.TitleBarHandler
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.ComboBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection

@@ -44,10 +44,10 @@ import helper.Clipboard
 import helper.FileUtils
 import helper.Icons
 import helper.Time
-import helper.mode.Mode
-import helper.mode.ModeHandler
-import helper.titlebar.TitleBar
-import helper.titlebar.TitleBarHandler
+import preferences.mode.Mode
+import preferences.mode.ModeHandler
+import preferences.titlebar.TitleBar
+import preferences.titlebar.TitleBarHandler
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -27,31 +27,29 @@ fun Footer(
     file: File?
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .auroraBackground()
-                .padding(horizontal = 8.dp, vertical = 6.dp)
-        ) {
+        Box(Modifier.fillMaxWidth().auroraBackground().padding(horizontal = 8.dp, vertical = 6.dp)) {
             Crossfade(targetState = job?.isActive ?: false) {
                 if (it) {
-                    DeterminateLinearProgressProjection(
-                        contentModel = ProgressDeterminateContentModel(
-                            progress = hashProgress
-                        )
-                    ).project(Modifier.fillMaxWidth().padding(4.dp))
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        DeterminateLinearProgressProjection(
+                            contentModel = ProgressDeterminateContentModel(
+                                progress = hashProgress
+                            )
+                        ).project(Modifier.fillMaxWidth().padding(4.dp))
+                    }
                 } else {
-                    LabelProjection(
-                        contentModel = LabelContentModel(
-                            text = when {
-                                error != null -> error
-                                hashedOutput.isNotBlank() -> "Done!"
-                                file != null -> "No hash"
-                                else -> "No file selected"
-                            }
-                        )
-                    ).project()
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        LabelProjection(
+                            contentModel = LabelContentModel(
+                                text = when {
+                                    error != null -> error
+                                    hashedOutput.isNotBlank() -> "Done!"
+                                    file != null -> "No hash"
+                                    else -> "No file selected"
+                                }
+                            )
+                        ).project()
+                    }
                 }
             }
         }

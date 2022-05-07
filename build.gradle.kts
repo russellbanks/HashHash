@@ -66,6 +66,9 @@ compose.desktop {
                 iconFile.set(project.file("src/main/resources/logo.png"))
                 menuGroup = "HashHash"
             }
+            macOS {
+                bundleID = "${project.group}.${project.name.toLowerCase()}"
+            }
             windows {
                 iconFile.set(project.file("src/main/resources/logo.ico"))
                 menuGroup = "HashHash"

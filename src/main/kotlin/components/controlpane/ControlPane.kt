@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import helper.FileUtils
 import helper.mode.Mode
+import kotlinx.coroutines.Job
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
@@ -40,6 +41,7 @@ import java.io.File
 @Composable
 fun ControlPane(
     algorithm: Algorithm,
+    job: Job?,
     mode: Mode,
     onTriggerModeChange: (Boolean) -> Unit,
     onSoloAlgorithmClick: (Algorithm) -> Unit,
@@ -86,7 +88,7 @@ fun ControlPane(
             }
             CommandButtonProjection(
                 contentModel = Command(
-                    text = "Calculate",
+                    text = if (job?.isActive != true) "Calculate" else "Cancel",
                     action = onCalculateClick
                 ),
                 presentationModel = CommandButtonPresentationModel(

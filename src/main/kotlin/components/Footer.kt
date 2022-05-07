@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Job
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.ProgressDeterminateContentModel
 import org.pushingpixels.aurora.component.projection.DeterminateLinearProgressProjection
@@ -21,7 +22,7 @@ import java.io.File
 fun Footer(
     error: String?,
     hashedOutput: String,
-    isHashing: Boolean,
+    job: Job?,
     hashProgress: Float,
     file: File?
 ) {
@@ -33,7 +34,7 @@ fun Footer(
                 .auroraBackground()
                 .padding(horizontal = 8.dp, vertical = 6.dp)
         ) {
-            Crossfade(targetState = isHashing) {
+            Crossfade(targetState = job?.isActive ?: false) {
                 if (it) {
                     DeterminateLinearProgressProjection(
                         contentModel = ProgressDeterminateContentModel(

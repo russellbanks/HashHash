@@ -48,7 +48,9 @@ import helper.mode.Mode
 import helper.mode.ModeHandler
 import helper.titlebar.TitleBar
 import helper.titlebar.TitleBarHandler
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.pushingpixels.aurora.component.model.*
@@ -67,6 +69,7 @@ fun main() = auroraApplication {
     var timeAfterHash: String? by remember { mutableStateOf(null) }
     var error: String? by remember { mutableStateOf(null) }
     var file: File? by remember { mutableStateOf(null) }
+    var hashjob: Job? by remember { mutableStateOf(null) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 770.dp)
@@ -107,7 +110,6 @@ fun main() = auroraApplication {
     ) {
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-        var isHashing by remember { mutableStateOf(false) }
         var timeTaken by remember { mutableStateOf("00:00") }
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
@@ -117,6 +119,7 @@ fun main() = auroraApplication {
                 Row(Modifier.fillMaxSize().weight(1f)) {
                     ControlPane(
                         algorithm = algorithm,
+                        job = hashjob,
                         mode = mode,
                         onTriggerModeChange = {
                             val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
@@ -152,26 +155,28 @@ fun main() = auroraApplication {
                         },
                         onCalculateClick = {
                             file?.let {
-                                if (it.exists() && !isHashing) {
-                                    scope.launch(Dispatchers.IO) {
-                                        isHashing = true
+                                if (it.exists() && hashjob?.isActive != true) {
+                                    hashjob = scope.launch(Dispatchers.IO) {
                                         Clock.System.now().also { instantAtStart ->
                                             timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                             try {
                                                 hashedOutput = it.hash(
-                                                    algorithm,
+                                                    algorithm = algorithm,
                                                     hashProgressCallback = { float -> hashProgress = float }
                                                 ).uppercase()
                                                 Clock.System.now().also { instantAtEnd ->
                                                     timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                                     timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
                                                 }
+                                            } catch (_: CancellationException) {
+                                                // Cancellations are intended
                                             } catch (exception: Exception) {
-                                                error = "Error: ${exception.localizedMessage.replaceFirstChar { char -> char.titlecase() }}"
+                                                error = exception.localizedMessage.replaceFirstChar { char -> char.titlecase() }
                                             }
-                                            isHashing = false
                                         }
                                     }
+                                } else {
+                                    hashjob?.cancel()
                                 }
                             }
                         }
@@ -306,7 +311,7 @@ fun main() = auroraApplication {
                 Footer(
                     error = error,
                     hashedOutput = hashedOutput,
-                    isHashing = isHashing,
+                    job = hashjob,
                     hashProgress = hashProgress,
                     file = file
                 )

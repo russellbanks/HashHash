@@ -34,10 +34,12 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     // LWJGL - https://github.com/LWJGL/lwjgl3
+    val lwjglCore = libs.lwjgl.core.get()
+    val tinyFD = libs.lwjgl.tinyfd.get()
     implementation(libs.lwjgl.core)
     implementation(libs.lwjgl.tinyfd)
-    runtimeOnly(libs.lwjgl.core.get().module.group, libs.lwjgl.core.get().module.name, classifier = lwjglNatives())
-    runtimeOnly(libs.lwjgl.tinyfd.get().module.group, libs.lwjgl.tinyfd.get().module.name, classifier = lwjglNatives())
+    runtimeOnly(lwjglCore.module.group, lwjglCore.module.name, lwjglCore.versionConstraint.toString(), classifier = lwjglNatives())
+    runtimeOnly(tinyFD.module.group, tinyFD.module.name, tinyFD.versionConstraint.toString(), classifier = lwjglNatives())
 }
 
 tasks.withType<KotlinCompile> {

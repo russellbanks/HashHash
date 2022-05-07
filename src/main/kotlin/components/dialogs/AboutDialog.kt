@@ -69,34 +69,31 @@ fun AboutDialog(
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(
-                        modifier = Modifier.weight(1f).padding(30.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    Box(
+                        modifier = Modifier.weight(1f).fillMaxSize().padding(30.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Image(
-                            painter = Icons.logo(),
-                            contentDescription = "HashHash logo",
-                            modifier = Modifier.size(60.dp)
-                        )
-                        LabelProjection(
-                            contentModel = LabelContentModel(text = "HashHash"),
-                            presentationModel = LabelPresentationModel(
-                                textStyle = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = Icons.logo(),
+                                contentDescription = "HashHash logo",
+                                modifier = Modifier.size(80.dp)
                             )
-                        ).project()
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             LabelProjection(
-                                contentModel = LabelContentModel(
-                                    text = "v1.1.2"
+                                contentModel = LabelContentModel(text = "HashHash"),
+                                presentationModel = LabelPresentationModel(
+                                    textStyle = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 )
                             ).project()
                             LabelProjection(
                                 contentModel = LabelContentModel(
-                                    text = "A Multiplatform GUI for Hashing, written in Compose for Desktop"
+                                    text = "v1.1.2"
                                 )
                             ).project()
                         }

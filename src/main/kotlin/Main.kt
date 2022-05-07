@@ -156,23 +156,24 @@ fun main() = auroraApplication {
                         onCalculateClick = {
                             file?.let {
                                 if (it.exists() && hashjob?.isActive != true) {
+                                    val instantAtStart = Clock.System.now()
+                                    timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
                                     hashjob = scope.launch(Dispatchers.IO) {
-                                        Clock.System.now().also { instantAtStart ->
-                                            timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                            try {
-                                                hashedOutput = it.hash(
-                                                    algorithm = algorithm,
-                                                    hashProgressCallback = { float -> hashProgress = float }
-                                                ).uppercase()
-                                                Clock.System.now().also { instantAtEnd ->
-                                                    timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                    timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
-                                                }
-                                            } catch (_: CancellationException) {
-                                                // Cancellations are intended
-                                            } catch (exception: Exception) {
-                                                error = exception
-                                            }
+                                        try {
+                                            hashedOutput = it.hash(
+                                                algorithm = algorithm,
+                                                hashProgressCallback = { float -> hashProgress = float }
+                                            ).uppercase()
+                                        } catch (_: CancellationException) {
+                                            // Cancellations are intended
+                                        } catch (exception: Exception) {
+                                            error = exception
+                                        }
+                                    }.also { job ->
+                                        job.invokeOnCompletion {
+                                            val instantAtEnd = Clock.System.now()
+                                            timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
+                                            timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
                                         }
                                     }
                                 } else {

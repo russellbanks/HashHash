@@ -11,4 +11,5 @@ jobs:
         with:
           identifier: RussellBanks.HashHash
           installers-regex: '\.msi$'
+          delete-previous-version: 'true'
           token: ${{ secrets.WINGET_TOKEN }}

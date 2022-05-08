@@ -1,9 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg width="512" height="512" version="1.1" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
- <g>
-  <path d="m129.5 0c-39.639 0-71.551 31.912-71.551 71.551v368.9c0 39.639 31.912 71.551 71.551 71.551h252.99c39.639 0 71.551-31.912 71.551-71.551v-280.51l-161.39-159.94z" fill="#ff751b"/>
-  <path d="m454.05 159.94h-161.39v-159.94" fill="#ff9752" stroke-width=".82199"/>
-  <text x="252.74458" y="402" fill="#000000" font-family="sans-serif" font-size="136.06px" style="line-height:1.25" xml:space="preserve"><tspan x="252.74458" y="402" fill="#ffffff" font-family="'Microsoft YaHei'" font-size="136.06px" font-weight="bold" text-align="center" text-anchor="middle">AI</tspan></text>
- </g>
+
+<svg
+   width="512"
+   height="512"
+   version="1.1"
+   viewBox="0 0 512 512"
+   id="svg12"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs16" />
+  <path
+     d="M 129.5,0 C 89.861,0 57.949,31.912 57.949,71.551 v 368.9 c 0,39.639 31.912,71.551 71.551,71.551 h 252.99 c 39.639,0 71.551,-31.912 71.551,-71.551 V 159.941 L 292.651,0.001 Z"
+     fill="#ff751b"
+     id="path2" />
+  <path
+     d="M 454.05,159.94 H 292.66 V 0"
+     fill="#ff9752"
+     stroke-width="0.82199"
+     id="path4" />
+  <text
+     x="259.72784"
+     y="402"
+     fill="#000000"
+     font-family="sans-serif"
+     font-size="136.06px"
+     style="font-size:151.181px;line-height:1.25"
+     xml:space="preserve"
+     id="text8"><tspan
+       x="259.72784"
+       y="402"
+       fill="#ffffff"
+       font-family="'Microsoft YaHei'"
+       font-size="136.06px"
+       font-weight="bold"
+       text-align="center"
+       text-anchor="middle"
+       id="tspan6"
+       style="font-size:151.181px">Ai</tspan></text>
 </svg>

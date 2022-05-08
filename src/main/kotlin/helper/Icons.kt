@@ -55,8 +55,9 @@ object Icons {
         @Composable
         fun getFileIcon(file: File?): Painter {
             listOf(
-                "ai", "avi", "css", "csv", "dbf", "doc", "docx", "dwg", "exe", "html", "iso", "jpg", "js", "json", "mp3",
-                "mp4", "msi", "pdf", "png", "ppt", "pptx", "rtf", "svg", "txt", "xls", "xml", "zip", "file"
+                "ai", "apk", "avi", "css", "csv", "dbf", "dll", "doc", "docx", "dwg", "exe", "file", "html", "iso",
+                "jar", "java", "jpg", "js", "json", "kt", "log", "md", "mp3", "mp4", "msi", "pdf", "png", "ppt", "pptx",
+                "rpf", "rtf", "svg", "txt", "xls", "xlsx", "xml", "zip"
             ).also {
                 return painterResource("file types/${it.getOrNull(it.indexOf(file?.extension?.lowercase() ?: "file")) ?: "file"}.svg")
             }

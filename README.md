@@ -63,13 +63,6 @@ Contributions are what make the open source community such an amazing place to b
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Attribution
-
-- [Application Icon](https://www.flaticon.com/free-icon/hash_390926?term=hash&page=1&position=40&page=1&position=40&related_id=390926) - Freepik via Flaticon
-- [File types icon pack](https://www.flaticon.com/packs/file-types) - Smashicons via Flaticon
-- [Text Editor icon pack](https://www.flaticon.com/packs/text-editor-42) - Freepik via Flaticon
-- [Book Store icon pack](https://www.flaticon.com/packs/book-store-7) - Freepik via Flaticon
-
 ## License
 
 [![GNU GPLv3 Logo](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)

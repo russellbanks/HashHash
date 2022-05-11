@@ -271,7 +271,10 @@ fun main() = auroraApplication {
                                                 Command(
                                                     text = "Paste",
                                                     icon = Icons.Utility.clipboard(),
-                                                    action = { comparisonHash = clipboardManager.getText()?.text ?: "" }
+                                                    action = {
+                                                        comparisonHash = (clipboardManager.getText()?.text ?: "")
+                                                            .filterNot { it.isWhitespace() }
+                                                    }
                                                 ),
                                                 Command(
                                                     text = "Clear",

@@ -23,7 +23,10 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -63,6 +66,7 @@ import preferences.theme.ThemeHandler
 import java.io.File
 import java.text.SimpleDateFormat
 
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() = auroraApplication {
     var isAboutOpen by remember { mutableStateOf(false) }
     var isPreferencesOpen by remember { mutableStateOf(false) }
@@ -108,7 +112,19 @@ fun main() = auroraApplication {
             },
             aboutAction = { isAboutOpen = true }
         ),
-        undecorated = undecorated
+        undecorated = undecorated,
+        onKeyEvent = {
+            if (it.key == Key.F11) {
+                if (windowState.placement == WindowPlacement.Floating) {
+                    windowState.placement = WindowPlacement.Fullscreen
+                } else {
+                    windowState.placement = WindowPlacement.Floating
+                }
+                true
+            } else {
+                false
+            }
+        }
     ) {
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }

@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -41,7 +43,6 @@ import components.Header
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
-import helper.Clipboard
 import helper.FileUtils
 import helper.Icons
 import helper.Time
@@ -115,6 +116,7 @@ fun main() = auroraApplication {
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
         var mode by remember { mutableStateOf(ModeHandler.getMode()) }
+        val clipboardManager = LocalClipboardManager.current
         Box {
             Column {
                 Row(Modifier.fillMaxSize().weight(1f)) {
@@ -221,7 +223,9 @@ fun main() = auroraApplication {
                                                     text = "Copy",
                                                     icon = Icons.Utility.copy(),
                                                     action = {
-                                                        if (hashedOutput.isNotBlank()) Clipboard.setContent(hashedOutput)
+                                                        if (hashedOutput.isNotBlank()) {
+                                                            clipboardManager.setText(AnnotatedString(text = hashedOutput))
+                                                        }
                                                     }
                                                 ),
                                                 Command(
@@ -267,9 +271,7 @@ fun main() = auroraApplication {
                                                 Command(
                                                     text = "Paste",
                                                     icon = Icons.Utility.clipboard(),
-                                                    action = {
-                                                        runCatching { comparisonHash = Clipboard.readContent() }
-                                                    }
+                                                    action = { comparisonHash = clipboardManager.getText()?.text ?: "" }
                                                 ),
                                                 Command(
                                                     text = "Clear",

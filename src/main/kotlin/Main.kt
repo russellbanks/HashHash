@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -28,41 +27,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
-import com.google.accompanist.flowlayout.FlowColumn
 import com.russellbanks.HashHash.BuildConfig
-import components.FileInfoSection
-import components.Footer
-import components.Header
+import components.*
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import helper.FileUtils
 import helper.Icons
 import helper.Time
-import preferences.mode.Mode
-import preferences.mode.ModeHandler
-import preferences.titlebar.TitleBar
-import preferences.titlebar.TitleBarHandler
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import org.pushingpixels.aurora.component.model.*
-import org.pushingpixels.aurora.component.projection.*
+import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
+import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
+import preferences.mode.Mode
+import preferences.mode.ModeHandler
 import preferences.theme.ThemeHandler
+import preferences.titlebar.TitleBar
+import preferences.titlebar.TitleBarHandler
 import java.io.File
 import java.text.SimpleDateFormat
 
@@ -132,7 +124,6 @@ fun main() = auroraApplication {
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
         var mode by remember { mutableStateOf(ModeHandler.getMode()) }
-        val clipboardManager = LocalClipboardManager.current
         Box {
             Column {
                 Row(Modifier.fillMaxSize().weight(1f)) {
@@ -211,122 +202,27 @@ fun main() = auroraApplication {
                             modifier = Modifier.weight(1f).padding(20.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                LabelProjection(
-                                    contentModel = LabelContentModel(text = "${algorithm.algorithmName} Hash"),
-                                    presentationModel = LabelPresentationModel(
-                                        textStyle = TextStyle(
-                                            fontSize = 15.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                    )
-                                ).project()
-                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Box(Modifier.weight(1f)) {
-                                        TextFieldStringProjection(
-                                            contentModel = TextFieldStringContentModel(
-                                                value = hashedOutput,
-                                                placeholder = "Output Hash",
-                                                readOnly = true,
-                                                onValueChange = {}
-                                            )
-                                        ).project(Modifier.fillMaxWidth())
+                            val clipboardManager = LocalClipboardManager.current
+                            OutputTextFieldRow(
+                                algorithm = algorithm,
+                                hashedOutput = hashedOutput,
+                                onCaseClick = {
+                                    hashedOutput = hashedOutput.run {
+                                        if (this == uppercase()) lowercase() else uppercase()
                                     }
-                                    CommandButtonStripProjection(
-                                        contentModel = CommandGroup(
-                                            commands = listOf(
-                                                Command(
-                                                    text = "Copy",
-                                                    icon = Icons.Utility.copy(),
-                                                    action = {
-                                                        if (hashedOutput.isNotBlank()) {
-                                                            clipboardManager.setText(AnnotatedString(text = hashedOutput))
-                                                        }
-                                                    }
-                                                ),
-                                                Command(
-                                                    text = "Case",
-                                                    icon = Icons.Utility.switch(),
-                                                    action = {
-                                                        hashedOutput = if (hashedOutput == hashedOutput.uppercase()) {
-                                                            hashedOutput.lowercase()
-                                                        } else {
-                                                            hashedOutput.uppercase()
-                                                        }
-                                                    }
-                                                )
-                                            )
-                                        ),
-                                        presentationModel = CommandStripPresentationModel(
-                                            orientation = StripOrientation.Horizontal,
-                                            commandPresentationState = CommandButtonPresentationState.Medium
-                                        )
-                                    ).project()
                                 }
-                            }
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                LabelProjection(
-                                    contentModel = LabelContentModel(text = "Comparison Hash"),
-                                    presentationModel = LabelPresentationModel(
-                                        textStyle = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                                    )
-                                ).project()
-                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Box(Modifier.weight(1f)) {
-                                        TextFieldStringProjection(
-                                            contentModel = TextFieldStringContentModel(
-                                                value = comparisonHash,
-                                                placeholder = "Comparison Hash",
-                                                onValueChange = { comparisonHash = it }
-                                            )
-                                        ).project(Modifier.fillMaxWidth())
-                                    }
-                                    CommandButtonStripProjection(
-                                        contentModel = CommandGroup(
-                                            commands = listOf(
-                                                Command(
-                                                    text = "Paste",
-                                                    icon = Icons.Utility.clipboard(),
-                                                    action = {
-                                                        comparisonHash = (clipboardManager.getText()?.text ?: "")
-                                                            .filterNot { it.isWhitespace() }
-                                                    }
-                                                ),
-                                                Command(
-                                                    text = "Clear",
-                                                    icon = Icons.Utility.eraser(),
-                                                    action = { comparisonHash = "" }
-                                                )
-                                            )
-                                        ),
-                                        presentationModel = CommandStripPresentationModel(
-                                            orientation = StripOrientation.Horizontal,
-                                            commandPresentationState = CommandButtonPresentationState.Medium
-                                        )
-                                    ).project()
-                                }
-                                val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
-                                AnimatedVisibility(visible = areTextFieldsBlank) {
-                                    val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, true)
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(
-                                            text = "Hashes${if (!hashesMatch) " do not" else ""} match",
-                                            icon = if (hashesMatch) Icons.Utility.check() else Icons.Utility.cross()
-                                        )
-                                    ).project()
-                                }
-                            }
-                            FlowColumn {
-                                LabelProjection(contentModel = LabelContentModel(
-                                    text = "Started at: ${if (timeBeforeHash != null) timeBeforeHash else "-"}")
-                                ).project()
-                                LabelProjection(contentModel = LabelContentModel(
-                                    text = "Finished at: ${if (timeAfterHash != null) timeAfterHash else "-"}")
-                                ).project()
-                                LabelProjection(contentModel = LabelContentModel(
-                                    text = "Time taken: ${if (timeAfterHash != null) timeTaken else "-"}")
-                                ).project()
-                            }
+                            )
+                            ComparisonTextFieldRow(
+                                hashedOutput = hashedOutput,
+                                comparisonHash = comparisonHash,
+                                onPasteClick = {
+                                    comparisonHash = (clipboardManager.getText()?.text ?: "")
+                                        .filterNot { it.isWhitespace() }
+                                },
+                                onClearClick = { comparisonHash = "" },
+                                onTextFieldChange = { comparisonHash = it }
+                            )
+                            TimeResultColumn(timeBeforeHash, timeAfterHash, timeTaken)
                         }
                     }
                 }

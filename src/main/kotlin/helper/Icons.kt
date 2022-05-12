@@ -31,23 +31,26 @@ object Icons {
     fun logo() = painterResource("logo.svg")
 
     object Utility {
-        @Composable
-        fun check() = painterResource("utility icons/check.svg")
+
+        private const val prefixPath = "utility icons"
 
         @Composable
-        fun clipboard() = painterResource("utility icons/clipboard.svg")
+        fun check() = painterResource("$prefixPath/check.svg")
 
         @Composable
-        fun copy() = painterResource("utility icons/copy.svg")
+        fun clipboard() = painterResource("$prefixPath/clipboard.svg")
 
         @Composable
-        fun cross() = painterResource("utility icons/cross.svg")
+        fun copy() = painterResource("$prefixPath/copy.svg")
 
         @Composable
-        fun eraser() = painterResource("utility icons/eraser.svg")
+        fun cross() = painterResource("$prefixPath/cross.svg")
 
         @Composable
-        fun switch() = painterResource("utility icons/switch.svg")
+        fun eraser() = painterResource("$prefixPath/eraser.svg")
+
+        @Composable
+        fun switch() = painterResource("$prefixPath/switch.svg")
     }
 
     object FileTypes {

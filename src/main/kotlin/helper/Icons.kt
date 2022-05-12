@@ -62,7 +62,7 @@ object Icons {
                 "jar", "java", "jpg", "js", "json", "kt", "log", "md", "mp3", "mp4", "msi", "pdf", "png", "ppt", "pptx",
                 "rpf", "rtf", "svg", "txt", "xls", "xlsx", "xml", "zip"
             ).also {
-                return painterResource("file types/${it.getOrNull(it.indexOf(file?.extension?.lowercase() ?: "file")) ?: "file"}.svg")
+                return painterResource("file types/${it[it.indexOf(file?.extension?.lowercase() ?: "file")]}.svg")
             }
         }
 

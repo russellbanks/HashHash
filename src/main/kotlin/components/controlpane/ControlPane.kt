@@ -42,6 +42,7 @@ import java.io.File
 fun ControlPane(
     algorithm: Algorithm,
     job: Job?,
+    file: File?,
     mode: Mode,
     onTriggerModeChange: (Boolean) -> Unit,
     onSoloAlgorithmClick: (Algorithm) -> Unit,
@@ -89,7 +90,8 @@ fun ControlPane(
             CommandButtonProjection(
                 contentModel = Command(
                     text = if (job?.isActive != true) "Calculate" else "Cancel",
-                    action = onCalculateClick
+                    action = onCalculateClick,
+                    isActionEnabled = file != null && file.exists()
                 ),
                 presentationModel = CommandButtonPresentationModel(
                     presentationState = CommandButtonPresentationState.Medium

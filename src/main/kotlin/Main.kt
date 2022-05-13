@@ -130,6 +130,7 @@ fun main() = auroraApplication {
                     ControlPane(
                         algorithm = algorithm,
                         job = hashjob,
+                        file = file,
                         mode = mode,
                         onTriggerModeChange = {
                             val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
@@ -165,7 +166,7 @@ fun main() = auroraApplication {
                         },
                         onCalculateClick = {
                             file?.let {
-                                if (it.exists() && hashjob?.isActive != true) {
+                                if (hashjob?.isActive != true) {
                                     hashjob = scope.launch(Dispatchers.IO) {
                                         Clock.System.now().also { instantAtStart ->
                                             timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())

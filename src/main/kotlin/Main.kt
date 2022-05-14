@@ -40,12 +40,12 @@ import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import helper.FileUtils
 import helper.Icons
-import helper.Time
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
@@ -56,15 +56,14 @@ import preferences.theme.ThemeHandler
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import java.io.File
-import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = auroraApplication {
     var isAboutOpen by remember { mutableStateOf(false) }
     var isPreferencesOpen by remember { mutableStateOf(false) }
     var hashedOutput by remember { mutableStateOf("") }
-    var timeBeforeHash: String? by remember { mutableStateOf(null) }
-    var timeAfterHash: String? by remember { mutableStateOf(null) }
+    var instantBeforeHash: Instant? by remember { mutableStateOf(null) }
+    var instantAfterHash: Instant? by remember { mutableStateOf(null) }
     var error: Exception? by remember { mutableStateOf(null) }
     var file: File? by remember { mutableStateOf(null) }
     var hashjob: Job? by remember { mutableStateOf(null) }
@@ -87,8 +86,8 @@ fun main() = auroraApplication {
                     if (it != null && file != it) {
                         file = it
                         hashedOutput = ""
-                        timeBeforeHash = null
-                        timeAfterHash = null
+                        instantBeforeHash = null
+                        instantAfterHash = null
                         error = null
                     }
                 }
@@ -120,7 +119,6 @@ fun main() = auroraApplication {
     ) {
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-        var timeTaken by remember { mutableStateOf("00:00") }
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
         var mode by remember { mutableStateOf(ModeHandler.getMode()) }
@@ -141,8 +139,8 @@ fun main() = auroraApplication {
                             if (item != algorithm) {
                                 algorithm = item
                                 hashedOutput = ""
-                                timeBeforeHash = null
-                                timeAfterHash = null
+                                instantBeforeHash = null
+                                instantAfterHash = null
                                 error = null
                             }
                         },
@@ -150,8 +148,8 @@ fun main() = auroraApplication {
                             if (nestedItem != algorithm) {
                                 algorithm = nestedItem
                                 hashedOutput = ""
-                                timeBeforeHash = null
-                                timeAfterHash = null
+                                instantBeforeHash = null
+                                instantAfterHash = null
                                 error = null
                             }
                         },
@@ -159,36 +157,29 @@ fun main() = auroraApplication {
                             if (result != null && file != result) {
                                 file = result
                                 hashedOutput = ""
-                                timeBeforeHash = null
-                                timeAfterHash = null
+                                instantBeforeHash = null
+                                instantAfterHash = null
                                 error = null
                             }
                         },
                         onCalculateClick = {
-                            file?.let {
-                                if (hashjob?.isActive != true) {
-                                    hashjob = scope.launch(Dispatchers.IO) {
-                                        Clock.System.now().also { instantAtStart ->
-                                            timeBeforeHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                            try {
-                                                hashedOutput = it.hash(
-                                                    algorithm = algorithm,
-                                                    hashProgressCallback = { float -> hashProgress = float }
-                                                ).uppercase()
-                                                Clock.System.now().also { instantAtEnd ->
-                                                    timeAfterHash = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(System.currentTimeMillis())
-                                                    timeTaken = Time.formatElapsedTime(instantAtEnd - instantAtStart)
-                                                }
-                                            } catch (_: CancellationException) {
-                                                // Cancellations are intended
-                                            } catch (exception: Exception) {
-                                                error = exception
-                                            }
-                                        }
+                            if (hashjob?.isActive != true) {
+                                hashjob = scope.launch(Dispatchers.IO) {
+                                    instantBeforeHash = Clock.System.now()
+                                    try {
+                                        hashedOutput = file?.hash(
+                                            algorithm = algorithm,
+                                            hashProgressCallback = { hashProgress = it }
+                                        )!!.uppercase()
+                                        instantAfterHash = Clock.System.now()
+                                    } catch (_: CancellationException) {
+                                        // Cancellations are intended
+                                    } catch (exception: Exception) {
+                                        error = exception
                                     }
-                                } else {
-                                    hashjob?.cancel()
                                 }
+                            } else {
+                                hashjob?.cancel()
                             }
                         }
                     )
@@ -223,7 +214,7 @@ fun main() = auroraApplication {
                                 onClearClick = { comparisonHash = "" },
                                 onTextFieldChange = { comparisonHash = it }
                             )
-                            TimeResultColumn(timeBeforeHash, timeAfterHash, timeTaken)
+                            TimeResultColumn(instantBeforeHash, instantAfterHash)
                         }
                     }
                 }

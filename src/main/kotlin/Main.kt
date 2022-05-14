@@ -38,6 +38,7 @@ import components.*
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
+import helper.DragAndDrop
 import helper.FileUtils
 import helper.Icons
 import kotlinx.coroutines.CancellationException
@@ -117,6 +118,13 @@ fun main() = auroraApplication {
             }
         }
     ) {
+        window.dropTarget = DragAndDrop.target(
+            result = { droppedItems ->
+                droppedItems.first().let {
+                    if (it is File && !it.isDirectory) file = it
+                }
+            }
+        )
         var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         val scope = rememberCoroutineScope()

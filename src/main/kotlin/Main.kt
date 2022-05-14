@@ -185,10 +185,7 @@ fun main() = auroraApplication {
                     )
                     VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                     Column(Modifier.fillMaxSize()) {
-                        FileInfoSection(
-                            modifier = Modifier.defaultMinSize(minHeight = 120.dp).padding(horizontal = 20.dp),
-                            file = file
-                        )
+                        FileInfoSection(file)
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
                         Column(
                             modifier = Modifier.weight(1f).padding(20.dp),

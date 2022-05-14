@@ -20,46 +20,48 @@ import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import java.io.File
 
 @Composable
-fun FileInfoSection(
-    modifier: Modifier = Modifier,
-    file: File?
-) {
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Image(
-            painter = Icons.FileTypes.getFileIcon(file),
-            contentDescription = "${(file?.extension ?: "file").lowercase().replaceFirstChar { it.titlecase() }} icon",
-            modifier = Modifier.size(60.dp).align(Alignment.CenterVertically)
-        )
-        SelectionContainer {
-            Box(modifier = Modifier.defaultMinSize(minHeight = 120.dp), contentAlignment = Alignment.Center) {
-                FlowRow(mainAxisAlignment = FlowMainAxisAlignment.Center, mainAxisSpacing = 4.dp) {
-                    LabelProjection(
-                        contentModel = LabelContentModel(text = FileUtils.getFileName(file)),
-                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                    ).project()
+fun FileInfoSection(file: File?) {
+    SelectionContainer {
+        Row(
+            modifier = Modifier.defaultMinSize(minHeight = 120.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = Icons.FileTypes.getFileIcon(file),
+                contentDescription = "${(file?.extension ?: "file").lowercase().replaceFirstChar { it.titlecase() }} icon",
+                modifier = Modifier.size(80.dp).padding(start = 20.dp)
+            )
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                mainAxisAlignment = FlowMainAxisAlignment.SpaceEvenly
+            ) {
+                LabelProjection(
+                    contentModel = LabelContentModel(text = FileUtils.getFileName(file)),
+                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
+                ).project()
+                VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
+                LabelProjection(
+                    contentModel = LabelContentModel(text = FileUtils.getFileType(file)),
+                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
+                ).project()
+                if (FileUtils.getFileType(file) != FileUtils.getFileExtension(file)) {
                     VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                     LabelProjection(
-                        contentModel = LabelContentModel(text = FileUtils.getFileType(file)),
-                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                    ).project()
-                    if (FileUtils.getFileType(file) != FileUtils.getFileExtension(file)) {
-                        VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                        LabelProjection(
-                            contentModel = LabelContentModel(text = FileUtils.getFileExtension(file)),
-                            presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                        ).project()
-                    }
-                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                    LabelProjection(
-                        contentModel = LabelContentModel(text = FileUtils.getFormattedBytes(file)),
-                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                    ).project()
-                    VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
-                    LabelProjection(
-                        contentModel = LabelContentModel(text = FileUtils.getFilePath(file)),
+                        contentModel = LabelContentModel(text = FileUtils.getFileExtension(file)),
                         presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                     ).project()
                 }
+                VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
+                LabelProjection(
+                    contentModel = LabelContentModel(text = FileUtils.getFormattedBytes(file)),
+                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
+                ).project()
+                VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
+                LabelProjection(
+                    contentModel = LabelContentModel(text = FileUtils.getFilePath(file)),
+                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
+                ).project()
             }
         }
     }

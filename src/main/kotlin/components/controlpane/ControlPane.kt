@@ -91,7 +91,7 @@ fun ControlPane(
                 contentModel = Command(
                     text = if (job?.isActive != true) "Calculate" else "Cancel",
                     action = onCalculateClick,
-                    isActionEnabled = file != null && file.exists()
+                    isActionEnabled = file != null
                 ),
                 presentationModel = CommandButtonPresentationModel(
                     presentationState = CommandButtonPresentationState.Medium

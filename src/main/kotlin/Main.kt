@@ -70,7 +70,7 @@ fun main() = auroraApplication {
     var hashjob: Job? by remember { mutableStateOf(null) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
-        size = DpSize(width = 1035.dp, height = 770.dp)
+        size = DpSize(width = 1035.dp, height = 750.dp)
     )
     val themeHandler = ThemeHandler(isSystemInDarkTheme())
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }

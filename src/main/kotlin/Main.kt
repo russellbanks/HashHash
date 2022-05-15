@@ -121,7 +121,7 @@ fun main() = auroraApplication {
         window.dropTarget = DragAndDrop.target(
             result = { droppedItems ->
                 droppedItems.first().let {
-                    if (it is File && !it.isDirectory) file = it
+                    if (it is File && it.isFile) file = it
                 }
             }
         )

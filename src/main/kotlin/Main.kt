@@ -143,18 +143,9 @@ fun main() = auroraApplication {
                             ModeHandler.putMode(newMode)
                             mode = newMode
                                               },
-                        onSoloAlgorithmClick = { item ->
+                        onAlgorithmClick = { item ->
                             if (item != algorithm) {
                                 algorithm = item
-                                hashedOutput = ""
-                                instantBeforeHash = null
-                                instantAfterHash = null
-                                error = null
-                            }
-                        },
-                        onSubAlgorithmClick = { nestedItem ->
-                            if (nestedItem != algorithm) {
-                                algorithm = nestedItem
                                 hashedOutput = ""
                                 instantBeforeHash = null
                                 instantAfterHash = null

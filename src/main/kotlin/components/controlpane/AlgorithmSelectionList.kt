@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
 import preferences.mode.Mode
-import components.NestedAlgorithm
 import helper.Unicode
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
@@ -58,8 +57,7 @@ import org.pushingpixels.aurora.theming.Sides
 fun AlgorithmSelectionList(
     algorithm: Algorithm,
     mode: Mode,
-    onSoloClick: (item: Algorithm) -> Unit,
-    onSubClick: (nestedItem: Algorithm) -> Unit
+    onAlgorithmClick: (item: Algorithm) -> Unit
 ) {
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
@@ -78,7 +76,7 @@ fun AlgorithmSelectionList(
                         modifier = Modifier.fillMaxWidth().height(32.dp)
                             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
                         selected = (algorithm == item),
-                        onClick = { onSoloClick(item) },
+                        onClick = { onAlgorithmClick(item) },
                         sides = Sides(straightSides = Side.values().toSet())
                     ) {
                         LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
@@ -113,7 +111,7 @@ fun AlgorithmSelectionList(
                                     modifier = Modifier.fillMaxWidth().height(32.dp)
                                         .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
                                     selected = (algorithm == nestedItem),
-                                    onClick = { onSoloClick(nestedItem) },
+                                    onClick = { onAlgorithmClick(nestedItem) },
                                     sides = Sides(straightSides = Side.values().toSet())
                                 ) {
                                     LabelProjection(

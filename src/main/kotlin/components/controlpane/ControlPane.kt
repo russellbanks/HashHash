@@ -45,8 +45,7 @@ fun ControlPane(
     file: File?,
     mode: Mode,
     onTriggerModeChange: (Boolean) -> Unit,
-    onSoloAlgorithmClick: (Algorithm) -> Unit,
-    onSubAlgorithmClick: (Algorithm) -> Unit,
+    onAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (File?) -> Unit,
     onCalculateClick: () -> Unit
 ) {
@@ -80,12 +79,7 @@ fun ControlPane(
                         )
                     ).project()
                 }
-                AlgorithmSelectionList(
-                    algorithm = algorithm,
-                    mode = mode,
-                    onSoloClick = { onSoloAlgorithmClick(it) },
-                    onSubClick = { onSubAlgorithmClick(it) }
-                )
+                AlgorithmSelectionList(algorithm = algorithm, mode = mode, onAlgorithmClick = { onAlgorithmClick(it) })
             }
             CommandButtonProjection(
                 contentModel = Command(

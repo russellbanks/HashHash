@@ -38,6 +38,9 @@ object Icons {
         fun check() = painterResource("$prefixPath/check.svg")
 
         @Composable
+        fun chevronRight() = painterResource("$prefixPath/chevron-right.svg")
+
+        @Composable
         fun clipboard() = painterResource("$prefixPath/clipboard.svg")
 
         @Composable

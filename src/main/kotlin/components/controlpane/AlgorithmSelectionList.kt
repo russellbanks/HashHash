@@ -22,16 +22,12 @@ package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,22 +35,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
-import preferences.mode.Mode
-import helper.Unicode
+import helper.Icons
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
 import org.pushingpixels.aurora.component.model.LabelContentModel
-import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.Side
 import org.pushingpixels.aurora.theming.Sides
+import preferences.mode.Mode
 
 @Composable
 fun AlgorithmSelectionList(
@@ -97,14 +90,16 @@ fun AlgorithmSelectionList(
                                   },
                         sides = Sides(straightSides = Side.values().toSet()),
                     ) {
-                        Row {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(modifier = Modifier.fillMaxHeight().weight(1f), contentAlignment = Alignment.CenterStart) {
                                 LabelProjection(contentModel = LabelContentModel(text = item.name)).project()
                             }
-                            LabelProjection(
-                                contentModel = LabelContentModel(text = Unicode.dropDown),
-                                presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-                            ).project(Modifier.rotate(rotationAngle).padding(8.dp))
+                            Image(
+                                painter = Icons.Utility.chevronRight(),
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp).padding(horizontal = 8.dp).rotate(rotationAngle),
+                                colorFilter = ColorFilter.tint(color = backgroundColorScheme.foregroundColor)
+                            )
                         }
                     }
                     AnimatedVisibility(nestedVisibility) {

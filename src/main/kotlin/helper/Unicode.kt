@@ -22,6 +22,4 @@ package helper
 
 object Unicode {
     const val dropDown = "\uD83E\uDC93"
-
-    const val bulletPoint = "\u2022"
 }

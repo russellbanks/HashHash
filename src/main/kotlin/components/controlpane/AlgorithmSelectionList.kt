@@ -22,6 +22,7 @@ package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -30,6 +31,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,11 +117,20 @@ fun AlgorithmSelectionList(
                                     onClick = { onAlgorithmClick(nestedItem) },
                                     sides = Sides(straightSides = Side.values().toSet())
                                 ) {
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(
-                                            text = "${Unicode.bulletPoint} ${nestedItem.algorithmName}"
-                                        )
-                                    ).project()
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Canvas(Modifier.padding(start = 12.dp)) {
+                                            drawCircle(
+                                                color = backgroundColorScheme.foregroundColor,
+                                                radius = 2f
+                                            )
+                                        }
+                                        LabelProjection(
+                                            contentModel = LabelContentModel(text = nestedItem.algorithmName)
+                                        ).project()
+                                    }
                                 }
                             }
                         }

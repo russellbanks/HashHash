@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components
+package components.screens.file
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -39,7 +39,7 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 @Composable
 fun OutputTextFieldRow(
     algorithm: Algorithm,
-    hashedOutput: String,
+    value: String,
     onCaseClick: () -> Unit
 ) {
     val clipboardManager =  LocalClipboardManager.current
@@ -57,7 +57,7 @@ fun OutputTextFieldRow(
             Box(Modifier.weight(1f)) {
                 TextFieldStringProjection(
                     contentModel = TextFieldStringContentModel(
-                        value = hashedOutput,
+                        value = value,
                         placeholder = "Output Hash",
                         readOnly = true,
                         onValueChange = {}
@@ -71,8 +71,8 @@ fun OutputTextFieldRow(
                             text = "Copy",
                             icon = Icons.Utility.copy(),
                             action = {
-                                if (hashedOutput.isNotBlank()) {
-                                    clipboardManager.setText(AnnotatedString(text = hashedOutput))
+                                if (value.isNotBlank()) {
+                                    clipboardManager.setText(AnnotatedString(text = value))
                                 }
                             }
                         ),

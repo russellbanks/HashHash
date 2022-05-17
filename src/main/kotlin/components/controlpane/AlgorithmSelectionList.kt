@@ -78,7 +78,7 @@ fun AlgorithmSelectionList(
                         LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
                     }
                 } else if (item is NestedAlgorithm) {
-                    var rotate by remember { mutableStateOf(false) }
+                    var rotate by rememberSaveable { mutableStateOf(false) }
                     val rotationAngle by animateFloatAsState(targetValue = if (rotate) 90F else 0F)
                     var nestedVisibility by rememberSaveable { mutableStateOf(false) }
                     AuroraBoxWithHighlights(

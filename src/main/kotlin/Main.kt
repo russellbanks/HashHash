@@ -208,7 +208,7 @@ fun main() = auroraApplication {
                                         .filterNot { it.isWhitespace() }
                                 },
                                 onClearClick = { comparisonHash = "" },
-                                onTextFieldChange = { comparisonHash = it }
+                                onTextFieldChange = { comparisonHash = it.filterNot { char -> char.isWhitespace() } }
                             )
                             TimeResultColumn(instantBeforeHash, instantAfterHash)
                         }

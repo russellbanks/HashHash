@@ -97,7 +97,7 @@ fun AlgorithmSelectionList(
                             Image(
                                 painter = Icons.Utility.chevronRight(),
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp).padding(horizontal = 8.dp).rotate(rotationAngle),
+                                modifier = Modifier.size(32.dp).padding(horizontal = 6.dp).rotate(rotationAngle),
                                 colorFilter = ColorFilter.tint(color = backgroundColorScheme.foregroundColor)
                             )
                         }

@@ -82,6 +82,7 @@ fun main() = auroraApplication {
         icon = Icons.logo(),
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
+            auroraApplicationScope = this,
             openAction = {
                 FileUtils.openFileDialogAndGetResult().also {
                     if (it != null && file != it) {
@@ -94,7 +95,6 @@ fun main() = auroraApplication {
                 }
                          },
             preferencesAction = { isPreferencesOpen = true },
-            quitAction = { exitApplication() },
             toggleFullScreenAction = {
                 if (windowState.placement == WindowPlacement.Floating) {
                     windowState.placement = WindowPlacement.Fullscreen

@@ -25,14 +25,15 @@ import helper.Browser
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
+import org.pushingpixels.aurora.window.AuroraApplicationScope
 import java.net.URL
 
 object Header {
 
     fun commands(
+        auroraApplicationScope: AuroraApplicationScope,
         openAction: () -> Unit,
         preferencesAction: () -> Unit,
-        quitAction: () -> Unit,
         toggleFullScreenAction: () -> Unit,
         aboutAction: () -> Unit
     ): CommandGroup {
@@ -62,7 +63,7 @@ object Header {
                                 commands = listOf(
                                     Command(
                                         text = "Quit ${BuildConfig.appName}",
-                                        action = quitAction
+                                        action = { auroraApplicationScope.exitApplication() }
                                     )
                                 )
                             )

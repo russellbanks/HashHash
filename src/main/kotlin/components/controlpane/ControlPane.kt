@@ -45,11 +45,15 @@ fun ControlPane(
     algorithm: Algorithm,
     job: Job?,
     file: File?,
+    fileComparisonOne: File?,
+    fileComparisonTwo: File?,
     mode: Mode,
     currentScreen: Screen,
     onTriggerModeChange: (Boolean) -> Unit,
     onAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (File?) -> Unit,
+    onSelectFileComparisonOneResult: (File?) -> Unit,
+    oneSelectFileComparisonTwoResult: (File?) -> Unit,
     onCalculateClick: () -> Unit
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
@@ -62,11 +66,28 @@ fun ControlPane(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AnimatedVisibility(visible = currentScreen == Screen.FileScreen) {
+                AnimatedVisibility(visible = currentScreen != Screen.TextScreen) {
                     CommandButtonProjection(
                         contentModel = Command(
-                            text = "Select file",
-                            action = { FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(it) } }
+                            text = when (currentScreen) {
+                                Screen.FileScreen -> "Select file"
+                                Screen.CompareFilesScreen -> "Select 1st file"
+                                else -> ""
+                            },
+                            action = {
+                                FileUtils.openFileDialogAndGetResult().also {
+                                    if (currentScreen == Screen.FileScreen) onSelectFileResult(it)
+                                    else if (currentScreen == Screen.CompareFilesScreen) onSelectFileComparisonOneResult(it)
+                                }
+                            }
+                        )
+                    ).project(Modifier.fillMaxWidth().height(40.dp))
+                }
+                AnimatedVisibility(visible = currentScreen == Screen.CompareFilesScreen) {
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = if (currentScreen == Screen.CompareFilesScreen) "Select 2nd file" else "",
+                            action = { FileUtils.openFileDialogAndGetResult().also { oneSelectFileComparisonTwoResult(it) } }
                         )
                     ).project(Modifier.fillMaxWidth().height(40.dp))
                 }
@@ -86,12 +107,21 @@ fun ControlPane(
                 }
                 AlgorithmSelectionList(algorithm = algorithm, mode = mode, onAlgorithmClick = { onAlgorithmClick(it) })
             }
-            AnimatedVisibility(visible = currentScreen == Screen.FileScreen) {
+            AnimatedVisibility(visible = currentScreen != Screen.TextScreen) {
                 CommandButtonProjection(
                     contentModel = Command(
-                        text = if (job?.isActive != true) "Calculate" else "Cancel",
+                        text = when {
+                            currentScreen == Screen.TextScreen -> ""
+                            currentScreen == Screen.CompareFilesScreen -> "Compare"
+                            job?.isActive != true -> "Calculate"
+                            else -> "Cancel"
+                        },
                         action = onCalculateClick,
-                        isActionEnabled = file != null
+                        isActionEnabled = if (currentScreen == Screen.CompareFilesScreen) {
+                            fileComparisonOne != null && fileComparisonTwo != null
+                        } else {
+                            file != null
+                        }
                     ),
                     presentationModel = CommandButtonPresentationModel(
                         presentationState = CommandButtonPresentationState.Medium

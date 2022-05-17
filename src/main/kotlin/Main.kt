@@ -39,14 +39,12 @@ import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import components.screens.Screen
+import components.screens.comparefiles.CompareFilesScreen
 import components.screens.file.FileScreen
 import components.screens.text.TextScreen
 import helper.DragAndDrop
 import helper.Icons
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
@@ -64,10 +62,15 @@ fun main() = auroraApplication {
     var isAboutOpen by remember { mutableStateOf(false) }
     var isPreferencesOpen by remember { mutableStateOf(false) }
     var hashedOutput by remember { mutableStateOf("") }
+    var hashedOutputComparisonOne by remember { mutableStateOf("") }
+    var hashedOutputComparisonTwo by remember { mutableStateOf("") }
+    var filesMatch by remember { mutableStateOf(false) }
     var instantBeforeHash: Instant? by remember { mutableStateOf(null) }
     var instantAfterHash: Instant? by remember { mutableStateOf(null) }
     var error: Exception? by remember { mutableStateOf(null) }
     var file: File? by remember { mutableStateOf(null) }
+    var fileComparisonOne: File? by remember { mutableStateOf(null) }
+    var fileComparisonTwo: File? by remember { mutableStateOf(null) }
     var hashjob: Job? by remember { mutableStateOf(null) }
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
@@ -95,7 +98,8 @@ fun main() = auroraApplication {
             },
             aboutAction = { isAboutOpen = true },
             fileScreenAction = { currentScreen = Screen.FileScreen },
-            textScreenAction = { currentScreen = Screen.TextScreen }
+            textScreenAction = { currentScreen = Screen.TextScreen },
+            compareFilesScreenAction = { currentScreen = Screen.CompareFilesScreen }
         ),
         undecorated = undecorated,
         onKeyEvent = {
@@ -129,6 +133,8 @@ fun main() = auroraApplication {
                         algorithm = algorithm,
                         job = hashjob,
                         file = file,
+                        fileComparisonOne = fileComparisonOne,
+                        fileComparisonTwo = fileComparisonTwo,
                         mode = mode,
                         currentScreen = currentScreen,
                         onTriggerModeChange = {
@@ -154,30 +160,75 @@ fun main() = auroraApplication {
                                 error = null
                             }
                         },
+                        onSelectFileComparisonOneResult = { result ->
+                            if (result != null && fileComparisonOne != result) {
+                                fileComparisonOne = result
+                            }
+
+                        },
+                        oneSelectFileComparisonTwoResult = { result ->
+                            if (result != null && fileComparisonTwo != result) {
+                                fileComparisonTwo = result
+                            }
+                        },
                         onCalculateClick = {
-                            if (hashjob?.isActive != true) {
-                                hashjob = scope.launch(Dispatchers.IO) {
-                                    instantBeforeHash = Clock.System.now()
-                                    try {
-                                        hashedOutput = file?.hash(
-                                            algorithm = algorithm,
-                                            hashProgressCallback = { hashProgress = it }
-                                        )!!.uppercase()
-                                        instantAfterHash = Clock.System.now()
-                                    } catch (_: CancellationException) {
-                                        // Cancellations are intended
-                                    } catch (exception: Exception) {
-                                        error = exception
-                                    }
+                            if (currentScreen == Screen.CompareFilesScreen) {
+                                scope.launch {
+                                    listOf(
+                                        async {
+                                            try {
+                                                hashedOutputComparisonOne = fileComparisonOne?.hash(
+                                                    algorithm = algorithm,
+                                                    hashProgressCallback = { hashProgress = it }
+                                                )!!.uppercase()
+                                                instantAfterHash = Clock.System.now()
+                                            } catch (_: CancellationException) {
+                                                // Cancellations are intended
+                                            } catch (exception: Exception) {
+                                                error = exception
+                                            }
+                                        },
+                                        async {
+                                            try {
+                                                hashedOutputComparisonTwo = fileComparisonTwo?.hash(
+                                                    algorithm = algorithm,
+                                                    hashProgressCallback = { hashProgress = it }
+                                                )!!.uppercase()
+                                                instantAfterHash = Clock.System.now()
+                                            } catch (_: CancellationException) {
+                                                // Cancellations are intended
+                                            } catch (exception: Exception) {
+                                                error = exception
+                                            }
+                                        }
+                                    ).awaitAll()
+                                    filesMatch = hashedOutputComparisonOne.equals(hashedOutputComparisonTwo, ignoreCase = true)
                                 }
                             } else {
-                                hashjob?.cancel()
+                                if (hashjob?.isActive != true) {
+                                    hashjob = scope.launch(Dispatchers.IO) {
+                                        instantBeforeHash = Clock.System.now()
+                                        try {
+                                            hashedOutput = file?.hash(
+                                                algorithm = algorithm,
+                                                hashProgressCallback = { hashProgress = it }
+                                            )!!.uppercase()
+                                            instantAfterHash = Clock.System.now()
+                                        } catch (_: CancellationException) {
+                                            // Cancellations are intended
+                                        } catch (exception: Exception) {
+                                            error = exception
+                                        }
+                                    }
+                                } else {
+                                    hashjob?.cancel()
+                                }
                             }
                         }
                     )
                     VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
-                    if (currentScreen == Screen.FileScreen) {
-                        FileScreen(
+                    when (currentScreen) {
+                        Screen.FileScreen -> FileScreen(
                             file = file,
                             algorithm = algorithm,
                             hashedOutput = hashedOutput,
@@ -189,8 +240,15 @@ fun main() = auroraApplication {
                                 }
                             }
                         )
-                    } else if (currentScreen == Screen.TextScreen) {
-                        TextScreen(algorithm)
+                        Screen.TextScreen -> TextScreen(algorithm)
+                        Screen.CompareFilesScreen -> CompareFilesScreen(
+                            algorithm,
+                            fileComparisonOne,
+                            fileComparisonTwo,
+                            hashedOutputComparisonOne,
+                            hashedOutputComparisonTwo,
+                            filesMatch
+                        )
                     }
                 }
                 Footer(error, hashedOutput, hashjob, hashProgress, file)

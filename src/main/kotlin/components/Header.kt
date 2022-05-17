@@ -36,7 +36,8 @@ object Header {
         toggleFullScreenAction: () -> Unit,
         aboutAction: () -> Unit,
         fileScreenAction: () -> Unit,
-        textScreenAction: () -> Unit
+        textScreenAction: () -> Unit,
+        compareFilesScreenAction: () -> Unit
     ): CommandGroup {
         return CommandGroup(
             commands = listOf(
@@ -104,12 +105,16 @@ object Header {
                     )
                 ),
                 Command(
-                    text = "File Screen",
+                    text = "File",
                     action = fileScreenAction
                 ),
                 Command(
-                    text = "Text Screen",
+                    text = "Text",
                     action = textScreenAction
+                ),
+                Command(
+                    text = "Compare Files",
+                    action = compareFilesScreenAction
                 )
             )
         )

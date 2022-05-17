@@ -22,5 +22,6 @@ package components.screens
 
 enum class Screen {
     FileScreen,
-    TextScreen
+    TextScreen,
+    CompareFilesScreen
 }

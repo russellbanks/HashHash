@@ -31,26 +31,28 @@ suspend fun File.hash(
     hashProgressCallback: (Float) -> Unit
 ): String {
     val digest = algorithm.createDigest()
-    val fis = withContext(Dispatchers.IO) { FileInputStream(this@hash) }
+    val fileInputStream = withContext(Dispatchers.IO) { FileInputStream(this@hash) }
 
     val byteArray = ByteArray(32768)
     var bytesCount: Int
 
     val totalRuns = ((length() / byteArray.size) + 1).toFloat()
     var count = 0
-    while (withContext(Dispatchers.IO) { fis.read(byteArray) }.also { bytesCount = it } != -1) {
+    while (withContext(Dispatchers.IO) { fileInputStream.read(byteArray) }.also { bytesCount = it } != -1) {
         digest.update(byteArray, 0, bytesCount)
         hashProgressCallback(count++ / totalRuns)
     }
 
-    withContext(Dispatchers.IO) { fis.close() }
+    withContext(Dispatchers.IO) { fileInputStream.close() }
 
-    val bytes = digest.digest()
-    val sb = StringBuilder()
-
-    for (i in bytes.indices) {
-        sb.append(((bytes[i].toInt() and 0xff) + 0x100).toString(16).substring(1))
-    }
-
-    return sb.toString()
+    return buildHash(digest.digest())
 }
+
+@Suppress("Unused")
+fun String.hash(algorithm: Algorithm) = buildHash(algorithm.createDigest().apply { update(toByteArray()) }.digest())
+
+fun buildHash(bytes: ByteArray) = StringBuilder().apply {
+    bytes.indices.forEach { index ->
+        append(((bytes[index].toInt() and 0xff) + 0x100).toString(16).substring(1))
+    }
+}.toString()

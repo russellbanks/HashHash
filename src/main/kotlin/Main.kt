@@ -26,7 +26,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
@@ -34,10 +33,12 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
 import com.russellbanks.HashHash.BuildConfig
-import components.*
+import components.Footer
+import components.Header
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
+import components.screens.file.FileScreen
 import helper.DragAndDrop
 import helper.FileUtils
 import helper.Icons
@@ -47,7 +48,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -125,7 +125,6 @@ fun main() = auroraApplication {
                 }
             }
         )
-        var comparisonHash by remember { mutableStateOf("") }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         val scope = rememberCoroutineScope()
         var hashProgress by remember { mutableStateOf(0F) }
@@ -183,44 +182,20 @@ fun main() = auroraApplication {
                         }
                     )
                     VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
-                    Column(Modifier.fillMaxSize()) {
-                        FileInfoSection(file)
-                        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        Column(
-                            modifier = Modifier.weight(1f).padding(20.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            val clipboardManager = LocalClipboardManager.current
-                            OutputTextFieldRow(
-                                algorithm = algorithm,
-                                hashedOutput = hashedOutput,
-                                onCaseClick = {
-                                    hashedOutput = hashedOutput.run {
-                                        if (this == uppercase()) lowercase() else uppercase()
-                                    }
-                                }
-                            )
-                            ComparisonTextFieldRow(
-                                hashedOutput = hashedOutput,
-                                comparisonHash = comparisonHash,
-                                onPasteClick = {
-                                    comparisonHash = (clipboardManager.getText()?.text ?: "")
-                                        .filterNot { it.isWhitespace() }
-                                },
-                                onClearClick = { comparisonHash = "" },
-                                onTextFieldChange = { comparisonHash = it.filterNot { char -> char.isWhitespace() } }
-                            )
-                            TimeResultColumn(instantBeforeHash, instantAfterHash)
+                    FileScreen(
+                        file = file,
+                        algorithm = algorithm,
+                        hashedOutput = hashedOutput,
+                        instantBeforeHash = instantBeforeHash,
+                        instantAfterHash = instantAfterHash,
+                        onCaseClick = {
+                            hashedOutput = hashedOutput.run {
+                                if (this == uppercase()) lowercase() else uppercase()
+                            }
                         }
-                    }
+                    )
                 }
-                Footer(
-                    error = error,
-                    hashedOutput = hashedOutput,
-                    job = hashjob,
-                    hashProgress = hashProgress,
-                    file = file
-                )
+                Footer(error, hashedOutput, hashjob, hashProgress, file)
             }
             PreferencesDialog(
                 visible = isPreferencesOpen,

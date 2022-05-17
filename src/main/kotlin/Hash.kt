@@ -48,7 +48,6 @@ suspend fun File.hash(
     return buildHash(digest.digest())
 }
 
-@Suppress("Unused")
 fun String.hash(algorithm: Algorithm) = buildHash(algorithm.createDigest().apply { update(toByteArray()) }.digest())
 
 fun buildHash(bytes: ByteArray) = StringBuilder().apply {

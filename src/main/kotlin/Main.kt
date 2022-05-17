@@ -38,9 +38,10 @@ import components.Header
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
+import components.screens.Screen
 import components.screens.file.FileScreen
+import components.screens.text.TextScreen
 import helper.DragAndDrop
-import helper.FileUtils
 import helper.Icons
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +76,7 @@ fun main() = auroraApplication {
     val themeHandler = ThemeHandler(isSystemInDarkTheme())
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
     val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
+    var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
@@ -83,17 +85,6 @@ fun main() = auroraApplication {
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
             auroraApplicationScope = this,
-            openAction = {
-                FileUtils.openFileDialogAndGetResult().also {
-                    if (it != null && file != it) {
-                        file = it
-                        hashedOutput = ""
-                        instantBeforeHash = null
-                        instantAfterHash = null
-                        error = null
-                    }
-                }
-                         },
             preferencesAction = { isPreferencesOpen = true },
             toggleFullScreenAction = {
                 if (windowState.placement == WindowPlacement.Floating) {
@@ -102,7 +93,9 @@ fun main() = auroraApplication {
                     windowState.placement = WindowPlacement.Floating
                 }
             },
-            aboutAction = { isAboutOpen = true }
+            aboutAction = { isAboutOpen = true },
+            fileScreenAction = { currentScreen = Screen.FileScreen },
+            textScreenAction = { currentScreen = Screen.TextScreen }
         ),
         undecorated = undecorated,
         onKeyEvent = {
@@ -137,6 +130,7 @@ fun main() = auroraApplication {
                         job = hashjob,
                         file = file,
                         mode = mode,
+                        currentScreen = currentScreen,
                         onTriggerModeChange = {
                             val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
                             ModeHandler.putMode(newMode)
@@ -182,18 +176,22 @@ fun main() = auroraApplication {
                         }
                     )
                     VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
-                    FileScreen(
-                        file = file,
-                        algorithm = algorithm,
-                        hashedOutput = hashedOutput,
-                        instantBeforeHash = instantBeforeHash,
-                        instantAfterHash = instantAfterHash,
-                        onCaseClick = {
-                            hashedOutput = hashedOutput.run {
-                                if (this == uppercase()) lowercase() else uppercase()
+                    if (currentScreen == Screen.FileScreen) {
+                        FileScreen(
+                            file = file,
+                            algorithm = algorithm,
+                            hashedOutput = hashedOutput,
+                            instantBeforeHash = instantBeforeHash,
+                            instantAfterHash = instantAfterHash,
+                            onCaseClick = {
+                                hashedOutput = hashedOutput.run {
+                                    if (this == uppercase()) lowercase() else uppercase()
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else if (currentScreen == Screen.TextScreen) {
+                        TextScreen(algorithm)
+                    }
                 }
                 Footer(error, hashedOutput, hashjob, hashProgress, file)
             }

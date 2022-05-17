@@ -32,10 +32,11 @@ object Header {
 
     fun commands(
         auroraApplicationScope: AuroraApplicationScope,
-        openAction: () -> Unit,
         preferencesAction: () -> Unit,
         toggleFullScreenAction: () -> Unit,
-        aboutAction: () -> Unit
+        aboutAction: () -> Unit,
+        fileScreenAction: () -> Unit,
+        textScreenAction: () -> Unit
     ): CommandGroup {
         return CommandGroup(
             commands = listOf(
@@ -43,14 +44,6 @@ object Header {
                     text = "File",
                     secondaryContentModel = CommandMenuContentModel(
                         listOf(
-                            CommandGroup(
-                                commands = listOf(
-                                    Command(
-                                        text = "Open",
-                                        action = openAction
-                                    )
-                                )
-                            ),
                             CommandGroup(
                                 commands = listOf(
                                     Command(
@@ -109,6 +102,14 @@ object Header {
                             )
                         )
                     )
+                ),
+                Command(
+                    text = "File Screen",
+                    action = fileScreenAction
+                ),
+                Command(
+                    text = "Text Screen",
+                    action = textScreenAction
                 )
             )
         )

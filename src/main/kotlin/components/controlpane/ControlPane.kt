@@ -20,12 +20,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.controlpane
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
+import components.screens.Screen
 import helper.FileUtils
 import preferences.mode.Mode
 import kotlinx.coroutines.Job
@@ -44,6 +46,7 @@ fun ControlPane(
     job: Job?,
     file: File?,
     mode: Mode,
+    currentScreen: Screen,
     onTriggerModeChange: (Boolean) -> Unit,
     onAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (File?) -> Unit,
@@ -59,12 +62,14 @@ fun ControlPane(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                CommandButtonProjection(
-                    contentModel = Command(
-                        text = "Select file",
-                        action = { FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(it) } }
-                    )
-                ).project(Modifier.fillMaxWidth().height(40.dp))
+                AnimatedVisibility(visible = currentScreen == Screen.FileScreen) {
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Select file",
+                            action = { FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(it) } }
+                        )
+                    ).project(Modifier.fillMaxWidth().height(40.dp))
+                }
                 Row {
                     Box(Modifier.weight(1f)) {
                         LabelProjection(
@@ -81,16 +86,18 @@ fun ControlPane(
                 }
                 AlgorithmSelectionList(algorithm = algorithm, mode = mode, onAlgorithmClick = { onAlgorithmClick(it) })
             }
-            CommandButtonProjection(
-                contentModel = Command(
-                    text = if (job?.isActive != true) "Calculate" else "Cancel",
-                    action = onCalculateClick,
-                    isActionEnabled = file != null
-                ),
-                presentationModel = CommandButtonPresentationModel(
-                    presentationState = CommandButtonPresentationState.Medium
-                )
-            ).project(Modifier.fillMaxWidth().height(40.dp))
+            AnimatedVisibility(visible = currentScreen == Screen.FileScreen) {
+                CommandButtonProjection(
+                    contentModel = Command(
+                        text = if (job?.isActive != true) "Calculate" else "Cancel",
+                        action = onCalculateClick,
+                        isActionEnabled = file != null
+                    ),
+                    presentationModel = CommandButtonPresentationModel(
+                        presentationState = CommandButtonPresentationState.Medium
+                    )
+                ).project(Modifier.fillMaxWidth().height(40.dp))
+            }
         }
     }
 }

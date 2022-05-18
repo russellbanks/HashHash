@@ -26,6 +26,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
@@ -77,6 +78,11 @@ fun main() = auroraApplication {
     var fileComparisonTwo: File? by remember { mutableStateOf(null) }
     var fileComparisonTwoHash by remember { mutableStateOf("") }
     var fileComparisonTwoProgress by remember { mutableStateOf(0F) }
+
+    // Text Screen
+    var givenText by remember { mutableStateOf("") }
+    var givenTextHash by remember { mutableStateOf("") }
+    var textComparisonHash by remember { mutableStateOf("") }
 
     var isAboutOpen by remember { mutableStateOf(false) }
     var isPreferencesOpen by remember { mutableStateOf(false) }
@@ -252,6 +258,8 @@ fun main() = auroraApplication {
                         }
                     )
                     VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
+                    val characterLimit = 20000
+                    val clipboardManager = LocalClipboardManager.current
                     when (currentScreen) {
                         Screen.FileScreen -> FileScreen(
                             mainFile = mainFile,
@@ -266,7 +274,30 @@ fun main() = auroraApplication {
                                 }
                             }
                         )
-                        Screen.TextScreen -> TextScreen(algorithm)
+                        Screen.TextScreen -> TextScreen(
+                            algorithm = algorithm,
+                            givenText = givenText,
+                            givenTextHash = givenTextHash,
+                            textComparisonHash = textComparisonHash,
+                            characterLimit = characterLimit,
+                            onUppercaseClick = { givenText = givenText.uppercase() },
+                            onLowercaseClick = { givenText = givenText.lowercase() },
+                            onClearTextClick = { givenText = "" },
+                            onValueChange = {
+                                givenText = if (it.count() < characterLimit) it else it.dropLast(it.count() - characterLimit)
+                                givenTextHash = it.hash(algorithm)
+                            },
+                            onCaseClick = {
+                                givenTextHash = givenTextHash.run {
+                                    if (this == uppercase()) lowercase() else uppercase()
+                                }
+                            },
+                            onPasteClick = {
+                                textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
+                            },
+                            onComparisonClearClick = { textComparisonHash = "" },
+                            onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
+                        )
                         Screen.CompareFilesScreen -> CompareFilesScreen(
                             algorithm, fileComparisonOne, fileComparisonOneHash, fileComparisonOneProgress,
                             fileComparisonTwo, fileComparisonTwoHash, fileComparisonTwoProgress

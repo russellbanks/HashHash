@@ -286,7 +286,7 @@ fun main() = auroraApplication {
                             presentationModel = TabsPresentationModel(
                                 leadingMargin = 30.dp,
                                 trailingMargin = 30.dp,
-                                tabContentPadding = PaddingValues(horizontal = 20.dp, vertical = 5.dp)
+                                tabContentPadding = PaddingValues(horizontal = 30.dp, vertical = 6.dp)
                             )
                         ).project()
                         when (currentScreen) {

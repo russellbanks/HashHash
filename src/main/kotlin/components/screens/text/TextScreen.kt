@@ -86,7 +86,7 @@ fun TextScreen(
                 )
             ).project(Modifier.fillMaxWidth().height(200.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CommandButtonProjection(

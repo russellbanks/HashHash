@@ -1,7 +1,7 @@
 [versions]
 accompanist = "0.24.4"
 coroutines = "1.6.1"
-aurora = "1.1.0"
+aurora = "1.2-20220513.221833-4"
 cryptohash = "0.10.0"
 kotlinx-datetime = "0.3.3"
 lwjgl = "3.3.1"

@@ -48,6 +48,10 @@ import helper.Icons
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.pushingpixels.aurora.component.model.TabContentModel
+import org.pushingpixels.aurora.component.model.TabsContentModel
+import org.pushingpixels.aurora.component.model.TabsPresentationModel
+import org.pushingpixels.aurora.component.projection.TabsProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -116,10 +120,7 @@ fun main() = auroraApplication {
                     windowState.placement = WindowPlacement.Floating
                 }
             },
-            aboutAction = { isAboutOpen = true },
-            fileScreenAction = { currentScreen = Screen.FileScreen },
-            textScreenAction = { currentScreen = Screen.TextScreen },
-            compareFilesScreenAction = { currentScreen = Screen.CompareFilesScreen }
+            aboutAction = { isAboutOpen = true }
         ),
         undecorated = undecorated,
         onKeyEvent = {
@@ -264,48 +265,79 @@ fun main() = auroraApplication {
                     VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                     val characterLimit = 20000
                     val clipboardManager = LocalClipboardManager.current
-                    when (currentScreen) {
-                        Screen.FileScreen -> FileScreen(
-                            mainFile = mainFile,
-                            algorithm = algorithm,
-                            mainFileHash = mainFileHash,
-                            instantBeforeHash = instantBeforeHash,
-                            instantAfterHash = instantAfterHash,
-                            mainFileHashProgress = mainFileHashProgress,
-                            onCaseClick = {
-                                mainFileHash = mainFileHash.run {
-                                    if (this == uppercase()) lowercase() else uppercase()
+                    Column {
+                        TabsProjection(
+                            contentModel = TabsContentModel(
+                                tabs = listOf(
+                                    TabContentModel(text = "File"),
+                                    TabContentModel(text = "Text"),
+                                    TabContentModel(text = "Compare Files")
+                                ),
+                                selectedTabIndex = currentScreen.ordinal,
+                                onTriggerTabSelected = {
+                                    currentScreen = when (it) {
+                                        0 -> Screen.FileScreen
+                                        1 -> Screen.TextScreen
+                                        2 -> Screen.CompareFilesScreen
+                                        else -> Screen.FileScreen
+                                    }
                                 }
-                            }
-                        )
-                        Screen.TextScreen -> TextScreen(
-                            algorithm = algorithm,
-                            givenText = givenText,
-                            givenTextHash = givenTextHash,
-                            textComparisonHash = textComparisonHash,
-                            characterLimit = characterLimit,
-                            onUppercaseClick = { givenText = givenText.uppercase() },
-                            onLowercaseClick = { givenText = givenText.lowercase() },
-                            onClearTextClick = { givenText = "" },
-                            onValueChange = {
-                                givenText = if (it.count() < characterLimit) it else it.dropLast(it.count() - characterLimit)
-                                givenTextHash = it.hash(algorithm)
-                            },
-                            onCaseClick = {
-                                givenTextHash = givenTextHash.run {
-                                    if (this == uppercase()) lowercase() else uppercase()
+                            ),
+                            presentationModel = TabsPresentationModel(
+                                leadingMargin = 30.dp,
+                                trailingMargin = 30.dp,
+                                tabContentPadding = PaddingValues(horizontal = 20.dp, vertical = 5.dp)
+                            )
+                        ).project()
+                        when (currentScreen) {
+                            Screen.FileScreen -> FileScreen(
+                                mainFile = mainFile,
+                                algorithm = algorithm,
+                                mainFileHash = mainFileHash,
+                                instantBeforeHash = instantBeforeHash,
+                                instantAfterHash = instantAfterHash,
+                                mainFileHashProgress = mainFileHashProgress,
+                                onCaseClick = {
+                                    mainFileHash = mainFileHash.run {
+                                        if (this == uppercase()) lowercase() else uppercase()
+                                    }
                                 }
-                            },
-                            onPasteClick = {
-                                textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
-                            },
-                            onComparisonClearClick = { textComparisonHash = "" },
-                            onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
-                        )
-                        Screen.CompareFilesScreen -> CompareFilesScreen(
-                            algorithm, fileComparisonOne, fileComparisonOneHash, fileComparisonOneProgress,
-                            fileComparisonTwo, fileComparisonTwoHash, fileComparisonTwoProgress
-                        )
+                            )
+                            Screen.TextScreen -> TextScreen(
+                                algorithm = algorithm,
+                                givenText = givenText,
+                                givenTextHash = givenTextHash,
+                                textComparisonHash = textComparisonHash,
+                                characterLimit = characterLimit,
+                                onUppercaseClick = {
+                                    givenText = givenText.uppercase()
+                                    givenTextHash = givenText.hash(algorithm)
+                                                   },
+                                onLowercaseClick = {
+                                    givenText = givenText.lowercase()
+                                    givenTextHash = givenText.hash(algorithm)
+                                                   },
+                                onClearTextClick = { givenText = "" },
+                                onValueChange = {
+                                    givenText = if (it.count() < characterLimit) it else it.dropLast(it.count() - characterLimit)
+                                    givenTextHash = givenText.hash(algorithm)
+                                },
+                                onCaseClick = {
+                                    givenTextHash = givenTextHash.run {
+                                        if (this == uppercase()) lowercase() else uppercase()
+                                    }
+                                },
+                                onPasteClick = {
+                                    textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
+                                },
+                                onComparisonClearClick = { textComparisonHash = "" },
+                                onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
+                            )
+                            Screen.CompareFilesScreen -> CompareFilesScreen(
+                                algorithm, fileComparisonOne, fileComparisonOneHash, fileComparisonOneProgress,
+                                fileComparisonTwo, fileComparisonTwoHash, fileComparisonTwoProgress
+                            )
+                        }
                     }
                 }
                 Footer(

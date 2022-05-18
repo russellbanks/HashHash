@@ -34,10 +34,7 @@ object Header {
         auroraApplicationScope: AuroraApplicationScope,
         preferencesAction: () -> Unit,
         toggleFullScreenAction: () -> Unit,
-        aboutAction: () -> Unit,
-        fileScreenAction: () -> Unit,
-        textScreenAction: () -> Unit,
-        compareFilesScreenAction: () -> Unit
+        aboutAction: () -> Unit
     ): CommandGroup {
         return CommandGroup(
             commands = listOf(
@@ -103,18 +100,6 @@ object Header {
                             )
                         )
                     )
-                ),
-                Command(
-                    text = "File",
-                    action = fileScreenAction
-                ),
-                Command(
-                    text = "Text",
-                    action = textScreenAction
-                ),
-                Command(
-                    text = "Compare Files",
-                    action = compareFilesScreenAction
                 )
             )
         )

@@ -46,7 +46,7 @@ fun Footer(
     filesMatch: Boolean,
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
-        Box(Modifier.fillMaxWidth().auroraBackground().padding(horizontal = 8.dp, vertical = 6.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = when (currentScreen) {

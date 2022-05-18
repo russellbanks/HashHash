@@ -61,7 +61,7 @@ fun ControlPane(
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
-            modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(200.dp),
+            modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(180.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

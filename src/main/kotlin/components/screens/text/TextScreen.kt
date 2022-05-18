@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
-import components.screens.file.ComparisonTextFieldRow
-import components.screens.file.OutputTextFieldRow
+import components.ComparisonTextFieldRow
+import components.OutputTextFieldRow
 import hash
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.LabelContentModel

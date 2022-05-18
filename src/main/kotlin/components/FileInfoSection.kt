@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.screens.file
+package components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

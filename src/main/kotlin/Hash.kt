@@ -42,6 +42,7 @@ suspend fun File.hash(
         digest.update(byteArray, 0, bytesCount)
         hashProgressCallback(count++ / totalRuns)
     }
+    hashProgressCallback(count / totalRuns)
 
     withContext(Dispatchers.IO) { fileInputStream.close() }
 

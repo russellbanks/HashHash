@@ -20,51 +20,46 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.comparefiles
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
-import components.screens.file.FileInfoSection
-import components.screens.file.OutputTextFieldRow
-import org.pushingpixels.aurora.component.model.LabelContentModel
-import org.pushingpixels.aurora.component.projection.LabelProjection
+import components.FileInfoSection
+import components.HashProgress
+import components.OutputTextFieldRow
+import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import java.io.File
 
 @Composable
 fun CompareFilesScreen(
     algorithm: Algorithm,
     fileComparisonOne: File?,
+    fileComparisonOneHash: String,
+    fileComparisonOneProgress: Float,
     fileComparisonTwo: File?,
-    hashedOutputComparisonOne: String,
-    hashedOutputComparisonTwo: String,
-    filesMatch: Boolean
+    fileComparisonTwoHash: String,
+    fileComparisonTwoProgress: Float
 ) {
     Column {
-        FileInfoSection(fileComparisonOne)
-        Box(Modifier.padding(20.dp)) {
-            OutputTextFieldRow(algorithm, hashedOutputComparisonOne, onCaseClick = {  })
-        }
-        FileInfoSection(fileComparisonTwo)
-        Box(Modifier.padding(20.dp)) {
-            OutputTextFieldRow(algorithm, hashedOutputComparisonTwo, onCaseClick = {  })
-        }
-        Column(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            println(hashedOutputComparisonOne)
-            println(hashedOutputComparisonTwo)
-            AnimatedVisibility(
-                visible = hashedOutputComparisonOne.isNotBlank() && hashedOutputComparisonTwo.isNotBlank()
+        Column(Modifier.fillMaxHeight(0.5f)) {
+            FileInfoSection(fileComparisonOne)
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                LabelProjection(
-                    contentModel = LabelContentModel(
-                        text = if (filesMatch) "Matches" else "Doesn't match"
-                    )
-                ).project()
+                HashProgress(fileComparisonOneProgress)
+                OutputTextFieldRow(algorithm, fileComparisonOneHash, onCaseClick = {  })
             }
+        }
+        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+        FileInfoSection(fileComparisonTwo)
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            HashProgress(fileComparisonTwoProgress)
+            OutputTextFieldRow(algorithm, fileComparisonTwoHash, onCaseClick = {  })
         }
     }
 }

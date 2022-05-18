@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import components.screens.Screen
 import helper.FileUtils
+import isActive
+import kotlinx.coroutines.Deferred
 import preferences.mode.Mode
 import kotlinx.coroutines.Job
 import org.pushingpixels.aurora.component.model.*
@@ -44,6 +46,7 @@ import java.io.File
 fun ControlPane(
     algorithm: Algorithm,
     job: Job?,
+    compareJobList: List<Deferred<Unit>>?,
     file: File?,
     fileComparisonOne: File?,
     fileComparisonTwo: File?,
@@ -110,11 +113,10 @@ fun ControlPane(
             AnimatedVisibility(visible = currentScreen != Screen.TextScreen) {
                 CommandButtonProjection(
                     contentModel = Command(
-                        text = when {
-                            currentScreen == Screen.TextScreen -> ""
-                            currentScreen == Screen.CompareFilesScreen -> "Compare"
-                            job?.isActive != true -> "Calculate"
-                            else -> "Cancel"
+                        text = when (currentScreen) {
+                            Screen.TextScreen -> ""
+                            Screen.CompareFilesScreen -> if (!compareJobList.isActive()) "Compare" else "Cancel"
+                            Screen.FileScreen -> if (job?.isActive != true) "Calculate" else "Cancel"
                         },
                         action = onCalculateClick,
                         isActionEnabled = if (currentScreen == Screen.CompareFilesScreen) {

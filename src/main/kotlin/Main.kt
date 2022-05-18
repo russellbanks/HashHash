@@ -69,6 +69,10 @@ fun main() = auroraApplication {
     var instantAfterHash: Instant? by remember { mutableStateOf(null) }
     var mainFileException: Exception? by remember { mutableStateOf(null) }
 
+    // Compare files screen
+    var filesMatch by remember { mutableStateOf(false) }
+    var comparisonJobList: List<Deferred<Unit>>? by remember { mutableStateOf(null) }
+
     // 1st Comparison File
     var fileComparisonOne: File? by remember { mutableStateOf(null) }
     var fileComparisonOneHash by remember { mutableStateOf("") }
@@ -84,9 +88,10 @@ fun main() = auroraApplication {
     var givenTextHash by remember { mutableStateOf("") }
     var textComparisonHash by remember { mutableStateOf("") }
 
+    // Dialogs
     var isAboutOpen by remember { mutableStateOf(false) }
     var isPreferencesOpen by remember { mutableStateOf(false) }
-    var filesMatch by remember { mutableStateOf(false) }
+
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 750.dp)
@@ -95,7 +100,6 @@ fun main() = auroraApplication {
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
     val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
     var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
-    var comparisonJobList: List<Deferred<Unit>>? by remember { mutableStateOf(null) }
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,

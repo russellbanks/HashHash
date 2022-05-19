@@ -37,9 +37,11 @@ fun CompareFilesScreen(
     fileComparisonOne: File?,
     fileComparisonOneHash: String,
     fileComparisonOneProgress: Float,
+    fileComparisonOneOnCaseClick: () -> Unit,
     fileComparisonTwo: File?,
     fileComparisonTwoHash: String,
-    fileComparisonTwoProgress: Float
+    fileComparisonTwoProgress: Float,
+    fileComparisonTwoOnCaseClick: () -> Unit,
 ) {
     Column {
         Column(Modifier.fillMaxHeight(0.5f)) {
@@ -49,7 +51,11 @@ fun CompareFilesScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 HashProgress(fileComparisonOneProgress)
-                OutputTextFieldRow(algorithm, fileComparisonOneHash, onCaseClick = {  })
+                OutputTextFieldRow(
+                    algorithm = algorithm,
+                    value = fileComparisonOneHash,
+                    onCaseClick = fileComparisonOneOnCaseClick
+                )
             }
         }
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
@@ -59,7 +65,11 @@ fun CompareFilesScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             HashProgress(fileComparisonTwoProgress)
-            OutputTextFieldRow(algorithm, fileComparisonTwoHash, onCaseClick = {  })
+            OutputTextFieldRow(
+                algorithm = algorithm,
+                value = fileComparisonTwoHash,
+                onCaseClick = fileComparisonTwoOnCaseClick
+            )
         }
     }
 }

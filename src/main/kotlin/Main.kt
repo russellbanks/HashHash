@@ -334,8 +334,23 @@ fun main() = auroraApplication {
                                 onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
                             )
                             Screen.CompareFilesScreen -> CompareFilesScreen(
-                                algorithm, fileComparisonOne, fileComparisonOneHash, fileComparisonOneProgress,
-                                fileComparisonTwo, fileComparisonTwoHash, fileComparisonTwoProgress
+                                algorithm = algorithm,
+                                fileComparisonOne = fileComparisonOne,
+                                fileComparisonOneHash = fileComparisonOneHash,
+                                fileComparisonOneProgress = fileComparisonOneProgress,
+                                fileComparisonOneOnCaseClick = {
+                                    fileComparisonOneHash = fileComparisonOneHash.run {
+                                        if (this == uppercase()) lowercase() else uppercase()
+                                    }
+                                },
+                                fileComparisonTwo = fileComparisonTwo,
+                                fileComparisonTwoHash = fileComparisonTwoHash,
+                                fileComparisonTwoProgress = fileComparisonTwoProgress,
+                                fileComparisonTwoOnCaseClick = {
+                                    fileComparisonTwoHash = fileComparisonTwoHash.run {
+                                        if (this == uppercase()) lowercase() else uppercase()
+                                    }
+                                }
                             )
                         }
                     }

@@ -66,14 +66,14 @@ compose.desktop {
             licenseFile.set(project.file("src/main/resources/gpl-3.0.rst"))
             linux {
                 iconFile.set(project.file("src/main/resources/logo.png"))
-                menuGroup = "HashHash"
+                menuGroup = project.name
             }
             macOS {
                 bundleID = "${project.group}.${project.name.toLowerCase()}"
             }
             windows {
                 iconFile.set(project.file("src/main/resources/logo.ico"))
-                menuGroup = "HashHash"
+                menuGroup = project.name
                 dirChooser = true
                 upgradeUuid = "1A4C2D6B-AC84-47D4-A6EE-407A4AA8DED8"
             }

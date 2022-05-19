@@ -22,7 +22,7 @@ package components.screens.text
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
-import hash
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -118,7 +117,7 @@ fun TextScreen(
         }
         OutputTextFieldRow(
             algorithm = algorithm,
-            value = if (givenText.isNotEmpty()) givenTextHash.uppercase() else "",
+            value = if (givenText.isNotEmpty()) givenTextHash else "",
             onCaseClick = onCaseClick
         )
         ComparisonTextFieldRow(

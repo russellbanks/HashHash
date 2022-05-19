@@ -67,6 +67,7 @@ fun main() = auroraApplication {
     // Main File
     var mainFile: File? by remember { mutableStateOf(null) }
     var mainFileHash by remember { mutableStateOf("") }
+    var shouldMainFileHashBeUppercase = true
     var mainFileHashJob: Job? by remember { mutableStateOf(null) }
     var mainFileHashProgress by remember { mutableStateOf(0F) }
     var instantBeforeHash: Instant? by remember { mutableStateOf(null) }
@@ -80,16 +81,19 @@ fun main() = auroraApplication {
     // 1st Comparison File
     var fileComparisonOne: File? by remember { mutableStateOf(null) }
     var fileComparisonOneHash by remember { mutableStateOf("") }
+    var shouldFileComparisonOneHashBeUppercase = true
     var fileComparisonOneProgress by remember { mutableStateOf(0F) }
 
     // 2nd Comparison File
     var fileComparisonTwo: File? by remember { mutableStateOf(null) }
     var fileComparisonTwoHash by remember { mutableStateOf("") }
+    var shouldFileComparisonTwoHashBeUppercase = true
     var fileComparisonTwoProgress by remember { mutableStateOf(0F) }
 
     // Text Screen
     var givenText by remember { mutableStateOf("") }
     var givenTextHash by remember { mutableStateOf("") }
+    var shouldGivenTextBeUppercase = true
     var textComparisonHash by remember { mutableStateOf("") }
 
     // Dialogs
@@ -218,7 +222,9 @@ fun main() = auroraApplication {
                                                     fileComparisonOneHash = fileComparisonOne?.hash(
                                                         algorithm = algorithm,
                                                         hashProgressCallback = { fileComparisonOneProgress = it }
-                                                    )!!.uppercase()
+                                                    )?.run {
+                                                        if (shouldFileComparisonOneHashBeUppercase) uppercase() else lowercase()
+                                                    }!!
                                                 } catch (_: CancellationException) {
                                                     // Cancellations are intended
                                                 } catch (exception: Exception) {
@@ -230,7 +236,9 @@ fun main() = auroraApplication {
                                                     fileComparisonTwoHash = fileComparisonTwo?.hash(
                                                         algorithm = algorithm,
                                                         hashProgressCallback = { fileComparisonTwoProgress = it }
-                                                    )!!.uppercase()
+                                                    )?.run {
+                                                        if (shouldFileComparisonTwoHashBeUppercase) uppercase() else lowercase()
+                                                    }!!
                                                 } catch (_: CancellationException) {
                                                     // Cancellations are intended
                                                 } catch (exception: Exception) {
@@ -254,7 +262,9 @@ fun main() = auroraApplication {
                                             mainFileHash = mainFile?.hash(
                                                 algorithm = algorithm,
                                                 hashProgressCallback = { mainFileHashProgress = it }
-                                            )!!.uppercase()
+                                            )?.run {
+                                                if (shouldMainFileHashBeUppercase) uppercase() else lowercase()
+                                            }!!
                                             instantAfterHash = Clock.System.now()
                                         } catch (_: CancellationException) {
                                             // Cancellations are intended
@@ -308,6 +318,7 @@ fun main() = auroraApplication {
                                     mainFileHash = mainFileHash.run {
                                         if (this == uppercase()) lowercase() else uppercase()
                                     }
+                                    shouldMainFileHashBeUppercase = mainFileHash == mainFileHash.uppercase()
                                 }
                             )
                             Screen.TextScreen -> TextScreen(
@@ -316,6 +327,12 @@ fun main() = auroraApplication {
                                 givenTextHash = givenTextHash,
                                 textComparisonHash = textComparisonHash,
                                 characterLimit = characterLimit,
+                                onValueChange = {
+                                    givenText = if (it.count() < characterLimit) it else it.dropLast(it.count() - characterLimit)
+                                    givenTextHash = givenText.hash(algorithm).run {
+                                        if (shouldGivenTextBeUppercase) uppercase() else lowercase()
+                                    }
+                                },
                                 onUppercaseClick = {
                                     givenText = givenText.uppercase()
                                     givenTextHash = givenText.hash(algorithm)
@@ -325,19 +342,16 @@ fun main() = auroraApplication {
                                     givenTextHash = givenText.hash(algorithm)
                                                    },
                                 onClearTextClick = { givenText = "" },
-                                onValueChange = {
-                                    givenText = if (it.count() < characterLimit) it else it.dropLast(it.count() - characterLimit)
-                                    givenTextHash = givenText.hash(algorithm)
-                                },
+                                onComparisonClearClick = { textComparisonHash = "" },
                                 onCaseClick = {
                                     givenTextHash = givenTextHash.run {
                                         if (this == uppercase()) lowercase() else uppercase()
                                     }
+                                    shouldGivenTextBeUppercase = givenTextHash == givenTextHash.uppercase()
                                 },
                                 onPasteClick = {
                                     textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
                                 },
-                                onComparisonClearClick = { textComparisonHash = "" },
                                 onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
                             )
                             Screen.CompareFilesScreen -> CompareFilesScreen(
@@ -349,6 +363,7 @@ fun main() = auroraApplication {
                                     fileComparisonOneHash = fileComparisonOneHash.run {
                                         if (this == uppercase()) lowercase() else uppercase()
                                     }
+                                    shouldFileComparisonOneHashBeUppercase = fileComparisonOneHash == fileComparisonOneHash.uppercase()
                                 },
                                 fileComparisonTwo = fileComparisonTwo,
                                 fileComparisonTwoHash = fileComparisonTwoHash,
@@ -357,6 +372,7 @@ fun main() = auroraApplication {
                                     fileComparisonTwoHash = fileComparisonTwoHash.run {
                                         if (this == uppercase()) lowercase() else uppercase()
                                     }
+                                    shouldFileComparisonTwoHashBeUppercase = fileComparisonTwoHash == fileComparisonTwoHash.uppercase()
                                 }
                             )
                         }

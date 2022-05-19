@@ -301,8 +301,9 @@ fun main() = auroraApplication {
                                 }
                             ),
                             presentationModel = TabsPresentationModel(
-                                leadingMargin = 30.dp,
-                                trailingMargin = 30.dp,
+                                leadingMargin = 20.dp,
+                                trailingMargin = 20.dp,
+                                interTabMargin = 10.dp,
                                 tabContentPadding = PaddingValues(horizontal = 30.dp, vertical = 6.dp)
                             )
                         ).project()

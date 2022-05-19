@@ -104,6 +104,7 @@ fun main() = auroraApplication {
     var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme()) }
     val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
     var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
+    var hasF11TriggeredOnce = false
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
@@ -125,12 +126,18 @@ fun main() = auroraApplication {
         undecorated = undecorated,
         onKeyEvent = {
             if (it.key == Key.F11) {
-                if (windowState.placement == WindowPlacement.Floating) {
-                    windowState.placement = WindowPlacement.Fullscreen
+                if (!hasF11TriggeredOnce) {
+                    hasF11TriggeredOnce = true
+                    if (windowState.placement == WindowPlacement.Floating) {
+                        windowState.placement = WindowPlacement.Fullscreen
+                    } else {
+                        windowState.placement = WindowPlacement.Floating
+                    }
+                    true
                 } else {
-                    windowState.placement = WindowPlacement.Floating
+                    hasF11TriggeredOnce = false
+                    false
                 }
-                true
             } else {
                 false
             }

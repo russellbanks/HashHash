@@ -19,8 +19,7 @@
 
 HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash files whilst remaining multiplatform. It supports Windows, Linux and MacOS.
 
-![java_ioprVZpfZQ](https://user-images.githubusercontent.com/74878137/167268706-b0d6663a-3c48-4dc1-badf-eb8b7067636e.png)
-
+![java_aZEVPvpKPW](https://user-images.githubusercontent.com/74878137/169644388-b45deed3-e15c-48ed-81c4-294603b947c9.png)
 
 ## Supporting algorithms
 

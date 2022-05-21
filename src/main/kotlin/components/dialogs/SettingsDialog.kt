@@ -70,7 +70,7 @@ fun PreferencesDialog(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
-                modifier = Modifier.width(450.dp).height(350.dp),
+                modifier = Modifier.width(450.dp).height(290.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = backgroundColorScheme.backgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
@@ -82,7 +82,7 @@ fun PreferencesDialog(
                     ) {
                         Column {
                             LabelProjection(
-                                contentModel = LabelContentModel(text = "Preferences"),
+                                contentModel = LabelContentModel(text = "Settings"),
                                 presentationModel = LabelPresentationModel(
                                     textStyle = TextStyle(
                                         fontSize = 16.sp,
@@ -92,7 +92,7 @@ fun PreferencesDialog(
                             ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
                             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
                         }
-                        Column(Modifier.padding(start = 30.dp, top = 30.dp, end = 30.dp, bottom = 10.dp)) {
+                        Column(Modifier.padding(30.dp)) {
                             Column(
                                 modifier = Modifier.weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(20.dp)

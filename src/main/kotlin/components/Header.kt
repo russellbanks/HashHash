@@ -45,7 +45,7 @@ object Header {
                             CommandGroup(
                                 commands = listOf(
                                     Command(
-                                        text = "Preferences",
+                                        text = "Settings",
                                         action = preferencesAction
                                     )
                                 )
@@ -53,7 +53,7 @@ object Header {
                             CommandGroup(
                                 commands = listOf(
                                     Command(
-                                        text = "Quit ${BuildConfig.appName}",
+                                        text = "Exit",
                                         action = { auroraApplicationScope.exitApplication() }
                                     )
                                 )

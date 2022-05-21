@@ -214,7 +214,7 @@ fun main() = auroraApplication {
                         },
                         onCalculateClick = {
                             if (currentScreen == Screen.CompareFilesScreen) {
-                                if (!comparisonJobList.isActive()) {
+                                if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
                                     scope.launch {
                                         comparisonJobList = listOf(
                                             async(Dispatchers.IO) {
@@ -396,10 +396,4 @@ fun main() = auroraApplication {
             AboutDialog(visible = isAboutOpen, onCloseRequest = { isAboutOpen = false })
         }
     }
-}
-
-fun List<Deferred<Unit>>?.isActive(): Boolean {
-    var count = 0
-    this?.forEach { if (it.isActive) count++ }
-    return count > 0
 }

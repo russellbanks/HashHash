@@ -29,9 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import components.screens.Screen
 import helper.FileUtils
-import isActive
 import kotlinx.coroutines.Deferred
-import preferences.mode.Mode
 import kotlinx.coroutines.Job
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
@@ -40,6 +38,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
+import preferences.mode.Mode
 import java.io.File
 
 @Composable
@@ -115,7 +114,7 @@ fun ControlPane(
                     contentModel = Command(
                         text = when (currentScreen) {
                             Screen.TextScreen -> ""
-                            Screen.CompareFilesScreen -> if (!compareJobList.isActive()) "Compare" else "Cancel"
+                            Screen.CompareFilesScreen -> if ((compareJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
                             Screen.FileScreen -> if (job?.isActive != true) "Calculate" else "Cancel"
                         },
                         action = onCalculateClick,

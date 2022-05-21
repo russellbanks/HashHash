@@ -132,7 +132,7 @@ fun main() = auroraApplication {
             if (it.key == Key.F11) {
                 if (!hasF11TriggeredOnce) {
                     hasF11TriggeredOnce = true
-                    if (windowState.placement == WindowPlacement.Floating) {
+                    if (windowState.placement != WindowPlacement.Fullscreen) {
                         windowState.placement = WindowPlacement.Fullscreen
                     } else {
                         windowState.placement = WindowPlacement.Floating

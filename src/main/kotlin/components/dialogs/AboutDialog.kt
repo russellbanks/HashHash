@@ -26,6 +26,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -87,119 +88,135 @@ fun AboutDialog(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
-                modifier = Modifier.width(450.dp).height(350.dp),
+                modifier = Modifier.width(450.dp).height(310.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = backgroundColorScheme.backgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
                 elevation = 4.dp
             ) {
                 Column {
-                    Box(
-                        modifier = Modifier.weight(1f).fillMaxSize().padding(30.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                    Row(modifier = Modifier.weight(1f).fillMaxSize().padding(30.dp)) {
+                        Box(Modifier.fillMaxHeight().padding(end = 30.dp)) {
                             Image(
                                 painter = Icons.logo(),
                                 contentDescription = "${BuildConfig.appName} logo",
                                 modifier = Modifier.size(60.dp)
                             )
-                            LabelProjection(
-                                contentModel = LabelContentModel(text = BuildConfig.appName),
-                                presentationModel = LabelPresentationModel(
-                                    textStyle = TextStyle(fontWeight = FontWeight.SemiBold)
-                                )
-                            ).project()
-                            LabelProjection(
-                                contentModel = LabelContentModel(text = "Version ${BuildConfig.appVersion}"),
-                                presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 13.sp))
-                            ).project()
-                            CommandButtonProjection(
-                                contentModel = Command(
-                                    text = "Check for Updates",
-                                    action = {
-                                        if (!checkingGitHubAPI) {
-                                            scope.launch(Dispatchers.Default) {
-                                                HttpClient() {
-                                                    install(ContentNegotiation) {
-                                                        json(
-                                                            Json {
-                                                                ignoreUnknownKeys = true
-                                                            }
-                                                        )
+                        }
+                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            SelectionContainer {
+                                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                    LabelProjection(
+                                        contentModel = LabelContentModel(text = "${BuildConfig.appName} ${BuildConfig.appVersion}"),
+                                        presentationModel = LabelPresentationModel(
+                                            textStyle = TextStyle(
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        )
+                                    ).project()
+                                    Column {
+                                        LabelProjection(
+                                            contentModel = LabelContentModel(text = "Runtime version: ${System.getProperty("java.runtime.version")}"),
+                                            presentationModel = LabelPresentationModel(
+                                                textStyle = TextStyle(
+                                                    fontSize = 12.sp
+                                                )
+                                            )
+                                        ).project()
+                                        LabelProjection(
+                                            contentModel = LabelContentModel(text = "VM: ${System.getProperty("java.vm.name")} by ${System.getProperty("java.vm.vendor")}"),
+                                            presentationModel = LabelPresentationModel(
+                                                textStyle = TextStyle(
+                                                    fontSize = 12.sp
+                                                )
+                                            )
+                                        ).project()
+                                    }
+                                }
+                            }
+                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                CommandButtonProjection(
+                                    contentModel = Command(
+                                        text = "Check for Updates",
+                                        action = {
+                                            if (!checkingGitHubAPI) {
+                                                scope.launch(Dispatchers.Default) {
+                                                    HttpClient() {
+                                                        install(ContentNegotiation) {
+                                                            json(
+                                                                Json {
+                                                                    ignoreUnknownKeys = true
+                                                                }
+                                                            )
+                                                        }
+                                                    }.run {
+                                                        checkingGitHubAPI = true
+                                                        httpResponse = get("https://api.github.com/repos/RussellBanks/HashHash/releases/latest")
+                                                        if (httpResponse?.status == HttpStatusCode.OK) {
+                                                            githubData = httpResponse?.body()
+                                                        }
+                                                        close()
+                                                        lastChecked = Clock.System.now()
+                                                        checkingGitHubAPI = false
                                                     }
-                                                }.run {
-                                                    checkingGitHubAPI = true
-                                                    httpResponse = get("https://api.github.com/repos/RussellBanks/HashHash/releases/latest")
-                                                    if (httpResponse?.status == HttpStatusCode.OK) {
-                                                        githubData = httpResponse?.body()
-                                                    }
-                                                    close()
-                                                    lastChecked = Clock.System.now()
-                                                    checkingGitHubAPI = false
                                                 }
                                             }
                                         }
-                                    }
-                                ),
-                                presentationModel = CommandButtonPresentationModel(
-                                    textStyle = TextStyle(
-                                        fontSize = 12.sp,
-                                        textAlign = TextAlign.Center
                                     ),
-                                    horizontalGapScaleFactor = 1.8f,
-                                    verticalGapScaleFactor = 1.5f
-                                )
-                            ).project()
-                            AnimatedVisibility(checkingGitHubAPI || httpResponse != null) {
-                                val infiniteTransition = rememberInfiniteTransition()
-                                val rotationAngle by infiniteTransition.animateFloat(
-                                    initialValue = 0f,
-                                    targetValue = 360f,
-                                    animationSpec = infiniteRepeatable(
-                                        animation = tween(1000, easing = LinearEasing)
+                                    presentationModel = CommandButtonPresentationModel(
+                                        textStyle = TextStyle(
+                                            fontSize = 12.sp,
+                                            textAlign = TextAlign.Center
+                                        )
                                     )
-                                )
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Row(
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        if (checkingGitHubAPI) {
-                                            Image(
-                                                painter = Icons.Utility.refresh(),
-                                                contentDescription = null,
-                                                modifier = Modifier.size(16.dp).graphicsLayer { rotationZ = rotationAngle },
-                                                colorFilter = ColorFilter.tint(backgroundColorScheme.foregroundColor)
-                                            )
-                                        }
-                                        LabelProjection(
-                                            contentModel = LabelContentModel(
-                                                text = when {
-                                                    checkingGitHubAPI -> "Checking"
-                                                    githubData?.tag_name?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
-                                                    githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData?.tag_name?.removePrefix("v")}"
-                                                    httpResponse != null -> "${httpResponse?.status.toString()} - Check back later"
-                                                    else -> "Error accessing GitHub API"
+                                ).project()
+                                AnimatedVisibility(checkingGitHubAPI || httpResponse != null) {
+                                    val infiniteTransition = rememberInfiniteTransition()
+                                    val rotationAngle by infiniteTransition.animateFloat(
+                                        initialValue = 0f,
+                                        targetValue = 360f,
+                                        animationSpec = infiniteRepeatable(
+                                            animation = tween(1000, easing = LinearEasing)
+                                        )
+                                    )
+                                    SelectionContainer {
+                                        Column {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                if (checkingGitHubAPI) {
+                                                    Image(
+                                                        painter = Icons.Utility.refresh(),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(16.dp).graphicsLayer { rotationZ = rotationAngle },
+                                                        colorFilter = ColorFilter.tint(backgroundColorScheme.foregroundColor)
+                                                    )
                                                 }
-                                            ),
-                                            presentationModel = LabelPresentationModel(
-                                                textStyle = TextStyle(fontSize = 13.sp)
-                                            )
-                                        ).project()
-                                    }
-                                    AnimatedVisibility(lastChecked != null) {
-                                        LabelProjection(
-                                            contentModel = LabelContentModel(
-                                                text = "Last checked: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(lastChecked?.toEpochMilliseconds())}"
-                                            ),
-                                            presentationModel = LabelPresentationModel(
-                                                textStyle = TextStyle(fontSize = 12.sp)
-                                            )
-                                        ).project()
+                                                LabelProjection(
+                                                    contentModel = LabelContentModel(
+                                                        text = when {
+                                                            checkingGitHubAPI -> "Checking"
+                                                            githubData?.tag_name?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
+                                                            githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData?.tag_name?.removePrefix("v")}"
+                                                            httpResponse != null -> "${httpResponse?.status.toString()} - Check back later"
+                                                            else -> "Error accessing GitHub API"
+                                                        }
+                                                    ),
+                                                    presentationModel = LabelPresentationModel(
+                                                        textStyle = TextStyle(fontSize = 12.sp)
+                                                    )
+                                                ).project()
+                                            }
+                                            AnimatedVisibility(lastChecked != null) {
+                                                LabelProjection(
+                                                    contentModel = LabelContentModel(
+                                                        text = "Last checked: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(lastChecked?.toEpochMilliseconds())}"
+                                                    ),
+                                                    presentationModel = LabelPresentationModel(
+                                                        textStyle = TextStyle(fontSize = 12.sp)
+                                                    )
+                                                ).project()
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -20,10 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 
 object Time {
 
@@ -45,10 +42,6 @@ object Time {
             days >= 1 -> "$days ${getDaysFormat(days)}, $hours, ${getHoursFormat(hours % 24)}, $minutes ${getMinutesFormat(minutes % 1440)}"
             else -> "$nanoseconds ${getNanosecondsFormat(nanoseconds)}"
         }
-    }
-
-    fun fiveMinutesPassed(instant: Instant?): Boolean {
-        return if (instant != null) Clock.System.now() > instant.plus(5.minutes) else true
     }
 
     private fun getNanosecondsFormat(nanoSeconds: Long) = if (nanoSeconds == 1L) "nanosecond" else "nanoseconds"

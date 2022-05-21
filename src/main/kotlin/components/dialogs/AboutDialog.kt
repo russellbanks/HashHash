@@ -41,11 +41,12 @@ import androidx.compose.ui.unit.sp
 import com.russellbanks.HashHash.BuildConfig
 import data.GitHubData
 import helper.Icons
-import helper.Time
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -70,8 +71,8 @@ fun AboutDialog(
     val scope = rememberCoroutineScope()
     var githubData: GitHubData? by remember { mutableStateOf(null) }
     var checkingGitHubAPI by remember { mutableStateOf(false) }
-    var apiResult: Result<Unit>? = null
     var lastChecked: Instant? by remember { mutableStateOf(null) }
+    var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
     TranslucentDialogOverlay(
         visible = visible,
         onClick = onCloseRequest
@@ -120,7 +121,7 @@ fun AboutDialog(
                                 contentModel = Command(
                                     text = "Check for Updates",
                                     action = {
-                                        if (!checkingGitHubAPI && Time.fiveMinutesPassed(lastChecked)) {
+                                        if (!checkingGitHubAPI) {
                                             scope.launch(Dispatchers.Default) {
                                                 HttpClient() {
                                                     install(ContentNegotiation) {
@@ -132,8 +133,9 @@ fun AboutDialog(
                                                     }
                                                 }.run {
                                                     checkingGitHubAPI = true
-                                                    apiResult = runCatching {
-                                                        githubData = get("https://api.github.com/repos/RussellBanks/HashHash/releases/latest").body()
+                                                    httpResponse = get("https://api.github.com/repos/RussellBanks/HashHash/releases/latest")
+                                                    if (httpResponse?.status == HttpStatusCode.OK) {
+                                                        githubData = httpResponse?.body()
                                                     }
                                                     close()
                                                     lastChecked = Clock.System.now()
@@ -152,7 +154,7 @@ fun AboutDialog(
                                     verticalGapScaleFactor = 1.5f
                                 )
                             ).project()
-                            AnimatedVisibility(checkingGitHubAPI || githubData != null || apiResult?.isFailure == true) {
+                            AnimatedVisibility(checkingGitHubAPI || httpResponse != null) {
                                 val infiniteTransition = rememberInfiniteTransition()
                                 val rotationAngle by infiniteTransition.animateFloat(
                                     initialValue = 0f,
@@ -180,7 +182,8 @@ fun AboutDialog(
                                                     checkingGitHubAPI -> "Checking"
                                                     githubData?.tag_name?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
                                                     githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData?.tag_name?.removePrefix("v")}"
-                                                    else -> "Error accessing GitHub api"
+                                                    httpResponse != null -> "${httpResponse?.status.toString()} - Check back later"
+                                                    else -> "Error accessing GitHub API"
                                                 }
                                             ),
                                             presentationModel = LabelPresentationModel(

@@ -53,6 +53,9 @@ object Icons {
         fun eraser() = painterResource("$prefixPath/eraser.svg")
 
         @Composable
+        fun refresh() = painterResource("$prefixPath/refresh.svg")
+
+        @Composable
         fun switch() = painterResource("$prefixPath/switch.svg")
     }
 

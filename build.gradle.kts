@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.6.21"
+    kotlin("plugin.serialization") version "1.6.21"
     id("org.jetbrains.compose") version "1.2.0-alpha01-dev686"
     id("com.github.gmazzo.buildconfig") version "3.0.3"
 }
@@ -38,6 +39,15 @@ dependencies {
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)
 
+    // KotlinX Serialization - https://github.com/Kotlin/kotlinx.serialization
+    implementation(libs.kotlinx.serialization.json)
+
+    // Ktor - https://github.com/ktorio/ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.contentnegotiation)
+    implementation(libs.ktor.client.java)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
     // LWJGL - https://github.com/LWJGL/lwjgl3
     val lwjglCore = libs.lwjgl.core.get()
     val tinyFD = libs.lwjgl.tinyfd.get()
@@ -57,7 +67,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe,TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
-            modules("java.instrument", "java.prefs", "jdk.unsupported")
+            modules("java.instrument", "java.management", "java.prefs", "jdk.unsupported")
             javaHome = System.getenv("JDK_18")
             packageName = project.name
             packageVersion = project.version.toString()

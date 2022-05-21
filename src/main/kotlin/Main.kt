@@ -224,7 +224,7 @@ fun main() = auroraApplication {
                                                         hashProgressCallback = { fileComparisonOneProgress = it }
                                                     )?.run {
                                                         if (shouldFileComparisonOneHashBeUppercase) uppercase() else lowercase()
-                                                    }!!
+                                                    } ?: ""
                                                 } catch (_: CancellationException) {
                                                     // Cancellations are intended
                                                 } catch (exception: Exception) {
@@ -238,7 +238,7 @@ fun main() = auroraApplication {
                                                         hashProgressCallback = { fileComparisonTwoProgress = it }
                                                     )?.run {
                                                         if (shouldFileComparisonTwoHashBeUppercase) uppercase() else lowercase()
-                                                    }!!
+                                                    } ?: ""
                                                 } catch (_: CancellationException) {
                                                     // Cancellations are intended
                                                 } catch (exception: Exception) {
@@ -246,7 +246,7 @@ fun main() = auroraApplication {
                                                 }
                                             }
                                         )
-                                        comparisonJobList!!.awaitAll()
+                                        comparisonJobList?.awaitAll()
                                         filesMatch = fileComparisonOneHash.equals(fileComparisonTwoHash, ignoreCase = true)
                                     }
                                 } else {
@@ -264,7 +264,7 @@ fun main() = auroraApplication {
                                                 hashProgressCallback = { mainFileHashProgress = it }
                                             )?.run {
                                                 if (shouldMainFileHashBeUppercase) uppercase() else lowercase()
-                                            }!!
+                                            } ?: ""
                                             instantAfterHash = Clock.System.now()
                                         } catch (_: CancellationException) {
                                             // Cancellations are intended

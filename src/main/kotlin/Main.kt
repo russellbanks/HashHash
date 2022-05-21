@@ -119,7 +119,7 @@ fun main() = auroraApplication {
             auroraApplicationScope = this,
             preferencesAction = { isPreferencesOpen = true },
             toggleFullScreenAction = {
-                if (windowState.placement == WindowPlacement.Floating) {
+                if (windowState.placement != WindowPlacement.Fullscreen) {
                     windowState.placement = WindowPlacement.Fullscreen
                 } else {
                     windowState.placement = WindowPlacement.Floating

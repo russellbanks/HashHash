@@ -336,11 +336,15 @@ fun main() = auroraApplication {
                                 },
                                 onUppercaseClick = {
                                     givenText = givenText.uppercase()
-                                    givenTextHash = givenText.hash(algorithm)
+                                    givenTextHash = givenText.hash(algorithm).run {
+                                        if (shouldGivenTextBeUppercase) uppercase() else lowercase()
+                                    }
                                                    },
                                 onLowercaseClick = {
                                     givenText = givenText.lowercase()
-                                    givenTextHash = givenText.hash(algorithm)
+                                    givenTextHash = givenText.hash(algorithm).run {
+                                        if (shouldGivenTextBeUppercase) uppercase() else lowercase()
+                                    }
                                                    },
                                 onClearTextClick = { givenText = "" },
                                 onComparisonClearClick = { textComparisonHash = "" },

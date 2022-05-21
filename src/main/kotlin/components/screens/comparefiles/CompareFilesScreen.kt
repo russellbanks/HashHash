@@ -44,7 +44,10 @@ fun CompareFilesScreen(
     fileComparisonTwoOnCaseClick: () -> Unit,
 ) {
     Column {
-        Column(Modifier.fillMaxHeight(0.5f)) {
+        Column(
+            modifier = Modifier.fillMaxHeight(0.5f),
+            verticalArrangement = Arrangement.Center
+        ) {
             FileInfoSection(fileComparisonOne)
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
@@ -59,17 +62,22 @@ fun CompareFilesScreen(
             }
         }
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-        FileInfoSection(fileComparisonTwo)
         Column(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
         ) {
-            HashProgress(fileComparisonTwoProgress)
-            OutputTextFieldRow(
-                algorithm = algorithm,
-                value = fileComparisonTwoHash,
-                onCaseClick = fileComparisonTwoOnCaseClick
-            )
+            FileInfoSection(fileComparisonTwo)
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                HashProgress(fileComparisonTwoProgress)
+                OutputTextFieldRow(
+                    algorithm = algorithm,
+                    value = fileComparisonTwoHash,
+                    onCaseClick = fileComparisonTwoOnCaseClick
+                )
+            }
         }
     }
 }

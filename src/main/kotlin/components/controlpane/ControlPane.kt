@@ -82,16 +82,22 @@ fun ControlPane(
                                     else if (currentScreen == Screen.CompareFilesScreen) onSelectFileComparisonOneResult(it)
                                 }
                             }
+                        ),
+                        presentationModel = CommandButtonPresentationModel(
+                            presentationState = CommandButtonPresentationState.Tile
                         )
-                    ).project(Modifier.fillMaxWidth().height(40.dp))
+                    ).project(Modifier.fillMaxWidth())
                 }
                 AnimatedVisibility(visible = currentScreen == Screen.CompareFilesScreen) {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = if (currentScreen == Screen.CompareFilesScreen) "Select 2nd file" else "",
                             action = { FileUtils.openFileDialogAndGetResult().also { oneSelectFileComparisonTwoResult(it) } }
+                        ),
+                        presentationModel = CommandButtonPresentationModel(
+                            presentationState = CommandButtonPresentationState.Tile
                         )
-                    ).project(Modifier.fillMaxWidth().height(40.dp))
+                    ).project(Modifier.fillMaxWidth())
                 }
                 Row {
                     Box(Modifier.weight(1f)) {
@@ -125,9 +131,9 @@ fun ControlPane(
                         }
                     ),
                     presentationModel = CommandButtonPresentationModel(
-                        presentationState = CommandButtonPresentationState.Medium
+                        presentationState = CommandButtonPresentationState.Tile
                     )
-                ).project(Modifier.fillMaxWidth().height(40.dp))
+                ).project(Modifier.fillMaxWidth())
             }
         }
     }

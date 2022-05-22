@@ -43,11 +43,21 @@ import components.screens.Screen
 import components.screens.comparefiles.CompareFilesScreen
 import components.screens.file.FileScreen
 import components.screens.text.TextScreen
+import data.GitHubData
 import helper.DragAndDrop
+import helper.GitHub
 import helper.Icons
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.serialization.json.Json
 import org.pushingpixels.aurora.component.model.TabContentModel
 import org.pushingpixels.aurora.component.model.TabsContentModel
 import org.pushingpixels.aurora.component.model.TabsPresentationModel
@@ -109,6 +119,25 @@ fun main() = auroraApplication {
     val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
     var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
     var hasF11TriggeredOnce = false
+    var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
+    var githubData: GitHubData? by remember { mutableStateOf(null) }
+    val scope = rememberCoroutineScope()
+    scope.launch(Dispatchers.Default) {
+        HttpClient {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        ignoreUnknownKeys = true
+                    }
+                )
+            }
+        }.run {
+            httpResponse = get(GitHub.HashHash.API.latest).also {
+                if (it.status == HttpStatusCode.OK) githubData = it.body()
+                close()
+            }
+        }
+    }
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
@@ -117,6 +146,7 @@ fun main() = auroraApplication {
         onCloseRequest = ::exitApplication,
         menuCommands = Header.commands(
             auroraApplicationScope = this,
+            gitHubData = githubData,
             preferencesAction = { isPreferencesOpen = true },
             toggleFullScreenAction = {
                 if (windowState.placement != WindowPlacement.Fullscreen) {
@@ -161,7 +191,6 @@ fun main() = auroraApplication {
             }
         )
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-        val scope = rememberCoroutineScope()
         var mode by remember { mutableStateOf(ModeHandler.getMode()) }
         Box {
             Column {
@@ -397,7 +426,18 @@ fun main() = auroraApplication {
                                 },
                 onCloseRequest = { isPreferencesOpen = false }
             )
-            AboutDialog(visible = isAboutOpen, onCloseRequest = { isAboutOpen = false })
+            AboutDialog(
+                visible = isAboutOpen,
+                onCloseRequest = { isAboutOpen = false },
+                httpResponse = httpResponse,
+                githubData = githubData,
+                onUpdateCheck = {
+                    httpResponse = it
+                    scope.launch(Dispatchers.Default) {
+                        githubData = it.body()
+                    }
+                }
+            )
         }
     }
 }

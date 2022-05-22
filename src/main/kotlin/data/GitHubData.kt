@@ -23,4 +23,4 @@ package data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GitHubData(val tag_name: String)
+data class GitHubData(val tag_name: String, val html_url: String)

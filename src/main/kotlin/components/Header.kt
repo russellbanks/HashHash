@@ -20,8 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
-import com.russellbanks.HashHash.BuildConfig
+import data.GitHubData
 import helper.Browser
+import helper.GitHub
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
@@ -32,6 +33,7 @@ object Header {
 
     fun commands(
         auroraApplicationScope: AuroraApplicationScope,
+        gitHubData: GitHubData?,
         preferencesAction: () -> Unit,
         toggleFullScreenAction: () -> Unit,
         aboutAction: () -> Unit
@@ -82,11 +84,15 @@ object Header {
                                 commands = listOf(
                                     Command(
                                         text = "Report issue",
-                                        action = { Browser.open(URL("https://github.com/russellbanks/HashHash/issues/new/choose")) }
+                                        action = { Browser.open(URL(GitHub.HashHash.Repository.newIssue)) }
                                     ),
                                     Command(
                                         text = "Go to GitHub",
-                                        action = { Browser.open(URL("https://github.com/russellbanks/HashHash")) }
+                                        action = { Browser.open(URL(GitHub.HashHash.Repository.website)) }
+                                    ),
+                                    Command(
+                                        text = "Go to release notes",
+                                        action = { Browser.open(URL(gitHubData?.html_url ?: GitHub.HashHash.Repository.releases)) }
                                     )
                                 )
                             ),

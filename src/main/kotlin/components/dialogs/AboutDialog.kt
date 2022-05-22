@@ -41,13 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.russellbanks.HashHash.BuildConfig
 import data.GitHubData
+import helper.GitHub
 import helper.Icons
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,13 +66,14 @@ import java.text.SimpleDateFormat
 @Composable
 fun AboutDialog(
     visible: Boolean,
-    onCloseRequest: () -> Unit
+    onCloseRequest: () -> Unit,
+    httpResponse: HttpResponse?,
+    githubData: GitHubData?,
+    onUpdateCheck: (HttpResponse) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    var githubData: GitHubData? by remember { mutableStateOf(null) }
     var checkingGitHubAPI by remember { mutableStateOf(false) }
     var lastChecked: Instant? by remember { mutableStateOf(null) }
-    var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
     TranslucentDialogOverlay(
         visible = visible,
         onClick = onCloseRequest
@@ -142,7 +142,7 @@ fun AboutDialog(
                                         action = {
                                             if (!checkingGitHubAPI) {
                                                 scope.launch(Dispatchers.Default) {
-                                                    HttpClient() {
+                                                    HttpClient {
                                                         install(ContentNegotiation) {
                                                             json(
                                                                 Json {
@@ -152,10 +152,7 @@ fun AboutDialog(
                                                         }
                                                     }.run {
                                                         checkingGitHubAPI = true
-                                                        httpResponse = get("https://api.github.com/repos/RussellBanks/HashHash/releases/latest")
-                                                        if (httpResponse?.status == HttpStatusCode.OK) {
-                                                            githubData = httpResponse?.body()
-                                                        }
+                                                        onUpdateCheck(get(GitHub.HashHash.API.latest))
                                                         close()
                                                         lastChecked = Clock.System.now()
                                                         checkingGitHubAPI = false
@@ -196,8 +193,8 @@ fun AboutDialog(
                                                         text = when {
                                                             checkingGitHubAPI -> "Checking"
                                                             githubData?.tag_name?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
-                                                            githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData?.tag_name?.removePrefix("v")}"
-                                                            httpResponse != null -> "${httpResponse?.status.toString()} - Check back later"
+                                                            githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData.tag_name.removePrefix("v")}"
+                                                            httpResponse != null -> "${httpResponse.status} - Check back later"
                                                             else -> "Error accessing GitHub API"
                                                         }
                                                     ),

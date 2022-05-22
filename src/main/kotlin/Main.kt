@@ -437,8 +437,10 @@ fun main() = auroraApplication {
                 githubData = githubData,
                 onUpdateCheck = {
                     httpResponse = it
-                    scope.launch(Dispatchers.Default) {
-                        githubData = it.body()
+                    if (it.status == HttpStatusCode.OK) {
+                        scope.launch(Dispatchers.Default) {
+                            githubData = it.body()
+                        }
                     }
                 }
             )

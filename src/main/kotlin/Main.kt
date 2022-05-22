@@ -124,6 +124,7 @@ fun main() = auroraApplication {
     var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     var mode by remember { mutableStateOf(ModeHandler.getMode()) }
     var retrievedGitHubData by remember { mutableStateOf(false) }
+    var httpClient: HttpClient? by remember { mutableStateOf(null) }
     val scope = rememberCoroutineScope()
     AuroraWindow(
         skin = auroraSkin,
@@ -167,7 +168,7 @@ fun main() = auroraApplication {
         if (!retrievedGitHubData) {
             scope.launch(Dispatchers.Default) {
                 retrievedGitHubData = true
-                HttpClient {
+                httpClient = HttpClient {
                     install(ContentNegotiation) {
                         json(
                             Json {
@@ -175,10 +176,9 @@ fun main() = auroraApplication {
                             }
                         )
                     }
-                }.run {
-                    httpResponse = get(GitHub.HashHash.API.latest).also {
+                }.also { client ->
+                    httpResponse = client.get(GitHub.HashHash.API.latest).also {
                         if (it.status == HttpStatusCode.OK) githubData = it.body()
-                        close()
                     }
                 }
             }
@@ -433,6 +433,7 @@ fun main() = auroraApplication {
             AboutDialog(
                 visible = isAboutOpen,
                 onCloseRequest = { isAboutOpen = false },
+                httpClient = httpClient,
                 httpResponse = httpResponse,
                 githubData = githubData,
                 onUpdateCheck = {

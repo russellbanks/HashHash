@@ -66,6 +66,7 @@ import java.text.SimpleDateFormat
 fun AboutDialog(
     visible: Boolean,
     onCloseRequest: () -> Unit,
+    httpClient: HttpClient?,
     httpResponse: HttpResponse?,
     githubData: GitHubData?,
     onUpdateCheck: (HttpResponse) -> Unit
@@ -141,18 +142,9 @@ fun AboutDialog(
                                         action = {
                                             if (!checkingGitHubAPI) {
                                                 scope.launch(Dispatchers.Default) {
-                                                    HttpClient {
-                                                        install(ContentNegotiation) {
-                                                            json(
-                                                                Json {
-                                                                    ignoreUnknownKeys = true
-                                                                }
-                                                            )
-                                                        }
-                                                    }.run {
+                                                    httpClient?.run {
                                                         checkingGitHubAPI = true
                                                         onUpdateCheck(get(GitHub.HashHash.API.latest))
-                                                        close()
                                                         lastChecked = Clock.System.now()
                                                         checkingGitHubAPI = false
                                                     }

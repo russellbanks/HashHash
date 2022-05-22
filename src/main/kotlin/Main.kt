@@ -121,23 +121,10 @@ fun main() = auroraApplication {
     var hasF11TriggeredOnce = false
     var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
     var githubData: GitHubData? by remember { mutableStateOf(null) }
+    var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
+    var mode by remember { mutableStateOf(ModeHandler.getMode()) }
+    var retrievedGitHubData by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    scope.launch(Dispatchers.Default) {
-        HttpClient {
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                    }
-                )
-            }
-        }.run {
-            httpResponse = get(GitHub.HashHash.API.latest).also {
-                if (it.status == HttpStatusCode.OK) githubData = it.body()
-                close()
-            }
-        }
-    }
     AuroraWindow(
         skin = auroraSkin,
         state = windowState,
@@ -177,6 +164,25 @@ fun main() = auroraApplication {
             }
         }
     ) {
+        if (!retrievedGitHubData) {
+            scope.launch(Dispatchers.Default) {
+                retrievedGitHubData = true
+                HttpClient {
+                    install(ContentNegotiation) {
+                        json(
+                            Json {
+                                ignoreUnknownKeys = true
+                            }
+                        )
+                    }
+                }.run {
+                    httpResponse = get(GitHub.HashHash.API.latest).also {
+                        if (it.status == HttpStatusCode.OK) githubData = it.body()
+                        close()
+                    }
+                }
+            }
+        }
         window.dropTarget = DragAndDrop.target(
             result = { droppedItems ->
                 droppedItems.first().let {
@@ -190,8 +196,6 @@ fun main() = auroraApplication {
                 }
             }
         )
-        var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-        var mode by remember { mutableStateOf(ModeHandler.getMode()) }
         Box {
             Column {
                 Row(Modifier.fillMaxSize().weight(1f)) {

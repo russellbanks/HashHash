@@ -50,8 +50,7 @@ import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlinx.datetime.*
 import kotlinx.serialization.json.Json
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -194,6 +193,17 @@ fun AboutDialog(
                                                             checkingGitHubAPI -> "Checking"
                                                             githubData?.tag_name?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
                                                             githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData.tag_name.removePrefix("v")}"
+                                                            (httpResponse?.headers?.get("X-RateLimit-Remaining")?.toInt() ?: -1) == 0 -> {
+                                                                var minutesLeft = httpResponse
+                                                                    ?.headers // Retrieve headers array
+                                                                    ?.get("X-RateLimit-Reset") // Retrieve rate-limit header
+                                                                    ?.toLong() // Convert from String to Long for math
+                                                                    ?.times(1000) // Convert seconds to milliseconds
+                                                                    ?.let { Instant.fromEpochMilliseconds(it) } // Convert milliseconds to Instant
+                                                                    ?.let { Clock.System.now().until(it, DateTimeUnit.MINUTE) } // Work out how long there is left from now until it resets
+                                                                if (minutesLeft == 0L) minutesLeft = 1L // If there is less than 1 minute left, still say to check in a minute
+                                                                "Rate limited. Check back in $minutesLeft ${if (minutesLeft == 1L) "minute" else  "minutes"}"
+                                                            }
                                                             httpResponse != null -> "${httpResponse.status} - Check back later"
                                                             else -> "Error accessing GitHub API"
                                                         }

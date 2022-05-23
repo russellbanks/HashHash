@@ -77,7 +77,7 @@ fun main() = auroraApplication {
     // Main File
     var mainFile: File? by remember { mutableStateOf(null) }
     var mainFileHash by remember { mutableStateOf("") }
-    var shouldMainFileHashBeUppercase = true
+    var shouldMainFileHashBeUppercase by remember { mutableStateOf(true) }
     var mainFileHashJob: Job? by remember { mutableStateOf(null) }
     var mainFileHashProgress by remember { mutableStateOf(0F) }
     var instantBeforeHash: Instant? by remember { mutableStateOf(null) }
@@ -91,19 +91,19 @@ fun main() = auroraApplication {
     // 1st Comparison File
     var fileComparisonOne: File? by remember { mutableStateOf(null) }
     var fileComparisonOneHash by remember { mutableStateOf("") }
-    var shouldFileComparisonOneHashBeUppercase = true
+    var shouldFileComparisonOneHashBeUppercase by remember { mutableStateOf(true) }
     var fileComparisonOneProgress by remember { mutableStateOf(0F) }
 
     // 2nd Comparison File
     var fileComparisonTwo: File? by remember { mutableStateOf(null) }
     var fileComparisonTwoHash by remember { mutableStateOf("") }
-    var shouldFileComparisonTwoHashBeUppercase = true
+    var shouldFileComparisonTwoHashBeUppercase by remember { mutableStateOf(true) }
     var fileComparisonTwoProgress by remember { mutableStateOf(0F) }
 
     // Text Screen
     var givenText by remember { mutableStateOf("") }
     var givenTextHash by remember { mutableStateOf("") }
-    var shouldGivenTextBeUppercase = true
+    var shouldGivenTextBeUppercase by remember { mutableStateOf(true) }
     var textComparisonHash by remember { mutableStateOf("") }
 
     // Dialogs

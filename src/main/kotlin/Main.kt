@@ -289,8 +289,7 @@ fun main() {
                                                             algorithm = algorithm,
                                                             hashProgressCallback = { fileComparisonOneProgress = it }
                                                         )?.run { if (shouldFileComparisonOneHashBeUppercase) uppercase() else lowercase() } ?: ""
-                                                    } catch (cancellationException: CancellationException) {
-                                                        klogger.info(cancellationException.localizedMessage)
+                                                    } catch (_: CancellationException) {
                                                     } catch (exception: Exception) {
                                                         mainFileException = exception
                                                     }
@@ -301,8 +300,7 @@ fun main() {
                                                             algorithm = algorithm,
                                                             hashProgressCallback = { fileComparisonTwoProgress = it }
                                                         )?.run { if (shouldFileComparisonTwoHashBeUppercase) uppercase() else lowercase() } ?: ""
-                                                    } catch (cancellationException: CancellationException) {
-                                                        klogger.info(cancellationException.localizedMessage)
+                                                    } catch (_: CancellationException) {
                                                     } catch (exception: Exception) {
                                                         mainFileException = exception
                                                     }
@@ -326,8 +324,7 @@ fun main() {
                                                     hashProgressCallback = { mainFileHashProgress = it }
                                                 )?.run { if (shouldMainFileHashBeUppercase) uppercase() else lowercase() } ?: ""
                                                 instantAfterHash = Clock.System.now()
-                                            } catch (cancellationException: CancellationException) {
-                                                klogger.info(cancellationException.localizedMessage)
+                                            } catch (_: CancellationException) {
                                             } catch (exception: Exception) {
                                                 mainFileException = exception
                                             }

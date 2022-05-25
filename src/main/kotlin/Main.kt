@@ -77,6 +77,7 @@ import java.io.File
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     loggingConfiguration { ANSI_CONSOLE() }
+    val klogger = logger("Main")
     auroraApplication {
         // Main File
         var mainFile: File? by remember { mutableStateOf(null) }
@@ -129,7 +130,6 @@ fun main() {
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         var retrievedGitHubData by remember { mutableStateOf(false) }
         var httpClient: HttpClient? by remember { mutableStateOf(null) }
-        val klogger = logger("Main")
         AuroraWindow(
             skin = auroraSkin,
             state = windowState,

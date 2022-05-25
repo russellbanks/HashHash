@@ -52,11 +52,11 @@ import io.klogging.config.loggingConfiguration
 import io.klogging.logger
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
@@ -177,7 +177,7 @@ fun main() {
             if (!retrievedGitHubData) {
                 scope.launch(Dispatchers.Default) {
                     retrievedGitHubData = true
-                    httpClient = HttpClient {
+                    httpClient = HttpClient(CIO) {
                         install(ContentNegotiation) {
                             json(
                                 Json {

@@ -69,8 +69,6 @@ import org.pushingpixels.aurora.component.projection.TabsProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
-import preferences.mode.Mode
-import preferences.mode.ModeHandler
 import preferences.theme.ThemeHandler
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
@@ -122,7 +120,6 @@ fun main() {
             size = DpSize(width = 1035.dp, height = 750.dp)
         )
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
-        var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
         val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
         var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
@@ -130,7 +127,6 @@ fun main() {
         var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
         var githubData: GitHubData? by remember { mutableStateOf(null) }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
-        var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
         var retrievedGitHubData by remember { mutableStateOf(false) }
         var httpClient: HttpClient? by remember { mutableStateOf(null) }
         val klogger = logger("Main")
@@ -235,13 +231,7 @@ fun main() {
                             file = mainFile,
                             fileComparisonOne = fileComparisonOne,
                             fileComparisonTwo = fileComparisonTwo,
-                            mode = mode,
                             currentScreen = currentScreen,
-                            onTriggerModeChange = {
-                                val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
-                                scope.launch(Dispatchers.Default) { ModeHandler.putMode(newMode) }
-                                mode = newMode
-                            },
                             onAlgorithmClick = { item ->
                                 if (item != algorithm) {
                                     algorithm = item
@@ -455,10 +445,8 @@ fun main() {
                 PreferencesDialog(
                     visible = isPreferencesOpen,
                     themeHandler = themeHandler,
-                    selectedTheme = selectedTheme,
                     onThemeChange = {
                         scope.launch(Dispatchers.Default) { themeHandler.putTheme(it.first) }
-                        selectedTheme = it.first
                         auroraSkin = it.second
                     },
                     onCloseRequest = { isPreferencesOpen = false }

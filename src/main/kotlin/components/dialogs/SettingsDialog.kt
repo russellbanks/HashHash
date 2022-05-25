@@ -55,18 +55,18 @@ import preferences.theme.ThemeHandler
 fun PreferencesDialog(
     visible: Boolean,
     themeHandler: ThemeHandler,
-    selectedTheme: Theme,
     onThemeChange: (Pair<Theme, AuroraSkinDefinition>) -> Unit,
     onCloseRequest: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
+    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+        decorationAreaType = AuroraSkin.decorationAreaType
+    )
     TranslucentDialogOverlay(
         visible = visible,
         onClick = onCloseRequest
     )
-    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
-        decorationAreaType = AuroraSkin.decorationAreaType
-    )
-    val scope = rememberCoroutineScope()
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
@@ -110,6 +110,7 @@ fun PreferencesDialog(
                                             items = Theme.values().toList(),
                                             selectedItem = selectedTheme,
                                             onTriggerItemSelectedChange = {
+                                                selectedTheme = it
                                                 onThemeChange(
                                                     Pair(
                                                         it, when (it) {

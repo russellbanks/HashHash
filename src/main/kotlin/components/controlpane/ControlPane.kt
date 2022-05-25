@@ -22,7 +22,7 @@ package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,7 +30,9 @@ import com.appmattus.crypto.Algorithm
 import components.screens.Screen
 import helper.FileUtils
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
@@ -39,6 +41,7 @@ import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
 import preferences.mode.Mode
+import preferences.mode.ModeHandler
 import java.io.File
 
 @Composable
@@ -49,15 +52,15 @@ fun ControlPane(
     file: File?,
     fileComparisonOne: File?,
     fileComparisonTwo: File?,
-    mode: Mode,
     currentScreen: Screen,
-    onTriggerModeChange: (Boolean) -> Unit,
     onAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (File?) -> Unit,
     onSelectFileComparisonOneResult: (File?) -> Unit,
     oneSelectFileComparisonTwoResult: (File?) -> Unit,
     onCalculateClick: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+    var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(180.dp),
@@ -109,7 +112,11 @@ fun ControlPane(
                         contentModel = SelectorContentModel(
                             text = "",
                             selected = mode == Mode.SIMPLE,
-                            onTriggerSelectedChange = { onTriggerModeChange(it) }
+                            onTriggerSelectedChange = {
+                                val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
+                                scope.launch(Dispatchers.Default) { ModeHandler.putMode(newMode) }
+                                mode = newMode
+                            }
                         )
                     ).project()
                 }

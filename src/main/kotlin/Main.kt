@@ -122,7 +122,7 @@ fun main() {
         )
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
-        val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
+        val undecorated = remember { TitleBarHandler.getTitleBar() == TitleBar.Custom }
         var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
         var hasF11TriggeredOnce = false
         var httpResponse: HttpResponse? by remember { mutableStateOf(null) }

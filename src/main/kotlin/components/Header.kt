@@ -23,6 +23,8 @@ package components
 import data.GitHubData
 import helper.Browser
 import helper.GitHub
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
@@ -33,6 +35,7 @@ object Header {
 
     fun commands(
         auroraApplicationScope: AuroraApplicationScope,
+        scope: CoroutineScope,
         gitHubData: GitHubData?,
         preferencesAction: () -> Unit,
         toggleFullScreenAction: () -> Unit,
@@ -84,15 +87,27 @@ object Header {
                                 commands = listOf(
                                     Command(
                                         text = "Report issue",
-                                        action = { Browser.open(URL(GitHub.HashHash.Repository.newIssue)) }
+                                        action = {
+                                            scope.launch {
+                                                Browser.open(URL(GitHub.HashHash.Repository.newIssue))
+                                            }
+                                        }
                                     ),
                                     Command(
                                         text = "Go to GitHub",
-                                        action = { Browser.open(URL(GitHub.HashHash.Repository.website)) }
+                                        action = {
+                                            scope.launch {
+                                                Browser.open(URL(GitHub.HashHash.Repository.website))
+                                            }
+                                        }
                                     ),
                                     Command(
                                         text = "Go to release notes",
-                                        action = { Browser.open(URL(gitHubData?.html_url ?: GitHub.HashHash.Repository.releases)) }
+                                        action = {
+                                            scope.launch {
+                                                Browser.open(URL(gitHubData?.html_url ?: GitHub.HashHash.Repository.releases))
+                                            }
+                                        }
                                     )
                                 )
                             ),

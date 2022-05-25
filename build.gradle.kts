@@ -17,6 +17,7 @@ repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
@@ -32,6 +33,9 @@ dependencies {
 
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
+
+    // Klogging - https://github.com/klogging/klogging
+    implementation(libs.klogging.jvm)
 
     // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
     implementation(libs.coroutines.core)

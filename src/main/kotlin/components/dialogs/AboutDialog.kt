@@ -43,15 +43,16 @@ import com.russellbanks.HashHash.BuildConfig
 import data.GitHubData
 import helper.GitHub
 import helper.Icons
+import io.klogging.logger
 import io.ktor.client.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
-import kotlinx.serialization.json.Json
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.until
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -72,6 +73,7 @@ fun AboutDialog(
     onUpdateCheck: (HttpResponse) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val logger = logger("About Dialog")
     var checkingGitHubAPI by remember { mutableStateOf(false) }
     var lastChecked: Instant? by remember { mutableStateOf(null) }
     TranslucentDialogOverlay(
@@ -143,6 +145,7 @@ fun AboutDialog(
                                             if (!checkingGitHubAPI) {
                                                 scope.launch(Dispatchers.Default) {
                                                     httpClient?.run {
+                                                        logger.info("Retrieving GitHub data")
                                                         checkingGitHubAPI = true
                                                         onUpdateCheck(get(GitHub.HashHash.API.latest))
                                                         lastChecked = Clock.System.now()

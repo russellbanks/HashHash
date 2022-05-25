@@ -20,9 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.titlebar
 
+import io.klogging.Klogging
 import java.util.prefs.Preferences
 
-object TitleBarHandler {
+object TitleBarHandler: Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
@@ -33,7 +34,8 @@ object TitleBarHandler {
         }
     }
 
-    fun putTitleBar(titleBar: TitleBar) = preferences.putInt(titleBarKey, titleBar.ordinal)
+    suspend fun putTitleBar(titleBar: TitleBar) = preferences.putInt(titleBarKey, titleBar.ordinal)
+        .also { logger.info("Put ${titleBar.name} into preferences with the key of \"$titleBarKey\" and the value of ${titleBar.ordinal}") }
 
     private const val titleBarKey = "titleBar"
     private const val defaultTitleBarOrdinal = -1

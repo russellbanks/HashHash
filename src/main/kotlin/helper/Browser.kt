@@ -20,30 +20,34 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import io.klogging.Klogging
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.awt.Desktop
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
 
-object Browser {
-    private fun open(uri: URI?): Boolean {
+object Browser: Klogging {
+    private suspend fun open(uri: URI?): Boolean {
         val desktop = if (Desktop.isDesktopSupported()) Desktop.getDesktop() else null
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                desktop.browse(uri)
+                logger.info("Opened ${uri.toString()}")
+                withContext(Dispatchers.IO) { desktop.browse(uri) }
                 return true
             } catch (exception: Exception) {
-                exception.printStackTrace()
+                logger.trace(exception)
             }
         }
         return false
     }
 
-    fun open(url: URL): Boolean {
+    suspend fun open(url: URL): Boolean {
         try {
             return open(url.toURI())
         } catch (exception: URISyntaxException) {
-            exception.printStackTrace()
+            logger.trace(exception)
         }
         return false
     }

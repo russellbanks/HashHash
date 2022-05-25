@@ -20,34 +20,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.theme
 
+import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.theming.AuroraSkinDefinition
 import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
 
-class ThemeHandler(private val systemDark: Boolean) {
+class ThemeHandler(private val systemDark: Boolean): Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
     fun isSystemDark() = systemDark
 
-    fun getTheme(): Theme {
+    fun getTheme(scope: CoroutineScope): Theme {
         return when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
             Theme.LIGHT.ordinal -> Theme.LIGHT
             Theme.DARK.ordinal -> Theme.DARK
             else -> Theme.SYSTEM
-        }
+        }.also { scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") } }
     }
 
-    fun getAuroraTheme(): AuroraSkinDefinition {
+    fun getAuroraTheme(scope: CoroutineScope): AuroraSkinDefinition {
         return when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
             Theme.LIGHT.ordinal -> dustSkin()
             Theme.DARK.ordinal -> nightShadeSkin()
             else -> if (systemDark) nightShadeSkin() else dustSkin()
-        }
+        }.also { scope.launch(Dispatchers.Default) { logger.info("Returned ${it.displayName}") } }
     }
 
-    fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)
+    suspend fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)
+        .also { logger.info("Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}") }
 
     companion object {
         const val themeKey = "theme"

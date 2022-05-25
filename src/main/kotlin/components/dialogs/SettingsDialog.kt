@@ -35,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import org.pushingpixels.aurora.component.model.*
@@ -63,6 +65,7 @@ fun PreferencesDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
+    val scope = rememberCoroutineScope()
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
@@ -104,7 +107,7 @@ fun PreferencesDialog(
                                     ComboBoxProjection(
                                         contentModel = ComboBoxContentModel(
                                             items = Theme.values().toList(),
-                                            selectedItem = themeHandler.getTheme(),
+                                            selectedItem = themeHandler.getTheme(scope),
                                             onTriggerItemSelectedChange = {
                                                 onThemeChange(
                                                     Pair(
@@ -134,7 +137,7 @@ fun PreferencesDialog(
                                                 selectedItem = selectedTitleBar,
                                                 onTriggerItemSelectedChange = {
                                                     selectedTitleBar = it
-                                                    TitleBarHandler.putTitleBar(it)
+                                                    scope.launch(Dispatchers.Default) { TitleBarHandler.putTitleBar(it) }
                                                 }
                                             ),
                                             presentationModel = ComboBoxPresentationModel(

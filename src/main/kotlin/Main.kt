@@ -122,6 +122,7 @@ fun main() {
             size = DpSize(width = 1035.dp, height = 750.dp)
         )
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
+        var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
         val undecorated by remember { mutableStateOf(TitleBarHandler.getTitleBar() == TitleBar.Custom) }
         var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
@@ -457,8 +458,10 @@ fun main() {
                 PreferencesDialog(
                     visible = isPreferencesOpen,
                     themeHandler = themeHandler,
+                    selectedTheme = selectedTheme,
                     onThemeChange = {
                         scope.launch(Dispatchers.Default) { themeHandler.putTheme(it.first) }
+                        selectedTheme = it.first
                         auroraSkin = it.second
                     },
                     onCloseRequest = { isPreferencesOpen = false }

@@ -55,6 +55,7 @@ import preferences.theme.ThemeHandler
 fun PreferencesDialog(
     visible: Boolean,
     themeHandler: ThemeHandler,
+    selectedTheme: Theme,
     onThemeChange: (Pair<Theme, AuroraSkinDefinition>) -> Unit,
     onCloseRequest: () -> Unit
 ) {
@@ -107,7 +108,7 @@ fun PreferencesDialog(
                                     ComboBoxProjection(
                                         contentModel = ComboBoxContentModel(
                                             items = Theme.values().toList(),
-                                            selectedItem = themeHandler.getTheme(scope),
+                                            selectedItem = selectedTheme,
                                             onTriggerItemSelectedChange = {
                                                 onThemeChange(
                                                     Pair(

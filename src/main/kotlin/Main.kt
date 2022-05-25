@@ -195,7 +195,7 @@ fun main() {
                         }
                     }.also { client ->
                         httpResponse = client.get(GitHub.HashHash.API.latest).also {
-                            if (it.status == HttpStatusCode.OK) {
+                            if (it.status.value in 200..299) {
                                 githubData = it.body()
                             }
                         }
@@ -474,7 +474,7 @@ fun main() {
                     githubData = githubData,
                     onUpdateCheck = {
                         httpResponse = it
-                        if (it.status == HttpStatusCode.OK) {
+                        if (it.status.value in 200..299) {
                             scope.launch(Dispatchers.Default) {
                                 githubData = it.body()
                                 klogger.info("Successfully retrieved GitHub data with status code ${it.status}")

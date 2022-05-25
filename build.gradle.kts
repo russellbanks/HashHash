@@ -3,10 +3,10 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.serialization") version "1.6.21"
-    id("org.jetbrains.compose") version "1.2.0-alpha01-dev686"
-    id("com.github.gmazzo.buildconfig") version "3.0.3"
+    alias(libs.plugins.buildconfig)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "com.russellbanks"
@@ -27,9 +27,12 @@ dependencies {
     implementation(libs.accompanist.flowlayouts)
 
     // Aurora - https://github.com/kirill-grouchnikov/aurora
-    implementation(libs.aurora.window)
     implementation(libs.aurora.component)
     implementation(libs.aurora.theming)
+    implementation(libs.aurora.window)
+
+    // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
+    implementation(libs.coroutines.core)
 
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
@@ -37,9 +40,6 @@ dependencies {
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
     implementation(libs.klogging.slf4j)
-
-    // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
-    implementation(libs.coroutines.core)
 
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)
@@ -55,12 +55,10 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
 
     // LWJGL - https://github.com/LWJGL/lwjgl3
-    val lwjglCore = libs.lwjgl.core.get()
-    val tinyFD = libs.lwjgl.tinyfd.get()
     implementation(libs.lwjgl.core)
     implementation(libs.lwjgl.tinyfd)
-    runtimeOnly(lwjglCore.module.group, lwjglCore.module.name, lwjglCore.versionConstraint.toString(), classifier = lwjglNatives())
-    runtimeOnly(tinyFD.module.group, tinyFD.module.name, tinyFD.versionConstraint.toString(), classifier = lwjglNatives())
+    runtimeOnly(variantOf(libs.lwjgl.core) { classifier(lwjglNatives()) })
+    runtimeOnly(variantOf(libs.lwjgl.tinyfd) { classifier(lwjglNatives()) })
 }
 
 tasks.withType<KotlinCompile> {

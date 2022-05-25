@@ -36,6 +36,7 @@ dependencies {
 
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
+    implementation(libs.klogging.slf4j)
 
     // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
     implementation(libs.coroutines.core)
@@ -50,6 +51,7 @@ dependencies {
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.contentnegotiation)
     implementation(libs.ktor.client.java)
+    implementation(libs.ktor.client.logging)
     implementation(libs.ktor.serialization.kotlinx.json)
 
     // LWJGL - https://github.com/LWJGL/lwjgl3

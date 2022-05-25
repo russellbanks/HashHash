@@ -53,6 +53,7 @@ import io.klogging.logger
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -131,7 +132,7 @@ fun main() {
         var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
         var retrievedGitHubData by remember { mutableStateOf(false) }
         var httpClient: HttpClient? by remember { mutableStateOf(null) }
-        val logger = logger("Main")
+        val klogger = logger("Main")
         AuroraWindow(
             skin = auroraSkin,
             state = windowState,
@@ -174,7 +175,6 @@ fun main() {
         ) {
             if (!retrievedGitHubData) {
                 scope.launch(Dispatchers.Default) {
-                    logger.info("Retrieving GitHub data")
                     retrievedGitHubData = true
                     httpClient = HttpClient {
                         install(ContentNegotiation) {
@@ -184,15 +184,18 @@ fun main() {
                                 }
                             )
                         }
+                        install(Logging) {
+                            logger = object: Logger {
+                                override fun log(message: String) {
+                                    scope.launch(Dispatchers.Default) { klogger.info(message) }
+                                }
+                            }
+                            level = LogLevel.INFO
+                        }
                     }.also { client ->
                         httpResponse = client.get(GitHub.HashHash.API.latest).also {
                             if (it.status == HttpStatusCode.OK) {
                                 githubData = it.body()
-                                logger.info("Successfully retrieved GitHub data with ${it.status}")
-                            } else {
-                                scope.launch(Dispatchers.Default) {
-                                    logger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
-                                }
                             }
                         }
                     }
@@ -202,19 +205,19 @@ fun main() {
                 result = { droppedItems ->
                     droppedItems.first().let {
                         if (it is File && it.isFile) {
-                            scope.launch(Dispatchers.Default) { logger.info("User drag and dropped file: ${it.absoluteFile}") }
+                            scope.launch(Dispatchers.Default) { klogger.info("User drag and dropped file: ${it.absoluteFile}") }
                             if (currentScreen == Screen.FileScreen) {
                                 mainFile = it
-                                scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as main file") }
+                                scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as main file") }
                             }
                             else if (currentScreen == Screen.CompareFilesScreen) {
                                 if (fileComparisonOne == null) {
                                     fileComparisonOne = it
-                                    scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as the 1st comparison file") }
+                                    scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 1st comparison file") }
                                 }
                                 else {
                                     fileComparisonTwo = it
-                                    scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as the 2nd comparison file") }
+                                    scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 2nd comparison file") }
                                 }
                             }
                         }
@@ -241,7 +244,7 @@ fun main() {
                             onAlgorithmClick = { item ->
                                 if (item != algorithm) {
                                     algorithm = item
-                                    scope.launch(Dispatchers.Default) { logger.info("Set algorithm as ${item.algorithmName}") }
+                                    scope.launch(Dispatchers.Default) { klogger.info("Set algorithm as ${item.algorithmName}") }
                                     mainFileHash = ""
                                     instantBeforeHash = null
                                     instantAfterHash = null
@@ -251,7 +254,7 @@ fun main() {
                             onSelectFileResult = { result ->
                                 if (result != null && mainFile != result) {
                                     mainFile = result
-                                    scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as main file") }
+                                    scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as main file") }
                                     mainFileHash = ""
                                     instantBeforeHash = null
                                     instantAfterHash = null
@@ -261,7 +264,7 @@ fun main() {
                             onSelectFileComparisonOneResult = { result ->
                                 if (result != null && fileComparisonOne != result) {
                                     fileComparisonOne = result
-                                    scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
+                                    scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
                                     fileComparisonOneHash = ""
                                     fileComparisonOneProgress = 0F
                                 }
@@ -269,7 +272,7 @@ fun main() {
                             oneSelectFileComparisonTwoResult = { result ->
                                 if (result != null && fileComparisonTwo != result) {
                                     fileComparisonTwo = result
-                                    scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
+                                    scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
                                     fileComparisonTwoHash = ""
                                     fileComparisonTwoProgress = 0F
                                 }
@@ -286,7 +289,7 @@ fun main() {
                                                             hashProgressCallback = { fileComparisonOneProgress = it }
                                                         )?.run { if (shouldFileComparisonOneHashBeUppercase) uppercase() else lowercase() } ?: ""
                                                     } catch (cancellationException: CancellationException) {
-                                                        logger.info(cancellationException.localizedMessage)
+                                                        klogger.info(cancellationException.localizedMessage)
                                                     } catch (exception: Exception) {
                                                         mainFileException = exception
                                                     }
@@ -298,7 +301,7 @@ fun main() {
                                                             hashProgressCallback = { fileComparisonTwoProgress = it }
                                                         )?.run { if (shouldFileComparisonTwoHashBeUppercase) uppercase() else lowercase() } ?: ""
                                                     } catch (cancellationException: CancellationException) {
-                                                        logger.info(cancellationException.localizedMessage)
+                                                        klogger.info(cancellationException.localizedMessage)
                                                     } catch (exception: Exception) {
                                                         mainFileException = exception
                                                     }
@@ -323,7 +326,7 @@ fun main() {
                                                 )?.run { if (shouldMainFileHashBeUppercase) uppercase() else lowercase() } ?: ""
                                                 instantAfterHash = Clock.System.now()
                                             } catch (cancellationException: CancellationException) {
-                                                logger.info(cancellationException.localizedMessage)
+                                                klogger.info(cancellationException.localizedMessage)
                                             } catch (exception: Exception) {
                                                 mainFileException = exception
                                             }
@@ -388,7 +391,7 @@ fun main() {
                                         if (it.isNotEmpty()) {
                                             givenTextHash = givenText.hash(algorithm)
                                                 .run { if (shouldGivenTextBeUppercase) uppercase() else lowercase() }
-                                                .also { scope.launch(Dispatchers.Default) { logger.info("Hashed \"$givenText\" to be $it") } }
+                                                .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
                                         }
                                     },
                                     onUppercaseClick = {
@@ -397,7 +400,7 @@ fun main() {
                                             if (givenText.isNotEmpty()) {
                                                 givenTextHash = givenText.hash(algorithm)
                                                     .run { if (shouldGivenTextBeUppercase) uppercase() else lowercase() }
-                                                    .also { scope.launch(Dispatchers.Default) { logger.info("Hashed \"$givenText\" to be $it") } }
+                                                    .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
                                             }
                                         }
                                     },
@@ -407,7 +410,7 @@ fun main() {
                                             if (givenText.isNotEmpty()) {
                                                 givenTextHash = givenText.hash(algorithm)
                                                     .run { if (shouldGivenTextBeUppercase) uppercase() else lowercase() }
-                                                    .also { scope.launch(Dispatchers.Default) { logger.info("Hashed \"$givenText\" to be $it") } }
+                                                    .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
                                             }
                                         }
                                     },
@@ -471,11 +474,11 @@ fun main() {
                         if (it.status == HttpStatusCode.OK) {
                             scope.launch(Dispatchers.Default) {
                                 githubData = it.body()
-                                logger.info("Successfully retrieved GitHub data with status code ${it.status}")
+                                klogger.info("Successfully retrieved GitHub data with status code ${it.status}")
                             }
                         } else {
                             scope.launch(Dispatchers.Default) {
-                                logger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
+                                klogger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
                             }
                         }
                     }

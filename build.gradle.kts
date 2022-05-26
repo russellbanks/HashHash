@@ -37,6 +37,10 @@ dependencies {
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
 
+    // Decompose - https://github.com/arkivanov/Decompose
+    implementation(libs.decompose.core)
+    implementation (libs.decompose.jetbrains)
+
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
     implementation(libs.klogging.slf4j)

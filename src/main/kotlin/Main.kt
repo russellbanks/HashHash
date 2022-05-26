@@ -33,6 +33,12 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Header
@@ -74,11 +80,16 @@ import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import java.io.File
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalDecomposeApi::class)
 fun main() {
     loggingConfiguration { ANSI_CONSOLE() }
     val klogger = logger("Main")
+
+    val lifecycle = LifecycleRegistry()
+    val root = RootComponent(DefaultComponentContext(lifecycle))
     auroraApplication {
+        val routerState = root.routerState.subscribeAsState()
+        val activeComponent = routerState.value.activeChild.instance
         // Main File
         var mainFile: File? by remember { mutableStateOf(null) }
         var mainFileHash by remember { mutableStateOf("") }
@@ -130,6 +141,7 @@ fun main() {
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         var retrievedGitHubData by remember { mutableStateOf(false) }
         var httpClient: HttpClient? by remember { mutableStateOf(null) }
+        LifecycleController(lifecycle, windowState)
         AuroraWindow(
             skin = auroraSkin,
             state = windowState,
@@ -339,6 +351,11 @@ fun main() {
                                     ),
                                     selectedTabIndex = currentScreen.ordinal,
                                     onTriggerTabSelected = {
+                                        when (it) {
+                                            0 -> root.onFileTabClicked()
+                                            1 -> root.onTextTabClicked()
+                                            2 -> root.onCompareFilesTabClicked()
+                                        }
                                         currentScreen = when (it) {
                                             0 -> Screen.FileScreen
                                             1 -> Screen.TextScreen
@@ -353,87 +370,14 @@ fun main() {
                                     tabContentPadding = PaddingValues(horizontal = 30.dp, vertical = 6.dp)
                                 )
                             ).project()
-                            when (currentScreen) {
-                                Screen.FileScreen -> FileScreen(
-                                    mainFile = mainFile,
-                                    algorithm = algorithm,
-                                    mainFileHash = mainFileHash,
-                                    instantBeforeHash = instantBeforeHash,
-                                    instantAfterHash = instantAfterHash,
-                                    mainFileHashProgress = mainFileHashProgress,
-                                    onCaseClick = {
-                                        mainFileHash = mainFileHash.run {
-                                            if (this == uppercase()) lowercase() else uppercase()
-                                        }
-                                        shouldMainFileHashBeUppercase = mainFileHash == mainFileHash.uppercase()
-                                    }
-                                )
-                                Screen.TextScreen -> TextScreen(
-                                    algorithm = algorithm,
-                                    givenText = givenText,
-                                    givenTextHash = givenTextHash,
-                                    textComparisonHash = textComparisonHash,
-                                    characterLimit = characterLimit,
-                                    onValueChange = {
-                                        givenText = if (it.count() < characterLimit) it else it.dropLast(it.count() - characterLimit)
-                                        if (it.isNotEmpty()) {
-                                            givenTextHash = givenText.hash(algorithm)
-                                                .run { if (shouldGivenTextBeUppercase) uppercase() else lowercase() }
-                                                .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
-                                        }
-                                    },
-                                    onUppercaseClick = {
-                                        if (givenText != givenText.uppercase()) {
-                                            givenText = givenText.uppercase()
-                                            if (givenText.isNotEmpty()) {
-                                                givenTextHash = givenText.hash(algorithm)
-                                                    .run { if (shouldGivenTextBeUppercase) uppercase() else lowercase() }
-                                                    .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
-                                            }
-                                        }
-                                    },
-                                    onLowercaseClick = {
-                                        if (givenText != givenText.lowercase()) {
-                                            givenText = givenText.lowercase()
-                                            if (givenText.isNotEmpty()) {
-                                                givenTextHash = givenText.hash(algorithm)
-                                                    .run { if (shouldGivenTextBeUppercase) uppercase() else lowercase() }
-                                                    .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
-                                            }
-                                        }
-                                    },
-                                    onClearTextClick = { givenText = "" },
-                                    onComparisonClearClick = { textComparisonHash = "" },
-                                    onCaseClick = {
-                                        givenTextHash = givenTextHash
-                                            .run { if (this == uppercase()) lowercase() else uppercase() }
-                                        shouldGivenTextBeUppercase = givenTextHash == givenTextHash.uppercase()
-                                    },
-                                    onPasteClick = {
-                                        textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
-                                    },
-                                    onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
-                                )
-                                Screen.CompareFilesScreen -> CompareFilesScreen(
-                                    algorithm = algorithm,
-                                    fileComparisonOne = fileComparisonOne,
-                                    fileComparisonOneHash = fileComparisonOneHash,
-                                    fileComparisonOneProgress = fileComparisonOneProgress,
-                                    fileComparisonOneOnCaseClick = {
-                                        fileComparisonOneHash = fileComparisonOneHash.run {
-                                            if (this == uppercase()) lowercase() else uppercase()
-                                        }
-                                        shouldFileComparisonOneHashBeUppercase = fileComparisonOneHash == fileComparisonOneHash.uppercase()
-                                    },
-                                    fileComparisonTwo = fileComparisonTwo,
-                                    fileComparisonTwoHash = fileComparisonTwoHash,
-                                    fileComparisonTwoProgress = fileComparisonTwoProgress,
-                                    fileComparisonTwoOnCaseClick = {
-                                        fileComparisonTwoHash = fileComparisonTwoHash
-                                            .run { if (this == uppercase()) lowercase() else uppercase() }
-                                        shouldFileComparisonTwoHashBeUppercase = fileComparisonTwoHash == fileComparisonTwoHash.uppercase()
-                                    }
-                                )
+                            Children(
+                                routerState = routerState.value,
+                            ) {
+                                when (it.instance) {
+                                    is Root.Child.File -> CounterUi(Counter(DefaultComponentContext(lifecycle)))
+                                    is Root.Child.Text -> CounterUi2(Counter(DefaultComponentContext(lifecycle)))
+                                    is Root.Child.CompareFiles -> CounterUi3(Counter(DefaultComponentContext(lifecycle)))
+                                }
                             }
                         }
                     }

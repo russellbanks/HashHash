@@ -20,20 +20,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.awt.datatransfer.DataFlavor
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
 import java.awt.dnd.DropTargetDropEvent
 
-object DragAndDrop {
+object DragAndDrop: Klogging {
     fun target(
+        scope: CoroutineScope,
         result: (List<*>) -> Unit
     ) = object: DropTarget() {
         @Synchronized
         override fun drop(event: DropTargetDropEvent) {
-            runCatching {
+            try {
                 event.acceptDrop(DnDConstants.ACTION_REFERENCE)
                 result(event.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<*>)
+            } catch (exception: Exception) {
+                scope.launch(Dispatchers.Default) { logger.trace(exception) }
             }
         }
     }

@@ -257,27 +257,25 @@ fun main() {
                     }
                 }
             }
-            window.dropTarget = DragAndDrop.target(
-                result = { droppedItems ->
-                    droppedItems.first().let {
-                        if (it is File && it.isFile) {
-                            scope.launch(Dispatchers.Default) { klogger.info("User drag and dropped file: ${it.absoluteFile}") }
-                            if (activeComponent is Root.Child.File) {
-                                mainFile = it
-                                scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as main file") }
-                            } else if (activeComponent is Root.Child.CompareFiles) {
-                                if (fileComparisonOne == null) {
-                                    fileComparisonOne = it
-                                    scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 1st comparison file") }
-                                } else {
-                                    fileComparisonTwo = it
-                                    scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 2nd comparison file") }
-                                }
+            window.dropTarget = DragAndDrop.target(scope) { droppedItems ->
+                droppedItems.first().let {
+                    if (it is File && it.isFile) {
+                        scope.launch(Dispatchers.Default) { klogger.info("User drag and dropped file: ${it.absoluteFile}") }
+                        if (activeComponent is Root.Child.File) {
+                            mainFile = it
+                            scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as main file") }
+                        } else if (activeComponent is Root.Child.CompareFiles) {
+                            if (fileComparisonOne == null) {
+                                fileComparisonOne = it
+                                scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 1st comparison file") }
+                            } else {
+                                fileComparisonTwo = it
+                                scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 2nd comparison file") }
                             }
                         }
                     }
                 }
-            )
+            }
             Box {
                 Column {
                     Row(Modifier.fillMaxSize().weight(1f)) {

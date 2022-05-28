@@ -105,7 +105,7 @@ object Header {
                                         text = "Go to release notes",
                                         action = {
                                             scope.launch {
-                                                Browser.open(URL(gitHubData?.html_url ?: GitHub.HashHash.Repository.releases))
+                                                Browser.open(URL(gitHubData?.htmlUrl ?: GitHub.HashHash.Repository.releases))
                                             }
                                         }
                                     )

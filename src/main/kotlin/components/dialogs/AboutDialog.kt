@@ -186,8 +186,8 @@ fun AboutDialog(
                                                     contentModel = LabelContentModel(
                                                         text = when {
                                                             checkingGitHubAPI -> "Checking"
-                                                            githubData?.tag_name?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
-                                                            githubData?.tag_name?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData.tag_name.removePrefix("v")}"
+                                                            githubData?.tagName?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
+                                                            githubData?.tagName?.contains(BuildConfig.appVersion) == false -> "Out of date. Latest version is ${githubData.tagName.removePrefix("v")}"
                                                             (httpResponse?.headers?.get("X-RateLimit-Remaining")?.toInt() ?: -1) == 0 -> {
                                                                 var minutesLeft = httpResponse
                                                                     ?.headers // Retrieve headers array

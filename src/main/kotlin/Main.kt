@@ -26,11 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import com.appmattus.crypto.Algorithm
@@ -60,6 +61,7 @@ import data.GitHubData
 import helper.DragAndDrop
 import helper.GitHub
 import helper.Icons
+import helper.Window
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
 import io.klogging.logger
@@ -142,7 +144,6 @@ fun main() {
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
         val undecorated = remember { TitleBarHandler.getTitleBar() == TitleBar.Custom }
-        var hasF11TriggeredOnce = false
         var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
         var githubData: GitHubData? by remember { mutableStateOf(null) }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
@@ -160,30 +161,14 @@ fun main() {
                 scope = scope,
                 gitHubData = githubData,
                 preferencesAction = { isPreferencesOpen = true },
-                toggleFullScreenAction = {
-                    if (windowState.placement != WindowPlacement.Fullscreen) {
-                        windowState.placement = WindowPlacement.Fullscreen
-                    } else {
-                        windowState.placement = WindowPlacement.Floating
-                    }
-                },
+                toggleFullScreenAction = { Window.toggleFullscreen(windowState) },
                 aboutAction = { isAboutOpen = true }
             ),
             undecorated = undecorated,
-            onKeyEvent = {
-                if (it.key == Key.F11) {
-                    if (!hasF11TriggeredOnce) {
-                        hasF11TriggeredOnce = true
-                        if (windowState.placement != WindowPlacement.Fullscreen) {
-                            windowState.placement = WindowPlacement.Fullscreen
-                        } else {
-                            windowState.placement = WindowPlacement.Floating
-                        }
-                        true
-                    } else {
-                        hasF11TriggeredOnce = false
-                        false
-                    }
+            onPreviewKeyEvent = {
+                if (it.key == Key.F11 && it.type == KeyEventType.KeyUp ) {
+                    Window.toggleFullscreen(windowState)
+                    true
                 } else {
                     false
                 }

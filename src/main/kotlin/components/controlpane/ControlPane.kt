@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
-import components.screens.Screen
 import helper.FileUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +51,7 @@ fun ControlPane(
     file: File?,
     fileComparisonOne: File?,
     fileComparisonTwo: File?,
-    currentScreen: Screen,
+    currentScreen: Root.Child,
     onAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (File?) -> Unit,
     onSelectFileComparisonOneResult: (File?) -> Unit,
@@ -71,18 +70,18 @@ fun ControlPane(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AnimatedVisibility(visible = currentScreen != Screen.TextScreen) {
+                AnimatedVisibility(visible = currentScreen !is Root.Child.Text) {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = when (currentScreen) {
-                                Screen.FileScreen -> "Select file"
-                                Screen.CompareFilesScreen -> "Select 1st file"
+                                is Root.Child.File -> "Select file"
+                                is Root.Child.CompareFiles -> "Select 1st file"
                                 else -> ""
                             },
                             action = {
                                 FileUtils.openFileDialogAndGetResult().also {
-                                    if (currentScreen == Screen.FileScreen) onSelectFileResult(it)
-                                    else if (currentScreen == Screen.CompareFilesScreen) onSelectFileComparisonOneResult(it)
+                                    if (currentScreen is Root.Child.File) onSelectFileResult(it)
+                                    else if (currentScreen is Root.Child.CompareFiles) onSelectFileComparisonOneResult(it)
                                 }
                             }
                         ),
@@ -91,10 +90,10 @@ fun ControlPane(
                         )
                     ).project(Modifier.fillMaxWidth())
                 }
-                AnimatedVisibility(visible = currentScreen == Screen.CompareFilesScreen) {
+                AnimatedVisibility(visible = currentScreen is Root.Child.CompareFiles) {
                     CommandButtonProjection(
                         contentModel = Command(
-                            text = if (currentScreen == Screen.CompareFilesScreen) "Select 2nd file" else "",
+                            text = if (currentScreen is Root.Child.CompareFiles) "Select 2nd file" else "",
                             action = { FileUtils.openFileDialogAndGetResult().also { oneSelectFileComparisonTwoResult(it) } }
                         ),
                         presentationModel = CommandButtonPresentationModel(
@@ -122,16 +121,16 @@ fun ControlPane(
                 }
                 AlgorithmSelectionList(algorithm = algorithm, mode = mode, onAlgorithmClick = { onAlgorithmClick(it) })
             }
-            AnimatedVisibility(visible = currentScreen != Screen.TextScreen) {
+            AnimatedVisibility(visible = currentScreen !is Root.Child.Text) {
                 CommandButtonProjection(
                     contentModel = Command(
                         text = when (currentScreen) {
-                            Screen.TextScreen -> ""
-                            Screen.CompareFilesScreen -> if ((compareJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
-                            Screen.FileScreen -> if (job?.isActive != true) "Calculate" else "Cancel"
+                            is Root.Child.File -> if (job?.isActive != true) "Calculate" else "Cancel"
+                            is Root.Child.Text -> ""
+                            is Root.Child.CompareFiles -> if ((compareJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
                         },
                         action = onCalculateClick,
-                        isActionEnabled = if (currentScreen == Screen.CompareFilesScreen) {
+                        isActionEnabled = if (currentScreen is Root.Child.CompareFiles) {
                             fileComparisonOne != null && fileComparisonTwo != null
                         } else {
                             file != null

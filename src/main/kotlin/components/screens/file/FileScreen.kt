@@ -25,28 +25,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.dp
-import com.appmattus.crypto.Algorithm
 import components.ComparisonTextFieldRow
 import components.FileInfoSection
 import components.HashProgress
 import components.OutputTextFieldRow
-import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
-import java.io.File
 
 @Composable
-fun FileScreen(
-    mainFile: File?,
-    algorithm: Algorithm,
-    mainFileHash: String,
-    mainFileHashProgress: Float,
-    instantBeforeHash: Instant?,
-    instantAfterHash: Instant?,
-    onCaseClick: () -> Unit
-) {
+fun FileScreen(component: FileScreenComponent) {
     var comparisonHash by remember { mutableStateOf("") }
     Column(Modifier.fillMaxSize()) {
-        FileInfoSection(mainFile)
+        FileInfoSection(component.file)
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         Column(
             modifier = Modifier.weight(1f).padding(20.dp),
@@ -54,21 +43,19 @@ fun FileScreen(
         ) {
             val clipboardManager = LocalClipboardManager.current
             OutputTextFieldRow(
-                algorithm = algorithm,
-                value = mainFileHash,
-                onCaseClick = onCaseClick
+                algorithm = component.algorithm,
+                value = component.fileHash,
+                onCaseClick = { component.onCaseClick() }
             )
             ComparisonTextFieldRow(
-                hashedOutput = mainFileHash,
+                hashedOutput = component.fileHash,
                 comparisonHash = comparisonHash,
-                onPasteClick = {
-                    comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
-                },
+                onPasteClick = { comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
                 onClearClick = { comparisonHash = "" },
                 onTextFieldChange = { comparisonHash = it.filterNot { char -> char.isWhitespace() } }
             )
-            TimeResultColumn(instantBeforeHash, instantAfterHash)
-            HashProgress(mainFileHashProgress)
+            TimeResultColumn(component.instantBeforeHash, component.instantAfterHash)
+            HashProgress(component.hashProgress)
         }
     }
 }

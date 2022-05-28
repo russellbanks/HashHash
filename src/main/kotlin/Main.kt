@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -26,7 +27,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
@@ -36,6 +36,8 @@ import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
+import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -45,10 +47,8 @@ import components.Header
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
-import components.screens.Screen
-import components.screens.comparefiles.CompareFilesScreen
 import components.screens.file.FileScreen
-import components.screens.text.TextScreen
+import components.screens.file.FileScreenComponent
 import data.GitHubData
 import helper.DragAndDrop
 import helper.GitHub
@@ -93,7 +93,7 @@ fun main() {
         // Main File
         var mainFile: File? by remember { mutableStateOf(null) }
         var mainFileHash by remember { mutableStateOf("") }
-        var shouldMainFileHashBeUppercase by remember { mutableStateOf(true) }
+        var mainFileHashUppercase by remember { mutableStateOf(true) }
         var mainFileHashJob: Job? by remember { mutableStateOf(null) }
         var mainFileHashProgress by remember { mutableStateOf(0F) }
         var instantBeforeHash: Instant? by remember { mutableStateOf(null) }
@@ -134,13 +134,26 @@ fun main() {
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
         val undecorated = remember { TitleBarHandler.getTitleBar() == TitleBar.Custom }
-        var currentScreen by remember { mutableStateOf(Screen.FileScreen) }
         var hasF11TriggeredOnce = false
         var httpResponse: HttpResponse? by remember { mutableStateOf(null) }
         var githubData: GitHubData? by remember { mutableStateOf(null) }
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         var retrievedGitHubData by remember { mutableStateOf(false) }
         var httpClient: HttpClient? by remember { mutableStateOf(null) }
+        val fileScreenComponent = FileScreenComponent(
+            componentContext = DefaultComponentContext(lifecycle),
+            file = mainFile,
+            algorithm = algorithm,
+            fileHash = mainFileHash,
+            instantBeforeHash = instantBeforeHash,
+            instantAfterHash = instantAfterHash,
+            hashProgress = mainFileHashProgress,
+            onCaseClick = {
+                mainFileHash = mainFileHash
+                    .run { if (this == uppercase()) lowercase() else uppercase() }
+                    .also { mainFileHashUppercase = it == it.uppercase() }
+            }
+        )
         LifecycleController(lifecycle, windowState)
         AuroraWindow(
             skin = auroraSkin,
@@ -215,16 +228,14 @@ fun main() {
                     droppedItems.first().let {
                         if (it is File && it.isFile) {
                             scope.launch(Dispatchers.Default) { klogger.info("User drag and dropped file: ${it.absoluteFile}") }
-                            if (currentScreen == Screen.FileScreen) {
+                            if (activeComponent is Root.Child.File) {
                                 mainFile = it
                                 scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as main file") }
-                            }
-                            else if (currentScreen == Screen.CompareFilesScreen) {
+                            } else if (activeComponent is Root.Child.CompareFiles) {
                                 if (fileComparisonOne == null) {
                                     fileComparisonOne = it
                                     scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 1st comparison file") }
-                                }
-                                else {
+                                } else {
                                     fileComparisonTwo = it
                                     scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 2nd comparison file") }
                                 }
@@ -243,7 +254,7 @@ fun main() {
                             file = mainFile,
                             fileComparisonOne = fileComparisonOne,
                             fileComparisonTwo = fileComparisonTwo,
-                            currentScreen = currentScreen,
+                            currentScreen = activeComponent,
                             onAlgorithmClick = { item ->
                                 if (item != algorithm) {
                                     algorithm = item
@@ -281,7 +292,7 @@ fun main() {
                                 }
                             },
                             onCalculateClick = {
-                                if (currentScreen == Screen.CompareFilesScreen) {
+                                if (activeComponent is Root.Child.CompareFiles) {
                                     if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
                                         scope.launch(Dispatchers.Default) {
                                             comparisonJobList = listOf(
@@ -324,7 +335,7 @@ fun main() {
                                                 mainFileHash = mainFile?.hash(
                                                     algorithm = algorithm,
                                                     hashProgressCallback = { mainFileHashProgress = it }
-                                                )?.run { if (shouldMainFileHashBeUppercase) uppercase() else lowercase() } ?: ""
+                                                )?.run { if (mainFileHashUppercase) uppercase() else lowercase() } ?: ""
                                                 instantAfterHash = Clock.System.now()
                                             } catch (_: CancellationException) {
                                             } catch (exception: Exception) {
@@ -339,8 +350,6 @@ fun main() {
                             }
                         )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
-                        val characterLimit = 20000
-                        val clipboardManager = LocalClipboardManager.current
                         Column {
                             TabsProjection(
                                 contentModel = TabsContentModel(
@@ -349,18 +358,12 @@ fun main() {
                                         TabContentModel(text = "Text"),
                                         TabContentModel(text = "Compare Files")
                                     ),
-                                    selectedTabIndex = currentScreen.ordinal,
+                                    selectedTabIndex = activeComponent.toInt(),
                                     onTriggerTabSelected = {
                                         when (it) {
-                                            0 -> root.onFileTabClicked()
+                                            0 -> root.onFileTabClicked(fileScreenComponent)
                                             1 -> root.onTextTabClicked()
                                             2 -> root.onCompareFilesTabClicked()
-                                        }
-                                        currentScreen = when (it) {
-                                            0 -> Screen.FileScreen
-                                            1 -> Screen.TextScreen
-                                            2 -> Screen.CompareFilesScreen
-                                            else -> Screen.FileScreen
                                         }
                                     }
                                 ),
@@ -372,9 +375,10 @@ fun main() {
                             ).project()
                             Children(
                                 routerState = routerState.value,
+                                animation = childAnimation(fade(tween(200)))
                             ) {
                                 when (it.instance) {
-                                    is Root.Child.File -> CounterUi(Counter(DefaultComponentContext(lifecycle)))
+                                    is Root.Child.File -> FileScreen(fileScreenComponent)
                                     is Root.Child.Text -> CounterUi2(Counter(DefaultComponentContext(lifecycle)))
                                     is Root.Child.CompareFiles -> CounterUi3(Counter(DefaultComponentContext(lifecycle)))
                                 }
@@ -382,7 +386,7 @@ fun main() {
                         }
                     }
                     Footer(
-                        currentScreen, mainFileException, mainFileHash, fileComparisonOneHash, fileComparisonTwoHash,
+                        activeComponent, mainFileException, mainFileHash, fileComparisonOneHash, fileComparisonTwoHash,
                         mainFile, filesMatch
                     )
                 }

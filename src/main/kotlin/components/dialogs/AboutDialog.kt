@@ -121,17 +121,13 @@ fun AboutDialog(
                                         LabelProjection(
                                             contentModel = LabelContentModel(text = "Runtime version: ${System.getProperty("java.runtime.version")}"),
                                             presentationModel = LabelPresentationModel(
-                                                textStyle = TextStyle(
-                                                    fontSize = 12.sp
-                                                )
+                                                textStyle = TextStyle(fontSize = 12.sp)
                                             )
                                         ).project()
                                         LabelProjection(
                                             contentModel = LabelContentModel(text = "VM: ${System.getProperty("java.vm.name")} by ${System.getProperty("java.vm.vendor")}"),
                                             presentationModel = LabelPresentationModel(
-                                                textStyle = TextStyle(
-                                                    fontSize = 12.sp
-                                                )
+                                                textStyle = TextStyle(fontSize = 12.sp)
                                             )
                                         ).project()
                                     }

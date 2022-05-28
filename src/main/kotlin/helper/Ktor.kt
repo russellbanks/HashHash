@@ -16,7 +16,6 @@ object Ktor: Klogging {
         install(ContentNegotiation) {
             json(
                 Json {
-                    this.
                     ignoreUnknownKeys = true
                 }
             )

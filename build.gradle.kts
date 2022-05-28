@@ -39,7 +39,7 @@ dependencies {
 
     // Decompose - https://github.com/arkivanov/Decompose
     implementation(libs.decompose.core)
-    implementation (libs.decompose.jetbrains)
+    implementation(libs.decompose.jetbrains)
 
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)

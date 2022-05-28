@@ -18,10 +18,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.screens
+package components.screens.comparefiles
 
-enum class Screen {
-    FileScreen,
-    TextScreen,
-    CompareFilesScreen
-}
+import com.appmattus.crypto.Algorithm
+import com.arkivanov.decompose.ComponentContext
+import java.io.File
+
+class CompareFilesComponent(
+    componentContext: ComponentContext,
+    val algorithm: Algorithm,
+    val fileComparisonOne: File?,
+    val fileComparisonOneHash: String,
+    val fileComparisonOneProgress: Float,
+    val fileComparisonOneOnCaseClick: () -> Unit,
+    val fileComparisonTwo: File?,
+    val fileComparisonTwoHash: String,
+    val fileComparisonTwoProgress: Float,
+    val fileComparisonTwoOnCaseClick: () -> Unit
+) : ComponentContext by componentContext

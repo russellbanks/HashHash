@@ -5,6 +5,7 @@ buildconfig = "3.0.3"
 compose = "1.2.0-alpha01-dev686"
 coroutines = "1.6.1"
 cryptohash = "0.10.0"
+decompose = "0.6.0"
 klogging = "0.5.0-20220524.130307-47"
 klogging-slf4j = "0.3.0-20220220.205350-9"
 kotlin = "1.6.21"
@@ -23,6 +24,9 @@ aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "au
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "cryptohash" }
+
+decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 klogging-jvm = { module = "io.klogging:klogging-jvm", version.ref = "klogging" }
 klogging-slf4j = { module = "io.klogging:slf4j-klogging", version.ref = "klogging-slf4j" }

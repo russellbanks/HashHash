@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import components.screens.Screen
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
@@ -37,7 +36,7 @@ import java.io.File
 
 @Composable
 fun Footer(
-    currentScreen: Screen,
+    currentScreen: Root.Child,
     error: Exception?,
     mainFileHash: String,
     fileComparisonOneHash: String,
@@ -50,13 +49,7 @@ fun Footer(
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = when (currentScreen) {
-                        Screen.CompareFilesScreen -> {
-                            if (fileComparisonOneHash.isNotBlank() && fileComparisonTwoHash.isNotBlank()) {
-                                if (filesMatch) "Files match" else "Files do not match"
-                            } else ""
-                        }
-                        Screen.TextScreen -> ""
-                        Screen.FileScreen -> {
+                        is Root.Child.File -> {
                             when {
                                 error != null -> error.localizedMessage.replaceFirstChar { it.titlecase() }
                                 mainFileHash.isNotBlank() -> "Done!"
@@ -64,6 +57,12 @@ fun Footer(
                                 else -> "No file selected"
                             }
                         }
+                        is Root.Child.CompareFiles -> {
+                            if (fileComparisonOneHash.isNotBlank() && fileComparisonTwoHash.isNotBlank()) {
+                                if (filesMatch) "Files match" else "Files do not match"
+                            } else ""
+                        }
+                        is Root.Child.Text -> ""
                     }
                 )
             ).project()

@@ -58,25 +58,17 @@ import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreen
 import components.screens.text.TextScreenComponent
 import data.GitHubData
-import helper.DragAndDrop
-import helper.GitHub
-import helper.Icons
-import helper.Window
+import helper.*
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
 import io.klogging.logger
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
 import org.pushingpixels.aurora.component.model.TabContentModel
 import org.pushingpixels.aurora.component.model.TabsContentModel
 import org.pushingpixels.aurora.component.model.TabsPresentationModel
@@ -256,23 +248,7 @@ fun main() {
             if (!retrievedGitHubData) {
                 scope.launch(Dispatchers.Default) {
                     retrievedGitHubData = true
-                    httpClient = HttpClient(CIO) {
-                        install(ContentNegotiation) {
-                            json(
-                                Json {
-                                    ignoreUnknownKeys = true
-                                }
-                            )
-                        }
-                        install(Logging) {
-                            logger = object: Logger {
-                                override fun log(message: String) {
-                                    scope.launch(Dispatchers.Default) { klogger.info(message) }
-                                }
-                            }
-                            level = LogLevel.INFO
-                        }
-                    }.also { client ->
+                    httpClient = Ktor.createHttpClient(scope).also { client ->
                         httpResponse = client.get(GitHub.HashHash.API.latest).also {
                             if (it.status.value in 200..299) {
                                 githubData = it.body()

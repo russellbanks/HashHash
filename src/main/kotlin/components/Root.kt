@@ -1,5 +1,26 @@
+/**
+
+HashHash
+Copyright (C) 2022  Russell Banks
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+ */
+
+package components
+
 import com.appmattus.crypto.Algorithm
-import com.arkivanov.decompose.Child
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.bringToFront
@@ -7,10 +28,10 @@ import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import components.screens.comparefiles.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreenComponent
 import kotlinx.datetime.Instant
-import java.io.File
 
 interface Root {
 
@@ -18,12 +39,12 @@ interface Root {
 
     fun onFileTabClicked(fileScreenComponent: FileScreenComponent)
     fun onTextTabClicked(textScreenComponent: TextScreenComponent)
-    fun onCompareFilesTabClicked()
+    fun onCompareFilesTabClicked(compareFilesComponent: CompareFilesComponent)
 
     sealed class Child {
         class File(val component: FileScreenComponent) : Child()
         class Text(val component: TextScreenComponent) : Child()
-        class CompareFiles(val component: Counter) : Child()
+        class CompareFiles(val component: CompareFilesComponent) : Child()
 
         fun toInt(): Int {
             return when (this) {
@@ -88,8 +109,20 @@ class RootComponent(
         )
     }
 
-    override fun onCompareFilesTabClicked() {
-        router.bringToFront(Config.CompareFiles)
+    override fun onCompareFilesTabClicked(compareFilesComponent: CompareFilesComponent) {
+        router.bringToFront(
+            Config.CompareFiles(
+                algorithm = compareFilesComponent.algorithm,
+                fileComparisonOne = compareFilesComponent.fileComparisonOne,
+                fileComparisonOneHash = compareFilesComponent.fileComparisonOneHash,
+                fileComparisonOneProgress = compareFilesComponent.fileComparisonOneProgress,
+                fileComparisonOneOnCaseClick = compareFilesComponent.fileComparisonOneOnCaseClick,
+                fileComparisonTwo = compareFilesComponent.fileComparisonTwo,
+                fileComparisonTwoHash = compareFilesComponent.fileComparisonTwoHash,
+                fileComparisonTwoProgress = compareFilesComponent.fileComparisonTwoProgress,
+                fileComparisonTwoOnCaseClick = compareFilesComponent.fileComparisonTwoOnCaseClick
+            )
+        )
     }
 
     private fun createChild(config: Config, componentContext: ComponentContext) =
@@ -123,7 +156,20 @@ class RootComponent(
                     onComparisonTextFieldChange = config.onComparisonTextFieldChange
                 )
             )
-            is Config.CompareFiles -> Root.Child.CompareFiles(Counter(componentContext))
+            is Config.CompareFiles -> Root.Child.CompareFiles(
+                CompareFilesComponent(
+                    componentContext = componentContext,
+                    algorithm = config.algorithm,
+                    fileComparisonOne = config.fileComparisonOne,
+                    fileComparisonOneHash = config.fileComparisonOneHash,
+                    fileComparisonOneProgress = config.fileComparisonOneProgress,
+                    fileComparisonOneOnCaseClick = config.fileComparisonOneOnCaseClick,
+                    fileComparisonTwo = config.fileComparisonTwo,
+                    fileComparisonTwoHash = config.fileComparisonTwoHash,
+                    fileComparisonTwoProgress = config.fileComparisonTwoProgress,
+                    fileComparisonTwoOnCaseClick = config.fileComparisonTwoOnCaseClick
+                )
+            )
         }
 
     private sealed class Config : Parcelable {
@@ -155,6 +201,16 @@ class RootComponent(
         ) : Config()
 
         @Parcelize
-        object CompareFiles : Config()
+        class CompareFiles(
+            val algorithm: Algorithm,
+            val fileComparisonOne: java.io.File?,
+            val fileComparisonOneHash: String,
+            val fileComparisonOneProgress: Float,
+            val fileComparisonOneOnCaseClick: () -> Unit,
+            val fileComparisonTwo: java.io.File?,
+            val fileComparisonTwoHash: String,
+            val fileComparisonTwoProgress: Float,
+            val fileComparisonTwoOnCaseClick: () -> Unit
+        ) : Config()
     }
 }

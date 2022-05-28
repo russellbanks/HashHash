@@ -18,20 +18,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.screens.file
+package components.screens.comparefiles
 
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.datetime.Instant
 import java.io.File
 
-class FileScreenComponent(
+class CompareFilesComponent(
     componentContext: ComponentContext,
-    val file: File?,
-    val fileHash: String,
     val algorithm: Algorithm,
-    val instantBeforeHash: Instant?,
-    val instantAfterHash: Instant?,
-    val hashProgress: Float,
-    val onCaseClick: () -> Unit
+    val fileComparisonOne: File?,
+    val fileComparisonOneHash: String,
+    val fileComparisonOneProgress: Float,
+    val fileComparisonOneOnCaseClick: () -> Unit,
+    val fileComparisonTwo: File?,
+    val fileComparisonTwoHash: String,
+    val fileComparisonTwoProgress: Float,
+    val fileComparisonTwoOnCaseClick: () -> Unit
 ) : ComponentContext by componentContext

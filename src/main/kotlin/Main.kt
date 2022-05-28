@@ -45,9 +45,13 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Header
+import components.Root
+import components.RootComponent
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
+import components.screens.comparefiles.CompareFilesComponent
+import components.screens.comparefiles.CompareFilesScreen
 import components.screens.file.FileScreen
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreen
@@ -89,6 +93,7 @@ fun main() {
     val klogger = logger("Main")
 
     val lifecycle = LifecycleRegistry()
+    val componentContext = DefaultComponentContext(lifecycle)
     val root = RootComponent(DefaultComponentContext(lifecycle))
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
@@ -116,13 +121,13 @@ fun main() {
         // 1st Comparison File
         var fileComparisonOne: File? by remember { mutableStateOf(null) }
         var fileComparisonOneHash by remember { mutableStateOf("") }
-        var shouldFileComparisonOneHashBeUppercase by remember { mutableStateOf(true) }
+        var fileComparisonOneHashUppercase by remember { mutableStateOf(true) }
         var fileComparisonOneProgress by remember { mutableStateOf(0F) }
 
         // 2nd Comparison File
         var fileComparisonTwo: File? by remember { mutableStateOf(null) }
         var fileComparisonTwoHash by remember { mutableStateOf("") }
-        var shouldFileComparisonTwoHashBeUppercase by remember { mutableStateOf(true) }
+        var fileComparisonTwoUppercase by remember { mutableStateOf(true) }
         var fileComparisonTwoProgress by remember { mutableStateOf(0F) }
 
         // Dialogs
@@ -186,7 +191,7 @@ fun main() {
         ) {
             val clipboardManager = LocalClipboardManager.current
             val fileScreenComponent = FileScreenComponent(
-                componentContext = DefaultComponentContext(lifecycle),
+                componentContext = componentContext,
                 file = mainFile,
                 algorithm = algorithm,
                 fileHash = mainFileHash,
@@ -200,7 +205,7 @@ fun main() {
                 }
             )
             val textScreenComponent = TextScreenComponent(
-                componentContext = DefaultComponentContext(lifecycle),
+                componentContext = componentContext,
                 algorithm = algorithm,
                 givenText = givenText,
                 givenTextHash = givenTextHash,
@@ -242,6 +247,26 @@ fun main() {
                 },
                 onPasteClick = { textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
                 onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
+            )
+            val compareFilesComponent = CompareFilesComponent(
+                componentContext = componentContext,
+                algorithm = algorithm,
+                fileComparisonOne = fileComparisonOne,
+                fileComparisonOneHash = fileComparisonOneHash,
+                fileComparisonOneProgress = fileComparisonOneProgress,
+                fileComparisonOneOnCaseClick = {
+                    fileComparisonOneHash = fileComparisonOneHash
+                        .run { if (this == uppercase()) lowercase() else uppercase() }
+                        .also { fileComparisonOneHashUppercase = it == it.uppercase() }
+                },
+                fileComparisonTwo = fileComparisonTwo,
+                fileComparisonTwoHash = fileComparisonTwoHash,
+                fileComparisonTwoProgress = fileComparisonTwoProgress,
+                fileComparisonTwoOnCaseClick = {
+                    fileComparisonTwoHash = fileComparisonTwoHash
+                        .run { if (this == uppercase()) lowercase() else uppercase() }
+                        .also { fileComparisonTwoUppercase = it == it.uppercase() }
+                }
             )
             if (!retrievedGitHubData) {
                 scope.launch(Dispatchers.Default) {
@@ -349,7 +374,7 @@ fun main() {
                                                         fileComparisonOneHash = fileComparisonOne?.hash(
                                                             algorithm = algorithm,
                                                             hashProgressCallback = { fileComparisonOneProgress = it }
-                                                        )?.run { if (shouldFileComparisonOneHashBeUppercase) uppercase() else lowercase() } ?: ""
+                                                        )?.run { if (fileComparisonOneHashUppercase) uppercase() else lowercase() } ?: ""
                                                     } catch (_: CancellationException) {
                                                     } catch (exception: Exception) {
                                                         mainFileException = exception
@@ -360,7 +385,7 @@ fun main() {
                                                         fileComparisonTwoHash = fileComparisonTwo?.hash(
                                                             algorithm = algorithm,
                                                             hashProgressCallback = { fileComparisonTwoProgress = it }
-                                                        )?.run { if (shouldFileComparisonTwoHashBeUppercase) uppercase() else lowercase() } ?: ""
+                                                        )?.run { if (fileComparisonTwoUppercase) uppercase() else lowercase() } ?: ""
                                                     } catch (_: CancellationException) {
                                                     } catch (exception: Exception) {
                                                         mainFileException = exception
@@ -411,7 +436,7 @@ fun main() {
                                         when (it) {
                                             0 -> root.onFileTabClicked(fileScreenComponent)
                                             1 -> root.onTextTabClicked(textScreenComponent)
-                                            2 -> root.onCompareFilesTabClicked()
+                                            2 -> root.onCompareFilesTabClicked(compareFilesComponent)
                                         }
                                     }
                                 ),
@@ -428,7 +453,7 @@ fun main() {
                                 when (it.instance) {
                                     is Root.Child.File -> FileScreen(fileScreenComponent)
                                     is Root.Child.Text -> TextScreen(textScreenComponent)
-                                    is Root.Child.CompareFiles -> CounterUi3(Counter(DefaultComponentContext(lifecycle)))
+                                    is Root.Child.CompareFiles -> CompareFilesScreen(compareFilesComponent)
                                 }
                             }
                         }

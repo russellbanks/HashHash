@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
+import components.Root
 import helper.FileUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

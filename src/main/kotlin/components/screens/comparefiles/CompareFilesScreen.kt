@@ -32,32 +32,22 @@ import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjecti
 import java.io.File
 
 @Composable
-fun CompareFilesScreen(
-    algorithm: Algorithm,
-    fileComparisonOne: File?,
-    fileComparisonOneHash: String,
-    fileComparisonOneProgress: Float,
-    fileComparisonOneOnCaseClick: () -> Unit,
-    fileComparisonTwo: File?,
-    fileComparisonTwoHash: String,
-    fileComparisonTwoProgress: Float,
-    fileComparisonTwoOnCaseClick: () -> Unit,
-) {
+fun CompareFilesScreen(component: CompareFilesComponent) {
     Column {
         Column(
             modifier = Modifier.fillMaxHeight(0.5f),
             verticalArrangement = Arrangement.Center
         ) {
-            FileInfoSection(fileComparisonOne)
+            FileInfoSection(component.fileComparisonOne)
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                HashProgress(fileComparisonOneProgress)
+                HashProgress(component.fileComparisonOneProgress)
                 OutputTextFieldRow(
-                    algorithm = algorithm,
-                    value = fileComparisonOneHash,
-                    onCaseClick = fileComparisonOneOnCaseClick
+                    algorithm = component.algorithm,
+                    value = component.fileComparisonOneHash,
+                    onCaseClick = component.fileComparisonOneOnCaseClick
                 )
             }
         }
@@ -66,16 +56,16 @@ fun CompareFilesScreen(
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.Center
         ) {
-            FileInfoSection(fileComparisonTwo)
+            FileInfoSection(component.fileComparisonTwo)
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                HashProgress(fileComparisonTwoProgress)
+                HashProgress(component.fileComparisonTwoProgress)
                 OutputTextFieldRow(
-                    algorithm = algorithm,
-                    value = fileComparisonTwoHash,
-                    onCaseClick = fileComparisonTwoOnCaseClick
+                    algorithm = component.algorithm,
+                    value = component.fileComparisonTwoHash,
+                    onCaseClick = component.fileComparisonTwoOnCaseClick
                 )
             }
         }

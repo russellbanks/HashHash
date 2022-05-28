@@ -24,6 +24,7 @@ import data.GitHubData
 import helper.Browser
 import helper.GitHub
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
@@ -88,7 +89,7 @@ object Header {
                                     Command(
                                         text = "Report issue",
                                         action = {
-                                            scope.launch {
+                                            scope.launch(Dispatchers.Default) {
                                                 Browser.open(URL(GitHub.HashHash.Repository.newIssue))
                                             }
                                         }
@@ -96,7 +97,7 @@ object Header {
                                     Command(
                                         text = "Go to GitHub",
                                         action = {
-                                            scope.launch {
+                                            scope.launch(Dispatchers.Default) {
                                                 Browser.open(URL(GitHub.HashHash.Repository.website))
                                             }
                                         }
@@ -104,7 +105,7 @@ object Header {
                                     Command(
                                         text = "Go to release notes",
                                         action = {
-                                            scope.launch {
+                                            scope.launch(Dispatchers.Default) {
                                                 Browser.open(URL(gitHubData?.htmlUrl ?: GitHub.HashHash.Repository.releases))
                                             }
                                         }

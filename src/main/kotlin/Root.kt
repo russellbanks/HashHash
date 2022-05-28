@@ -8,6 +8,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreenComponent
 import kotlinx.datetime.Instant
 import java.io.File
 
@@ -16,12 +17,12 @@ interface Root {
     val routerState: Value<RouterState<*, Child>>
 
     fun onFileTabClicked(fileScreenComponent: FileScreenComponent)
-    fun onTextTabClicked()
+    fun onTextTabClicked(textScreenComponent: TextScreenComponent)
     fun onCompareFilesTabClicked()
 
     sealed class Child {
         class File(val component: FileScreenComponent) : Child()
-        class Text(val component: Counter) : Child()
+        class Text(val component: TextScreenComponent) : Child()
         class CompareFiles(val component: Counter) : Child()
 
         fun toInt(): Int {
@@ -57,19 +58,34 @@ class RootComponent(
     override fun onFileTabClicked(fileScreenComponent: FileScreenComponent) {
         router.bringToFront(
             Config.File(
-                fileScreenComponent.file,
-                fileScreenComponent.fileHash,
-                fileScreenComponent.algorithm,
-                fileScreenComponent.instantBeforeHash,
-                fileScreenComponent.instantAfterHash,
-                fileScreenComponent.hashProgress,
-                fileScreenComponent.onCaseClick
+                file = fileScreenComponent.file,
+                fileHash = fileScreenComponent.fileHash,
+                algorithm = fileScreenComponent.algorithm,
+                instantBeforeHash = fileScreenComponent.instantBeforeHash,
+                instantAfterHash = fileScreenComponent.instantAfterHash,
+                hashProgress = fileScreenComponent.hashProgress,
+                onCaseClick = fileScreenComponent.onCaseClick
             )
         )
     }
 
-    override fun onTextTabClicked() {
-        router.bringToFront(Config.Text)
+    override fun onTextTabClicked(textScreenComponent: TextScreenComponent) {
+        router.bringToFront(
+            Config.Text(
+                algorithm = textScreenComponent.algorithm,
+                givenText = textScreenComponent.givenText,
+                givenTextHash = textScreenComponent.givenTextHash,
+                textComparisonHash = textScreenComponent.textComparisonHash,
+                onValueChange = textScreenComponent.onValueChange,
+                onUppercaseClick = textScreenComponent.onUppercaseClick,
+                onLowercaseClick = textScreenComponent.onLowercaseClick,
+                onClearTextClick = textScreenComponent.onClearTextClick,
+                onComparisonClearClick = textScreenComponent.onComparisonClearClick,
+                onCaseClick = textScreenComponent.onCaseClick,
+                onPasteClick = textScreenComponent.onPasteClick,
+                onComparisonTextFieldChange = textScreenComponent.onComparisonTextFieldChange
+            )
+        )
     }
 
     override fun onCompareFilesTabClicked() {
@@ -90,7 +106,23 @@ class RootComponent(
                     onCaseClick = config.onCaseClick
                 )
             )
-            is Config.Text -> Root.Child.Text(Counter(componentContext))
+            is Config.Text -> Root.Child.Text(
+                TextScreenComponent(
+                    componentContext = componentContext,
+                    algorithm = config.algorithm,
+                    givenText = config.givenText,
+                    givenTextHash = config.givenTextHash,
+                    textComparisonHash = config.textComparisonHash,
+                    onValueChange = config.onValueChange,
+                    onUppercaseClick = config.onUppercaseClick,
+                    onLowercaseClick = config.onLowercaseClick,
+                    onClearTextClick = config.onClearTextClick,
+                    onComparisonClearClick = config.onComparisonClearClick,
+                    onCaseClick = config.onCaseClick,
+                    onPasteClick = config.onPasteClick,
+                    onComparisonTextFieldChange = config.onComparisonTextFieldChange
+                )
+            )
             is Config.CompareFiles -> Root.Child.CompareFiles(Counter(componentContext))
         }
 
@@ -107,7 +139,20 @@ class RootComponent(
         ) : Config()
 
         @Parcelize
-        object Text : Config()
+        class Text(
+            val algorithm: Algorithm,
+            val givenText: String,
+            val givenTextHash: String,
+            val textComparisonHash: String,
+            val onValueChange: (String) -> Unit,
+            val onUppercaseClick: () -> Unit,
+            val onLowercaseClick: () -> Unit,
+            val onClearTextClick: () -> Unit,
+            val onComparisonClearClick: () -> Unit,
+            val onCaseClick: () -> Unit,
+            val onPasteClick: () -> Unit,
+            val onComparisonTextFieldChange: (String) -> Unit
+        ) : Config()
 
         @Parcelize
         object CompareFiles : Config()

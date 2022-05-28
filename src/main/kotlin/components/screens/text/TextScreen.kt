@@ -28,7 +28,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.appmattus.crypto.Algorithm
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
 import org.pushingpixels.aurora.component.model.Command
@@ -40,21 +39,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 
 @Composable
-fun TextScreen(
-    algorithm: Algorithm,
-    givenText: String,
-    givenTextHash: String,
-    textComparisonHash: String,
-    characterLimit: Int,
-    onValueChange: (String) -> Unit,
-    onUppercaseClick: () -> Unit,
-    onLowercaseClick: () -> Unit,
-    onClearTextClick: () -> Unit,
-    onComparisonClearClick: () -> Unit,
-    onCaseClick: () -> Unit,
-    onPasteClick: () -> Unit,
-    onComparisonTextFieldChange: (String) -> Unit
-) {
+fun TextScreen(component: TextScreenComponent) {
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -74,14 +59,14 @@ fun TextScreen(
                 }
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "${"%,d".format(givenText.count())} ${if (givenText.count() == 1) "character" else "characters"}"
+                        text = "${"%,d".format(component.givenText.count())} ${if (component.givenText.count() == 1) "character" else "characters"}"
                     )
                 ).project()
             }
             TextFieldStringProjection(
                 contentModel = TextFieldStringContentModel(
-                    value = givenText,
-                    onValueChange = onValueChange
+                    value = component.givenText,
+                    onValueChange = component.onValueChange
                 )
             ).project(Modifier.fillMaxWidth().height(200.dp))
             Row(
@@ -91,41 +76,41 @@ fun TextScreen(
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Uppercase",
-                        action = onUppercaseClick
+                        action = component.onUppercaseClick
                     ),
                 ).project(Modifier.fillMaxWidth(1f / 3))
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Lowercase",
-                        action = onLowercaseClick
+                        action = component.onLowercaseClick
                     ),
                 ).project(Modifier.fillMaxWidth(1f / 2))
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Clear text area",
-                        action = onClearTextClick
+                        action = component.onClearTextClick
                     ),
                 ).project(Modifier.fillMaxWidth())
             }
-            AnimatedVisibility(visible = givenText.count() >= characterLimit) {
+            AnimatedVisibility(visible = component.givenText.count() >= TextScreenComponent.characterLimit) {
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "To conserve memory usage, you cannot input more than ${"%,d".format(characterLimit)} characters."
+                        text = "To conserve memory usage, you cannot input more than ${"%,d".format(TextScreenComponent.characterLimit)} characters."
                     )
                 ).project()
             }
         }
         OutputTextFieldRow(
-            algorithm = algorithm,
-            value = if (givenText.isNotEmpty()) givenTextHash else "",
-            onCaseClick = onCaseClick
+            algorithm = component.algorithm,
+            value = if (component.givenText.isNotEmpty()) component.givenTextHash else "",
+            onCaseClick = component.onCaseClick
         )
         ComparisonTextFieldRow(
-            hashedOutput = givenTextHash,
-            comparisonHash = textComparisonHash,
-            onPasteClick = onPasteClick,
-            onClearClick = onComparisonClearClick,
-            onTextFieldChange = onComparisonTextFieldChange
+            hashedOutput = component.givenTextHash,
+            comparisonHash = component.textComparisonHash,
+            onPasteClick = component.onPasteClick,
+            onClearClick = component.onComparisonClearClick,
+            onTextFieldChange = component.onComparisonTextFieldChange
         )
     }
 }

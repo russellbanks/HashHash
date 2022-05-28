@@ -27,6 +27,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
@@ -49,6 +50,8 @@ import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import components.screens.file.FileScreen
 import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreen
+import components.screens.text.TextScreenComponent
 import data.GitHubData
 import helper.DragAndDrop
 import helper.GitHub
@@ -100,6 +103,12 @@ fun main() {
         var instantAfterHash: Instant? by remember { mutableStateOf(null) }
         var mainFileException: Exception? by remember { mutableStateOf(null) }
 
+        // Text Screen
+        var givenText by remember { mutableStateOf("") }
+        var givenTextHash by remember { mutableStateOf("") }
+        var givenTextUppercase by remember { mutableStateOf(true) }
+        var textComparisonHash by remember { mutableStateOf("") }
+
         // Compare files screen
         var filesMatch by remember { mutableStateOf(false) }
         var comparisonJobList: List<Deferred<Unit>>? by remember { mutableStateOf(null) }
@@ -115,12 +124,6 @@ fun main() {
         var fileComparisonTwoHash by remember { mutableStateOf("") }
         var shouldFileComparisonTwoHashBeUppercase by remember { mutableStateOf(true) }
         var fileComparisonTwoProgress by remember { mutableStateOf(0F) }
-
-        // Text Screen
-        var givenText by remember { mutableStateOf("") }
-        var givenTextHash by remember { mutableStateOf("") }
-        var shouldGivenTextBeUppercase by remember { mutableStateOf(true) }
-        var textComparisonHash by remember { mutableStateOf("") }
 
         // Dialogs
         var isAboutOpen by remember { mutableStateOf(false) }
@@ -140,20 +143,6 @@ fun main() {
         var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
         var retrievedGitHubData by remember { mutableStateOf(false) }
         var httpClient: HttpClient? by remember { mutableStateOf(null) }
-        val fileScreenComponent = FileScreenComponent(
-            componentContext = DefaultComponentContext(lifecycle),
-            file = mainFile,
-            algorithm = algorithm,
-            fileHash = mainFileHash,
-            instantBeforeHash = instantBeforeHash,
-            instantAfterHash = instantAfterHash,
-            hashProgress = mainFileHashProgress,
-            onCaseClick = {
-                mainFileHash = mainFileHash
-                    .run { if (this == uppercase()) lowercase() else uppercase() }
-                    .also { mainFileHashUppercase = it == it.uppercase() }
-            }
-        )
         LifecycleController(lifecycle, windowState)
         AuroraWindow(
             skin = auroraSkin,
@@ -195,6 +184,65 @@ fun main() {
                 }
             }
         ) {
+            val clipboardManager = LocalClipboardManager.current
+            val fileScreenComponent = FileScreenComponent(
+                componentContext = DefaultComponentContext(lifecycle),
+                file = mainFile,
+                algorithm = algorithm,
+                fileHash = mainFileHash,
+                instantBeforeHash = instantBeforeHash,
+                instantAfterHash = instantAfterHash,
+                hashProgress = mainFileHashProgress,
+                onCaseClick = {
+                    mainFileHash = mainFileHash
+                        .run { if (this == uppercase()) lowercase() else uppercase() }
+                        .also { mainFileHashUppercase = it == it.uppercase() }
+                }
+            )
+            val textScreenComponent = TextScreenComponent(
+                componentContext = DefaultComponentContext(lifecycle),
+                algorithm = algorithm,
+                givenText = givenText,
+                givenTextHash = givenTextHash,
+                textComparisonHash = textComparisonHash,
+                onValueChange = {
+                    givenText = if (it.count() < TextScreenComponent.characterLimit) it else it.dropLast(it.count() - TextScreenComponent.characterLimit)
+                    if (it.isNotEmpty()) {
+                        givenTextHash = givenText.hash(algorithm)
+                            .run { if (givenTextUppercase) uppercase() else lowercase() }
+                            .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
+                    }
+                },
+                onUppercaseClick = {
+                    if (givenText != givenText.uppercase()) {
+                        givenText = givenText.uppercase()
+                        if (givenText.isNotEmpty()) {
+                            givenTextHash = givenText.hash(algorithm)
+                                .run { if (givenTextUppercase) uppercase() else lowercase() }
+                                .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
+                        }
+                    }
+                },
+                onLowercaseClick = {
+                    if (givenText != givenText.lowercase()) {
+                        givenText = givenText.lowercase()
+                        if (givenText.isNotEmpty()) {
+                            givenTextHash = givenText.hash(algorithm)
+                                .run { if (givenTextUppercase) uppercase() else lowercase() }
+                                .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
+                        }
+                    }
+                },
+                onClearTextClick = { givenText = "" },
+                onComparisonClearClick = { textComparisonHash = "" },
+                onCaseClick = {
+                    givenTextHash = givenTextHash
+                        .run { if (this == uppercase()) lowercase() else uppercase() }
+                        .also { givenTextUppercase = it == it.uppercase() }
+                },
+                onPasteClick = { textComparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
+                onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
+            )
             if (!retrievedGitHubData) {
                 scope.launch(Dispatchers.Default) {
                     retrievedGitHubData = true
@@ -362,7 +410,7 @@ fun main() {
                                     onTriggerTabSelected = {
                                         when (it) {
                                             0 -> root.onFileTabClicked(fileScreenComponent)
-                                            1 -> root.onTextTabClicked()
+                                            1 -> root.onTextTabClicked(textScreenComponent)
                                             2 -> root.onCompareFilesTabClicked()
                                         }
                                     }
@@ -379,7 +427,7 @@ fun main() {
                             ) {
                                 when (it.instance) {
                                     is Root.Child.File -> FileScreen(fileScreenComponent)
-                                    is Root.Child.Text -> CounterUi2(Counter(DefaultComponentContext(lifecycle)))
+                                    is Root.Child.Text -> TextScreen(textScreenComponent)
                                     is Root.Child.CompareFiles -> CounterUi3(Counter(DefaultComponentContext(lifecycle)))
                                 }
                             }

@@ -22,7 +22,7 @@ package components.screens.text
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +40,7 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 
 @Composable
 fun TextScreen(component: TextScreenComponent) {
+    var givenText by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -59,14 +60,16 @@ fun TextScreen(component: TextScreenComponent) {
                 }
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "${"%,d".format(component.givenText.count())} ${if (component.givenText.count() == 1) "character" else "characters"}"
+                        text = "${"%,d".format(givenText.count())} ${if (givenText.count() == 1) "character" else "characters"}"
                     )
                 ).project()
             }
             TextFieldStringProjection(
                 contentModel = TextFieldStringContentModel(
-                    value = component.givenText,
-                    onValueChange = component.onValueChange
+                    value = givenText,
+                    onValueChange = {
+                        givenText = it
+                    }
                 )
             ).project(Modifier.fillMaxWidth().height(200.dp))
             Row(
@@ -92,7 +95,7 @@ fun TextScreen(component: TextScreenComponent) {
                     ),
                 ).project(Modifier.fillMaxWidth())
             }
-            AnimatedVisibility(visible = component.givenText.count() >= TextScreenComponent.characterLimit) {
+            AnimatedVisibility(visible = givenText.count() >= TextScreenComponent.characterLimit) {
                 LabelProjection(
                     contentModel = LabelContentModel(
                         text = "To conserve memory usage, you cannot input more than ${"%,d".format(TextScreenComponent.characterLimit)} characters."
@@ -102,7 +105,7 @@ fun TextScreen(component: TextScreenComponent) {
         }
         OutputTextFieldRow(
             algorithm = component.algorithm,
-            value = if (component.givenText.isNotEmpty()) component.givenTextHash else "",
+            value = if (givenText.isNotEmpty()) component.givenTextHash else "",
             onCaseClick = component.onCaseClick
         )
         ComparisonTextFieldRow(

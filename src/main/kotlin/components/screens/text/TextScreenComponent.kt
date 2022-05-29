@@ -26,10 +26,8 @@ import com.arkivanov.decompose.ComponentContext
 class TextScreenComponent(
     componentContext: ComponentContext,
     val algorithm: Algorithm,
-    val givenText: String,
     val givenTextHash: String,
     val textComparisonHash: String,
-    val onValueChange: (String) -> Unit,
     val onUppercaseClick: () -> Unit,
     val onLowercaseClick: () -> Unit,
     val onClearTextClick: () -> Unit,

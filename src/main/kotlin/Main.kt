@@ -183,17 +183,8 @@ fun main() {
             val textScreenComponent = TextScreenComponent(
                 componentContext = DefaultComponentContext(lifecycle),
                 algorithm = algorithm,
-                givenText = givenText,
                 givenTextHash = givenTextHash,
                 textComparisonHash = textComparisonHash,
-                onValueChange = {
-                    givenText = if (it.count() < TextScreenComponent.characterLimit) it else it.dropLast(it.count() - TextScreenComponent.characterLimit)
-                    if (it.isNotEmpty()) {
-                        givenTextHash = givenText.hash(algorithm)
-                            .run { if (givenTextUppercase) uppercase() else lowercase() }
-                            .also { scope.launch(Dispatchers.Default) { klogger.info("Hashed \"$givenText\" to be $it") } }
-                    }
-                },
                 onUppercaseClick = {
                     if (givenText != givenText.uppercase()) {
                         givenText = givenText.uppercase()

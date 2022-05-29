@@ -94,10 +94,8 @@ class RootComponent(
         router.bringToFront(
             Config.Text(
                 algorithm = textScreenComponent.algorithm,
-                givenText = textScreenComponent.givenText,
                 givenTextHash = textScreenComponent.givenTextHash,
                 textComparisonHash = textScreenComponent.textComparisonHash,
-                onValueChange = textScreenComponent.onValueChange,
                 onUppercaseClick = textScreenComponent.onUppercaseClick,
                 onLowercaseClick = textScreenComponent.onLowercaseClick,
                 onClearTextClick = textScreenComponent.onClearTextClick,
@@ -143,10 +141,8 @@ class RootComponent(
                 TextScreenComponent(
                     componentContext = componentContext,
                     algorithm = config.algorithm,
-                    givenText = config.givenText,
                     givenTextHash = config.givenTextHash,
                     textComparisonHash = config.textComparisonHash,
-                    onValueChange = config.onValueChange,
                     onUppercaseClick = config.onUppercaseClick,
                     onLowercaseClick = config.onLowercaseClick,
                     onClearTextClick = config.onClearTextClick,
@@ -187,10 +183,8 @@ class RootComponent(
         @Parcelize
         class Text(
             val algorithm: Algorithm,
-            val givenText: String,
             val givenTextHash: String,
             val textComparisonHash: String,
-            val onValueChange: (String) -> Unit,
             val onUppercaseClick: () -> Unit,
             val onLowercaseClick: () -> Unit,
             val onClearTextClick: () -> Unit,

@@ -87,7 +87,6 @@ fun main() {
     val klogger = logger("Main")
 
     val lifecycle = LifecycleRegistry()
-    val componentContext = DefaultComponentContext(lifecycle)
     val root = RootComponent(DefaultComponentContext(lifecycle))
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
@@ -168,7 +167,7 @@ fun main() {
         ) {
             val clipboardManager = LocalClipboardManager.current
             val fileScreenComponent = FileScreenComponent(
-                componentContext = componentContext,
+                componentContext = DefaultComponentContext(lifecycle),
                 file = mainFile,
                 algorithm = algorithm,
                 fileHash = mainFileHash,
@@ -182,7 +181,7 @@ fun main() {
                 }
             )
             val textScreenComponent = TextScreenComponent(
-                componentContext = componentContext,
+                componentContext = DefaultComponentContext(lifecycle),
                 algorithm = algorithm,
                 givenText = givenText,
                 givenTextHash = givenTextHash,
@@ -226,7 +225,7 @@ fun main() {
                 onComparisonTextFieldChange = { textComparisonHash = it.filterNot { char -> char.isWhitespace() } }
             )
             val compareFilesComponent = CompareFilesComponent(
-                componentContext = componentContext,
+                componentContext = DefaultComponentContext(lifecycle),
                 algorithm = algorithm,
                 fileComparisonOne = fileComparisonOne,
                 fileComparisonOneHash = fileComparisonOneHash,

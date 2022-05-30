@@ -264,8 +264,8 @@ fun main() {
                     httpResponse = httpResponse,
                     githubData = githubData,
                     onUpdateCheck = {
-                        httpResponse = it
                         scope.launch(Dispatchers.Default) {
+                            httpResponse = it
                             if (it.status.value in 200..299) {
                                 githubData = it.body()
                                 logger.info("Successfully retrieved GitHub data with status code ${it.status}")

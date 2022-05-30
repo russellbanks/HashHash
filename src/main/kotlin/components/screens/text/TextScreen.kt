@@ -105,6 +105,7 @@ fun TextScreen(component: TextScreenComponent) {
         OutputTextFieldRow(
             algorithm = component.algorithm,
             value = if (component.givenText.isNotEmpty()) component.hashGivenText() else "",
+            isValueUppercase = component.hashedTextUppercase,
             onCaseClick = { component.hashedTextUppercase = !component.hashedTextUppercase }
         )
         ComparisonTextFieldRow(

@@ -40,6 +40,7 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 fun OutputTextFieldRow(
     algorithm: Algorithm,
     value: String,
+    isValueUppercase: Boolean,
     onCaseClick: () -> Unit
 ) {
     val clipboardManager =  LocalClipboardManager.current
@@ -78,7 +79,7 @@ fun OutputTextFieldRow(
                         ),
                         Command(
                             text = "Case",
-                            icon = Icons.Utility.switch(),
+                            icon = if (isValueUppercase) Icons.Utility.capitalA() else Icons.Utility.lowerCaseA(),
                             action = onCaseClick
                         )
                     )

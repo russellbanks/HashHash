@@ -41,12 +41,10 @@ fun FileScreen(component: FileScreenComponent) {
             OutputTextFieldRow(
                 algorithm = component.algorithm,
                 value = component.fileHash,
+                isValueUppercase = component.hashedTextUppercase,
                 onCaseClick = {
-                    component.fileHash = if (component.fileHash == component.fileHash.uppercase()) {
-                        component.fileHash.lowercase()
-                    } else {
-                        component.fileHash.uppercase()
-                    }
+                    component.hashedTextUppercase = !component.hashedTextUppercase
+                    component.switchHashCase()
                 }
             )
             ComparisonTextFieldRow(

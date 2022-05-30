@@ -56,7 +56,10 @@ object Icons {
         fun refresh() = painterResource("$prefixPath/refresh.svg")
 
         @Composable
-        fun switch() = painterResource("$prefixPath/switch.svg")
+        fun capitalA() = painterResource("$prefixPath/capital-a.svg")
+
+        @Composable
+        fun lowerCaseA() = painterResource("$prefixPath/lowercase-a.svg")
     }
 
     object FileTypes {

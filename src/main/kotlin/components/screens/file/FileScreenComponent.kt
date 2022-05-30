@@ -42,7 +42,7 @@ class FileScreenComponent(
     var instantBeforeHash: Instant? by mutableStateOf(null)
     var instantAfterHash: Instant? by mutableStateOf(null)
     private var mainFileException: Exception? by mutableStateOf(null)
-    private var hashedTextUppercase by mutableStateOf(true)
+    var hashedTextUppercase by mutableStateOf(true)
     var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun onCalculateClicked(scope: CoroutineScope) {
@@ -66,5 +66,9 @@ class FileScreenComponent(
             fileHashJob?.cancel()
             fileHashJob = null
         }
+    }
+
+    fun switchHashCase() {
+        fileHash = if (hashedTextUppercase) fileHash.uppercase() else fileHash.lowercase()
     }
 }

@@ -35,11 +35,11 @@ class CompareFilesComponent(
 ) : ComponentContext by componentContext, Klogging {
     var fileComparisonOne: File? by mutableStateOf(null)
     var fileComparisonOneHash by mutableStateOf("")
-    private var fileComparisonOneHashUppercase by mutableStateOf(true)
+    var fileComparisonOneHashUppercase by mutableStateOf(true)
     var fileComparisonOneProgress by mutableStateOf(0F)
     var fileComparisonTwo: File? by mutableStateOf(null)
     var fileComparisonTwoHash by mutableStateOf("")
-    private var fileComparisonTwoUppercase by mutableStateOf(true)
+    var fileComparisonTwoUppercase by mutableStateOf(true)
     var fileComparisonTwoProgress by mutableStateOf(0F)
     var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
@@ -83,4 +83,18 @@ class CompareFilesComponent(
             fileComparisonTwoProgress = 0F
         }
     }
+
+    fun switchHashCase(fileComparison: FileComparison) {
+        if (fileComparison == FileComparison.FileComparisonOne) {
+            fileComparisonOneHash = if (fileComparisonOneHashUppercase) fileComparisonOneHash.uppercase() else fileComparisonOneHash.lowercase()
+        } else if (fileComparison == FileComparison.FileComparisonTwo) {
+            fileComparisonTwoHash = if (fileComparisonTwoUppercase) fileComparisonTwoHash.uppercase() else fileComparisonTwoHash.lowercase()
+        }
+    }
+
+    enum class FileComparison {
+        FileComparisonOne,
+        FileComparisonTwo
+    }
+
 }

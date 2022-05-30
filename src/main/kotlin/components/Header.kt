@@ -20,9 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
+import androidx.compose.ui.window.WindowState
 import data.GitHubData
 import helper.Browser
 import helper.GitHub
+import helper.Window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,10 +38,10 @@ object Header {
 
     fun commands(
         auroraApplicationScope: AuroraApplicationScope,
+        windowState: WindowState,
         scope: CoroutineScope,
         gitHubData: GitHubData?,
         preferencesAction: () -> Unit,
-        toggleFullScreenAction: () -> Unit,
         aboutAction: () -> Unit
     ): CommandGroup {
         return CommandGroup(
@@ -74,7 +76,7 @@ object Header {
                             commands = listOf(
                                 Command(
                                     text = "Toggle Full Screen",
-                                    action = toggleFullScreenAction
+                                    action = { Window.toggleFullscreen(windowState) }
                                 )
                             )
                         )

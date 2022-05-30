@@ -30,6 +30,7 @@ import com.appmattus.crypto.Algorithm
 import components.Root
 import components.screens.comparefiles.CompareFilesComponent
 import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreenComponent
 import helper.FileUtils
 import io.klogging.logger
 import kotlinx.coroutines.Dispatchers
@@ -48,11 +49,11 @@ import java.io.File
 @Composable
 fun ControlPane(
     fileScreenComponent: FileScreenComponent,
+    textScreenComponent: TextScreenComponent,
     compareFilesComponent: CompareFilesComponent,
     activeChild: Root.Child,
     onSelectFileResult: (Root.Child, File?, Int) -> Unit,
-    onCalculateClick: () -> Unit,
-    onAlgorithmChange: (Algorithm) -> Unit
+    onCalculateClick: () -> Unit
 ) {
     val logger = logger("Control Pane")
     var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
@@ -120,9 +121,11 @@ fun ControlPane(
                     onAlgorithmClick = {
                         if (it != algorithm) {
                             algorithm = it
+                            fileScreenComponent.algorithm = it
+                            textScreenComponent.algorithm = it
+                            compareFilesComponent.algorithm = it
                             scope.launch(Dispatchers.Default) { logger.info("Set algorithm as ${it.algorithmName}") }
                         }
-                        onAlgorithmChange(it)
                     })
             }
             AnimatedVisibility(visible = activeChild !is Root.Child.Text) {

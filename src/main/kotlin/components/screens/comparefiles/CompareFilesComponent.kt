@@ -27,7 +27,6 @@ import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import hash
 import io.klogging.Klogging
-import io.klogging.logger
 import kotlinx.coroutines.*
 import java.io.File
 
@@ -42,7 +41,7 @@ class CompareFilesComponent(
     var fileComparisonTwoHash by mutableStateOf("")
     private var fileComparisonTwoUppercase by mutableStateOf(true)
     var fileComparisonTwoProgress by mutableStateOf(0F)
-    var comparisonJobList: List<Deferred<Unit>>? = null
+    var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
     var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
@@ -75,9 +74,11 @@ class CompareFilesComponent(
                 )
                 comparisonJobList?.awaitAll()
                 filesMatch = fileComparisonOneHash.equals(fileComparisonTwoHash, ignoreCase = true)
+                comparisonJobList = null
             }
         } else {
             comparisonJobList?.forEach { it.cancel() }
+            comparisonJobList = null
             fileComparisonOneProgress = 0F
             fileComparisonTwoProgress = 0F
         }

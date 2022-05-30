@@ -121,10 +121,10 @@ fun main() {
             onCloseRequest = ::exitApplication,
             menuCommands = Header.commands(
                 auroraApplicationScope = this,
+                windowState = windowState,
                 scope = scope,
                 gitHubData = githubData,
                 preferencesAction = { isPreferencesOpen = true },
-                toggleFullScreenAction = { Window.toggleFullscreen(windowState) },
                 aboutAction = { isAboutOpen = true }
             ),
             undecorated = undecorated,
@@ -173,6 +173,7 @@ fun main() {
                     Row(Modifier.fillMaxSize().weight(1f)) {
                         ControlPane(
                             fileScreenComponent = fileScreenComponent,
+                            textScreenComponent = textScreenComponent,
                             compareFilesComponent = compareFilesComponent,
                             activeChild = activeComponent,
                             onSelectFileResult = { child, result, buttonIndex ->
@@ -203,11 +204,6 @@ fun main() {
                                 } else if (activeComponent is Root.Child.CompareFiles){
                                     compareFilesComponent.onCalculateClicked(scope)
                                 }
-                            },
-                            onAlgorithmChange = {
-                                fileScreenComponent.algorithm = it
-                                textScreenComponent.algorithm = it
-                                compareFilesComponent.algorithm = it
                             }
                         )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())

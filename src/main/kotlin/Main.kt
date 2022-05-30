@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
-import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
@@ -81,7 +80,7 @@ import java.io.File
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalDecomposeApi::class)
 fun main() {
     loggingConfiguration { ANSI_CONSOLE() }
-    val klogger = logger("Main")
+    val logger = logger("Main")
 
     val lifecycle = LifecycleRegistry()
     val root = RootComponent(DefaultComponentContext(lifecycle))
@@ -91,22 +90,8 @@ fun main() {
     var retrievedGitHubData = false
     var httpClient: HttpClient? = null
     val undecorated = TitleBarHandler.getTitleBar() == TitleBar.Custom
-    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
     var isAboutOpen by mutableStateOf(false)
     var isPreferencesOpen by mutableStateOf(false)
-
-    val fileScreenComponent = FileScreenComponent(
-        componentContext = DefaultComponentContext(lifecycle),
-        algorithm = algorithm
-    )
-    val textScreenComponent = TextScreenComponent(
-        componentContext = DefaultComponentContext(lifecycle),
-        algorithm = algorithm,
-    )
-    val compareFilesComponent = CompareFilesComponent(
-        componentContext = DefaultComponentContext(lifecycle),
-        algorithm = algorithm
-    )
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
@@ -118,6 +103,15 @@ fun main() {
         )
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
+        val fileScreenComponent = remember {
+            FileScreenComponent(componentContext = DefaultComponentContext(lifecycle))
+        }
+        val textScreenComponent = remember {
+            TextScreenComponent(componentContext = DefaultComponentContext(lifecycle))
+        }
+        val compareFilesComponent = remember {
+            CompareFilesComponent(componentContext = DefaultComponentContext(lifecycle))
+        }
         LifecycleController(lifecycle, windowState)
         AuroraWindow(
             skin = auroraSkin,
@@ -158,17 +152,17 @@ fun main() {
             window.dropTarget = DragAndDrop.target(scope) { droppedItems ->
                 droppedItems.first().let {
                     if (it is File && it.isFile) {
-                        scope.launch(Dispatchers.Default) { klogger.info("User drag and dropped file: ${it.absoluteFile}") }
+                        scope.launch(Dispatchers.Default) { logger.info("User drag and dropped file: ${it.absoluteFile}") }
                         if (activeComponent is Root.Child.File) {
                             fileScreenComponent.file = it
-                            scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as main file") }
+                            scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as main file") }
                         } else if (activeComponent is Root.Child.CompareFiles) {
                             if (compareFilesComponent.fileComparisonOne == null) {
                                 compareFilesComponent.fileComparisonOne = it
-                                scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 1st comparison file") }
+                                scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as the 1st comparison file") }
                             } else {
                                 compareFilesComponent.fileComparisonTwo = it
-                                scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 2nd comparison file") }
+                                scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as the 2nd comparison file") }
                             }
                         }
                     }
@@ -178,33 +172,26 @@ fun main() {
                 Column {
                     Row(Modifier.fillMaxSize().weight(1f)) {
                         ControlPane(
-                            algorithm = algorithm,
                             fileScreenComponent = fileScreenComponent,
                             compareFilesComponent = compareFilesComponent,
                             activeChild = activeComponent,
-                            onAlgorithmClick = { item ->
-                                if (item != algorithm) {
-                                    algorithm = item
-                                    scope.launch(Dispatchers.Default) { klogger.info("Set algorithm as ${item.algorithmName}") }
-                                }
-                            },
                             onSelectFileResult = { child, result, buttonIndex ->
                                 if (result != null) {
                                     if (child is Root.Child.File) {
                                         if (fileScreenComponent.file != result) {
                                             fileScreenComponent.file = result
-                                            scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as main file") }
+                                            scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as main file") }
                                         }
                                     } else if (child is Root.Child.CompareFiles) {
                                         if (buttonIndex == 0) {
                                             if (compareFilesComponent.fileComparisonOne != result) {
                                                 compareFilesComponent.fileComparisonOne = result
-                                                scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
+                                                scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
                                             }
                                         } else {
                                             if (compareFilesComponent.fileComparisonTwo != result) {
                                                 compareFilesComponent.fileComparisonTwo = result
-                                                scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
+                                                scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
                                             }
                                         }
                                     }
@@ -216,6 +203,11 @@ fun main() {
                                 } else if (activeComponent is Root.Child.CompareFiles){
                                     compareFilesComponent.onCalculateClicked(scope)
                                 }
+                            },
+                            onAlgorithmChange = {
+                                fileScreenComponent.algorithm = it
+                                textScreenComponent.algorithm = it
+                                compareFilesComponent.algorithm = it
                             }
                         )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
@@ -278,11 +270,11 @@ fun main() {
                         if (it.status.value in 200..299) {
                             scope.launch(Dispatchers.Default) {
                                 githubData = it.body()
-                                klogger.info("Successfully retrieved GitHub data with status code ${it.status}")
+                                logger.info("Successfully retrieved GitHub data with status code ${it.status}")
                             }
                         } else {
                             scope.launch(Dispatchers.Default) {
-                                klogger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
+                                logger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
                             }
                         }
                     }

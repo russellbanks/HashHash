@@ -29,7 +29,6 @@ import components.FileInfoSection
 import components.HashProgress
 import components.OutputTextFieldRow
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
-import java.io.File
 
 @Composable
 fun CompareFilesScreen(component: CompareFilesComponent) {
@@ -65,7 +64,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
             ) {
                 HashProgress(component.fileComparisonTwoProgress)
                 OutputTextFieldRow(
-                    algorithm = component.algorithm,
+                    algorithm = Algorithm.MD5,
                     value = component.fileComparisonTwoHash,
                     onCaseClick = {
 

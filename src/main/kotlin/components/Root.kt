@@ -20,7 +20,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
-import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.bringToFront
@@ -28,10 +27,6 @@ import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
-import components.screens.comparefiles.CompareFilesComponent
-import components.screens.file.FileScreenComponent
-import components.screens.text.TextScreenComponent
-import kotlinx.datetime.Instant
 
 interface Root {
 

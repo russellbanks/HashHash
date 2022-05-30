@@ -28,12 +28,12 @@ import com.arkivanov.decompose.ComponentContext
 import hash
 
 class TextScreenComponent(
-    componentContext: ComponentContext,
-    val algorithm: Algorithm,
+    componentContext: ComponentContext
 ) : ComponentContext by componentContext {
     var givenText by mutableStateOf("")
     var comparisonHash by mutableStateOf("")
     var hashedTextUppercase by mutableStateOf(true)
+    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun hashGivenText() = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
 

@@ -26,23 +26,25 @@ import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import hash
+import io.klogging.Klogging
+import io.klogging.logger
 import kotlinx.coroutines.*
 import java.io.File
 
 class CompareFilesComponent(
-    componentContext: ComponentContext,
-    val algorithm: Algorithm
-) : ComponentContext by componentContext {
+    componentContext: ComponentContext
+) : ComponentContext by componentContext, Klogging {
     var fileComparisonOne: File? by mutableStateOf(null)
     var fileComparisonOneHash by mutableStateOf("")
-    var fileComparisonOneHashUppercase by mutableStateOf(true)
+    private var fileComparisonOneHashUppercase by mutableStateOf(true)
     var fileComparisonOneProgress by mutableStateOf(0F)
     var fileComparisonTwo: File? by mutableStateOf(null)
     var fileComparisonTwoHash by mutableStateOf("")
-    var fileComparisonTwoUppercase by mutableStateOf(true)
+    private var fileComparisonTwoUppercase by mutableStateOf(true)
     var fileComparisonTwoProgress by mutableStateOf(0F)
     var comparisonJobList: List<Deferred<Unit>>? = null
-    var filesMatch by mutableStateOf(false)
+    private var filesMatch by mutableStateOf(false)
+    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
@@ -56,6 +58,7 @@ class CompareFilesComponent(
                             )?.run { if (fileComparisonOneHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
                         } catch (exception: Exception) {
+                            logger.trace(exception)
                         }
                     },
                     async(Dispatchers.IO) {
@@ -66,6 +69,7 @@ class CompareFilesComponent(
                             )?.run { if (fileComparisonTwoUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
                         } catch (exception: Exception) {
+                            logger.trace(exception)
                         }
                     }
                 )

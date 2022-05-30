@@ -31,6 +31,7 @@ import components.Root
 import components.screens.comparefiles.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import helper.FileUtils
+import io.klogging.logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.*
@@ -46,14 +47,15 @@ import java.io.File
 
 @Composable
 fun ControlPane(
-    algorithm: Algorithm,
     fileScreenComponent: FileScreenComponent,
     compareFilesComponent: CompareFilesComponent,
     activeChild: Root.Child,
-    onAlgorithmClick: (Algorithm) -> Unit,
     onSelectFileResult: (Root.Child, File?, Int) -> Unit,
-    onCalculateClick: () -> Unit
+    onCalculateClick: () -> Unit,
+    onAlgorithmChange: (Algorithm) -> Unit
 ) {
+    val logger = logger("Control Pane")
+    var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
@@ -112,7 +114,16 @@ fun ControlPane(
                         )
                     ).project()
                 }
-                AlgorithmSelectionList(algorithm = algorithm, mode = mode, onAlgorithmClick = { onAlgorithmClick(it) })
+                AlgorithmSelectionList(
+                    algorithm = algorithm,
+                    mode = mode,
+                    onAlgorithmClick = {
+                        if (it != algorithm) {
+                            algorithm = it
+                            scope.launch(Dispatchers.Default) { logger.info("Set algorithm as ${it.algorithmName}") }
+                        }
+                        onAlgorithmChange(it)
+                    })
             }
             AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
                 CommandButtonProjection(

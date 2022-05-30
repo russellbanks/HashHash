@@ -32,8 +32,7 @@ import kotlinx.datetime.Instant
 import java.io.File
 
 class FileScreenComponent(
-    componentContext: ComponentContext,
-    val algorithm: Algorithm,
+    componentContext: ComponentContext
 ) : ComponentContext by componentContext {
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
@@ -42,8 +41,9 @@ class FileScreenComponent(
     var hashProgress by mutableStateOf(0F)
     var instantBeforeHash: Instant? by mutableStateOf(null)
     var instantAfterHash: Instant? by mutableStateOf(null)
-    var mainFileException: Exception? by mutableStateOf(null)
-    var hashedTextUppercase by mutableStateOf(true)
+    private var mainFileException: Exception? by mutableStateOf(null)
+    private var hashedTextUppercase by mutableStateOf(true)
+    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {

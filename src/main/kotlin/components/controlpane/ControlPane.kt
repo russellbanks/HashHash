@@ -28,10 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import components.Root
+import components.screens.comparefiles.CompareFilesComponent
+import components.screens.file.FileScreenComponent
 import helper.FileUtils
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
@@ -47,9 +47,8 @@ import java.io.File
 @Composable
 fun ControlPane(
     algorithm: Algorithm,
-    job: Job?,
-    compareJobList: List<Deferred<Unit>>?,
-    file: File?,
+    fileScreenComponent: FileScreenComponent,
+    compareFilesComponent: CompareFilesComponent,
     fileComparisonOne: File?,
     fileComparisonTwo: File?,
     currentScreen: Root.Child,
@@ -126,15 +125,15 @@ fun ControlPane(
                 CommandButtonProjection(
                     contentModel = Command(
                         text = when (currentScreen) {
-                            is Root.Child.File -> if (job?.isActive != true) "Calculate" else "Cancel"
+                            is Root.Child.File -> if (fileScreenComponent.fileHashJob?.isActive != true) "Calculate" else "Cancel"
                             is Root.Child.Text -> ""
-                            is Root.Child.CompareFiles -> if ((compareJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
+                            is Root.Child.CompareFiles -> if ((compareFilesComponent.comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
                         },
                         action = onCalculateClick,
                         isActionEnabled = if (currentScreen is Root.Child.CompareFiles) {
                             fileComparisonOne != null && fileComparisonTwo != null
                         } else {
-                            file != null
+                            fileScreenComponent.file != null
                         }
                     ),
                     presentationModel = CommandButtonPresentationModel(

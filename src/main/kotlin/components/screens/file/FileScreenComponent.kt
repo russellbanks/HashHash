@@ -20,18 +20,51 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.file
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import hash
+import kotlinx.coroutines.*
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.File
 
 class FileScreenComponent(
     componentContext: ComponentContext,
-    val file: File?,
-    val fileHash: String,
     val algorithm: Algorithm,
-    val instantBeforeHash: Instant?,
-    val instantAfterHash: Instant?,
-    val hashProgress: Float,
-    val onCaseClick: () -> Unit
-) : ComponentContext by componentContext
+) : ComponentContext by componentContext {
+    var comparisonHash by mutableStateOf("")
+    var file: File? by mutableStateOf(null)
+    var fileHash by mutableStateOf("")
+    var fileHashJob: Job? by mutableStateOf(null)
+    var hashProgress by mutableStateOf(0F)
+    var instantBeforeHash: Instant? by mutableStateOf(null)
+    var instantAfterHash: Instant? by mutableStateOf(null)
+    var mainFileException: Exception? by mutableStateOf(null)
+    var hashedTextUppercase by mutableStateOf(true)
+
+    fun onCalculateClicked(scope: CoroutineScope) {
+        if (fileHashJob?.isActive != true) {
+            fileHashJob = scope.launch(Dispatchers.IO) {
+                instantBeforeHash = Clock.System.now()
+                try {
+                    fileHash = file?.hash(
+                        algorithm = algorithm,
+                        hashProgressCallback = { hashProgress = it }
+                    )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
+                    instantAfterHash = Clock.System.now()
+                } catch (_: CancellationException) {
+                } catch (exception: Exception) {
+                    mainFileException = exception
+                }
+                fileHashJob = null
+            }
+        } else {
+            hashProgress = 0F
+            fileHashJob?.cancel()
+            fileHashJob = null
+        }
+    }
+}

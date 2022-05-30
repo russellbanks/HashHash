@@ -25,15 +25,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.dp
-import components.ComparisonTextFieldRow
-import components.FileInfoSection
-import components.HashProgress
-import components.OutputTextFieldRow
+import components.*
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 
 @Composable
 fun FileScreen(component: FileScreenComponent) {
-    var comparisonHash by remember { mutableStateOf("") }
     Column(Modifier.fillMaxSize()) {
         FileInfoSection(component.file)
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
@@ -45,14 +41,20 @@ fun FileScreen(component: FileScreenComponent) {
             OutputTextFieldRow(
                 algorithm = component.algorithm,
                 value = component.fileHash,
-                onCaseClick = { component.onCaseClick() }
+                onCaseClick = {
+                    component.fileHash = if (component.fileHash == component.fileHash.uppercase()) {
+                        component.fileHash.lowercase()
+                    } else {
+                        component.fileHash.uppercase()
+                    }
+                }
             )
             ComparisonTextFieldRow(
                 hashedOutput = component.fileHash,
-                comparisonHash = comparisonHash,
-                onPasteClick = { comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
-                onClearClick = { comparisonHash = "" },
-                onTextFieldChange = { comparisonHash = it.filterNot { char -> char.isWhitespace() } }
+                comparisonHash = component.comparisonHash,
+                onPasteClick = { component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
+                onClearClick = { component.comparisonHash = "" },
+                onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
             )
             TimeResultColumn(component.instantBeforeHash, component.instantAfterHash)
             HashProgress(component.hashProgress)

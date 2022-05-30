@@ -37,14 +37,14 @@ interface Root {
 
     val routerState: Value<RouterState<*, Child>>
 
-    fun onFileTabClicked(fileScreenComponent: FileScreenComponent)
-    fun onTextTabClicked(textScreenComponent: TextScreenComponent)
-    fun onCompareFilesTabClicked(compareFilesComponent: CompareFilesComponent)
+    fun onFileTabClicked()
+    fun onTextTabClicked()
+    fun onCompareFilesTabClicked()
 
     sealed class Child {
-        class File(val component: FileScreenComponent) : Child()
-        class Text(val component: TextScreenComponent) : Child()
-        class CompareFiles(val component: CompareFilesComponent) : Child()
+        object File : Child()
+        object Text : Child()
+        object CompareFiles : Child()
 
         fun toInt(): Int {
             return when (this) {
@@ -62,149 +62,39 @@ class RootComponent(
 
     private val router =
         router<Config, Root.Child>(
-            initialConfiguration = Config.File(
-                file = null,
-                fileHash = "",
-                algorithm = Algorithm.MD5,
-                instantBeforeHash = null,
-                instantAfterHash = null,
-                hashProgress = 0f,
-                onCaseClick = { }
-            ),
+            initialConfiguration = Config.File,
             childFactory = ::createChild
         )
 
     override val routerState: Value<RouterState<*, Root.Child>> = router.state
 
-    override fun onFileTabClicked(fileScreenComponent: FileScreenComponent) {
-        router.bringToFront(
-            Config.File(
-                file = fileScreenComponent.file,
-                fileHash = fileScreenComponent.fileHash,
-                algorithm = fileScreenComponent.algorithm,
-                instantBeforeHash = fileScreenComponent.instantBeforeHash,
-                instantAfterHash = fileScreenComponent.instantAfterHash,
-                hashProgress = fileScreenComponent.hashProgress,
-                onCaseClick = fileScreenComponent.onCaseClick
-            )
-        )
+    override fun onFileTabClicked() {
+        router.bringToFront(Config.File)
     }
 
-    override fun onTextTabClicked(textScreenComponent: TextScreenComponent) {
-        router.bringToFront(
-            Config.Text(
-                algorithm = textScreenComponent.algorithm,
-                givenTextHash = textScreenComponent.givenTextHash,
-                textComparisonHash = textScreenComponent.textComparisonHash,
-                onUppercaseClick = textScreenComponent.onUppercaseClick,
-                onLowercaseClick = textScreenComponent.onLowercaseClick,
-                onClearTextClick = textScreenComponent.onClearTextClick,
-                onComparisonClearClick = textScreenComponent.onComparisonClearClick,
-                onCaseClick = textScreenComponent.onCaseClick,
-                onPasteClick = textScreenComponent.onPasteClick,
-                onComparisonTextFieldChange = textScreenComponent.onComparisonTextFieldChange
-            )
-        )
+    override fun onTextTabClicked() {
+        router.bringToFront(Config.Text)
     }
 
-    override fun onCompareFilesTabClicked(compareFilesComponent: CompareFilesComponent) {
-        router.bringToFront(
-            Config.CompareFiles(
-                algorithm = compareFilesComponent.algorithm,
-                fileComparisonOne = compareFilesComponent.fileComparisonOne,
-                fileComparisonOneHash = compareFilesComponent.fileComparisonOneHash,
-                fileComparisonOneProgress = compareFilesComponent.fileComparisonOneProgress,
-                fileComparisonOneOnCaseClick = compareFilesComponent.fileComparisonOneOnCaseClick,
-                fileComparisonTwo = compareFilesComponent.fileComparisonTwo,
-                fileComparisonTwoHash = compareFilesComponent.fileComparisonTwoHash,
-                fileComparisonTwoProgress = compareFilesComponent.fileComparisonTwoProgress,
-                fileComparisonTwoOnCaseClick = compareFilesComponent.fileComparisonTwoOnCaseClick
-            )
-        )
+    override fun onCompareFilesTabClicked() {
+        router.bringToFront(Config.CompareFiles)
     }
 
     private fun createChild(config: Config, componentContext: ComponentContext) =
         when (config) {
-            is Config.File -> Root.Child.File(
-                FileScreenComponent(
-                    componentContext = componentContext,
-                    file = config.file,
-                    fileHash = config.fileHash,
-                    algorithm = config.algorithm,
-                    instantBeforeHash = config.instantBeforeHash,
-                    instantAfterHash = config.instantAfterHash,
-                    hashProgress = config.hashProgress,
-                    onCaseClick = config.onCaseClick
-                )
-            )
-            is Config.Text -> Root.Child.Text(
-                TextScreenComponent(
-                    componentContext = componentContext,
-                    algorithm = config.algorithm,
-                    givenTextHash = config.givenTextHash,
-                    textComparisonHash = config.textComparisonHash,
-                    onUppercaseClick = config.onUppercaseClick,
-                    onLowercaseClick = config.onLowercaseClick,
-                    onClearTextClick = config.onClearTextClick,
-                    onComparisonClearClick = config.onComparisonClearClick,
-                    onCaseClick = config.onCaseClick,
-                    onPasteClick = config.onPasteClick,
-                    onComparisonTextFieldChange = config.onComparisonTextFieldChange
-                )
-            )
-            is Config.CompareFiles -> Root.Child.CompareFiles(
-                CompareFilesComponent(
-                    componentContext = componentContext,
-                    algorithm = config.algorithm,
-                    fileComparisonOne = config.fileComparisonOne,
-                    fileComparisonOneHash = config.fileComparisonOneHash,
-                    fileComparisonOneProgress = config.fileComparisonOneProgress,
-                    fileComparisonOneOnCaseClick = config.fileComparisonOneOnCaseClick,
-                    fileComparisonTwo = config.fileComparisonTwo,
-                    fileComparisonTwoHash = config.fileComparisonTwoHash,
-                    fileComparisonTwoProgress = config.fileComparisonTwoProgress,
-                    fileComparisonTwoOnCaseClick = config.fileComparisonTwoOnCaseClick
-                )
-            )
+            is Config.File -> Root.Child.File
+            is Config.Text -> Root.Child.Text
+            is Config.CompareFiles -> Root.Child.CompareFiles
         }
 
     private sealed class Config : Parcelable {
         @Parcelize
-        class File(
-            val file: java.io.File?,
-            val fileHash: String,
-            val algorithm: Algorithm,
-            val instantBeforeHash: Instant?,
-            val instantAfterHash: Instant?,
-            val hashProgress: Float,
-            val onCaseClick: () -> Unit
-        ) : Config()
+        object File : Config()
 
         @Parcelize
-        class Text(
-            val algorithm: Algorithm,
-            val givenTextHash: String,
-            val textComparisonHash: String,
-            val onUppercaseClick: () -> Unit,
-            val onLowercaseClick: () -> Unit,
-            val onClearTextClick: () -> Unit,
-            val onComparisonClearClick: () -> Unit,
-            val onCaseClick: () -> Unit,
-            val onPasteClick: () -> Unit,
-            val onComparisonTextFieldChange: (String) -> Unit
-        ) : Config()
+        object Text : Config()
 
         @Parcelize
-        class CompareFiles(
-            val algorithm: Algorithm,
-            val fileComparisonOne: java.io.File?,
-            val fileComparisonOneHash: String,
-            val fileComparisonOneProgress: Float,
-            val fileComparisonOneOnCaseClick: () -> Unit,
-            val fileComparisonTwo: java.io.File?,
-            val fileComparisonTwoHash: String,
-            val fileComparisonTwoProgress: Float,
-            val fileComparisonTwoOnCaseClick: () -> Unit
-        ) : Config()
+        object CompareFiles : Config()
     }
 }

@@ -37,12 +37,7 @@ import java.io.File
 @Composable
 fun Footer(
     currentScreen: Root.Child,
-    error: Exception?,
-    mainFileHash: String,
-    fileComparisonOneHash: String,
-    fileComparisonTwoHash: String,
     file: File?,
-    filesMatch: Boolean,
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
@@ -51,17 +46,11 @@ fun Footer(
                     text = when (currentScreen) {
                         is Root.Child.File -> {
                             when {
-                                error != null -> error.localizedMessage.replaceFirstChar { it.titlecase() }
-                                mainFileHash.isNotBlank() -> "Done!"
                                 file != null -> "No hash"
                                 else -> "No file selected"
                             }
                         }
-                        is Root.Child.CompareFiles -> {
-                            if (fileComparisonOneHash.isNotBlank() && fileComparisonTwoHash.isNotBlank()) {
-                                if (filesMatch) "Files match" else "Files do not match"
-                            } else ""
-                        }
+                        is Root.Child.CompareFiles -> ""
                         is Root.Child.Text -> ""
                     }
                 )

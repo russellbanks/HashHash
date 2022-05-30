@@ -24,6 +24,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 
 @Composable
 fun TextScreen(component: TextScreenComponent) {
-    var givenText by remember { mutableStateOf("") }
+    val clipboardManager = LocalClipboardManager.current
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -60,16 +61,14 @@ fun TextScreen(component: TextScreenComponent) {
                 }
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "${"%,d".format(givenText.count())} ${if (givenText.count() == 1) "character" else "characters"}"
+                        text = "${"%,d".format(component.givenText.count())} ${if (component.givenText.count() == 1) "character" else "characters"}"
                     )
                 ).project()
             }
             TextFieldStringProjection(
                 contentModel = TextFieldStringContentModel(
-                    value = givenText,
-                    onValueChange = {
-                        givenText = it
-                    }
+                    value = component.givenText,
+                    onValueChange = { component.givenText = it }
                 )
             ).project(Modifier.fillMaxWidth().height(200.dp))
             Row(
@@ -79,23 +78,23 @@ fun TextScreen(component: TextScreenComponent) {
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Uppercase",
-                        action = component.onUppercaseClick
+                        action = { component.givenText = component.givenText.uppercase() }
                     ),
                 ).project(Modifier.fillMaxWidth(1f / 3))
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Lowercase",
-                        action = component.onLowercaseClick
+                        action = { component.givenText = component.givenText.lowercase() }
                     ),
                 ).project(Modifier.fillMaxWidth(1f / 2))
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Clear text area",
-                        action = component.onClearTextClick
+                        action = { component.givenText = "" }
                     ),
                 ).project(Modifier.fillMaxWidth())
             }
-            AnimatedVisibility(visible = givenText.count() >= TextScreenComponent.characterLimit) {
+            AnimatedVisibility(visible = component.givenText.count() >= TextScreenComponent.characterLimit) {
                 LabelProjection(
                     contentModel = LabelContentModel(
                         text = "To conserve memory usage, you cannot input more than ${"%,d".format(TextScreenComponent.characterLimit)} characters."
@@ -105,15 +104,15 @@ fun TextScreen(component: TextScreenComponent) {
         }
         OutputTextFieldRow(
             algorithm = component.algorithm,
-            value = if (givenText.isNotEmpty()) component.givenTextHash else "",
-            onCaseClick = component.onCaseClick
+            value = if (component.givenText.isNotEmpty()) component.hashGivenText() else "",
+            onCaseClick = { component.hashedTextUppercase = !component.hashedTextUppercase }
         )
         ComparisonTextFieldRow(
-            hashedOutput = component.givenTextHash,
-            comparisonHash = component.textComparisonHash,
-            onPasteClick = component.onPasteClick,
-            onClearClick = component.onComparisonClearClick,
-            onTextFieldChange = component.onComparisonTextFieldChange
+            hashedOutput = "",
+            comparisonHash = component.comparisonHash,
+            onPasteClick = { component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
+            onClearClick = { component.comparisonHash = "" },
+            onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
         )
     }
 }

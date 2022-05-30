@@ -20,19 +20,62 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.comparefiles
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import hash
+import kotlinx.coroutines.*
 import java.io.File
 
 class CompareFilesComponent(
     componentContext: ComponentContext,
     val algorithm: Algorithm,
     val fileComparisonOne: File?,
-    val fileComparisonOneHash: String,
-    val fileComparisonOneProgress: Float,
-    val fileComparisonOneOnCaseClick: () -> Unit,
     val fileComparisonTwo: File?,
-    val fileComparisonTwoHash: String,
-    val fileComparisonTwoProgress: Float,
-    val fileComparisonTwoOnCaseClick: () -> Unit
-) : ComponentContext by componentContext
+) : ComponentContext by componentContext {
+    var fileComparisonOneHash by mutableStateOf("")
+    var fileComparisonOneHashUppercase by mutableStateOf(true)
+    var fileComparisonOneProgress by mutableStateOf(0F)
+    var fileComparisonTwoHash by mutableStateOf("")
+    var fileComparisonTwoUppercase by mutableStateOf(true)
+    var fileComparisonTwoProgress by mutableStateOf(0F)
+    var comparisonJobList: List<Deferred<Unit>>? = null
+    var filesMatch by mutableStateOf(false)
+
+    fun onCalculateClicked(scope: CoroutineScope) {
+        if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
+            scope.launch(Dispatchers.Default) {
+                comparisonJobList = listOf(
+                    async(Dispatchers.IO) {
+                        try {
+                            fileComparisonOneHash = fileComparisonOne?.hash(
+                                algorithm = algorithm,
+                                hashProgressCallback = { fileComparisonOneProgress = it }
+                            )?.run { if (fileComparisonOneHashUppercase) uppercase() else lowercase() } ?: ""
+                        } catch (_: CancellationException) {
+                        } catch (exception: Exception) {
+                        }
+                    },
+                    async(Dispatchers.IO) {
+                        try {
+                            fileComparisonTwoHash = fileComparisonTwo?.hash(
+                                algorithm = algorithm,
+                                hashProgressCallback = { fileComparisonTwoProgress = it }
+                            )?.run { if (fileComparisonTwoUppercase) uppercase() else lowercase() } ?: ""
+                        } catch (_: CancellationException) {
+                        } catch (exception: Exception) {
+                        }
+                    }
+                )
+                comparisonJobList?.awaitAll()
+                filesMatch = fileComparisonOneHash.equals(fileComparisonTwoHash, ignoreCase = true)
+            }
+        } else {
+            comparisonJobList?.forEach { it.cancel() }
+            fileComparisonOneProgress = 0F
+            fileComparisonTwoProgress = 0F
+        }
+    }
+}

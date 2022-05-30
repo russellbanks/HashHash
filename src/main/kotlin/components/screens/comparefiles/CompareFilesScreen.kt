@@ -47,7 +47,9 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
                     value = component.fileComparisonOneHash,
-                    onCaseClick = component.fileComparisonOneOnCaseClick
+                    onCaseClick = {
+
+                    }
                 )
             }
         }
@@ -65,7 +67,9 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
                     value = component.fileComparisonTwoHash,
-                    onCaseClick = component.fileComparisonTwoOnCaseClick
+                    onCaseClick = {
+
+                    }
                 )
             }
         }

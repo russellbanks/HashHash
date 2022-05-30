@@ -95,12 +95,6 @@ fun main() {
     var isAboutOpen by mutableStateOf(false)
     var isPreferencesOpen by mutableStateOf(false)
 
-
-    // 1st Comparison File
-    var fileComparisonOne: File? by mutableStateOf(null)
-
-    // 2nd Comparison File
-    var fileComparisonTwo: File? by mutableStateOf(null)
     val fileScreenComponent = FileScreenComponent(
         componentContext = DefaultComponentContext(lifecycle),
         algorithm = algorithm
@@ -111,9 +105,7 @@ fun main() {
     )
     val compareFilesComponent = CompareFilesComponent(
         componentContext = DefaultComponentContext(lifecycle),
-        algorithm = algorithm,
-        fileComparisonOne = fileComparisonOne,
-        fileComparisonTwo = fileComparisonTwo,
+        algorithm = algorithm
     )
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
@@ -171,11 +163,11 @@ fun main() {
                             fileScreenComponent.file = it
                             scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as main file") }
                         } else if (activeComponent is Root.Child.CompareFiles) {
-                            if (fileComparisonOne == null) {
-                                fileComparisonOne = it
+                            if (compareFilesComponent.fileComparisonOne == null) {
+                                compareFilesComponent.fileComparisonOne = it
                                 scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 1st comparison file") }
                             } else {
-                                fileComparisonTwo = it
+                                compareFilesComponent.fileComparisonTwo = it
                                 scope.launch(Dispatchers.Default) { klogger.info("Set ${it.name} as the 2nd comparison file") }
                             }
                         }
@@ -189,40 +181,43 @@ fun main() {
                             algorithm = algorithm,
                             fileScreenComponent = fileScreenComponent,
                             compareFilesComponent = compareFilesComponent,
-                            fileComparisonOne = fileComparisonOne,
-                            fileComparisonTwo = fileComparisonTwo,
-                            currentScreen = activeComponent,
+                            activeChild = activeComponent,
                             onAlgorithmClick = { item ->
                                 if (item != algorithm) {
                                     algorithm = item
                                     scope.launch(Dispatchers.Default) { klogger.info("Set algorithm as ${item.algorithmName}") }
                                 }
                             },
-                            onSelectFileResult = { result ->
-                                if (result != null && fileScreenComponent.file != result) {
-                                    fileScreenComponent.file = result
-                                    scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as main file") }
+                            onSelectFileResult = { child, result, buttonIndex ->
+                                if (result != null) {
+                                    if (child is Root.Child.File) {
+                                        if (fileScreenComponent.file != result) {
+                                            fileScreenComponent.file = result
+                                            scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as main file") }
+                                        }
+                                    } else if (child is Root.Child.CompareFiles) {
+                                        if (buttonIndex == 0) {
+                                            if (compareFilesComponent.fileComparisonOne != result) {
+                                                compareFilesComponent.fileComparisonOne = result
+                                                scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
+                                            }
+                                        } else {
+                                            if (compareFilesComponent.fileComparisonTwo != result) {
+                                                compareFilesComponent.fileComparisonTwo = result
+                                                scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
+                                            }
+                                        }
+                                    }
                                 }
                             },
-                            onSelectFileComparisonOneResult = { result ->
-                                if (result != null && fileComparisonOne != result) {
-                                    fileComparisonOne = result
-                                    scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
-                                }
-                            },
-                            oneSelectFileComparisonTwoResult = { result ->
-                                if (result != null && fileComparisonTwo != result) {
-                                    fileComparisonTwo = result
-                                    scope.launch(Dispatchers.Default) { klogger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
+                            onCalculateClick = {
+                                if (activeComponent is Root.Child.File) {
+                                    fileScreenComponent.onCalculateClicked(scope)
+                                } else if (activeComponent is Root.Child.CompareFiles){
+                                    compareFilesComponent.onCalculateClicked(scope)
                                 }
                             }
-                        ) {
-                            if (activeComponent is Root.Child.File) {
-                                fileScreenComponent.onCalculateClicked(scope)
-                            } else if (activeComponent is Root.Child.CompareFiles){
-                                compareFilesComponent.onCalculateClicked(scope)
-                            }
-                        }
+                        )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                         Column {
                             TabsProjection(

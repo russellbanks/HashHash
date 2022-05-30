@@ -31,13 +31,13 @@ import java.io.File
 
 class CompareFilesComponent(
     componentContext: ComponentContext,
-    val algorithm: Algorithm,
-    val fileComparisonOne: File?,
-    val fileComparisonTwo: File?,
+    val algorithm: Algorithm
 ) : ComponentContext by componentContext {
+    var fileComparisonOne: File? by mutableStateOf(null)
     var fileComparisonOneHash by mutableStateOf("")
     var fileComparisonOneHashUppercase by mutableStateOf(true)
     var fileComparisonOneProgress by mutableStateOf(0F)
+    var fileComparisonTwo: File? by mutableStateOf(null)
     var fileComparisonTwoHash by mutableStateOf("")
     var fileComparisonTwoUppercase by mutableStateOf(true)
     var fileComparisonTwoProgress by mutableStateOf(0F)

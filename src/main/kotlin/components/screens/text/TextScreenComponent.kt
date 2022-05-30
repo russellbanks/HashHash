@@ -20,24 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.text
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import hash
 
 class TextScreenComponent(
-    componentContext: ComponentContext,
-    val algorithm: Algorithm,
-    val givenText: String,
-    val givenTextHash: String,
-    val textComparisonHash: String,
-    val onValueChange: (String) -> Unit,
-    val onUppercaseClick: () -> Unit,
-    val onLowercaseClick: () -> Unit,
-    val onClearTextClick: () -> Unit,
-    val onComparisonClearClick: () -> Unit,
-    val onCaseClick: () -> Unit,
-    val onPasteClick: () -> Unit,
-    val onComparisonTextFieldChange: (String) -> Unit
+    componentContext: ComponentContext
 ) : ComponentContext by componentContext {
+    var givenText by mutableStateOf("")
+    var comparisonHash by mutableStateOf("")
+    var hashedTextUppercase by mutableStateOf(true)
+    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
+
+    fun hashGivenText() = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
+
     companion object {
         const val characterLimit = 20000
     }

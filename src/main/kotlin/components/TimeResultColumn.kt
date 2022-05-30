@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.screens.file
+package components
 
 import androidx.compose.runtime.Composable
 import com.google.accompanist.flowlayout.FlowColumn

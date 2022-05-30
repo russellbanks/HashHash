@@ -28,10 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import components.Root
+import components.screens.comparefiles.CompareFilesComponent
+import components.screens.file.FileScreenComponent
 import helper.FileUtils
-import kotlinx.coroutines.Deferred
+import io.klogging.logger
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
@@ -46,19 +47,15 @@ import java.io.File
 
 @Composable
 fun ControlPane(
-    algorithm: Algorithm,
-    job: Job?,
-    compareJobList: List<Deferred<Unit>>?,
-    file: File?,
-    fileComparisonOne: File?,
-    fileComparisonTwo: File?,
-    currentScreen: Root.Child,
-    onAlgorithmClick: (Algorithm) -> Unit,
-    onSelectFileResult: (File?) -> Unit,
-    onSelectFileComparisonOneResult: (File?) -> Unit,
-    oneSelectFileComparisonTwoResult: (File?) -> Unit,
-    onCalculateClick: () -> Unit
+    fileScreenComponent: FileScreenComponent,
+    compareFilesComponent: CompareFilesComponent,
+    activeChild: Root.Child,
+    onSelectFileResult: (Root.Child, File?, Int) -> Unit,
+    onCalculateClick: () -> Unit,
+    onAlgorithmChange: (Algorithm) -> Unit
 ) {
+    val logger = logger("Control Pane")
+    var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
@@ -71,19 +68,16 @@ fun ControlPane(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AnimatedVisibility(visible = currentScreen !is Root.Child.Text) {
+                AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
                     CommandButtonProjection(
                         contentModel = Command(
-                            text = when (currentScreen) {
+                            text = when (activeChild) {
                                 is Root.Child.File -> "Select file"
                                 is Root.Child.CompareFiles -> "Select 1st file"
                                 else -> ""
                             },
                             action = {
-                                FileUtils.openFileDialogAndGetResult().also {
-                                    if (currentScreen is Root.Child.File) onSelectFileResult(it)
-                                    else if (currentScreen is Root.Child.CompareFiles) onSelectFileComparisonOneResult(it)
-                                }
+                                FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(activeChild, it, 0) }
                             }
                         ),
                         presentationModel = CommandButtonPresentationModel(
@@ -91,11 +85,11 @@ fun ControlPane(
                         )
                     ).project(Modifier.fillMaxWidth())
                 }
-                AnimatedVisibility(visible = currentScreen is Root.Child.CompareFiles) {
+                AnimatedVisibility(visible = activeChild is Root.Child.CompareFiles) {
                     CommandButtonProjection(
                         contentModel = Command(
-                            text = if (currentScreen is Root.Child.CompareFiles) "Select 2nd file" else "",
-                            action = { FileUtils.openFileDialogAndGetResult().also { oneSelectFileComparisonTwoResult(it) } }
+                            text = if (activeChild is Root.Child.CompareFiles) "Select 2nd file" else "",
+                            action = { FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(activeChild, it, 1) } }
                         ),
                         presentationModel = CommandButtonPresentationModel(
                             presentationState = CommandButtonPresentationState.Tile
@@ -120,21 +114,30 @@ fun ControlPane(
                         )
                     ).project()
                 }
-                AlgorithmSelectionList(algorithm = algorithm, mode = mode, onAlgorithmClick = { onAlgorithmClick(it) })
+                AlgorithmSelectionList(
+                    algorithm = algorithm,
+                    mode = mode,
+                    onAlgorithmClick = {
+                        if (it != algorithm) {
+                            algorithm = it
+                            scope.launch(Dispatchers.Default) { logger.info("Set algorithm as ${it.algorithmName}") }
+                        }
+                        onAlgorithmChange(it)
+                    })
             }
-            AnimatedVisibility(visible = currentScreen !is Root.Child.Text) {
+            AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
                 CommandButtonProjection(
                     contentModel = Command(
-                        text = when (currentScreen) {
-                            is Root.Child.File -> if (job?.isActive != true) "Calculate" else "Cancel"
+                        text = when (activeChild) {
+                            is Root.Child.File -> if (fileScreenComponent.fileHashJob?.isActive != true) "Calculate" else "Cancel"
                             is Root.Child.Text -> ""
-                            is Root.Child.CompareFiles -> if ((compareJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
+                            is Root.Child.CompareFiles -> if ((compareFilesComponent.comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
                         },
                         action = onCalculateClick,
-                        isActionEnabled = if (currentScreen is Root.Child.CompareFiles) {
-                            fileComparisonOne != null && fileComparisonTwo != null
+                        isActionEnabled = if (activeChild is Root.Child.CompareFiles) {
+                            compareFilesComponent.fileComparisonOne != null && compareFilesComponent.fileComparisonTwo != null
                         } else {
-                            file != null
+                            fileScreenComponent.file != null
                         }
                     ),
                     presentationModel = CommandButtonPresentationModel(

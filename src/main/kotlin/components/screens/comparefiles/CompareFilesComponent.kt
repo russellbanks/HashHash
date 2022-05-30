@@ -43,7 +43,7 @@ class CompareFilesComponent(
     private var fileComparisonTwoUppercase by mutableStateOf(true)
     var fileComparisonTwoProgress by mutableStateOf(0F)
     var comparisonJobList: List<Deferred<Unit>>? = null
-    private var filesMatch by mutableStateOf(false)
+    var filesMatch by mutableStateOf(false)
     var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun onCalculateClicked(scope: CoroutineScope) {

@@ -27,31 +27,46 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import components.screens.comparefiles.CompareFilesComponent
+import components.screens.file.FileScreenComponent
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
-import java.io.File
 
 @Composable
 fun Footer(
-    currentScreen: Root.Child,
-    file: File?,
+    activeComponent: Root.Child,
+    fileScreenComponent: FileScreenComponent,
+    compareFilesComponent: CompareFilesComponent
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(
                 contentModel = LabelContentModel(
-                    text = when (currentScreen) {
+                    text = when (activeComponent) {
                         is Root.Child.File -> {
                             when {
-                                file != null -> "No hash"
+                                fileScreenComponent.file != null -> "No hash"
                                 else -> "No file selected"
                             }
                         }
-                        is Root.Child.CompareFiles -> ""
                         is Root.Child.Text -> ""
+                        is Root.Child.CompareFiles -> {
+                            when {
+                                compareFilesComponent.fileComparisonOne == null && compareFilesComponent.fileComparisonTwo == null -> "No files selected"
+                                compareFilesComponent.fileComparisonOne == null && compareFilesComponent.fileComparisonTwo != null -> "1st file not selected"
+                                compareFilesComponent.fileComparisonOne != null && compareFilesComponent.fileComparisonTwo == null -> "2nd file not selected"
+                                compareFilesComponent.fileComparisonOneHash.isBlank() && compareFilesComponent.fileComparisonTwoHash.isBlank() -> "No hashes"
+                                compareFilesComponent.fileComparisonOneHash.isBlank() && compareFilesComponent.fileComparisonTwoHash.isNotBlank() -> "No hash for 1st file"
+                                compareFilesComponent.fileComparisonOneHash.isNotBlank() && compareFilesComponent.fileComparisonTwoHash.isBlank() -> "No hash for 2nd file"
+                                compareFilesComponent.fileComparisonOneHash.isNotBlank() && compareFilesComponent.fileComparisonTwoHash.isNotBlank() -> {
+                                    if (compareFilesComponent.filesMatch) "Files match" else "Files do not match"
+                                }
+                                else -> ""
+                            }
+                        }
                     }
                 )
             ).project()

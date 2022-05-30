@@ -247,7 +247,9 @@ fun main() {
                         }
                     }
                     Footer(
-                        activeComponent, fileScreenComponent.file
+                        activeComponent = activeComponent,
+                        fileScreenComponent = fileScreenComponent,
+                        compareFilesComponent = compareFilesComponent
                     )
                 }
                 PreferencesDialog(
@@ -267,13 +269,11 @@ fun main() {
                     githubData = githubData,
                     onUpdateCheck = {
                         httpResponse = it
-                        if (it.status.value in 200..299) {
-                            scope.launch(Dispatchers.Default) {
+                        scope.launch(Dispatchers.Default) {
+                            if (it.status.value in 200..299) {
                                 githubData = it.body()
                                 logger.info("Successfully retrieved GitHub data with status code ${it.status}")
-                            }
-                        } else {
-                            scope.launch(Dispatchers.Default) {
+                            } else {
                                 logger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
                             }
                         }

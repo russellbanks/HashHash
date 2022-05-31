@@ -25,10 +25,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
@@ -43,7 +39,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
-import components.Header
 import components.Root
 import components.RootComponent
 import components.controlpane.ControlPane
@@ -77,7 +72,7 @@ import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import java.io.File
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalDecomposeApi::class)
+@OptIn(ExperimentalDecomposeApi::class)
 fun main() {
     loggingConfiguration { ANSI_CONSOLE() }
     val logger = logger("Main")
@@ -119,7 +114,7 @@ fun main() {
             title = BuildConfig.appName,
             icon = Icons.logo(),
             onCloseRequest = ::exitApplication,
-            menuCommands = Header.commands(
+            menuCommands = Window.Header.commands(
                 auroraApplicationScope = this,
                 windowState = windowState,
                 scope = scope,
@@ -128,14 +123,7 @@ fun main() {
                 aboutAction = { isAboutOpen = true }
             ),
             undecorated = undecorated,
-            onPreviewKeyEvent = {
-                if (it.key == Key.F11 && it.type == KeyEventType.KeyUp ) {
-                    Window.toggleFullscreen(windowState)
-                    true
-                } else {
-                    false
-                }
-            }
+            onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
         ) {
             if (!retrievedGitHubData) {
                 scope.launch(Dispatchers.Default) {
@@ -179,7 +167,7 @@ fun main() {
                             onCalculateClick = {
                                 if (activeComponent is Root.Child.File) {
                                     fileScreenComponent.onCalculateClicked(scope)
-                                } else if (activeComponent is Root.Child.CompareFiles){
+                                } else if (activeComponent is Root.Child.CompareFiles) {
                                     compareFilesComponent.onCalculateClicked(scope)
                                 }
                             }

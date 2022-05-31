@@ -21,10 +21,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import components.Root
@@ -58,6 +62,10 @@ fun ControlPane(
     var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
+    val buttonOneWidth by animateFloatAsState(
+        targetValue = if (activeChild is Root.Child.CompareFiles) 0.5f else 1f,
+        animationSpec = tween(durationMillis = 60)
+    )
     suspend fun setFiles(child: Root.Child, file: File?, index: Int) {
         if (file != null) {
             if (child is Root.Child.File) {
@@ -91,38 +99,42 @@ fun ControlPane(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = when (activeChild) {
-                                is Root.Child.File -> "Select file"
-                                is Root.Child.CompareFiles -> "Select 1st file"
-                                else -> ""
-                            },
-                            action = {
-                                FileUtils.openFileDialogAndGetResult().also {
-                                    scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 0) }
+                    Row {
+                        CommandButtonProjection(
+                            contentModel = Command(
+                                text = when (activeChild) {
+                                    is Root.Child.File -> "Select file"
+                                    is Root.Child.CompareFiles -> "Select 1st file"
+                                    else -> ""
+                                },
+                                action = {
+                                    FileUtils.openFileDialogAndGetResult().also {
+                                        scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 0) }
+                                    }
                                 }
-                            }
-                        ),
-                        presentationModel = CommandButtonPresentationModel(
-                            presentationState = CommandButtonPresentationState.Tile
-                        )
-                    ).project(Modifier.fillMaxWidth())
-                }
-                AnimatedVisibility(visible = activeChild is Root.Child.CompareFiles) {
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = if (activeChild is Root.Child.CompareFiles) "Select 2nd file" else "",
-                            action = {
-                                FileUtils.openFileDialogAndGetResult().also {
-                                    scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 1) }
-                                }
-                            }
-                        ),
-                        presentationModel = CommandButtonPresentationModel(
-                            presentationState = CommandButtonPresentationState.Tile
-                        )
-                    ).project(Modifier.fillMaxWidth())
+                            ),
+                            presentationModel = CommandButtonPresentationModel(
+                                presentationState = CommandButtonPresentationState.Tile,
+                                textStyle = TextStyle(textAlign = TextAlign.Center),
+                            )
+                        ).project(Modifier.fillMaxWidth(buttonOneWidth))
+                        AnimatedVisibility(visible = activeChild is Root.Child.CompareFiles) {
+                            CommandButtonProjection(
+                                contentModel = Command(
+                                    text = if (activeChild is Root.Child.CompareFiles) "Select 2nd file" else "",
+                                    action = {
+                                        FileUtils.openFileDialogAndGetResult().also {
+                                            scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 1) }
+                                        }
+                                    }
+                                ),
+                                presentationModel = CommandButtonPresentationModel(
+                                    presentationState = CommandButtonPresentationState.Tile,
+                                    textStyle = TextStyle(textAlign = TextAlign.Center)
+                                )
+                            ).project(Modifier.fillMaxWidth(if (activeChild is Root.Child.CompareFiles) 1f else 0f))
+                        }
+                    }
                 }
                 Row {
                     Box(Modifier.weight(1f)) {

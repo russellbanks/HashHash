@@ -176,28 +176,6 @@ fun main() {
                             textScreenComponent = textScreenComponent,
                             compareFilesComponent = compareFilesComponent,
                             activeChild = activeComponent,
-                            onSelectFileResult = { child, result, buttonIndex ->
-                                if (result != null) {
-                                    if (child is Root.Child.File) {
-                                        if (fileScreenComponent.file != result) {
-                                            fileScreenComponent.file = result
-                                            scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as main file") }
-                                        }
-                                    } else if (child is Root.Child.CompareFiles) {
-                                        if (buttonIndex == 0) {
-                                            if (compareFilesComponent.fileComparisonOne != result) {
-                                                compareFilesComponent.fileComparisonOne = result
-                                                scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as 1st comparison file") }
-                                            }
-                                        } else {
-                                            if (compareFilesComponent.fileComparisonTwo != result) {
-                                                compareFilesComponent.fileComparisonTwo = result
-                                                scope.launch(Dispatchers.Default) { logger.info("Set user selected file ${result.absolutePath} as 2nd comparison file") }
-                                            }
-                                        }
-                                    }
-                                }
-                            },
                             onCalculateClick = {
                                 if (activeComponent is Root.Child.File) {
                                     fileScreenComponent.onCalculateClicked(scope)

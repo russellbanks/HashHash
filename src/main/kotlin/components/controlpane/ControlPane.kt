@@ -52,13 +52,34 @@ fun ControlPane(
     textScreenComponent: TextScreenComponent,
     compareFilesComponent: CompareFilesComponent,
     activeChild: Root.Child,
-    onSelectFileResult: (Root.Child, File?, Int) -> Unit,
     onCalculateClick: () -> Unit
 ) {
     val logger = logger("Control Pane")
     var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
+    suspend fun setFiles(child: Root.Child, file: File?, index: Int) {
+        if (file != null) {
+            if (child is Root.Child.File) {
+                if (fileScreenComponent.file != file) {
+                    fileScreenComponent.file = file
+                    logger.info("Set user selected file ${file.absolutePath} as main file")
+                }
+            } else if (child is Root.Child.CompareFiles) {
+                if (index == 0) {
+                    if (compareFilesComponent.fileComparisonOne != file) {
+                        compareFilesComponent.fileComparisonOne = file
+                        logger.info("Set user selected file ${file.absolutePath} as 1st comparison file")
+                    }
+                } else {
+                    if (compareFilesComponent.fileComparisonTwo != file) {
+                        compareFilesComponent.fileComparisonTwo = file
+                        logger.info("Set user selected file ${file.absolutePath} as 2nd comparison file")
+                    }
+                }
+            }
+        }
+    }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(180.dp),
@@ -78,7 +99,9 @@ fun ControlPane(
                                 else -> ""
                             },
                             action = {
-                                FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(activeChild, it, 0) }
+                                FileUtils.openFileDialogAndGetResult().also {
+                                    scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 0) }
+                                }
                             }
                         ),
                         presentationModel = CommandButtonPresentationModel(
@@ -90,7 +113,11 @@ fun ControlPane(
                     CommandButtonProjection(
                         contentModel = Command(
                             text = if (activeChild is Root.Child.CompareFiles) "Select 2nd file" else "",
-                            action = { FileUtils.openFileDialogAndGetResult().also { onSelectFileResult(activeChild, it, 1) } }
+                            action = {
+                                FileUtils.openFileDialogAndGetResult().also {
+                                    scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 1) }
+                                }
+                            }
                         ),
                         presentationModel = CommandButtonPresentationModel(
                             presentationState = CommandButtonPresentationState.Tile

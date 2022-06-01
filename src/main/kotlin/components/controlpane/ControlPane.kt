@@ -62,10 +62,6 @@ fun ControlPane(
     var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
-    val buttonOneWidth by animateFloatAsState(
-        targetValue = if (activeChild is Root.Child.CompareFiles) 0.5f else 1f,
-        animationSpec = tween(durationMillis = 60)
-    )
     suspend fun setFiles(child: Root.Child, file: File?, index: Int) {
         if (file != null) {
             if (child is Root.Child.File) {
@@ -117,7 +113,7 @@ fun ControlPane(
                                 presentationState = CommandButtonPresentationState.Tile,
                                 textStyle = TextStyle(textAlign = TextAlign.Center),
                             )
-                        ).project(Modifier.fillMaxWidth(buttonOneWidth))
+                        ).project(Modifier.fillMaxWidth(if (activeChild is Root.Child.CompareFiles) 0.5f else 1f))
                         AnimatedVisibility(visible = activeChild is Root.Child.CompareFiles) {
                             CommandButtonProjection(
                                 contentModel = Command(
@@ -132,7 +128,7 @@ fun ControlPane(
                                     presentationState = CommandButtonPresentationState.Tile,
                                     textStyle = TextStyle(textAlign = TextAlign.Center)
                                 )
-                            ).project(Modifier.fillMaxWidth(if (activeChild is Root.Child.CompareFiles) 1f else 0f))
+                            ).project(Modifier.fillMaxWidth())
                         }
                     }
                 }

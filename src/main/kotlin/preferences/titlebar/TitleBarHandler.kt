@@ -23,7 +23,7 @@ package preferences.titlebar
 import io.klogging.Klogging
 import java.util.prefs.Preferences
 
-object TitleBarHandler: Klogging {
+object TitleBarHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 

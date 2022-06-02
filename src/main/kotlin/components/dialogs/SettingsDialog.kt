@@ -37,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import preferences.titlebar.TitleBar
-import preferences.titlebar.TitleBarHandler
 import org.pushingpixels.aurora.component.model.*
 import org.pushingpixels.aurora.component.projection.ComboBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
@@ -50,6 +48,8 @@ import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import preferences.theme.Theme
 import preferences.theme.ThemeHandler
+import preferences.titlebar.TitleBar
+import preferences.titlebar.TitleBarHandler
 
 @Composable
 fun PreferencesDialog(
@@ -81,8 +81,9 @@ fun PreferencesDialog(
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(modifier = Modifier
-                        .weight(1f)
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
                     ) {
                         Column {
                             LabelProjection(
@@ -113,7 +114,8 @@ fun PreferencesDialog(
                                                 selectedTheme = it
                                                 onThemeChange(
                                                     Pair(
-                                                        it, when (it) {
+                                                        it,
+                                                        when (it) {
                                                             Theme.LIGHT -> dustSkin()
                                                             Theme.DARK -> nightShadeSkin()
                                                             else -> if (themeHandler.isSystemDark()) nightShadeSkin() else dustSkin()
@@ -127,7 +129,7 @@ fun PreferencesDialog(
                                         )
                                     ).project()
                                 }
-                                Column{
+                                Column {
                                     Row {
                                         Box(Modifier.weight(1f)) {
                                             LabelProjection(contentModel = LabelContentModel(text = "Title bar style")).project()

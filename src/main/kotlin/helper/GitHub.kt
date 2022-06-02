@@ -14,5 +14,4 @@ object GitHub {
             const val newIssue = "$website/issues/new/choose"
         }
     }
-
 }

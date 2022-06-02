@@ -28,12 +28,12 @@ import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
 
-object Browser: Klogging {
+object Browser : Klogging {
     private suspend fun open(uri: URI?): Boolean {
         val desktop = if (Desktop.isDesktopSupported()) Desktop.getDesktop() else null
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                logger.info("Opened ${uri.toString()}")
+                logger.info("Opened $uri")
                 withContext(Dispatchers.IO) { desktop.browse(uri) }
                 return true
             } catch (exception: Exception) {
@@ -51,5 +51,4 @@ object Browser: Klogging {
         }
         return false
     }
-
 }

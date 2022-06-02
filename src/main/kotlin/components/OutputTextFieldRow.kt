@@ -43,7 +43,7 @@ fun OutputTextFieldRow(
     isValueUppercase: Boolean,
     onCaseClick: () -> Unit
 ) {
-    val clipboardManager =  LocalClipboardManager.current
+    val clipboardManager = LocalClipboardManager.current
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
             contentModel = LabelContentModel(text = "${algorithm.algorithmName} Hash"),

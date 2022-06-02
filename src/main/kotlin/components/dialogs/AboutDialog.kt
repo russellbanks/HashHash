@@ -193,7 +193,7 @@ fun AboutDialog(
                                                                     ?.let { Instant.fromEpochMilliseconds(it) } // Convert milliseconds to Instant
                                                                     ?.let { Clock.System.now().until(it, DateTimeUnit.MINUTE) } // Work out how long there is left from now until it resets
                                                                 if (minutesLeft == 0L) minutesLeft = 1L // If there is less than 1 minute left, still say to check in a minute
-                                                                "Rate limited. Check back in $minutesLeft ${if (minutesLeft == 1L) "minute" else  "minutes"}"
+                                                                "Rate limited. Check back in $minutesLeft ${if (minutesLeft == 1L) "minute" else "minutes"}"
                                                             }
                                                             httpResponse != null -> "${httpResponse.status} - Check back later"
                                                             else -> "Error accessing GitHub API"

@@ -34,26 +34,32 @@ fun TimeResultColumn(
     instantAfterHash: Instant?
 ) {
     FlowColumn {
-        LabelProjection(contentModel = LabelContentModel(
-            text = "Started at: ${
+        LabelProjection(
+            contentModel = LabelContentModel(
+                text = "Started at: ${
                 if (instantBeforeHash != null) {
                     SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(instantBeforeHash.toEpochMilliseconds())
                 } else "-"
-            }")
+                }"
+            )
         ).project()
-        LabelProjection(contentModel = LabelContentModel(
-            text = "Finished at: ${
+        LabelProjection(
+            contentModel = LabelContentModel(
+                text = "Finished at: ${
                 if (instantAfterHash != null) {
                     SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(instantAfterHash.toEpochMilliseconds())
                 } else "-"
-            }")
+                }"
+            )
         ).project()
-        LabelProjection(contentModel = LabelContentModel(
-            text = "Time taken: ${
+        LabelProjection(
+            contentModel = LabelContentModel(
+                text = "Time taken: ${
                 if (instantBeforeHash != null && instantAfterHash != null) {
                     Time.formatElapsedTime(instantAfterHash - instantBeforeHash)
                 } else "-"
-            }")
+                }"
+            )
         ).project()
     }
 }

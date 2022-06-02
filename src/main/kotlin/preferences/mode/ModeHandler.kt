@@ -26,7 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
-object ModeHandler: Klogging {
+object ModeHandler : Klogging {
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
     fun getMode(scope: CoroutineScope): Mode {
@@ -41,5 +41,4 @@ object ModeHandler: Klogging {
 
     private const val modeKey = "mode"
     private const val defaultModeOrdinal = -1
-
 }

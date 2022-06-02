@@ -21,8 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -135,7 +133,9 @@ fun ControlPane(
                 Row {
                     Box(Modifier.weight(1f)) {
                         LabelProjection(
-                            contentModel = LabelContentModel(text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} mode")
+                            contentModel = LabelContentModel(
+                                text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} mode"
+                            )
                         ).project()
                     }
                     CheckBoxProjection(
@@ -161,7 +161,8 @@ fun ControlPane(
                             compareFilesComponent.algorithm = it
                             scope.launch(Dispatchers.Default) { logger.info("Set algorithm as ${it.algorithmName}") }
                         }
-                    })
+                    }
+                )
             }
             AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
                 CommandButtonProjection(

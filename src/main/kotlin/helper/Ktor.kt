@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-object Ktor: Klogging {
+object Ktor : Klogging {
     fun createHttpClient(scope: CoroutineScope) = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(
@@ -21,7 +21,7 @@ object Ktor: Klogging {
             )
         }
         install(Logging) {
-            logger = object: Logger {
+            logger = object : Logger {
                 override fun log(message: String) {
                     scope.launch(Dispatchers.Default) { this@Ktor.logger.info(message) }
                 }

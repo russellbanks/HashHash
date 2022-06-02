@@ -96,5 +96,4 @@ class CompareFilesComponent(
         FileComparisonOne,
         FileComparisonTwo
     }
-
 }

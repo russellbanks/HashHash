@@ -26,7 +26,7 @@ object Window {
 
     @OptIn(ExperimentalComposeUiApi::class)
     fun onKeyEvent(keyEvent: KeyEvent, windowState: WindowState): Boolean {
-        return if (keyEvent.key == Key.F11 && keyEvent.type == KeyEventType.KeyUp ) {
+        return if (keyEvent.key == Key.F11 && keyEvent.type == KeyEventType.KeyUp) {
             toggleFullscreen(windowState)
             true
         } else if (keyEvent.isCtrlPressed && keyEvent.key == Key.M && keyEvent.type == KeyEventType.KeyUp) {
@@ -145,5 +145,4 @@ object Window {
             )
         }
     }
-
 }

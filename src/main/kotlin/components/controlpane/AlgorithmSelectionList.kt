@@ -87,7 +87,7 @@ fun AlgorithmSelectionList(
                         onClick = {
                             rotate = !rotate
                             nestedVisibility = !nestedVisibility
-                                  },
+                        },
                         sides = Sides(straightSides = Side.values().toSet()),
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {

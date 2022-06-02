@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktlint)
 }
 
 group = "com.russellbanks"
@@ -74,7 +75,7 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Exe,TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             modules("java.instrument", "java.management", "java.prefs", "jdk.unsupported")
             javaHome = System.getenv("JDK_18")
             packageName = project.name
@@ -114,9 +115,9 @@ fun lwjglNatives() = Pair(
                 "natives-linux${if (arch.contains("64") || arch.startsWith("armv8")) "-arm64" else "-arm32"}"
             else
                 "natives-linux"
-        arrayOf("Mac OS X", "Darwin").any { name.startsWith(it) }                ->
+        arrayOf("Mac OS X", "Darwin").any { name.startsWith(it) } ->
             "natives-macos${if (arch.startsWith("aarch64")) "-arm64" else ""}"
-        arrayOf("Windows").any { name.startsWith(it) }                           ->
+        arrayOf("Windows").any { name.startsWith(it) } ->
             if (arch.contains("64"))
                 "natives-windows${if (arch.startsWith("aarch64")) "-arm64" else ""}"
             else

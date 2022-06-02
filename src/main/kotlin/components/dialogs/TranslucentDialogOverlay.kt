@@ -38,10 +38,11 @@ fun TranslucentDialogOverlay(
     onClick: () -> Unit
 ) {
     AnimatedVisibility(visible = visible, enter = fadeIn(), exit = fadeOut()) {
-        Box(Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(0.5f))
-            .clickable(interactionSource = MutableInteractionSource(), indication = null, onClick = onClick)
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(0.5f))
+                .clickable(interactionSource = MutableInteractionSource(), indication = null, onClick = onClick)
         )
     }
 }

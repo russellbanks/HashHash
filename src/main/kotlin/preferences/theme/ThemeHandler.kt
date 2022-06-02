@@ -29,7 +29,7 @@ import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
 
-class ThemeHandler(private val systemDark: Boolean): Klogging {
+class ThemeHandler(private val systemDark: Boolean) : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 

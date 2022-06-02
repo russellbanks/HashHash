@@ -74,6 +74,5 @@ object Icons {
                 return painterResource("file types/${it.getOrNull(it.indexOf(file?.extension?.lowercase() ?: "file")) ?: "file"}.svg")
             }
         }
-
     }
 }

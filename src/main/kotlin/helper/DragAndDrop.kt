@@ -29,11 +29,11 @@ import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
 import java.awt.dnd.DropTargetDropEvent
 
-object DragAndDrop: Klogging {
+object DragAndDrop : Klogging {
     fun target(
         scope: CoroutineScope,
         result: (List<*>) -> Unit
-    ) = object: DropTarget() {
+    ) = object : DropTarget() {
         @Synchronized
         override fun drop(event: DropTargetDropEvent) {
             try {

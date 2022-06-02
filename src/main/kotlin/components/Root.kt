@@ -75,7 +75,7 @@ class RootComponent(
         router.bringToFront(Config.CompareFiles)
     }
 
-    private fun createChild(config: Config, componentContext: ComponentContext) =
+    private fun createChild(config: Config, @Suppress("UNUSED_PARAMETER") componentContext: ComponentContext) =
         when (config) {
             is Config.File -> Root.Child.File
             is Config.Text -> Root.Child.Text

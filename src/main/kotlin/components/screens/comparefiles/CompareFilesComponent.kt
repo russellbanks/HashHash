@@ -23,8 +23,9 @@ package components.screens.comparefiles
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import components.screens.ParentComponent
+import components.screens.ParentInterface
 import hash
 import io.klogging.Klogging
 import kotlinx.coroutines.CancellationException
@@ -37,8 +38,9 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class CompareFilesComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext, Klogging {
+    componentContext: ComponentContext,
+    parentComponent: ParentComponent
+) : ComponentContext by componentContext, ParentInterface by parentComponent, Klogging {
     var fileComparisonOne: File? by mutableStateOf(null)
     var fileComparisonOneHash by mutableStateOf("")
     var fileComparisonOneHashUppercase by mutableStateOf(true)
@@ -49,7 +51,6 @@ class CompareFilesComponent(
     var fileComparisonTwoProgress by mutableStateOf(0F)
     var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
-    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {

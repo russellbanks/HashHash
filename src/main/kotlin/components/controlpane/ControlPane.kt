@@ -40,11 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.appmattus.crypto.Algorithm
 import components.Root
 import components.screens.comparefiles.CompareFilesComponent
 import components.screens.file.FileScreenComponent
-import components.screens.text.TextScreenComponent
 import helper.FileUtils
 import io.klogging.logger
 import kotlinx.coroutines.Dispatchers
@@ -67,12 +65,10 @@ import java.io.File
 @Composable
 fun ControlPane(
     fileScreenComponent: FileScreenComponent,
-    textScreenComponent: TextScreenComponent,
     compareFilesComponent: CompareFilesComponent,
     activeComponent: Root.Child,
 ) {
     val logger = logger("Control Pane")
-    var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
     suspend fun setFiles(child: Root.Child, file: File?, index: Int) {
@@ -118,7 +114,10 @@ fun ControlPane(
                                 },
                                 action = {
                                     FileUtils.openFileDialogAndGetResult().also {
-                                        scope.launch(Dispatchers.Default) { setFiles(activeComponent, it, 0) }
+                                        scope.launch(Dispatchers.Default) {
+                                            fileScreenComponent.resultMap = mutableMapOf()
+                                            setFiles(activeComponent, it, 0)
+                                        }
                                     }
                                 }
                             ),
@@ -166,15 +165,15 @@ fun ControlPane(
                     ).project()
                 }
                 AlgorithmSelectionList(
-                    algorithm = algorithm,
+                    algorithm = fileScreenComponent.algorithm,
                     mode = mode,
                     onAlgorithmClick = {
-                        if (it != algorithm) {
-                            algorithm = it
+                        if (it != fileScreenComponent.algorithm) {
                             fileScreenComponent.algorithm = it
-                            textScreenComponent.algorithm = it
-                            compareFilesComponent.algorithm = it
-                            scope.launch(Dispatchers.Default) { logger.info("Set algorithm as ${it.algorithmName}") }
+                            fileScreenComponent.fileHash = fileScreenComponent.resultMap[fileScreenComponent.algorithm] ?: ""
+                            scope.launch(Dispatchers.Default) {
+                                logger.info("Set algorithm as ${it.algorithmName}")
+                            }
                         }
                     }
                 )

@@ -23,17 +23,18 @@ package components.screens.text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import components.screens.ParentComponent
+import components.screens.ParentInterface
 import hash
 
 class TextScreenComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
+    componentContext: ComponentContext,
+    parentComponent: ParentComponent
+) : ComponentContext by componentContext, ParentInterface by parentComponent {
     var givenText by mutableStateOf("")
     var comparisonHash by mutableStateOf("")
     var hashedTextUppercase by mutableStateOf(true)
-    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
 
     fun hashGivenText() = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
 

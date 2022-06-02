@@ -52,6 +52,7 @@ import components.RootComponent
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
+import components.screens.ParentComponent
 import components.screens.comparefiles.CompareFilesComponent
 import components.screens.comparefiles.CompareFilesScreen
 import components.screens.file.FileScreen
@@ -111,14 +112,15 @@ fun main() {
         )
         val themeHandler = ThemeHandler(isSystemInDarkTheme())
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
+        val parentComponent = remember { ParentComponent() }
         val fileScreenComponent = remember {
-            FileScreenComponent(componentContext = DefaultComponentContext(lifecycle))
+            FileScreenComponent(componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent)
         }
         val textScreenComponent = remember {
-            TextScreenComponent(componentContext = DefaultComponentContext(lifecycle))
+            TextScreenComponent(componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent)
         }
         val compareFilesComponent = remember {
-            CompareFilesComponent(componentContext = DefaultComponentContext(lifecycle))
+            CompareFilesComponent(componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent)
         }
         LifecycleController(lifecycle, windowState)
         AuroraWindow(
@@ -174,7 +176,6 @@ fun main() {
                     Row(Modifier.fillMaxSize().weight(1f)) {
                         ControlPane(
                             fileScreenComponent = fileScreenComponent,
-                            textScreenComponent = textScreenComponent,
                             compareFilesComponent = compareFilesComponent,
                             activeComponent = activeComponent
                         )

@@ -25,6 +25,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import components.screens.ParentComponent
+import components.screens.ParentInterface
 import hash
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -36,8 +38,9 @@ import kotlinx.datetime.Instant
 import java.io.File
 
 class FileScreenComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext {
+    componentContext: ComponentContext,
+    parentComponent: ParentComponent
+) : ComponentContext by componentContext, ParentInterface by parentComponent {
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
     var fileHash by mutableStateOf("")
@@ -47,7 +50,7 @@ class FileScreenComponent(
     var instantAfterHash: Instant? by mutableStateOf(null)
     private var mainFileException: Exception? by mutableStateOf(null)
     var hashedTextUppercase by mutableStateOf(true)
-    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
+    var resultMap: MutableMap<Algorithm, String> = mutableMapOf()
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {
@@ -58,6 +61,7 @@ class FileScreenComponent(
                         algorithm = algorithm,
                         hashProgressCallback = { hashProgress = it }
                     )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
+                        .also { resultMap[algorithm] = it }
                     instantAfterHash = Clock.System.now()
                 } catch (_: CancellationException) {
                 } catch (exception: Exception) {

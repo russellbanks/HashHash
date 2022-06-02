@@ -44,7 +44,6 @@ import components.Root
 import components.screens.comparefiles.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import helper.FileUtils
-import io.klogging.logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -60,7 +59,6 @@ import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
 import preferences.mode.Mode
 import preferences.mode.ModeHandler
-import java.io.File
 
 @Composable
 fun ControlPane(
@@ -68,31 +66,8 @@ fun ControlPane(
     compareFilesComponent: CompareFilesComponent,
     activeComponent: Root.Child,
 ) {
-    val logger = logger("Control Pane")
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
-    suspend fun setFiles(child: Root.Child, file: File?, index: Int) {
-        if (file != null) {
-            if (child is Root.Child.File) {
-                if (fileScreenComponent.file != file) {
-                    fileScreenComponent.file = file
-                    logger.info("Set user selected file ${file.absolutePath} as main file")
-                }
-            } else if (child is Root.Child.CompareFiles) {
-                if (index == 0) {
-                    if (compareFilesComponent.fileComparisonOne != file) {
-                        compareFilesComponent.fileComparisonOne = file
-                        logger.info("Set user selected file ${file.absolutePath} as 1st comparison file")
-                    }
-                } else {
-                    if (compareFilesComponent.fileComparisonTwo != file) {
-                        compareFilesComponent.fileComparisonTwo = file
-                        logger.info("Set user selected file ${file.absolutePath} as 2nd comparison file")
-                    }
-                }
-            }
-        }
-    }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(180.dp),
@@ -115,8 +90,14 @@ fun ControlPane(
                                 action = {
                                     FileUtils.openFileDialogAndGetResult().also {
                                         scope.launch(Dispatchers.Default) {
-                                            fileScreenComponent.resultMap = mutableMapOf()
-                                            setFiles(activeComponent, it, 0)
+                                            fileScreenComponent.resultMap = hashMapOf()
+                                            ControlPaneHelper.setFiles(
+                                                fileScreenComponent = fileScreenComponent,
+                                                compareFilesComponent = compareFilesComponent,
+                                                activeComponent = activeComponent,
+                                                file = it,
+                                                buttonIndex = 0
+                                            )
                                         }
                                     }
                                 }
@@ -132,7 +113,15 @@ fun ControlPane(
                                     text = if (activeComponent is Root.Child.CompareFiles) "Select 2nd file" else "",
                                     action = {
                                         FileUtils.openFileDialogAndGetResult().also {
-                                            scope.launch(Dispatchers.Default) { setFiles(activeComponent, it, 1) }
+                                            scope.launch(Dispatchers.Default) {
+                                                ControlPaneHelper.setFiles(
+                                                    fileScreenComponent = fileScreenComponent,
+                                                    compareFilesComponent = compareFilesComponent,
+                                                    activeComponent = activeComponent,
+                                                    file = it,
+                                                    buttonIndex = 1
+                                                )
+                                            }
                                         }
                                     }
                                 ),
@@ -168,12 +157,8 @@ fun ControlPane(
                     algorithm = fileScreenComponent.algorithm,
                     mode = mode,
                     onAlgorithmClick = {
-                        if (it != fileScreenComponent.algorithm) {
-                            fileScreenComponent.algorithm = it
-                            fileScreenComponent.fileHash = fileScreenComponent.resultMap[fileScreenComponent.algorithm] ?: ""
-                            scope.launch(Dispatchers.Default) {
-                                logger.info("Set algorithm as ${it.algorithmName}")
-                            }
+                        scope.launch(Dispatchers.Default) {
+                            ControlPaneHelper.onAlgorithmClick(algorithm = it, component = fileScreenComponent)
                         }
                     }
                 )

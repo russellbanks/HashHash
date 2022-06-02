@@ -48,7 +48,7 @@ fun FileScreen(component: FileScreenComponent) {
             val clipboardManager = LocalClipboardManager.current
             OutputTextFieldRow(
                 algorithm = component.algorithm,
-                value = component.fileHash,
+                value = component.resultMap.getOrDefault(component.algorithm, ""),
                 isValueUppercase = component.hashedTextUppercase,
                 onCaseClick = {
                     component.hashedTextUppercase = !component.hashedTextUppercase
@@ -56,7 +56,7 @@ fun FileScreen(component: FileScreenComponent) {
                 }
             )
             ComparisonTextFieldRow(
-                hashedOutput = component.fileHash,
+                hashedOutput = component.resultMap.getOrDefault(component.algorithm, ""),
                 comparisonHash = component.comparisonHash,
                 onPasteClick = { component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
                 onClearClick = { component.comparisonHash = "" },

@@ -43,25 +43,23 @@ class FileScreenComponent(
 ) : ComponentContext by componentContext, ParentInterface by parentComponent {
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
-    var fileHash by mutableStateOf("")
     var fileHashJob: Job? by mutableStateOf(null)
     var hashProgress by mutableStateOf(0F)
     var instantBeforeHash: Instant? by mutableStateOf(null)
     var instantAfterHash: Instant? by mutableStateOf(null)
     private var mainFileException: Exception? by mutableStateOf(null)
     var hashedTextUppercase by mutableStateOf(true)
-    var resultMap: MutableMap<Algorithm, String> = mutableMapOf()
+    var resultMap: HashMap<Algorithm, String> = hashMapOf()
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {
             fileHashJob = scope.launch(Dispatchers.IO) {
                 instantBeforeHash = Clock.System.now()
                 try {
-                    fileHash = file?.hash(
+                    resultMap[algorithm] = file?.hash(
                         algorithm = algorithm,
                         hashProgressCallback = { hashProgress = it }
                     )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
-                        .also { resultMap[algorithm] = it }
                     instantAfterHash = Clock.System.now()
                 } catch (_: CancellationException) {
                 } catch (exception: Exception) {
@@ -77,6 +75,10 @@ class FileScreenComponent(
     }
 
     fun switchHashCase() {
-        fileHash = if (hashedTextUppercase) fileHash.uppercase() else fileHash.lowercase()
+        if (resultMap.containsKey(algorithm)) {
+            resultMap[algorithm]?.let {
+                resultMap[algorithm] = it.run { if (hashedTextUppercase) uppercase() else lowercase() }
+            }
+        }
     }
 }

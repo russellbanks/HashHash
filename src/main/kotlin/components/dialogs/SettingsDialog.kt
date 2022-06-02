@@ -77,11 +77,12 @@ import preferences.titlebar.TitleBarHandler
 fun PreferencesDialog(
     visible: Boolean,
     themeHandler: ThemeHandler,
-    onThemeChange: (Pair<Theme, AuroraSkinDefinition>) -> Unit,
+    onThemeChange: (AuroraSkinDefinition) -> Unit,
     onCloseRequest: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
+    var selectedTitleBar by remember { mutableStateOf(TitleBarHandler.getTitleBar()) }
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -133,17 +134,17 @@ fun PreferencesDialog(
                                             items = Theme.values().toList(),
                                             selectedItem = selectedTheme,
                                             onTriggerItemSelectedChange = {
-                                                selectedTheme = it
-                                                onThemeChange(
-                                                    Pair(
-                                                        it,
+                                                if (themeHandler.getTheme(scope) != it) {
+                                                    selectedTheme = it
+                                                    scope.launch(Dispatchers.Default) { themeHandler.putTheme(it) }
+                                                    onThemeChange(
                                                         when (it) {
                                                             Theme.LIGHT -> dustSkin()
                                                             Theme.DARK -> nightShadeSkin()
                                                             else -> if (themeHandler.isSystemDark()) nightShadeSkin() else dustSkin()
                                                         }
                                                     )
-                                                )
+                                                }
                                             }
                                         ),
                                         presentationModel = ComboBoxPresentationModel(
@@ -156,14 +157,15 @@ fun PreferencesDialog(
                                         Box(Modifier.weight(1f)) {
                                             LabelProjection(contentModel = LabelContentModel(text = "Title bar style")).project()
                                         }
-                                        var selectedTitleBar by remember { mutableStateOf(TitleBarHandler.getTitleBar()) }
                                         ComboBoxProjection(
                                             contentModel = ComboBoxContentModel(
                                                 items = TitleBar.values().toList(),
                                                 selectedItem = selectedTitleBar,
                                                 onTriggerItemSelectedChange = {
-                                                    selectedTitleBar = it
-                                                    scope.launch(Dispatchers.Default) { TitleBarHandler.putTitleBar(it) }
+                                                    if (TitleBarHandler.getTitleBar() != it) {
+                                                        selectedTitleBar = it
+                                                        scope.launch(Dispatchers.Default) { TitleBarHandler.putTitleBar(it) }
+                                                    }
                                                 }
                                             ),
                                             presentationModel = ComboBoxPresentationModel(

@@ -224,10 +224,7 @@ fun main() {
                 PreferencesDialog(
                     visible = isPreferencesOpen,
                     themeHandler = themeHandler,
-                    onThemeChange = {
-                        scope.launch(Dispatchers.Default) { themeHandler.putTheme(it.first) }
-                        auroraSkin = it.second
-                    },
+                    onThemeChange = { auroraSkin = it },
                     onCloseRequest = { isPreferencesOpen = false }
                 )
                 AboutDialog(

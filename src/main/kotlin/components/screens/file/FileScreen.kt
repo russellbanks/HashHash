@@ -20,12 +20,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.file
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.unit.dp
-import components.*
+import components.ComparisonTextFieldRow
+import components.FileInfoSection
+import components.HashProgress
+import components.OutputTextFieldRow
+import components.TimeResultColumn
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 
 @Composable

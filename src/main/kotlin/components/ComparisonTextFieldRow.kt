@@ -21,7 +21,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -29,7 +33,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import helper.Icons
-import org.pushingpixels.aurora.component.model.*
+import org.pushingpixels.aurora.component.model.Command
+import org.pushingpixels.aurora.component.model.CommandButtonPresentationState
+import org.pushingpixels.aurora.component.model.CommandGroup
+import org.pushingpixels.aurora.component.model.CommandStripPresentationModel
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.model.LabelPresentationModel
+import org.pushingpixels.aurora.component.model.StripOrientation
+import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
 import org.pushingpixels.aurora.component.projection.CommandButtonStripProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection

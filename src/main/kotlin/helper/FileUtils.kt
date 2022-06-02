@@ -23,7 +23,9 @@ package helper
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.Checks.remainingSafe
 import org.lwjgl.system.MemoryStack.stackGet
-import org.lwjgl.system.MemoryUtil.*
+import org.lwjgl.system.MemoryUtil.NULL
+import org.lwjgl.system.MemoryUtil.memAddressSafe
+import org.lwjgl.system.MemoryUtil.memUTF8Safe
 import org.lwjgl.system.NativeType
 import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_openFileDialog
 import java.io.File

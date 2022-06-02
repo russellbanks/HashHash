@@ -27,7 +27,13 @@ import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import hash
 import io.klogging.Klogging
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import java.io.File
 
 class CompareFilesComponent(

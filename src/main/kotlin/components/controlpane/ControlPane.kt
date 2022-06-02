@@ -150,7 +150,7 @@ fun ControlPane(
                     Box(Modifier.weight(1f)) {
                         LabelProjection(
                             contentModel = LabelContentModel(
-                                text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} mode"
+                                text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
                             )
                         ).project()
                     }

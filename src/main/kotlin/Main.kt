@@ -176,14 +176,7 @@ fun main() {
                             fileScreenComponent = fileScreenComponent,
                             textScreenComponent = textScreenComponent,
                             compareFilesComponent = compareFilesComponent,
-                            activeChild = activeComponent,
-                            onCalculateClick = {
-                                if (activeComponent is Root.Child.File) {
-                                    fileScreenComponent.onCalculateClicked(scope)
-                                } else if (activeComponent is Root.Child.CompareFiles) {
-                                    compareFilesComponent.onCalculateClicked(scope)
-                                }
-                            }
+                            activeComponent = activeComponent
                         )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                         Column {

@@ -69,8 +69,7 @@ fun ControlPane(
     fileScreenComponent: FileScreenComponent,
     textScreenComponent: TextScreenComponent,
     compareFilesComponent: CompareFilesComponent,
-    activeChild: Root.Child,
-    onCalculateClick: () -> Unit
+    activeComponent: Root.Child,
 ) {
     val logger = logger("Control Pane")
     var algorithm: Algorithm by remember { mutableStateOf(Algorithm.MD5) }
@@ -108,18 +107,18 @@ fun ControlPane(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
+                AnimatedVisibility(visible = activeComponent !is Root.Child.Text) {
                     Row {
                         CommandButtonProjection(
                             contentModel = Command(
-                                text = when (activeChild) {
+                                text = when (activeComponent) {
                                     is Root.Child.File -> "Select file"
                                     is Root.Child.CompareFiles -> "Select 1st file"
                                     else -> ""
                                 },
                                 action = {
                                     FileUtils.openFileDialogAndGetResult().also {
-                                        scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 0) }
+                                        scope.launch(Dispatchers.Default) { setFiles(activeComponent, it, 0) }
                                     }
                                 }
                             ),
@@ -127,14 +126,14 @@ fun ControlPane(
                                 presentationState = CommandButtonPresentationState.Tile,
                                 textStyle = TextStyle(textAlign = TextAlign.Center),
                             )
-                        ).project(Modifier.fillMaxWidth(if (activeChild is Root.Child.CompareFiles) 0.5f else 1f))
-                        AnimatedVisibility(visible = activeChild is Root.Child.CompareFiles) {
+                        ).project(Modifier.fillMaxWidth(if (activeComponent is Root.Child.CompareFiles) 0.5f else 1f))
+                        AnimatedVisibility(visible = activeComponent is Root.Child.CompareFiles) {
                             CommandButtonProjection(
                                 contentModel = Command(
-                                    text = if (activeChild is Root.Child.CompareFiles) "Select 2nd file" else "",
+                                    text = if (activeComponent is Root.Child.CompareFiles) "Select 2nd file" else "",
                                     action = {
                                         FileUtils.openFileDialogAndGetResult().also {
-                                            scope.launch(Dispatchers.Default) { setFiles(activeChild, it, 1) }
+                                            scope.launch(Dispatchers.Default) { setFiles(activeComponent, it, 1) }
                                         }
                                     }
                                 ),
@@ -180,16 +179,22 @@ fun ControlPane(
                     }
                 )
             }
-            AnimatedVisibility(visible = activeChild !is Root.Child.Text) {
+            AnimatedVisibility(visible = activeComponent !is Root.Child.Text) {
                 CommandButtonProjection(
                     contentModel = Command(
-                        text = when (activeChild) {
+                        text = when (activeComponent) {
                             is Root.Child.File -> if (fileScreenComponent.fileHashJob?.isActive != true) "Calculate" else "Cancel"
                             is Root.Child.Text -> ""
                             is Root.Child.CompareFiles -> if ((compareFilesComponent.comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
                         },
-                        action = onCalculateClick,
-                        isActionEnabled = if (activeChild is Root.Child.CompareFiles) {
+                        action = {
+                            if (activeComponent is Root.Child.File) {
+                                fileScreenComponent.onCalculateClicked(scope)
+                            } else if (activeComponent is Root.Child.CompareFiles) {
+                                compareFilesComponent.onCalculateClicked(scope)
+                            }
+                        },
+                        isActionEnabled = if (activeComponent is Root.Child.CompareFiles) {
                             compareFilesComponent.fileComparisonOne != null && compareFilesComponent.fileComparisonTwo != null
                         } else {
                             fileScreenComponent.file != null

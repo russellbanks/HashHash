@@ -22,7 +22,4 @@ package components.controlpane
 
 import com.appmattus.crypto.Algorithm
 
-data class NestedAlgorithm(
-    val name: String,
-    val listOfAlgorithms: List<Algorithm>
-)
+data class NestedAlgorithm(val name: String, val listOfAlgorithms: List<Algorithm>)

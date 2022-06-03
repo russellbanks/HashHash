@@ -22,7 +22,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,18 +48,18 @@ import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Root
 import components.RootComponent
+import components.Tabs
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
 import components.dialogs.PreferencesDialog
 import components.screens.ParentComponent
-import components.screens.comparefiles.CompareFilesComponent
-import components.screens.comparefiles.CompareFilesScreen
+import components.screens.compare.CompareFilesComponent
+import components.screens.compare.CompareFilesScreen
 import components.screens.file.FileScreen
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreen
 import components.screens.text.TextScreenComponent
 import data.GitHubData
-import helper.DragAndDrop
 import helper.GitHub
 import helper.Icons
 import helper.Ktor
@@ -72,19 +71,15 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.pushingpixels.aurora.component.model.TabContentModel
-import org.pushingpixels.aurora.component.model.TabsContentModel
-import org.pushingpixels.aurora.component.model.TabsPresentationModel
-import org.pushingpixels.aurora.component.projection.TabsProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
-import java.io.File
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
@@ -114,13 +109,19 @@ fun main() {
         var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
         val parentComponent = remember { ParentComponent() }
         val fileScreenComponent = remember {
-            FileScreenComponent(componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent)
+            FileScreenComponent(
+                componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
+            )
         }
         val textScreenComponent = remember {
-            TextScreenComponent(componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent)
+            TextScreenComponent(
+                componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
+            )
         }
         val compareFilesComponent = remember {
-            CompareFilesComponent(componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent)
+            CompareFilesComponent(
+                componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
+            )
         }
         LifecycleController(lifecycle, windowState)
         AuroraWindow(
@@ -132,7 +133,6 @@ fun main() {
             menuCommands = Window.Header.commands(
                 auroraApplicationScope = this,
                 windowState = windowState,
-                scope = scope,
                 gitHubData = githubData,
                 preferencesAction = { isPreferencesOpen = true },
                 aboutAction = { isAboutOpen = true }
@@ -140,33 +140,18 @@ fun main() {
             undecorated = undecorated,
             onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
         ) {
+            Window.setupAWTWindow(
+                window = window,
+                fileScreenComponent = fileScreenComponent,
+                compareFilesComponent = compareFilesComponent,
+                activeComponent = activeComponent
+            )
             if (!retrievedGitHubData) {
-                scope.launch(Dispatchers.Default) {
-                    retrievedGitHubData = true
-                    httpClient = Ktor.createHttpClient(scope).also { client ->
+                retrievedGitHubData = true
+                httpClient = Ktor.createHttpClient().also { client ->
+                    scope.launch(Dispatchers.Default) {
                         httpResponse = client.get(GitHub.HashHash.API.latest).also {
-                            if (it.status.value in 200..299) {
-                                githubData = it.body()
-                            }
-                        }
-                    }
-                }
-            }
-            window.dropTarget = DragAndDrop.target(scope) { droppedItems ->
-                droppedItems.first().let {
-                    if (it is File && it.isFile) {
-                        scope.launch(Dispatchers.Default) { logger.info("User drag and dropped file: ${it.absoluteFile}") }
-                        if (activeComponent is Root.Child.File) {
-                            fileScreenComponent.file = it
-                            scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as main file") }
-                        } else if (activeComponent is Root.Child.CompareFiles) {
-                            if (compareFilesComponent.fileComparisonOne == null) {
-                                compareFilesComponent.fileComparisonOne = it
-                                scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as the 1st comparison file") }
-                            } else {
-                                compareFilesComponent.fileComparisonTwo = it
-                                scope.launch(Dispatchers.Default) { logger.info("Set ${it.name} as the 2nd comparison file") }
-                            }
+                            if (it.status == HttpStatusCode.OK) githubData = it.body()
                         }
                     }
                 }
@@ -175,37 +160,16 @@ fun main() {
                 Column {
                     Row(Modifier.fillMaxSize().weight(1f)) {
                         ControlPane(
-                            fileScreenComponent = fileScreenComponent,
-                            compareFilesComponent = compareFilesComponent,
+                            fileScreen = fileScreenComponent,
+                            compareScreen = compareFilesComponent,
                             activeComponent = activeComponent
                         )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                         Column {
-                            TabsProjection(
-                                contentModel = TabsContentModel(
-                                    tabs = listOf(
-                                        TabContentModel(text = "File"),
-                                        TabContentModel(text = "Text"),
-                                        TabContentModel(text = "Compare Files")
-                                    ),
-                                    selectedTabIndex = activeComponent.toInt(),
-                                    onTriggerTabSelected = {
-                                        when (it) {
-                                            0 -> root.onFileTabClicked()
-                                            1 -> root.onTextTabClicked()
-                                            2 -> root.onCompareFilesTabClicked()
-                                        }
-                                    }
-                                ),
-                                presentationModel = TabsPresentationModel(
-                                    leadingMargin = 30.dp,
-                                    trailingMargin = 30.dp,
-                                    tabContentPadding = PaddingValues(horizontal = 30.dp, vertical = 6.dp)
-                                )
-                            ).project()
+                            Tabs(activeComponent = activeComponent, root = root)
                             Children(
                                 routerState = routerState.value,
-                                animation = childAnimation(fade(tween(200)))
+                                animation = childAnimation(fade(tween(durationMillis = 200)))
                             ) {
                                 when (it.instance) {
                                     is Root.Child.File -> FileScreen(fileScreenComponent)
@@ -217,8 +181,8 @@ fun main() {
                     }
                     Footer(
                         activeComponent = activeComponent,
-                        fileScreenComponent = fileScreenComponent,
-                        compareFilesComponent = compareFilesComponent
+                        fileScreen = fileScreenComponent,
+                        compareScreen = compareFilesComponent
                     )
                 }
                 PreferencesDialog(
@@ -233,14 +197,18 @@ fun main() {
                     httpClient = httpClient,
                     httpResponse = httpResponse,
                     githubData = githubData,
-                    onUpdateCheck = {
+                    onUpdateCheck = { response ->
                         scope.launch(Dispatchers.Default) {
-                            httpResponse = it
-                            if (it.status.value in 200..299) {
-                                githubData = it.body()
-                                logger.info("Successfully retrieved GitHub data with status code ${it.status}")
+                            httpResponse = response
+                            if (response.status == HttpStatusCode.OK) {
+                                githubData = response.body()
+                                logger.info {
+                                    "Successfully retrieved GitHub data with status code ${response.status}"
+                                }
                             } else {
-                                logger.error("Failed to retrieve GitHub data. Status code: ${it.status}")
+                                logger.error {
+                                    "Failed to retrieve GitHub data. Status code: ${response.status}"
+                                }
                             }
                         }
                     }

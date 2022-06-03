@@ -20,14 +20,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import components.Root
+import components.screens.compare.CompareFilesComponent
+import components.screens.file.FileScreenComponent
 import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.UnsupportedFlavorException
 import java.awt.dnd.DnDConstants
 import java.awt.dnd.DropTarget
 import java.awt.dnd.DropTargetDropEvent
+import java.io.File
+import java.io.IOException
 
 object DragAndDrop : Klogging {
     fun target(
@@ -39,8 +45,35 @@ object DragAndDrop : Klogging {
             try {
                 event.acceptDrop(DnDConstants.ACTION_REFERENCE)
                 result(event.transferable.getTransferData(DataFlavor.javaFileListFlavor) as List<*>)
-            } catch (exception: Exception) {
-                scope.launch(Dispatchers.Default) { logger.trace(exception) }
+            } catch (ioException: IOException) {
+                scope.launch(Dispatchers.Default) { logger.error(ioException) }
+            } catch (unsupportedFlavorException: UnsupportedFlavorException) {
+                scope.launch(Dispatchers.Default) { logger.error(unsupportedFlavorException) }
+            }
+        }
+    }
+
+    suspend fun setResult(
+        droppedItems: List<*>,
+        fileScreenComponent: FileScreenComponent,
+        compareFilesComponent: CompareFilesComponent,
+        activeComponent: Root.Child
+    ) {
+        droppedItems.first().let {
+            if (it is File && it.isFile) {
+                logger.info("User drag and dropped file: ${it.absoluteFile}")
+                if (activeComponent is Root.Child.File) {
+                    fileScreenComponent.file = it
+                    logger.info("Set ${it.name} as main file")
+                } else if (activeComponent is Root.Child.CompareFiles) {
+                    if (compareFilesComponent.fileComparisonOne == null) {
+                        compareFilesComponent.fileComparisonOne = it
+                        logger.info("Set ${it.name} as the 1st comparison file")
+                    } else {
+                        compareFilesComponent.fileComparisonTwo = it
+                        logger.info("Set ${it.name} as the 2nd comparison file")
+                    }
+                }
             }
         }
     }

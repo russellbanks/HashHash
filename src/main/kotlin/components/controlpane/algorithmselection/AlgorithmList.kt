@@ -18,9 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.controlpane
+package components.controlpane.algorithmselection
 
 import com.appmattus.crypto.Algorithm
+import components.controlpane.NestedAlgorithm
 
 object AlgorithmList {
 

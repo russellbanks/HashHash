@@ -2,7 +2,7 @@ package components.controlpane
 
 import com.appmattus.crypto.Algorithm
 import components.Root
-import components.screens.comparefiles.CompareFilesComponent
+import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import io.klogging.Klogging
 import java.io.File

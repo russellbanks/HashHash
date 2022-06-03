@@ -35,7 +35,11 @@ object TitleBarHandler : Klogging {
     }
 
     suspend fun putTitleBar(titleBar: TitleBar) = preferences.putInt(titleBarKey, titleBar.ordinal)
-        .also { logger.info("Put ${titleBar.name} into preferences with the key of \"$titleBarKey\" and the value of ${titleBar.ordinal}") }
+        .also {
+            logger.info {
+                "Put ${titleBar.name} into preferences with the key of \"$titleBarKey\" and the value of ${titleBar.ordinal}"
+            }
+        }
 
     private const val titleBarKey = "titleBar"
     private const val defaultTitleBarOrdinal = -1

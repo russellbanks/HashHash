@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.screens.comparefiles
+package components.screens.compare
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +37,7 @@ import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjecti
 fun CompareFilesScreen(component: CompareFilesComponent) {
     Column {
         Column(
-            modifier = Modifier.fillMaxHeight(0.5f),
+            modifier = Modifier.fillMaxHeight(fraction = 0.5f),
             verticalArrangement = Arrangement.Center
         ) {
             FileInfoSection(component.fileComparisonOne)
@@ -49,11 +49,8 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
                     value = component.fileComparisonOneHash,
-                    isValueUppercase = component.fileComparisonOneHashUppercase,
-                    onCaseClick = {
-                        component.fileComparisonOneHashUppercase = !component.fileComparisonOneHashUppercase
-                        component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonOne)
-                    }
+                    isValueUppercase = component.firstHashUppercase,
+                    onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonOne) }
                 )
             }
         }
@@ -70,12 +67,9 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 HashProgress(component.fileComparisonTwoProgress)
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
-                    isValueUppercase = component.fileComparisonTwoUppercase,
+                    isValueUppercase = component.secondHashUppercase,
                     value = component.fileComparisonTwoHash,
-                    onCaseClick = {
-                        component.fileComparisonTwoUppercase = !component.fileComparisonTwoUppercase
-                        component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonTwo)
-                    }
+                    onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonTwo) }
                 )
             }
         }

@@ -52,7 +52,11 @@ class ThemeHandler(private val systemDark: Boolean) : Klogging {
     }
 
     suspend fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)
-        .also { logger.info("Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}") }
+        .also {
+            logger.info {
+                "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
+            }
+        }
 
     companion object {
         const val themeKey = "theme"

@@ -20,13 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.text
 
+import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import components.screens.ParentComponent
 import components.screens.ParentInterface
-import hash
 
 class TextScreenComponent(
     componentContext: ComponentContext,
@@ -37,6 +37,10 @@ class TextScreenComponent(
     var hashedTextUppercase by mutableStateOf(true)
 
     fun hashGivenText() = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
+
+    fun characterCountAsString(): String {
+        return "${"%,d".format(givenText.count())} ${if (givenText.count() == 1) "character" else "characters"}"
+    }
 
     companion object {
         const val characterLimit = 20000

@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.file
 
+import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,7 +28,6 @@ import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import components.screens.ParentComponent
 import components.screens.ParentInterface
-import hash
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +75,7 @@ class FileScreenComponent(
     }
 
     fun switchHashCase() {
+        hashedTextUppercase = !hashedTextUppercase
         if (resultMap.containsKey(algorithm)) {
             resultMap[algorithm]?.let {
                 resultMap[algorithm] = it.run { if (hashedTextUppercase) uppercase() else lowercase() }

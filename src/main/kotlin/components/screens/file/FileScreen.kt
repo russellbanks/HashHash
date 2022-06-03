@@ -50,20 +50,22 @@ fun FileScreen(component: FileScreenComponent) {
                 algorithm = component.algorithm,
                 value = component.resultMap.getOrDefault(component.algorithm, ""),
                 isValueUppercase = component.hashedTextUppercase,
-                onCaseClick = {
-                    component.hashedTextUppercase = !component.hashedTextUppercase
-                    component.switchHashCase()
-                }
+                onCaseClick = { component.switchHashCase() }
             )
             ComparisonTextFieldRow(
                 hashedOutput = component.resultMap.getOrDefault(component.algorithm, ""),
                 comparisonHash = component.comparisonHash,
-                onPasteClick = { component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
+                onPasteClick = {
+                    component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
+                },
                 onClearClick = { component.comparisonHash = "" },
                 onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
             )
-            TimeResultColumn(component.instantBeforeHash, component.instantAfterHash)
-            HashProgress(component.hashProgress)
+            HashProgress(fileHashProgress = component.hashProgress)
+            TimeResultColumn(
+                instantBeforeHash = component.instantBeforeHash,
+                instantAfterHash = component.instantAfterHash
+            )
         }
     }
 }

@@ -37,7 +37,11 @@ object ModeHandler : Klogging {
     }
 
     suspend fun putMode(mode: Mode) = preferences.putInt(modeKey, mode.ordinal)
-        .also { logger.info("Put ${mode.name} into preferences with the key of \"$modeKey\" and the value of ${mode.ordinal}") }
+        .also {
+            logger.info {
+                "Put ${mode.name} into preferences with the key of \"$modeKey\" and the value of ${mode.ordinal}"
+            }
+        }
 
     private const val modeKey = "mode"
     private const val defaultModeOrdinal = -1

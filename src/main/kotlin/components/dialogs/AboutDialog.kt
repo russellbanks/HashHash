@@ -132,7 +132,9 @@ fun AboutDialog(
                             SelectionContainer {
                                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                                     LabelProjection(
-                                        contentModel = LabelContentModel(text = "${BuildConfig.appName} ${BuildConfig.appVersion}"),
+                                        contentModel = LabelContentModel(
+                                            text = "${BuildConfig.appName} ${BuildConfig.appVersion}"
+                                        ),
                                         presentationModel = LabelPresentationModel(
                                             textStyle = TextStyle(
                                                 fontSize = 16.sp,
@@ -142,13 +144,18 @@ fun AboutDialog(
                                     ).project()
                                     Column {
                                         LabelProjection(
-                                            contentModel = LabelContentModel(text = "Runtime version: ${System.getProperty("java.runtime.version")}"),
+                                            contentModel = LabelContentModel(
+                                                text = "Runtime version: ${System.getProperty("java.runtime.version")}"
+                                            ),
                                             presentationModel = LabelPresentationModel(
                                                 textStyle = TextStyle(fontSize = 12.sp)
                                             )
                                         ).project()
                                         LabelProjection(
-                                            contentModel = LabelContentModel(text = "VM: ${System.getProperty("java.vm.name")} by ${System.getProperty("java.vm.vendor")}"),
+                                            contentModel = LabelContentModel(
+                                                text = "VM: " + System.getProperty("java.vm.name") + " by " +
+                                                    System.getProperty("java.vm.vendor")
+                                            ),
                                             presentationModel = LabelPresentationModel(
                                                 textStyle = TextStyle(fontSize = 12.sp)
                                             )
@@ -187,7 +194,7 @@ fun AboutDialog(
                                         initialValue = 0f,
                                         targetValue = 360f,
                                         animationSpec = infiniteRepeatable(
-                                            animation = tween(1000, easing = LinearEasing)
+                                            animation = tween(durationMillis = 1000, easing = LinearEasing)
                                         )
                                     )
                                     SelectionContainer {
@@ -230,7 +237,9 @@ fun AboutDialog(
                                             AnimatedVisibility(lastChecked != null) {
                                                 LabelProjection(
                                                     contentModel = LabelContentModel(
-                                                        text = "Last checked: ${SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(lastChecked?.toEpochMilliseconds())}"
+                                                        text = "Last checked: " +
+                                                            SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
+                                                                .format(lastChecked?.toEpochMilliseconds())
                                                     ),
                                                     presentationModel = LabelPresentationModel(
                                                         textStyle = TextStyle(fontSize = 12.sp)

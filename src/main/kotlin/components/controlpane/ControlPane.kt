@@ -41,7 +41,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import components.Root
-import components.screens.comparefiles.CompareFilesComponent
+import components.controlpane.algorithmselection.AlgorithmSelectionList
+import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import helper.FileUtils
 import kotlinx.coroutines.Dispatchers
@@ -62,15 +63,19 @@ import preferences.mode.ModeHandler
 
 @Composable
 fun ControlPane(
-    fileScreenComponent: FileScreenComponent,
-    compareFilesComponent: CompareFilesComponent,
+    fileScreen: FileScreenComponent,
+    compareScreen: CompareFilesComponent,
     activeComponent: Root.Child,
 ) {
     val scope = rememberCoroutineScope()
     var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
-            modifier = Modifier.fillMaxHeight().auroraBackground().padding(vertical = 8.dp, horizontal = 12.dp).width(180.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .auroraBackground()
+                .padding(vertical = 8.dp, horizontal = 12.dp)
+                .width(180.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -90,10 +95,10 @@ fun ControlPane(
                                 action = {
                                     FileUtils.openFileDialogAndGetResult().also {
                                         scope.launch(Dispatchers.Default) {
-                                            fileScreenComponent.resultMap = hashMapOf()
+                                            fileScreen.resultMap = hashMapOf()
                                             ControlPaneHelper.setFiles(
-                                                fileScreenComponent = fileScreenComponent,
-                                                compareFilesComponent = compareFilesComponent,
+                                                fileScreenComponent = fileScreen,
+                                                compareFilesComponent = compareScreen,
                                                 activeComponent = activeComponent,
                                                 file = it,
                                                 buttonIndex = 0
@@ -115,8 +120,8 @@ fun ControlPane(
                                         FileUtils.openFileDialogAndGetResult().also {
                                             scope.launch(Dispatchers.Default) {
                                                 ControlPaneHelper.setFiles(
-                                                    fileScreenComponent = fileScreenComponent,
-                                                    compareFilesComponent = compareFilesComponent,
+                                                    fileScreenComponent = fileScreen,
+                                                    compareFilesComponent = compareScreen,
                                                     activeComponent = activeComponent,
                                                     file = it,
                                                     buttonIndex = 1
@@ -154,11 +159,11 @@ fun ControlPane(
                     ).project()
                 }
                 AlgorithmSelectionList(
-                    algorithm = fileScreenComponent.algorithm,
+                    algorithm = fileScreen.algorithm,
                     mode = mode,
                     onAlgorithmClick = {
                         scope.launch(Dispatchers.Default) {
-                            ControlPaneHelper.onAlgorithmClick(algorithm = it, component = fileScreenComponent)
+                            ControlPaneHelper.onAlgorithmClick(algorithm = it, component = fileScreen)
                         }
                     }
                 )
@@ -167,21 +172,27 @@ fun ControlPane(
                 CommandButtonProjection(
                     contentModel = Command(
                         text = when (activeComponent) {
-                            is Root.Child.File -> if (fileScreenComponent.fileHashJob?.isActive != true) "Calculate" else "Cancel"
+                            is Root.Child.File -> if (fileScreen.fileHashJob?.isActive != true) {
+                                "Calculate"
+                            } else "Cancel"
                             is Root.Child.Text -> ""
-                            is Root.Child.CompareFiles -> if ((compareFilesComponent.comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
+                            is Root.Child.CompareFiles -> {
+                                if ((compareScreen.comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
+                                    "Compare"
+                                } else "Cancel"
+                            }
                         },
                         action = {
                             if (activeComponent is Root.Child.File) {
-                                fileScreenComponent.onCalculateClicked(scope)
+                                fileScreen.onCalculateClicked(scope)
                             } else if (activeComponent is Root.Child.CompareFiles) {
-                                compareFilesComponent.onCalculateClicked(scope)
+                                compareScreen.onCalculateClicked(scope)
                             }
                         },
                         isActionEnabled = if (activeComponent is Root.Child.CompareFiles) {
-                            compareFilesComponent.fileComparisonOne != null && compareFilesComponent.fileComparisonTwo != null
+                            compareScreen.fileComparisonOne != null && compareScreen.fileComparisonTwo != null
                         } else {
-                            fileScreenComponent.file != null
+                            fileScreen.file != null
                         }
                     ),
                     presentationModel = CommandButtonPresentationModel(

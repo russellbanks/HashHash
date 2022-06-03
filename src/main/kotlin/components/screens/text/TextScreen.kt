@@ -25,15 +25,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
@@ -59,25 +58,18 @@ fun TextScreen(component: TextScreenComponent) {
                     LabelProjection(
                         contentModel = LabelContentModel(text = "Text Hashing"),
                         presentationModel = LabelPresentationModel(
-                            textStyle = TextStyle(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                            textStyle = TextStyle(fontSize = 18.sp)
                         )
                     ).project()
                 }
-                LabelProjection(
-                    contentModel = LabelContentModel(
-                        text = "${"%,d".format(component.givenText.count())} ${if (component.givenText.count() == 1) "character" else "characters"}"
-                    )
-                ).project()
+                LabelProjection(contentModel = LabelContentModel(text = component.characterCountAsString())).project()
             }
             TextFieldStringProjection(
                 contentModel = TextFieldStringContentModel(
                     value = component.givenText,
                     onValueChange = { component.givenText = it }
                 )
-            ).project(Modifier.fillMaxWidth().height(200.dp))
+            ).project(Modifier.fillMaxWidth().fillMaxHeight(fraction = 0.5f).padding(horizontal = 4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
                 horizontalArrangement = Arrangement.Center
@@ -86,19 +78,19 @@ fun TextScreen(component: TextScreenComponent) {
                     contentModel = Command(
                         text = "Uppercase",
                         action = { component.givenText = component.givenText.uppercase() }
-                    ),
-                ).project(Modifier.fillMaxWidth(1f / 3))
+                    )
+                ).project(Modifier.fillMaxWidth(fraction = 1f / 3))
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Lowercase",
                         action = { component.givenText = component.givenText.lowercase() }
-                    ),
+                    )
                 ).project(Modifier.fillMaxWidth(1f / 2))
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Clear text area",
                         action = { component.givenText = "" }
-                    ),
+                    )
                 ).project(Modifier.fillMaxWidth())
             }
             AnimatedVisibility(visible = component.givenText.count() >= TextScreenComponent.characterLimit) {
@@ -118,7 +110,9 @@ fun TextScreen(component: TextScreenComponent) {
         ComparisonTextFieldRow(
             hashedOutput = "",
             comparisonHash = component.comparisonHash,
-            onPasteClick = { component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() } },
+            onPasteClick = {
+                component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
+            },
             onClearClick = { component.comparisonHash = "" },
             onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
         )

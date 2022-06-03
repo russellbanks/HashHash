@@ -27,7 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import components.screens.comparefiles.CompareFilesComponent
+import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
@@ -38,8 +38,8 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 @Composable
 fun Footer(
     activeComponent: Root.Child,
-    fileScreenComponent: FileScreenComponent,
-    compareFilesComponent: CompareFilesComponent
+    fileScreen: FileScreenComponent,
+    compareScreen: CompareFilesComponent
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
@@ -48,21 +48,28 @@ fun Footer(
                     text = when (activeComponent) {
                         is Root.Child.File -> {
                             when {
-                                fileScreenComponent.file != null -> "No hash"
+                                fileScreen.file != null -> "No hash"
                                 else -> "No file selected"
                             }
                         }
                         is Root.Child.Text -> ""
                         is Root.Child.CompareFiles -> {
                             when {
-                                compareFilesComponent.fileComparisonOne == null && compareFilesComponent.fileComparisonTwo == null -> "No files selected"
-                                compareFilesComponent.fileComparisonOne == null && compareFilesComponent.fileComparisonTwo != null -> "1st file not selected"
-                                compareFilesComponent.fileComparisonOne != null && compareFilesComponent.fileComparisonTwo == null -> "2nd file not selected"
-                                compareFilesComponent.fileComparisonOneHash.isBlank() && compareFilesComponent.fileComparisonTwoHash.isBlank() -> "No hashes"
-                                compareFilesComponent.fileComparisonOneHash.isBlank() && compareFilesComponent.fileComparisonTwoHash.isNotBlank() -> "No hash for 1st file"
-                                compareFilesComponent.fileComparisonOneHash.isNotBlank() && compareFilesComponent.fileComparisonTwoHash.isBlank() -> "No hash for 2nd file"
-                                compareFilesComponent.fileComparisonOneHash.isNotBlank() && compareFilesComponent.fileComparisonTwoHash.isNotBlank() -> {
-                                    if (compareFilesComponent.filesMatch) "Files match" else "Files do not match"
+                                compareScreen.fileComparisonOne == null &&
+                                    compareScreen.fileComparisonTwo == null -> "No files selected"
+                                compareScreen.fileComparisonOne == null &&
+                                    compareScreen.fileComparisonTwo != null -> "1st file not selected"
+                                compareScreen.fileComparisonOne != null &&
+                                    compareScreen.fileComparisonTwo == null -> "2nd file not selected"
+                                compareScreen.fileComparisonOneHash.isBlank() &&
+                                    compareScreen.fileComparisonTwoHash.isBlank() -> "No hashes"
+                                compareScreen.fileComparisonOneHash.isBlank() &&
+                                    compareScreen.fileComparisonTwoHash.isNotBlank() -> "No hash for 1st file"
+                                compareScreen.fileComparisonOneHash.isNotBlank() &&
+                                    compareScreen.fileComparisonTwoHash.isBlank() -> "No hash for 2nd file"
+                                compareScreen.fileComparisonOneHash.isNotBlank() &&
+                                    compareScreen.fileComparisonTwoHash.isNotBlank() -> {
+                                    if (compareScreen.filesMatch) "Files match" else "Files do not match"
                                 }
                                 else -> ""
                             }

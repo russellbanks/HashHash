@@ -41,7 +41,7 @@ fun TranslucentDialogOverlay(
         Box(
             Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(0.5f))
+                .background(Color.Black.copy(alpha = 0.5f))
                 .clickable(interactionSource = MutableInteractionSource(), indication = null, onClick = onClick)
         )
     }

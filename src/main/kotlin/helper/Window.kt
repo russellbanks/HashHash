@@ -1,5 +1,7 @@
 package helper
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
@@ -9,17 +11,46 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
+import components.Root
+import components.screens.compare.CompareFilesComponent
+import components.screens.file.FileScreenComponent
 import data.GitHubData
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
 import org.pushingpixels.aurora.window.AuroraApplicationScope
+import java.awt.Dimension
 import java.net.URL
 
 object Window {
+
+    private const val minWindowWidth = 750
+    private const val minWindowHeight = 600
+
+    @Composable
+    fun setupAWTWindow(
+        window: java.awt.Window,
+        fileScreenComponent: FileScreenComponent,
+        compareFilesComponent: CompareFilesComponent,
+        activeComponent: Root.Child
+    ) {
+        val scope = rememberCoroutineScope()
+        with(window) {
+            minimumSize = Dimension(minWindowWidth, minWindowHeight)
+            dropTarget = DragAndDrop.target(scope) { droppedItems ->
+                scope.launch(Dispatchers.Default) {
+                    DragAndDrop.setResult(
+                        droppedItems = droppedItems,
+                        fileScreenComponent = fileScreenComponent,
+                        compareFilesComponent = compareFilesComponent,
+                        activeComponent = activeComponent
+                    )
+                }
+            }
+        }
+    }
 
     fun toggleFullscreen(windowState: WindowState) {
         if (windowState.placement != WindowPlacement.Fullscreen) {
@@ -44,104 +75,133 @@ object Window {
 
     object Header {
 
+        @Composable
         fun commands(
             auroraApplicationScope: AuroraApplicationScope,
             windowState: WindowState,
-            scope: CoroutineScope,
             gitHubData: GitHubData?,
             preferencesAction: () -> Unit,
             aboutAction: () -> Unit
         ): CommandGroup {
             return CommandGroup(
                 commands = listOf(
-                    Command(
-                        text = "File",
-                        secondaryContentModel = CommandMenuContentModel(
-                            listOf(
-                                CommandGroup(
-                                    commands = listOf(
-                                        Command(
-                                            text = "Settings",
-                                            action = preferencesAction
-                                        )
-                                    )
+                    fileHeaderButton(
+                        auroraApplicationScope = auroraApplicationScope,
+                        preferencesAction = preferencesAction
+                    ),
+                    viewHeaderButton(windowState = windowState),
+                    windowHeaderButton(windowState = windowState),
+                    helpHeaderButton(gitHubData = gitHubData, aboutAction = aboutAction)
+                )
+            )
+        }
+
+        private fun fileHeaderButton(
+            auroraApplicationScope: AuroraApplicationScope,
+            preferencesAction: () -> Unit
+        ): Command {
+            return Command(
+                text = "File",
+                secondaryContentModel = CommandMenuContentModel(
+                    listOf(
+                        CommandGroup(
+                            commands = listOf(
+                                Command(
+                                    text = "Settings",
+                                    action = preferencesAction
+                                )
+                            )
+                        ),
+                        CommandGroup(
+                            commands = listOf(
+                                Command(
+                                    text = "Exit",
+                                    action = { auroraApplicationScope.exitApplication() }
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        }
+
+        private fun viewHeaderButton(windowState: WindowState): Command {
+            return Command(
+                text = "View",
+                secondaryContentModel = CommandMenuContentModel(
+                    CommandGroup(
+                        commands = listOf(
+                            Command(
+                                text = "Toggle Full Screen",
+                                action = { toggleFullscreen(windowState) }
+                            )
+                        )
+                    )
+                )
+            )
+        }
+
+        private fun windowHeaderButton(windowState: WindowState): Command {
+            return Command(
+                text = "Window",
+                secondaryContentModel = CommandMenuContentModel(
+                    CommandGroup(
+                        commands = listOf(
+                            Command(
+                                text = "Minimise",
+                                action = { windowState.isMinimized = true }
+                            )
+                        )
+                    )
+                )
+            )
+        }
+
+        @Composable
+        private fun helpHeaderButton(
+            gitHubData: GitHubData?,
+            aboutAction: () -> Unit
+        ): Command {
+            val scope = rememberCoroutineScope()
+            return Command(
+                text = "Help",
+                secondaryContentModel = CommandMenuContentModel(
+                    listOf(
+                        CommandGroup(
+                            commands = listOf(
+                                Command(
+                                    text = "Report issue",
+                                    action = {
+                                        scope.launch(Dispatchers.Default) {
+                                            Browser.open(URL(GitHub.HashHash.Repository.newIssue))
+                                        }
+                                    }
                                 ),
-                                CommandGroup(
-                                    commands = listOf(
-                                        Command(
-                                            text = "Exit",
-                                            action = { auroraApplicationScope.exitApplication() }
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    Command(
-                        text = "View",
-                        secondaryContentModel = CommandMenuContentModel(
-                            CommandGroup(
-                                commands = listOf(
-                                    Command(
-                                        text = "Toggle Full Screen",
-                                        action = { toggleFullscreen(windowState) }
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    Command(
-                        text = "Window",
-                        secondaryContentModel = CommandMenuContentModel(
-                            CommandGroup(
-                                commands = listOf(
-                                    Command(
-                                        text = "Minimise",
-                                        action = { windowState.isMinimized = true }
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    Command(
-                        text = "Help",
-                        secondaryContentModel = CommandMenuContentModel(
-                            listOf(
-                                CommandGroup(
-                                    commands = listOf(
-                                        Command(
-                                            text = "Report issue",
-                                            action = {
-                                                scope.launch(Dispatchers.Default) {
-                                                    Browser.open(URL(GitHub.HashHash.Repository.newIssue))
-                                                }
-                                            }
-                                        ),
-                                        Command(
-                                            text = "Go to GitHub",
-                                            action = {
-                                                scope.launch(Dispatchers.Default) {
-                                                    Browser.open(URL(GitHub.HashHash.Repository.website))
-                                                }
-                                            }
-                                        ),
-                                        Command(
-                                            text = "Go to release notes",
-                                            action = {
-                                                scope.launch(Dispatchers.Default) {
-                                                    Browser.open(URL(gitHubData?.htmlUrl ?: GitHub.HashHash.Repository.releases))
-                                                }
-                                            }
-                                        )
-                                    )
+                                Command(
+                                    text = "Go to GitHub",
+                                    action = {
+                                        scope.launch(Dispatchers.Default) {
+                                            Browser.open(URL(GitHub.HashHash.Repository.website))
+                                        }
+                                    }
                                 ),
-                                CommandGroup(
-                                    commands = listOf(
-                                        Command(
-                                            text = "About",
-                                            action = aboutAction
-                                        )
-                                    )
+                                Command(
+                                    text = "Go to release notes",
+                                    action = {
+                                        scope.launch(Dispatchers.Default) {
+                                            Browser.open(
+                                                URL(gitHubData?.htmlUrl ?: GitHub.HashHash.Repository.releases)
+                                            )
+                                        }
+                                    }
+                                )
+                            )
+                        ),
+                        CommandGroup(
+                            commands = listOf(
+                                Command(
+                                    text = "About",
+                                    action = aboutAction
                                 )
                             )
                         )

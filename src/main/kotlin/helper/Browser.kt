@@ -24,6 +24,7 @@ import io.klogging.Klogging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.awt.Desktop
+import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
@@ -33,11 +34,17 @@ object Browser : Klogging {
         val desktop = if (Desktop.isDesktopSupported()) Desktop.getDesktop() else null
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                logger.info("Opened $uri")
                 withContext(Dispatchers.IO) { desktop.browse(uri) }
+                logger.info("Opened $uri")
                 return true
-            } catch (exception: Exception) {
-                logger.trace(exception)
+            } catch (nullPointerException: NullPointerException) {
+                logger.error(nullPointerException)
+            } catch (unsupportedOperationException: UnsupportedOperationException) {
+                logger.error(unsupportedOperationException)
+            } catch (ioException: IOException) {
+                logger.error(ioException)
+            } catch (securityException: SecurityException) {
+                logger.error(securityException)
             }
         }
         return false
@@ -47,7 +54,7 @@ object Browser : Klogging {
         try {
             return open(url.toURI())
         } catch (exception: URISyntaxException) {
-            logger.trace(exception)
+            logger.error(exception)
         }
         return false
     }

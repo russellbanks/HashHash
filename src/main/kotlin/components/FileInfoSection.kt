@@ -55,7 +55,8 @@ fun FileInfoSection(file: File?) {
         ) {
             Image(
                 painter = Icons.FileTypes.getFileIcon(file),
-                contentDescription = "${(file?.extension ?: "file").lowercase().replaceFirstChar { it.titlecase() }} icon",
+                contentDescription = "${(file?.extension ?: "file")
+                    .lowercase().replaceFirstChar { it.titlecase() }} icon",
                 modifier = Modifier.size(80.dp).padding(start = 20.dp)
             )
             FlowRow(
@@ -63,20 +64,20 @@ fun FileInfoSection(file: File?) {
                 mainAxisAlignment = FlowMainAxisAlignment.SpaceEvenly
             ) {
                 LabelProjection(
-                    contentModel = LabelContentModel(text = FileUtils.getFileName(file)),
+                    contentModel = LabelContentModel(text = file?.name ?: "File name"),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                 ).project()
-                if (FileUtils.getFileExtension(file).isNotBlank()) {
+                if ((file?.extension ?: "Extension").isNotBlank()) {
                     VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                     LabelProjection(
                         contentModel = LabelContentModel(text = FileUtils.getFileType(file)),
                         presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                     ).project()
                 }
-                if (FileUtils.getFileType(file) != FileUtils.getFileExtension(file)) {
+                if (FileUtils.getFileType(file) != (file?.extension ?: "Extension")) {
                     VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                     LabelProjection(
-                        contentModel = LabelContentModel(text = FileUtils.getFileExtension(file)),
+                        contentModel = LabelContentModel(text = file?.extension ?: "Extension"),
                         presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                     ).project()
                 }
@@ -87,7 +88,7 @@ fun FileInfoSection(file: File?) {
                 ).project()
                 VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                 LabelProjection(
-                    contentModel = LabelContentModel(text = FileUtils.getFilePath(file)),
+                    contentModel = LabelContentModel(text = file?.absolutePath ?: "Path"),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                 ).project()
             }

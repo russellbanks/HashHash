@@ -18,15 +18,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.screens.comparefiles
+package components.screens.compare
 
+import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import components.screens.ParentComponent
 import components.screens.ParentInterface
-import hash
 import io.klogging.Klogging
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -43,11 +43,11 @@ class CompareFilesComponent(
 ) : ComponentContext by componentContext, ParentInterface by parentComponent, Klogging {
     var fileComparisonOne: File? by mutableStateOf(null)
     var fileComparisonOneHash by mutableStateOf("")
-    var fileComparisonOneHashUppercase by mutableStateOf(true)
+    var firstHashUppercase by mutableStateOf(true)
     var fileComparisonOneProgress by mutableStateOf(0F)
     var fileComparisonTwo: File? by mutableStateOf(null)
     var fileComparisonTwoHash by mutableStateOf("")
-    var fileComparisonTwoUppercase by mutableStateOf(true)
+    var secondHashUppercase by mutableStateOf(true)
     var fileComparisonTwoProgress by mutableStateOf(0F)
     var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
@@ -61,10 +61,10 @@ class CompareFilesComponent(
                             fileComparisonOneHash = fileComparisonOne?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileComparisonOneProgress = it }
-                            )?.run { if (fileComparisonOneHashUppercase) uppercase() else lowercase() } ?: ""
+                            )?.run { if (firstHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
                         } catch (exception: Exception) {
-                            logger.trace(exception)
+                            logger.error(exception)
                         }
                     },
                     async(Dispatchers.IO) {
@@ -72,10 +72,10 @@ class CompareFilesComponent(
                             fileComparisonTwoHash = fileComparisonTwo?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileComparisonTwoProgress = it }
-                            )?.run { if (fileComparisonTwoUppercase) uppercase() else lowercase() } ?: ""
+                            )?.run { if (secondHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
                         } catch (exception: Exception) {
-                            logger.trace(exception)
+                            logger.error(exception)
                         }
                     }
                 )
@@ -93,9 +93,11 @@ class CompareFilesComponent(
 
     fun switchHashCase(fileComparison: FileComparison) {
         if (fileComparison == FileComparison.FileComparisonOne) {
-            fileComparisonOneHash = if (fileComparisonOneHashUppercase) fileComparisonOneHash.uppercase() else fileComparisonOneHash.lowercase()
+            firstHashUppercase = !firstHashUppercase
+            fileComparisonOneHash = fileComparisonOneHash.run { if (firstHashUppercase) uppercase() else lowercase() }
         } else if (fileComparison == FileComparison.FileComparisonTwo) {
-            fileComparisonTwoHash = if (fileComparisonTwoUppercase) fileComparisonTwoHash.uppercase() else fileComparisonTwoHash.lowercase()
+            secondHashUppercase = !secondHashUppercase
+            fileComparisonTwoHash = fileComparisonTwoHash.run { if (secondHashUppercase) uppercase() else lowercase() }
         }
     }
 

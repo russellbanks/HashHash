@@ -141,21 +141,27 @@ fun PreferencesDialog(
                                                         when (it) {
                                                             Theme.LIGHT -> dustSkin()
                                                             Theme.DARK -> nightShadeSkin()
-                                                            else -> if (themeHandler.isSystemDark()) nightShadeSkin() else dustSkin()
+                                                            else -> if (themeHandler.isSystemDark()) {
+                                                                nightShadeSkin()
+                                                            } else dustSkin()
                                                         }
                                                     )
                                                 }
                                             }
                                         ),
                                         presentationModel = ComboBoxPresentationModel(
-                                            displayConverter = { it.name.lowercase().replaceFirstChar { char -> char.titlecase() } }
+                                            displayConverter = {
+                                                it.name.lowercase().replaceFirstChar { char -> char.titlecase() }
+                                            }
                                         )
                                     ).project()
                                 }
                                 Column {
                                     Row {
                                         Box(Modifier.weight(1f)) {
-                                            LabelProjection(contentModel = LabelContentModel(text = "Title bar style")).project()
+                                            LabelProjection(
+                                                contentModel = LabelContentModel(text = "Title bar style")
+                                            ).project()
                                         }
                                         ComboBoxProjection(
                                             contentModel = ComboBoxContentModel(
@@ -164,12 +170,16 @@ fun PreferencesDialog(
                                                 onTriggerItemSelectedChange = {
                                                     if (TitleBarHandler.getTitleBar() != it) {
                                                         selectedTitleBar = it
-                                                        scope.launch(Dispatchers.Default) { TitleBarHandler.putTitleBar(it) }
+                                                        scope.launch(Dispatchers.Default) {
+                                                            TitleBarHandler.putTitleBar(it)
+                                                        }
                                                     }
                                                 }
                                             ),
                                             presentationModel = ComboBoxPresentationModel(
-                                                displayConverter = { it.name.lowercase().replaceFirstChar { char -> char.titlecase() } }
+                                                displayConverter = {
+                                                    it.name.lowercase().replaceFirstChar { char -> char.titlecase() }
+                                                }
                                             )
                                         ).project()
                                     }

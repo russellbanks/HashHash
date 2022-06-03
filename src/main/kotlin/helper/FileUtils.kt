@@ -47,12 +47,6 @@ object FileUtils {
         } else "Type"
     }
 
-    fun getFileName(file: File?): String = file?.name ?: "File name"
-
-    fun getFileExtension(file: File?) = file?.extension ?: "Extension"
-
-    fun getFilePath(file: File?): String = file?.absolutePath ?: "Path"
-
     /**
      * Displays a file open dialog.
      *

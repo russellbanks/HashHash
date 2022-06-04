@@ -26,10 +26,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,47 +36,26 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.pushingpixels.aurora.component.model.ComboBoxContentModel
-import org.pushingpixels.aurora.component.model.ComboBoxPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
-import org.pushingpixels.aurora.component.projection.ComboBoxProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
-import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
-import preferences.theme.Theme
 import preferences.theme.ThemeHandler
-import preferences.titlebar.TitleBar
-import preferences.titlebar.TitleBarHandler
 
 @Composable
 fun SettingsDialog(
     visible: Boolean,
     themeHandler: ThemeHandler,
-    onThemeChange: (AuroraSkinDefinition) -> Unit,
     onCloseRequest: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
-    var selectedTitleBar by remember { mutableStateOf(TitleBarHandler.getTitleBar()) }
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -116,82 +93,7 @@ fun SettingsDialog(
                             ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
                             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
                         }
-                        Column(Modifier.padding(30.dp)) {
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(20.dp)
-                            ) {
-                                Row {
-                                    Box(Modifier.weight(1f)) {
-                                        LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
-                                    }
-                                    ComboBoxProjection(
-                                        contentModel = ComboBoxContentModel(
-                                            items = Theme.values().toList(),
-                                            selectedItem = selectedTheme,
-                                            onTriggerItemSelectedChange = {
-                                                if (themeHandler.getTheme(scope) != it) {
-                                                    selectedTheme = it
-                                                    scope.launch(Dispatchers.Default) { themeHandler.putTheme(it) }
-                                                    onThemeChange(
-                                                        when (it) {
-                                                            Theme.LIGHT -> dustSkin()
-                                                            Theme.DARK -> nightShadeSkin()
-                                                            else -> if (themeHandler.isSystemDark()) {
-                                                                nightShadeSkin()
-                                                            } else dustSkin()
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                        ),
-                                        presentationModel = ComboBoxPresentationModel(
-                                            displayConverter = {
-                                                it.name.lowercase().replaceFirstChar { char -> char.titlecase() }
-                                            }
-                                        )
-                                    ).project()
-                                }
-                                Column {
-                                    Row {
-                                        Box(Modifier.weight(1f)) {
-                                            LabelProjection(
-                                                contentModel = LabelContentModel(text = "Title bar style")
-                                            ).project()
-                                        }
-                                        ComboBoxProjection(
-                                            contentModel = ComboBoxContentModel(
-                                                items = TitleBar.values().toList(),
-                                                selectedItem = selectedTitleBar,
-                                                onTriggerItemSelectedChange = {
-                                                    if (TitleBarHandler.getTitleBar() != it) {
-                                                        selectedTitleBar = it
-                                                        scope.launch(Dispatchers.Default) {
-                                                            TitleBarHandler.putTitleBar(it)
-                                                        }
-                                                    }
-                                                }
-                                            ),
-                                            presentationModel = ComboBoxPresentationModel(
-                                                displayConverter = {
-                                                    it.name.lowercase().replaceFirstChar { char -> char.titlecase() }
-                                                }
-                                            )
-                                        ).project()
-                                    }
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(text = "Requires restart"),
-                                        presentationModel = LabelPresentationModel(
-                                            textStyle = TextStyle(
-                                                color = Color.Gray,
-                                                fontSize = 12.sp,
-                                                fontStyle = FontStyle.Italic
-                                            )
-                                        )
-                                    ).project()
-                                }
-                            }
-                        }
+                        SettingsItems(themeHandler = themeHandler)
                     }
                     CloseDialogFooter(onCloseRequest = onCloseRequest)
                 }

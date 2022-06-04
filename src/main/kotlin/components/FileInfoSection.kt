@@ -47,6 +47,7 @@ import java.io.File
 
 @Composable
 fun FileInfoSection(file: File?) {
+    val extensionName = "Extension"
     SelectionContainer {
         Row(
             modifier = Modifier.defaultMinSize(minHeight = 120.dp).fillMaxWidth(),
@@ -67,14 +68,14 @@ fun FileInfoSection(file: File?) {
                     contentModel = LabelContentModel(text = file?.name ?: "File name"),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                 ).project()
-                if ((file?.extension ?: "Extension").isNotBlank()) {
+                if ((file?.extension ?: extensionName).isNotBlank()) {
                     VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                     LabelProjection(
                         contentModel = LabelContentModel(text = FileUtils.getFileType(file)),
                         presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                     ).project()
                 }
-                if (FileUtils.getFileType(file) != (file?.extension ?: "Extension")) {
+                if (FileUtils.getFileType(file) != (file?.extension ?: extensionName)) {
                     VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                     LabelProjection(
                         contentModel = LabelContentModel(text = file?.extension ?: "Extension"),

@@ -24,47 +24,35 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
-class ThemeHandler(private val systemDark: Boolean) : Klogging {
+class ThemeHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    var cachedTheme: Theme? = null
+    var themeListeners = ArrayList<(KProperty<*>, Theme?, Theme?) -> Unit>()
 
-    var cachedAuroraTheme: AuroraSkinDefinition? = null
-
-    fun isSystemDark() = systemDark
-
-    fun getTheme(scope: CoroutineScope): Theme {
-        return cachedTheme
-            ?: when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
-                Theme.LIGHT.ordinal -> Theme.LIGHT
-                Theme.DARK.ordinal -> Theme.DARK
-                else -> Theme.SYSTEM
-            }.also {
-                cachedTheme = it
-                scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") }
-            }
+    private var cachedTheme: Theme? by Delegates.observable(initialValue = null) { property, oldValue, newValue ->
+        themeListeners.forEach { it(property, oldValue, newValue) }
     }
 
-    fun getAuroraTheme(scope: CoroutineScope): AuroraSkinDefinition {
-        return cachedAuroraTheme
-            ?: when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
-                Theme.LIGHT.ordinal -> dustSkin()
-                Theme.DARK.ordinal -> nightShadeSkin()
-                else -> if (systemDark) nightShadeSkin() else dustSkin()
-            }.also {
-                cachedAuroraTheme = it
-                scope.launch(Dispatchers.Default) { logger.info("Returned ${it.displayName}") }
+    fun getTheme(scope: CoroutineScope): Theme {
+        return cachedTheme.also {
+            scope.launch(Dispatchers.Default) {
+                logger.info("Returned ${it?.name} (${if (it == null) "Created" else "Cached"})")
             }
+        } ?: when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
+            Theme.LIGHT.ordinal -> Theme.LIGHT
+            Theme.DARK.ordinal -> Theme.DARK
+            else -> Theme.SYSTEM
+        }.also { cachedTheme = it }
     }
 
     suspend fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)
         .also {
+            cachedTheme = theme
             logger.info {
                 "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
             }

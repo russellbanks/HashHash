@@ -80,7 +80,10 @@ fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit)
             Image(
                 painter = Icons.Utility.chevronRight(),
                 contentDescription = null,
-                modifier = Modifier.size(ControlPaneHelper.BoxHeight.dp).padding(horizontal = 6.dp).rotate(rotationAngle),
+                modifier = Modifier
+                    .size(ControlPaneHelper.BoxHeight.dp)
+                    .padding(horizontal = 6.dp)
+                    .rotate(rotationAngle),
                 colorFilter = ColorFilter.tint(color = backgroundColorScheme.foregroundColor)
             )
         }

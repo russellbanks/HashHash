@@ -66,7 +66,6 @@ import helper.Ktor
 import helper.Window
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
-import io.klogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -78,6 +77,7 @@ import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
+import preferences.theme.toAuroraTheme
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 
@@ -104,8 +104,12 @@ fun main() {
             position = WindowPosition(Alignment.Center),
             size = DpSize(width = 1035.dp, height = 750.dp)
         )
-        val themeHandler = ThemeHandler(isSystemInDarkTheme())
-        var auroraSkin by remember { mutableStateOf(themeHandler.getAuroraTheme(scope)) }
+        val systemDark = isSystemInDarkTheme()
+        val themeHandler = remember { ThemeHandler() }
+        var auroraSkin by remember { mutableStateOf(themeHandler.getTheme(scope).toAuroraTheme(systemDark)) }
+        themeHandler.themeListeners.add { _, _, newValue ->
+            if (newValue != null) auroraSkin = newValue.toAuroraTheme(systemDark)
+        }
         val parentComponent = remember { ParentComponent() }
         val fileScreenComponent = remember {
             FileScreenComponent(
@@ -188,7 +192,6 @@ fun main() {
                 SettingsDialog(
                     visible = isPreferencesOpen,
                     themeHandler = themeHandler,
-                    onThemeChange = { auroraSkin = it },
                     onCloseRequest = { isPreferencesOpen = false }
                 )
                 AboutDialog(

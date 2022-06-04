@@ -41,14 +41,14 @@ class CompareFilesComponent(
     componentContext: ComponentContext,
     parentComponent: ParentComponent
 ) : ComponentContext by componentContext, ParentInterface by parentComponent, Klogging {
-    var fileComparisonOne: File? by mutableStateOf(null)
-    var fileComparisonOneHash by mutableStateOf("")
-    var firstHashUppercase by mutableStateOf(true)
-    var fileComparisonOneProgress by mutableStateOf(0F)
-    var fileComparisonTwo: File? by mutableStateOf(null)
-    var fileComparisonTwoHash by mutableStateOf("")
-    var secondHashUppercase by mutableStateOf(true)
-    var fileComparisonTwoProgress by mutableStateOf(0F)
+    var fileOne: File? by mutableStateOf(null)
+    var fileOneHash by mutableStateOf("")
+    var fileOneHashUppercase by mutableStateOf(true)
+    var fileOneHashProgress by mutableStateOf(0F)
+    var fileTwo: File? by mutableStateOf(null)
+    var fileTwoHash by mutableStateOf("")
+    var fileTwoHashUppercase by mutableStateOf(true)
+    var fileTwoHashProgress by mutableStateOf(0F)
     var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
 
@@ -58,48 +58,63 @@ class CompareFilesComponent(
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
                         try {
-                            fileComparisonOneHash = fileComparisonOne?.hash(
+                            fileOneHash = fileOne?.hash(
                                 algorithm = algorithm,
-                                hashProgressCallback = { fileComparisonOneProgress = it }
-                            )?.run { if (firstHashUppercase) uppercase() else lowercase() } ?: ""
+                                hashProgressCallback = { fileOneHashProgress = it }
+                            )?.run { if (fileOneHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
-                        } catch (exception: Exception) {
-                            logger.error(exception)
+                        } catch (illegalArgumentException: IllegalArgumentException) {
+                            logger.error(illegalArgumentException)
                         }
                     },
                     async(Dispatchers.IO) {
                         try {
-                            fileComparisonTwoHash = fileComparisonTwo?.hash(
+                            fileTwoHash = fileTwo?.hash(
                                 algorithm = algorithm,
-                                hashProgressCallback = { fileComparisonTwoProgress = it }
-                            )?.run { if (secondHashUppercase) uppercase() else lowercase() } ?: ""
+                                hashProgressCallback = { fileTwoHashProgress = it }
+                            )?.run { if (fileTwoHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
-                        } catch (exception: Exception) {
-                            logger.error(exception)
+                        } catch (illegalArgumentException: IllegalArgumentException) {
+                            logger.error(illegalArgumentException)
                         }
                     }
                 )
                 comparisonJobList?.awaitAll()
-                filesMatch = fileComparisonOneHash.equals(fileComparisonTwoHash, ignoreCase = true)
+                filesMatch = fileOneHash.equals(fileTwoHash, ignoreCase = true)
                 comparisonJobList = null
             }
         } else {
             comparisonJobList?.forEach { it.cancel() }
             comparisonJobList = null
-            fileComparisonOneProgress = 0F
-            fileComparisonTwoProgress = 0F
+            fileOneHashProgress = 0F
+            fileTwoHashProgress = 0F
         }
     }
 
     fun switchHashCase(fileComparison: FileComparison) {
         if (fileComparison == FileComparison.FileComparisonOne) {
-            firstHashUppercase = !firstHashUppercase
-            fileComparisonOneHash = fileComparisonOneHash.run { if (firstHashUppercase) uppercase() else lowercase() }
+            fileOneHashUppercase = !fileOneHashUppercase
+            fileOneHash = fileOneHash.run { if (fileOneHashUppercase) uppercase() else lowercase() }
         } else if (fileComparison == FileComparison.FileComparisonTwo) {
-            secondHashUppercase = !secondHashUppercase
-            fileComparisonTwoHash = fileComparisonTwoHash.run { if (secondHashUppercase) uppercase() else lowercase() }
+            fileTwoHashUppercase = !fileTwoHashUppercase
+            fileTwoHash = fileTwoHash.run { if (fileTwoHashUppercase) uppercase() else lowercase() }
         }
     }
+
+    fun getFooterText(): String {
+        return when {
+            fileOne == null && fileTwo == null -> "No files selected"
+            fileOne == null && fileTwo != null -> "1st file not selected"
+            fileOne != null && fileTwo == null -> "2nd file not selected"
+            fileOneHash.isBlank() && fileTwoHash.isBlank() -> "No hashes"
+            fileOneHash.isBlank() && fileTwoHash.isNotBlank() -> "No hash for 1st file"
+            fileOneHash.isNotBlank() && fileTwoHash.isBlank() -> "No hash for 2nd file"
+            fileOneHash.isNotBlank() && fileTwoHash.isNotBlank() -> doFilesMatchString()
+            else -> ""
+        }
+    }
+
+    private fun doFilesMatchString() = if (filesMatch) "Files match" else "Files do not match"
 
     enum class FileComparison {
         FileComparisonOne,

@@ -83,7 +83,9 @@ fun FileInfoSection(file: File?) {
                 }
                 VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                 LabelProjection(
-                    contentModel = LabelContentModel(text = FileUtils.getFormattedBytes(file)),
+                    contentModel = LabelContentModel(
+                        text = if (file != null) FileUtils.getFormattedBytes(file.length()) else "Size"
+                    ),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
                 ).project()
                 VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))

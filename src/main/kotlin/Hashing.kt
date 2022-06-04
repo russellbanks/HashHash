@@ -27,7 +27,7 @@ import java.io.IOException
 
 object Hashing {
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, IllegalArgumentException::class, IllegalStateException::class)
     suspend fun File.hash(
         algorithm: Algorithm,
         hashProgressCallback: (Float) -> Unit
@@ -35,7 +35,7 @@ object Hashing {
         val digest = algorithm.createDigest()
         val fileInputStream = withContext(Dispatchers.IO) { FileInputStream(this@hash) }
 
-        val byteArray = ByteArray(size = 32768)
+        val byteArray = ByteArray(size = 32_768)
         var bytesCount: Int
 
         val totalRuns = ((length() / byteArray.size) + 1).toFloat()
@@ -51,6 +51,7 @@ object Hashing {
         return buildHash(digest.digest())
     }
 
+    @Throws(IllegalArgumentException::class, IllegalArgumentException::class)
     fun String.hash(algorithm: Algorithm) = buildHash(algorithm.createDigest().apply { update(toByteArray()) }.digest())
 
     private fun buildHash(bytes: ByteArray) = StringBuilder().apply {

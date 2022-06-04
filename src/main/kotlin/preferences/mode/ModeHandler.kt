@@ -27,13 +27,21 @@ import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
 object ModeHandler : Klogging {
+    private const val modeKey = "mode"
+
+    private const val defaultModeOrdinal = -1
+
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
+    var cachedMode: Mode? = null
+
     fun getMode(scope: CoroutineScope): Mode {
-        return when (preferences.getInt(modeKey, defaultModeOrdinal)) {
-            Mode.ADVANCED.ordinal -> Mode.ADVANCED
-            else -> Mode.SIMPLE
-        }.also { scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") } }
+        return cachedMode
+            ?: (if (preferences.getInt(modeKey, defaultModeOrdinal) == Mode.ADVANCED.ordinal) Mode.ADVANCED
+            else Mode.SIMPLE).also {
+                cachedMode = it
+                scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") }
+            }
     }
 
     suspend fun putMode(mode: Mode) = preferences.putInt(modeKey, mode.ordinal)
@@ -43,6 +51,4 @@ object ModeHandler : Klogging {
             }
         }
 
-    private const val modeKey = "mode"
-    private const val defaultModeOrdinal = -1
 }

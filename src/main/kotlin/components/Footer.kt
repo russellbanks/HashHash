@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreenComponent
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
@@ -39,6 +40,7 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 fun Footer(
     activeComponent: Root.Child,
     fileScreen: FileScreenComponent,
+    textScreen: TextScreenComponent,
     compareScreen: CompareFilesComponent
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
@@ -46,34 +48,9 @@ fun Footer(
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = when (activeComponent) {
-                        is Root.Child.File -> {
-                            when {
-                                fileScreen.file != null -> "No hash"
-                                else -> "No file selected"
-                            }
-                        }
-                        is Root.Child.Text -> ""
-                        is Root.Child.CompareFiles -> {
-                            when {
-                                compareScreen.fileComparisonOne == null &&
-                                    compareScreen.fileComparisonTwo == null -> "No files selected"
-                                compareScreen.fileComparisonOne == null &&
-                                    compareScreen.fileComparisonTwo != null -> "1st file not selected"
-                                compareScreen.fileComparisonOne != null &&
-                                    compareScreen.fileComparisonTwo == null -> "2nd file not selected"
-                                compareScreen.fileComparisonOneHash.isBlank() &&
-                                    compareScreen.fileComparisonTwoHash.isBlank() -> "No hashes"
-                                compareScreen.fileComparisonOneHash.isBlank() &&
-                                    compareScreen.fileComparisonTwoHash.isNotBlank() -> "No hash for 1st file"
-                                compareScreen.fileComparisonOneHash.isNotBlank() &&
-                                    compareScreen.fileComparisonTwoHash.isBlank() -> "No hash for 2nd file"
-                                compareScreen.fileComparisonOneHash.isNotBlank() &&
-                                    compareScreen.fileComparisonTwoHash.isNotBlank() -> {
-                                    if (compareScreen.filesMatch) "Files match" else "Files do not match"
-                                }
-                                else -> ""
-                            }
-                        }
+                        is Root.Child.File -> fileScreen.getFooterText()
+                        is Root.Child.Text -> textScreen.getFooterText()
+                        is Root.Child.CompareFiles -> compareScreen.getFooterText()
                     }
                 )
             ).project()

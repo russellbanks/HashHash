@@ -37,8 +37,6 @@ object Browser : Klogging {
                 withContext(Dispatchers.IO) { desktop.browse(uri) }
                 logger.info("Opened $uri")
                 return true
-            } catch (nullPointerException: NullPointerException) {
-                logger.error(nullPointerException)
             } catch (unsupportedOperationException: UnsupportedOperationException) {
                 logger.error(unsupportedOperationException)
             } catch (ioException: IOException) {

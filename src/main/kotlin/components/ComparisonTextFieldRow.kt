@@ -93,7 +93,7 @@ fun ComparisonTextFieldRow(
         }
         val areTextFieldsBlank = hashedOutput.isNotBlank() && comparisonHash.isNotBlank()
         AnimatedVisibility(visible = areTextFieldsBlank) {
-            val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, true)
+            val hashesMatch = areTextFieldsBlank && hashedOutput.equals(comparisonHash, ignoreCase = true)
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = "Hashes${if (!hashesMatch) " do not" else ""} match",

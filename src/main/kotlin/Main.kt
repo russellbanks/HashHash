@@ -51,7 +51,7 @@ import components.RootComponent
 import components.Tabs
 import components.controlpane.ControlPane
 import components.dialogs.AboutDialog
-import components.dialogs.PreferencesDialog
+import components.dialogs.SettingsDialog
 import components.screens.ParentComponent
 import components.screens.compare.CompareFilesComponent
 import components.screens.compare.CompareFilesScreen
@@ -84,7 +84,6 @@ import preferences.titlebar.TitleBarHandler
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
     loggingConfiguration { ANSI_CONSOLE() }
-    val logger = logger("Main")
 
     val lifecycle = LifecycleRegistry()
     val root = RootComponent(DefaultComponentContext(lifecycle))
@@ -182,10 +181,11 @@ fun main() {
                     Footer(
                         activeComponent = activeComponent,
                         fileScreen = fileScreenComponent,
+                        textScreen = textScreenComponent,
                         compareScreen = compareFilesComponent
                     )
                 }
-                PreferencesDialog(
+                SettingsDialog(
                     visible = isPreferencesOpen,
                     themeHandler = themeHandler,
                     onThemeChange = { auroraSkin = it },
@@ -198,17 +198,10 @@ fun main() {
                     httpResponse = httpResponse,
                     githubData = githubData,
                     onUpdateCheck = { response ->
-                        scope.launch(Dispatchers.Default) {
-                            httpResponse = response
-                            if (response.status == HttpStatusCode.OK) {
+                        httpResponse = response
+                        if (response.status == HttpStatusCode.OK) {
+                            scope.launch(Dispatchers.Default) {
                                 githubData = response.body()
-                                logger.info {
-                                    "Successfully retrieved GitHub data with status code ${response.status}"
-                                }
-                            } else {
-                                logger.error {
-                                    "Failed to retrieve GitHub data. Status code: ${response.status}"
-                                }
                             }
                         }
                     }

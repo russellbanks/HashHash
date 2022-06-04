@@ -95,7 +95,7 @@ fun ControlPane(
                                 action = {
                                     FileUtils.openFileDialogAndGetResult().also {
                                         scope.launch(Dispatchers.Default) {
-                                            fileScreen.resultMap = hashMapOf()
+                                            fileScreen.resultMap.clear()
                                             ControlPaneHelper.setFiles(
                                                 fileScreenComponent = fileScreen,
                                                 compareFilesComponent = compareScreen,
@@ -111,7 +111,10 @@ fun ControlPane(
                                 presentationState = CommandButtonPresentationState.Tile,
                                 textStyle = TextStyle(textAlign = TextAlign.Center),
                             )
-                        ).project(Modifier.fillMaxWidth(if (activeComponent is Root.Child.CompareFiles) 0.5f else 1f))
+                        ).project(
+                            Modifier
+                                .fillMaxWidth(fraction = if (activeComponent is Root.Child.CompareFiles) 0.5f else 1f)
+                        )
                         AnimatedVisibility(visible = activeComponent is Root.Child.CompareFiles) {
                             CommandButtonProjection(
                                 contentModel = Command(
@@ -190,7 +193,7 @@ fun ControlPane(
                             }
                         },
                         isActionEnabled = if (activeComponent is Root.Child.CompareFiles) {
-                            compareScreen.fileComparisonOne != null && compareScreen.fileComparisonTwo != null
+                            compareScreen.fileOne != null && compareScreen.fileTwo != null
                         } else {
                             fileScreen.file != null
                         }

@@ -40,16 +40,16 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
             modifier = Modifier.fillMaxHeight(fraction = 0.5f),
             verticalArrangement = Arrangement.Center
         ) {
-            FileInfoSection(component.fileComparisonOne)
+            FileInfoSection(component.fileOne)
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                HashProgress(component.fileComparisonOneProgress)
+                HashProgress(component.fileOneHashProgress)
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
-                    value = component.fileComparisonOneHash,
-                    isValueUppercase = component.firstHashUppercase,
+                    value = component.fileOneHash,
+                    isValueUppercase = component.fileOneHashUppercase,
                     onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonOne) }
                 )
             }
@@ -59,16 +59,16 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.Center
         ) {
-            FileInfoSection(component.fileComparisonTwo)
+            FileInfoSection(component.fileTwo)
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                HashProgress(component.fileComparisonTwoProgress)
+                HashProgress(component.fileTwoHashProgress)
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
-                    isValueUppercase = component.secondHashUppercase,
-                    value = component.fileComparisonTwoHash,
+                    isValueUppercase = component.fileTwoHashUppercase,
+                    value = component.fileTwoHash,
                     onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonTwo) }
                 )
             }

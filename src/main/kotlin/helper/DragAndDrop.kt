@@ -63,18 +63,26 @@ object DragAndDrop : Klogging {
             if (it is File && it.isFile) {
                 logger.info("User drag and dropped file: ${it.absoluteFile}")
                 if (activeComponent is Root.Child.File) {
-                    fileScreenComponent.file = it
-                    logger.info("Set ${it.name} as main file")
+                    setFileScreenFile(file = it, fileScreenComponent = fileScreenComponent)
                 } else if (activeComponent is Root.Child.CompareFiles) {
-                    if (compareFilesComponent.fileComparisonOne == null) {
-                        compareFilesComponent.fileComparisonOne = it
-                        logger.info("Set ${it.name} as the 1st comparison file")
-                    } else {
-                        compareFilesComponent.fileComparisonTwo = it
-                        logger.info("Set ${it.name} as the 2nd comparison file")
-                    }
+                    setCompareScreenFiles(file = it, compareFilesComponent = compareFilesComponent)
                 }
             }
+        }
+    }
+
+    private suspend fun setFileScreenFile(file: File, fileScreenComponent: FileScreenComponent) {
+        fileScreenComponent.file = file
+        logger.info("Set ${file.name} as main file")
+    }
+
+    private suspend fun setCompareScreenFiles(file: File, compareFilesComponent: CompareFilesComponent) {
+        if (compareFilesComponent.fileOne == null) {
+            compareFilesComponent.fileOne = file
+            logger.info("Set ${file.name} as the 1st comparison file")
+        } else {
+            compareFilesComponent.fileTwo = file
+            logger.info("Set ${file.name} as the 2nd comparison file")
         }
     }
 }

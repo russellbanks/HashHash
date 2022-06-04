@@ -33,7 +33,6 @@ import components.ComparisonTextFieldRow
 import components.FileInfoSection
 import components.HashProgress
 import components.OutputTextFieldRow
-import components.TimeResultColumn
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 
 @Composable
@@ -62,10 +61,6 @@ fun FileScreen(component: FileScreenComponent) {
                 onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
             )
             HashProgress(fileHashProgress = component.hashProgress)
-            TimeResultColumn(
-                instantBeforeHash = component.instantBeforeHash,
-                instantAfterHash = component.instantAfterHash
-            )
         }
     }
 }

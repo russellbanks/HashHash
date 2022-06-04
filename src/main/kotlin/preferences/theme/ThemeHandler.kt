@@ -33,22 +33,34 @@ class ThemeHandler(private val systemDark: Boolean) : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
+    var cachedTheme: Theme? = null
+
+    var cachedAuroraTheme: AuroraSkinDefinition? = null
+
     fun isSystemDark() = systemDark
 
     fun getTheme(scope: CoroutineScope): Theme {
-        return when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
-            Theme.LIGHT.ordinal -> Theme.LIGHT
-            Theme.DARK.ordinal -> Theme.DARK
-            else -> Theme.SYSTEM
-        }.also { scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") } }
+        return cachedTheme
+            ?: when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
+                Theme.LIGHT.ordinal -> Theme.LIGHT
+                Theme.DARK.ordinal -> Theme.DARK
+                else -> Theme.SYSTEM
+            }.also {
+                cachedTheme = it
+                scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") }
+            }
     }
 
     fun getAuroraTheme(scope: CoroutineScope): AuroraSkinDefinition {
-        return when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
-            Theme.LIGHT.ordinal -> dustSkin()
-            Theme.DARK.ordinal -> nightShadeSkin()
-            else -> if (systemDark) nightShadeSkin() else dustSkin()
-        }.also { scope.launch(Dispatchers.Default) { logger.info("Returned ${it.displayName}") } }
+        return cachedAuroraTheme
+            ?: when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
+                Theme.LIGHT.ordinal -> dustSkin()
+                Theme.DARK.ordinal -> nightShadeSkin()
+                else -> if (systemDark) nightShadeSkin() else dustSkin()
+            }.also {
+                cachedAuroraTheme = it
+                scope.launch(Dispatchers.Default) { logger.info("Returned ${it.displayName}") }
+            }
     }
 
     suspend fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)

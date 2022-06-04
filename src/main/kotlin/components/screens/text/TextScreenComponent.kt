@@ -35,14 +35,29 @@ class TextScreenComponent(
     var givenText by mutableStateOf("")
     var comparisonHash by mutableStateOf("")
     var hashedTextUppercase by mutableStateOf(true)
+    private var exception: Exception? by mutableStateOf(null)
 
-    fun hashGivenText() = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
+    fun hashGivenText(): String {
+        return try {
+            exception = null
+            givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            exception = illegalArgumentException
+            ""
+        } catch (illegalStateException: IllegalStateException) {
+            exception = illegalStateException
+            ""
+        }
+    }
 
     fun characterCountAsString(): String {
-        return "${"%,d".format(givenText.count())} ${if (givenText.count() == 1) "character" else "characters"}"
+        return "${"%,d".format(givenText.count())} character${if (givenText.count() != 1) "s" else ""}"
     }
 
-    companion object {
-        const val characterLimit = 20000
+    fun getFooterText(): String {
+        return if (exception != null) {
+            "${algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar { it.titlecase() }}"
+        } else ""
     }
+
 }

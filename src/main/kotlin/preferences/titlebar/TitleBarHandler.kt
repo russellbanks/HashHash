@@ -25,22 +25,26 @@ import java.util.prefs.Preferences
 
 object TitleBarHandler : Klogging {
 
+    private const val titleBarKey = "titleBar"
+
+    private const val defaultTitleBarOrdinal = -1
+
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
+    private var cachedTitleBar: TitleBar? = null
+
     fun getTitleBar(): TitleBar {
-        return when (preferences.getInt(titleBarKey, defaultTitleBarOrdinal)) {
-            TitleBar.Native.ordinal -> TitleBar.Native
-            else -> TitleBar.Custom
-        }
+        return cachedTitleBar
+            ?: (if (preferences.getInt(titleBarKey, defaultTitleBarOrdinal) == TitleBar.Native.ordinal) TitleBar.Native
+            else TitleBar.Custom).also { cachedTitleBar = it }
     }
 
-    suspend fun putTitleBar(titleBar: TitleBar) = preferences.putInt(titleBarKey, titleBar.ordinal)
-        .also {
-            logger.info {
-                "Put ${titleBar.name} into preferences with the key of \"$titleBarKey\" and the value of ${titleBar.ordinal}"
-            }
+    suspend fun putTitleBar(titleBar: TitleBar) {
+        preferences.putInt(titleBarKey, titleBar.ordinal)
+        cachedTitleBar = titleBar
+        logger.info {
+            "Put ${titleBar.name} into preferences with the key of " +
+                    "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
         }
-
-    private const val titleBarKey = "titleBar"
-    private const val defaultTitleBarOrdinal = -1
+    }
 }

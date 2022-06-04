@@ -22,8 +22,10 @@ package components.screens.file
 
 import Hashing.hash
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import components.screens.ParentComponent
@@ -47,9 +49,9 @@ class FileScreenComponent(
     var hashProgress by mutableStateOf(0F)
     var instantBeforeHash: Instant? by mutableStateOf(null)
     var instantAfterHash: Instant? by mutableStateOf(null)
-    private var mainFileException: Exception? by mutableStateOf(null)
+    private var exception: Exception? by mutableStateOf(null)
     var hashedTextUppercase by mutableStateOf(true)
-    var resultMap: HashMap<Algorithm, String> = hashMapOf()
+    var resultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {
@@ -62,8 +64,10 @@ class FileScreenComponent(
                     )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
                     instantAfterHash = Clock.System.now()
                 } catch (_: CancellationException) {
-                } catch (exception: Exception) {
-                    mainFileException = exception
+                } catch (illegalArgumentException: IllegalArgumentException) {
+                    exception = illegalArgumentException
+                } catch (illegalStateException: IllegalStateException) {
+                    exception = illegalStateException
                 }
                 fileHashJob = null
             }
@@ -76,10 +80,16 @@ class FileScreenComponent(
 
     fun switchHashCase() {
         hashedTextUppercase = !hashedTextUppercase
-        if (resultMap.containsKey(algorithm)) {
-            resultMap[algorithm]?.let {
-                resultMap[algorithm] = it.run { if (hashedTextUppercase) uppercase() else lowercase() }
-            }
+        resultMap[algorithm]?.let {
+            resultMap[algorithm] = it.run { if (hashedTextUppercase) uppercase() else lowercase() }
+        }
+    }
+
+    fun getFooterText(): String {
+        return when {
+            resultMap[algorithm] != null -> "Done!"
+            file != null -> "No hash"
+            else -> "No file selected"
         }
     }
 }

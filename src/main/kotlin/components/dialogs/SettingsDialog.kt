@@ -49,19 +49,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.ComboBoxContentModel
 import org.pushingpixels.aurora.component.model.ComboBoxPresentationModel
-import org.pushingpixels.aurora.component.model.Command
-import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.ComboBoxProjection
-import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
@@ -74,7 +70,7 @@ import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 
 @Composable
-fun PreferencesDialog(
+fun SettingsDialog(
     visible: Boolean,
     themeHandler: ThemeHandler,
     onThemeChange: (AuroraSkinDefinition) -> Unit,
@@ -197,23 +193,7 @@ fun PreferencesDialog(
                             }
                         }
                     }
-                    Column {
-                        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        CommandButtonProjection(
-                            contentModel = Command(
-                                text = "Close",
-                                action = onCloseRequest
-                            ),
-                            presentationModel = CommandButtonPresentationModel(
-                                textStyle = TextStyle(
-                                    fontSize = 12.sp,
-                                    textAlign = TextAlign.Center
-                                ),
-                                horizontalGapScaleFactor = 1.8f,
-                                verticalGapScaleFactor = 1.5f
-                            )
-                        ).project(Modifier.width(150.dp).align(Alignment.End).padding(20.dp))
-                    }
+                    CloseDialogFooter(onCloseRequest = onCloseRequest)
                 }
             }
         }

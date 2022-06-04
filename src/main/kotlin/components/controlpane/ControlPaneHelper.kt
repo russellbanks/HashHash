@@ -9,6 +9,8 @@ import java.io.File
 
 object ControlPaneHelper : Klogging {
 
+    const val BoxHeight = 32
+
     suspend fun setFiles(
         fileScreenComponent: FileScreenComponent,
         compareFilesComponent: CompareFilesComponent,
@@ -24,13 +26,13 @@ object ControlPaneHelper : Klogging {
                 }
             } else if (activeComponent is Root.Child.CompareFiles) {
                 if (buttonIndex == 0) {
-                    if (compareFilesComponent.fileComparisonOne != file) {
-                        compareFilesComponent.fileComparisonOne = file
+                    if (compareFilesComponent.fileOne != file) {
+                        compareFilesComponent.fileOne = file
                         logger.info("Set user selected file ${file.absolutePath} as 1st comparison file")
                     }
                 } else {
-                    if (compareFilesComponent.fileComparisonTwo != file) {
-                        compareFilesComponent.fileComparisonTwo = file
+                    if (compareFilesComponent.fileTwo != file) {
+                        compareFilesComponent.fileTwo = file
                         logger.info("Set user selected file ${file.absolutePath} as 2nd comparison file")
                     }
                 }

@@ -30,16 +30,19 @@ import org.lwjgl.system.NativeType
 import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_openFileDialog
 import java.io.File
 import java.nio.file.Files
+import java.util.Locale
 
 object FileUtils {
 
-    private fun getFormattedBytes(bytes: Long): String {
+    fun getFormattedBytes(bytes: Long): String {
         if (bytes < 1024) return "$bytes B"
         val unitIndex = (63 - bytes.countLeadingZeroBits()) / 10
-        return String.format("%.1f %sB", bytes.toDouble() / (1L shl unitIndex * 10), " KMGTPE"[unitIndex])
+        return String.format(
+            Locale.getDefault(),
+            "%.1f %sB",
+            bytes.toDouble() / (1L shl unitIndex * 10), " KMGTPE"[unitIndex]
+        )
     }
-
-    fun getFormattedBytes(file: File?) = if (file != null) getFormattedBytes(file.length()) else "Size"
 
     fun getFileType(file: File?): String {
         return if (file != null) {

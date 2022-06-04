@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import components.controlpane.ControlPaneHelper
 import components.controlpane.NestedAlgorithm
 import helper.Icons
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
@@ -61,7 +62,7 @@ fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit)
     AuroraBoxWithHighlights(
         modifier = Modifier
             .fillMaxWidth()
-            .height(32.dp)
+            .height(ControlPaneHelper.BoxHeight.dp)
             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
         onClick = {
             rotate = !rotate
@@ -79,7 +80,7 @@ fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit)
             Image(
                 painter = Icons.Utility.chevronRight(),
                 contentDescription = null,
-                modifier = Modifier.size(32.dp).padding(horizontal = 6.dp).rotate(rotationAngle),
+                modifier = Modifier.size(ControlPaneHelper.BoxHeight.dp).padding(horizontal = 6.dp).rotate(rotationAngle),
                 colorFilter = ColorFilter.tint(color = backgroundColorScheme.foregroundColor)
             )
         }

@@ -5,9 +5,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     alias(libs.plugins.buildconfig)
     alias(libs.plugins.compose)
+    alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ktlint)
 }
 
 group = "com.russellbanks"
@@ -44,6 +44,9 @@ dependencies {
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
     implementation(libs.klogging.slf4j)
+
+    // Detekt Formatting Plugin - https://github.com/detekt/detekt
+    detektPlugins(libs.detekt.formatting)
 
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)

@@ -50,7 +50,7 @@ import components.Root
 import components.RootComponent
 import components.Tabs
 import components.controlpane.ControlPane
-import components.dialogs.AboutDialog
+import components.dialogs.about.AboutDialog
 import components.dialogs.SettingsDialog
 import components.screens.ParentComponent
 import components.screens.compare.CompareFilesComponent

@@ -59,10 +59,7 @@ fun SettingsDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    TranslucentDialogOverlay(
-        visible = visible,
-        onClick = onCloseRequest
-    )
+    TranslucentDialogOverlay(visible = visible, onClick = onCloseRequest)
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
@@ -77,22 +74,17 @@ fun SettingsDialog(
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                    ) {
-                        Column {
-                            LabelProjection(
-                                contentModel = LabelContentModel(text = "Settings"),
-                                presentationModel = LabelPresentationModel(
-                                    textStyle = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        LabelProjection(
+                            contentModel = LabelContentModel(text = "Settings"),
+                            presentationModel = LabelPresentationModel(
+                                textStyle = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold
                                 )
-                            ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
-                            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        }
+                            )
+                        ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
+                        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
                         SettingsItems(themeHandler = themeHandler)
                     }
                     CloseDialogFooter(onCloseRequest = onCloseRequest)

@@ -106,13 +106,17 @@ class CompareFilesComponent(
             fileOne == null && fileTwo == null -> "No files selected"
             fileOne == null && fileTwo != null -> "1st file not selected"
             fileOne != null && fileTwo == null -> "2nd file not selected"
-            fileOneHash.isBlank() && fileTwoHash.isBlank() -> "No hashes"
+            areFileHashesBlank() -> "No hashes"
             fileOneHash.isBlank() && fileTwoHash.isNotBlank() -> "No hash for 1st file"
             fileOneHash.isNotBlank() && fileTwoHash.isBlank() -> "No hash for 2nd file"
-            fileOneHash.isNotBlank() && fileTwoHash.isNotBlank() -> doFilesMatchString()
+            areFileHashesNotBlank() -> doFilesMatchString()
             else -> ""
         }
     }
+
+    private fun areFileHashesBlank() = fileOneHash.isBlank() && fileTwoHash.isBlank()
+
+    private fun areFileHashesNotBlank() =  fileOneHash.isNotBlank() && fileTwoHash.isNotBlank()
 
     private fun doFilesMatchString() = if (filesMatch) "Files match" else "Files do not match"
 

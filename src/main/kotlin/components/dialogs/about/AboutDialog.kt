@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.dialogs
+package components.dialogs.about
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -38,7 +38,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,11 +49,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.russellbanks.HashHash.BuildConfig
+import components.dialogs.CloseDialogFooter
+import components.dialogs.TranslucentDialogOverlay
 import data.GitHubData
 import helper.GitHub
 import helper.Icons
@@ -67,10 +67,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
-import org.pushingpixels.aurora.component.model.LabelContentModel
-import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
-import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
@@ -88,10 +85,7 @@ fun AboutDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    TranslucentDialogOverlay(
-        visible = visible,
-        onClick = onCloseRequest
-    )
+    TranslucentDialogOverlay(visible = visible, onClick = onCloseRequest)
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
@@ -115,40 +109,7 @@ fun AboutDialog(
                             )
                         }
                         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            SelectionContainer {
-                                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                    LabelProjection(
-                                        contentModel = LabelContentModel(
-                                            text = "${BuildConfig.appName} ${BuildConfig.appVersion}"
-                                        ),
-                                        presentationModel = LabelPresentationModel(
-                                            textStyle = TextStyle(
-                                                fontSize = 16.sp,
-                                                fontWeight = FontWeight.SemiBold
-                                            )
-                                        )
-                                    ).project()
-                                    Column {
-                                        LabelProjection(
-                                            contentModel = LabelContentModel(
-                                                text = "Runtime version: ${System.getProperty("java.runtime.version")}"
-                                            ),
-                                            presentationModel = LabelPresentationModel(
-                                                textStyle = TextStyle(fontSize = 12.sp)
-                                            )
-                                        ).project()
-                                        LabelProjection(
-                                            contentModel = LabelContentModel(
-                                                text = "VM: " + System.getProperty("java.vm.name") + " by " +
-                                                    System.getProperty("java.vm.vendor")
-                                            ),
-                                            presentationModel = LabelPresentationModel(
-                                                textStyle = TextStyle(fontSize = 12.sp)
-                                            )
-                                        ).project()
-                                    }
-                                }
-                            }
+                            JVMInformationText()
                             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 CommandButtonProjection(
                                     contentModel = Command(

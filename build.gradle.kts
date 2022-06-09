@@ -41,6 +41,9 @@ dependencies {
     implementation(libs.decompose.core)
     implementation(libs.decompose.jetbrains)
 
+    // Flow Extensions - https://github.com/hoc081098/FlowExt
+    implementation(libs.flowext)
+
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
     implementation(libs.klogging.slf4j)

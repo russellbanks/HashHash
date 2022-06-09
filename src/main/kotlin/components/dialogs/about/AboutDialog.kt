@@ -128,10 +128,7 @@ fun AboutDialog(
                                         }
                                     ),
                                     presentationModel = CommandButtonPresentationModel(
-                                        textStyle = TextStyle(
-                                            fontSize = 12.sp,
-                                            textAlign = TextAlign.Center
-                                        )
+                                        textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
                                     )
                                 ).project()
                                 AnimatedVisibility(checkingGitHubAPI || httpResponse != null) {

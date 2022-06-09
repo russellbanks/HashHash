@@ -28,16 +28,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import com.hoc081098.flowext.interval
 import components.screens.ParentComponent
 import components.screens.ParentInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class FileScreenComponent(
     componentContext: ComponentContext,
@@ -52,9 +58,19 @@ class FileScreenComponent(
     private var exception: Exception? by mutableStateOf(null)
     var hashedTextUppercase by mutableStateOf(true)
     var resultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
+    var timerText by mutableStateOf("00:00")
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {
+            scope.launch(Dispatchers.Default) {
+                interval(Duration.ZERO, 1.seconds)
+                    .takeWhile { fileHashJob?.isActive == true }
+                    .collect {
+                        val minutes = "%02d".format(it.toDuration(DurationUnit.SECONDS).inWholeMinutes)
+                        val seconds = "%02d".format(it)
+                        timerText = "$minutes:$seconds"
+                    }
+            }
             fileHashJob = scope.launch(Dispatchers.IO) {
                 instantBeforeHash = Clock.System.now()
                 try {
@@ -87,6 +103,7 @@ class FileScreenComponent(
 
     fun getFooterText(): String {
         return when {
+            fileHashJob?.isActive == true -> "Hashing file"
             resultMap[algorithm] != null -> "Done!"
             file != null -> "No hash"
             else -> "No file selected"

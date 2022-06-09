@@ -7,6 +7,7 @@ coroutines = "1.6.2"
 cryptohash = "0.10.0"
 decompose = "0.6.0"
 detekt = "1.20.0"
+flowext = "0.3.0"
 klogging = "0.4.5"
 klogging-slf4j = "0.2.5"
 kotlin = "1.6.21"
@@ -30,6 +31,8 @@ decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "
 decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
+flowext = { module = "io.github.hoc081098:FlowExt", version.ref = "flowext" }
 
 klogging-jvm = { module = "io.klogging:klogging-jvm", version.ref = "klogging" }
 klogging-slf4j = { module = "io.klogging:slf4j-klogging", version.ref = "klogging-slf4j" }

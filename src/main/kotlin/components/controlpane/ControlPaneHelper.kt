@@ -40,22 +40,38 @@ object ControlPaneHelper : Klogging {
     ) {
         if (file != null) {
             if (activeComponent is Root.Child.File) {
-                if (fileScreenComponent.file != file) {
-                    fileScreenComponent.file = file
-                    logger.info("Set user selected file ${file.absolutePath} as main file")
-                }
+                setFileScreenFiles(file = file, fileScreenComponent = fileScreenComponent)
             } else if (activeComponent is Root.Child.CompareFiles) {
-                if (buttonIndex == 0) {
-                    if (compareFilesComponent.fileOne != file) {
-                        compareFilesComponent.fileOne = file
-                        logger.info("Set user selected file ${file.absolutePath} as 1st comparison file")
-                    }
-                } else {
-                    if (compareFilesComponent.fileTwo != file) {
-                        compareFilesComponent.fileTwo = file
-                        logger.info("Set user selected file ${file.absolutePath} as 2nd comparison file")
-                    }
-                }
+                setCompareScreenFiles(
+                    file = file,
+                    buttonIndex = buttonIndex,
+                    compareFilesComponent = compareFilesComponent
+                )
+            }
+        }
+    }
+
+    private suspend fun setFileScreenFiles(file: File, fileScreenComponent: FileScreenComponent) {
+        if (fileScreenComponent.file != file) {
+            fileScreenComponent.file = file
+            logger.info("Set user selected file ${file.absolutePath} as main file")
+        }
+    }
+
+    private suspend fun setCompareScreenFiles(
+        file: File,
+        buttonIndex: Int,
+        compareFilesComponent: CompareFilesComponent
+    ) {
+        if (buttonIndex == 0) {
+            if (compareFilesComponent.fileOne != file) {
+                compareFilesComponent.fileOne = file
+                logger.info("Set user selected file ${file.absolutePath} as 1st comparison file")
+            }
+        } else {
+            if (compareFilesComponent.fileTwo != file) {
+                compareFilesComponent.fileTwo = file
+                logger.info("Set user selected file ${file.absolutePath} as 2nd comparison file")
             }
         }
     }

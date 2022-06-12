@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import helper.Icons
@@ -56,9 +55,7 @@ fun ComparisonTextFieldRow(
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
             contentModel = LabelContentModel(text = "Comparison Hash"),
-            presentationModel = LabelPresentationModel(
-                textStyle = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-            )
+            presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 15.sp))
         ).project()
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             Box(Modifier.weight(1f)) {

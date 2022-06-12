@@ -29,6 +29,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.hoc081098.flowext.interval
+import components.Timer
 import components.screens.ParentComponent
 import components.screens.ParentInterface
 import kotlinx.coroutines.CancellationException
@@ -58,7 +59,7 @@ class FileScreenComponent(
     private var exception: Exception? by mutableStateOf(null)
     var hashedTextUppercase by mutableStateOf(true)
     var resultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
-    var timerText by mutableStateOf("00:00")
+    var timer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {
@@ -66,9 +67,7 @@ class FileScreenComponent(
                 interval(Duration.ZERO, 1.seconds)
                     .takeWhile { fileHashJob?.isActive == true }
                     .collect {
-                        val minutes = "%02d".format(it.toDuration(DurationUnit.SECONDS).inWholeMinutes)
-                        val seconds = "%02d".format(it)
-                        timerText = "$minutes:$seconds"
+                        timer = Timer(minutes = it.toDuration(DurationUnit.SECONDS).inWholeMinutes, seconds = it)
                     }
             }
             fileHashJob = scope.launch(Dispatchers.IO) {

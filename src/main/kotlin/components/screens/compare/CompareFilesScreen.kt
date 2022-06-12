@@ -45,7 +45,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                HashProgress(component.fileOneHashProgress)
+                HashProgress(fileHashProgress = component.fileOneHashProgress, timer = component.fileOneTimer)
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
                     value = component.fileOneHash,
@@ -64,7 +64,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 modifier = Modifier.padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                HashProgress(component.fileTwoHashProgress)
+                HashProgress(fileHashProgress = component.fileTwoHashProgress, timer = component.fileTwoTimer)
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
                     isValueUppercase = component.fileTwoHashUppercase,

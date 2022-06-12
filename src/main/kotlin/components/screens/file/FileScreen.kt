@@ -26,20 +26,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
+import components.ElapsedTimeResults
 import components.FileInfoSection
 import components.HashProgress
 import components.OutputTextFieldRow
-import org.pushingpixels.aurora.component.model.LabelContentModel
-import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
-import org.pushingpixels.aurora.component.projection.LabelProjection
 
 @Composable
 fun FileScreen(component: FileScreenComponent) {
@@ -57,6 +52,7 @@ fun FileScreen(component: FileScreenComponent) {
                 isValueUppercase = component.hashedTextUppercase,
                 onCaseClick = { component.switchHashCase() }
             )
+            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
             ComparisonTextFieldRow(
                 hashedOutput = component.resultMap.getOrDefault(component.algorithm, ""),
                 comparisonHash = component.comparisonHash,
@@ -66,11 +62,17 @@ fun FileScreen(component: FileScreenComponent) {
                 onClearClick = { component.comparisonHash = "" },
                 onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
             )
-            HashProgress(fileHashProgress = component.hashProgress)
-            LabelProjection(
-                contentModel = LabelContentModel(text = component.timerText),
-                presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 16.sp))
-            ).project(Modifier.align(Alignment.CenterHorizontally))
+            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+            HashProgress(
+                fileHashProgress = component.hashProgress,
+                timer = component.timer
+            )
+            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+            ElapsedTimeResults(
+                instantBeforeHash = component.instantBeforeHash,
+                instantAfterHash = component.instantAfterHash
+            )
+            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         }
     }
 }

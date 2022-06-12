@@ -22,13 +22,15 @@ package components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.pushingpixels.aurora.component.model.HorizontalAlignment
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.model.ProgressDeterminateContentModel
@@ -36,14 +38,28 @@ import org.pushingpixels.aurora.component.projection.DeterminateLinearProgressPr
 import org.pushingpixels.aurora.component.projection.LabelProjection
 
 @Composable
-fun HashProgress(fileHashProgress: Float) {
+fun HashProgress(
+    fileHashProgress: Float,
+    timer: Timer?
+) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        LabelProjection(
-            contentModel = LabelContentModel(text = "Hash progress"),
-            presentationModel = LabelPresentationModel(
-                textStyle = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-            )
-        ).project()
+        Row {
+            LabelProjection(
+                contentModel = LabelContentModel(text = "Hash progress"),
+                presentationModel = LabelPresentationModel(
+                    textStyle = TextStyle(fontSize = 15.sp),
+                    horizontalAlignment = HorizontalAlignment.Leading
+                )
+            ).project(Modifier.weight(1f))
+            if (timer != null) {
+                LabelProjection(
+                    contentModel = LabelContentModel(
+                        text = "${"%02d".format(timer.minutes)}:${"%02d".format(timer.seconds)}"
+                    ),
+                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 15.sp))
+                ).project(Modifier.padding(horizontal = 4.dp))
+            }
+        }
         DeterminateLinearProgressProjection(
             contentModel = ProgressDeterminateContentModel(
                 progress = fileHashProgress

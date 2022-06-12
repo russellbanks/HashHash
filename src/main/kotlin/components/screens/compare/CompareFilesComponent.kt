@@ -25,6 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
+import com.hoc081098.flowext.interval
+import components.Timer
 import components.screens.ParentComponent
 import components.screens.ParentInterface
 import io.klogging.Klogging
@@ -34,8 +36,13 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class CompareFilesComponent(
     componentContext: ComponentContext,
@@ -45,10 +52,14 @@ class CompareFilesComponent(
     var fileOneHash by mutableStateOf("")
     var fileOneHashUppercase by mutableStateOf(true)
     var fileOneHashProgress by mutableStateOf(0F)
+    var fileOneTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+
     var fileTwo: File? by mutableStateOf(null)
     var fileTwoHash by mutableStateOf("")
     var fileTwoHashUppercase by mutableStateOf(true)
     var fileTwoHashProgress by mutableStateOf(0F)
+    var fileTwoTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+
     var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
 
@@ -79,6 +90,26 @@ class CompareFilesComponent(
                         }
                     }
                 )
+                scope.launch(Dispatchers.Default) {
+                    interval(Duration.ZERO, 1.seconds)
+                        .takeWhile { comparisonJobList?.first()?.isActive == true }
+                        .collect {
+                            fileOneTimer = Timer(
+                                minutes = it.toDuration(DurationUnit.SECONDS).inWholeMinutes,
+                                seconds = it
+                            )
+                        }
+                }
+                scope.launch(Dispatchers.Default) {
+                    interval(Duration.ZERO, 1.seconds)
+                        .takeWhile { comparisonJobList?.get(1)?.isActive == true }
+                        .collect {
+                            fileTwoTimer = Timer(
+                                minutes = it.toDuration(DurationUnit.SECONDS).inWholeMinutes,
+                                seconds = it
+                            )
+                        }
+                }
                 comparisonJobList?.awaitAll()
                 filesMatch = fileOneHash.equals(fileTwoHash, ignoreCase = true)
                 comparisonJobList = null

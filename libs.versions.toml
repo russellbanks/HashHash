@@ -2,7 +2,7 @@
 accompanist = "0.24.4"
 aurora = "1.2-20220608.021141-5"
 buildconfig = "3.0.3"
-compose = "1.2.0-alpha01-dev686"
+compose = "1.2.0-alpha01-dev712"
 coroutines = "1.6.2"
 cryptohash = "0.10.0"
 decompose = "0.6.0"

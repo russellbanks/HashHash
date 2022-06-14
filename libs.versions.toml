@@ -15,6 +15,7 @@ kotlinx-datetime = "0.3.3"
 kotlinx-serialization = "1.3.3"
 ktor = "2.0.2"
 lwjgl = "3.3.1"
+windowstyler = "0.2.0"
 
 [libraries]
 accompanist-flowlayouts = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
@@ -49,6 +50,8 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 
 lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
 lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
+
+windowstyler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowstyler" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }

@@ -44,14 +44,15 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Root
 import components.RootComponent
 import components.Tabs
 import components.controlpane.ControlPane
-import components.dialogs.about.AboutDialog
 import components.dialogs.SettingsDialog
+import components.dialogs.about.AboutDialog
 import components.screens.ParentComponent
 import components.screens.compare.CompareFilesComponent
 import components.screens.compare.CompareFilesScreen
@@ -64,6 +65,7 @@ import helper.GitHub
 import helper.Icons
 import helper.Ktor
 import helper.Window
+import helper.Window.WindowStyle
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
 import io.ktor.client.HttpClient
@@ -143,6 +145,7 @@ fun main() {
             undecorated = undecorated,
             onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
         ) {
+            WindowStyle(isDarkTheme = themeHandler.isDark(), backdropType = WindowBackdrop.Default)
             Window.setupAWTWindow(
                 window = window,
                 fileScreenComponent = fileScreenComponent,

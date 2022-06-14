@@ -69,6 +69,9 @@ dependencies {
     implementation(libs.lwjgl.tinyfd)
     runtimeOnly(variantOf(libs.lwjgl.core) { classifier(lwjglNatives()) })
     runtimeOnly(variantOf(libs.lwjgl.tinyfd) { classifier(lwjglNatives()) })
+
+    // Window Styler - https://github.com/MayakaApps/ComposeWindowStyler
+    implementation(libs.windowstyler)
 }
 
 tasks.withType<KotlinCompile> {

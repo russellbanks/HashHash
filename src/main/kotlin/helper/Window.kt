@@ -21,6 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package helper
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.key.Key
@@ -30,7 +32,10 @@ import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
+import androidx.compose.ui.window.WindowScope
 import androidx.compose.ui.window.WindowState
+import com.mayakapps.compose.windowstyler.WindowBackdrop
+import com.mayakapps.compose.windowstyler.WindowManager
 import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
@@ -43,6 +48,7 @@ import org.pushingpixels.aurora.component.model.CommandMenuContentModel
 import org.pushingpixels.aurora.window.AuroraApplicationScope
 import java.awt.Dimension
 import java.net.URL
+import javax.swing.JFrame
 
 object Window {
 
@@ -71,6 +77,20 @@ object Window {
             }
         }
     }
+
+    @Composable
+    fun WindowScope.WindowStyle(isDarkTheme: Boolean, backdropType: WindowBackdrop = WindowBackdrop.Mica) {
+        val manager = remember { WindowManager(window as JFrame, isDarkTheme, backdropType) }
+
+        LaunchedEffect(isDarkTheme) {
+            manager.isDarkTheme = isDarkTheme
+        }
+
+        LaunchedEffect(backdropType) {
+            manager.backdropType = backdropType
+        }
+    }
+
 
     fun toggleFullscreen(windowState: WindowState) {
         if (windowState.placement != WindowPlacement.Fullscreen) {

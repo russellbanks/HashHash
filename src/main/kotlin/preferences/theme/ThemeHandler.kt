@@ -20,6 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,15 @@ class ThemeHandler : Klogging {
 
     private var cachedTheme: Theme? by Delegates.observable(initialValue = null) { property, oldValue, newValue ->
         themeListeners.forEach { it(property, oldValue, newValue) }
+    }
+
+    @Composable
+    fun isDark(): Boolean {
+        return when (cachedTheme) {
+            Theme.DARK -> true
+            Theme.LIGHT -> false
+            else -> isSystemInDarkTheme()
+        }
     }
 
     fun getTheme(scope: CoroutineScope): Theme {

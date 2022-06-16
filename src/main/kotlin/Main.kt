@@ -145,7 +145,7 @@ fun main() {
             undecorated = undecorated,
             onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
         ) {
-            WindowStyle(isDarkTheme = themeHandler.isDark(), backdropType = WindowBackdrop.Default)
+            WindowStyle(isDarkTheme = themeHandler.isDark(), backdropType = WindowBackdrop.Mica)
             Window.setupAWTWindow(
                 window = window,
                 fileScreenComponent = fileScreenComponent,

@@ -20,20 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.theme
 
-import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
-
 enum class Theme {
     LIGHT,
     DARK,
     SYSTEM
-}
-
-fun Theme?.toAuroraTheme(systemDark: Boolean): AuroraSkinDefinition {
-    return when (this) {
-        Theme.LIGHT -> dustSkin()
-        Theme.DARK -> nightShadeSkin()
-        else -> if (systemDark) nightShadeSkin() else dustSkin()
-    }
 }

@@ -78,20 +78,6 @@ object Window {
         }
     }
 
-    @Composable
-    fun WindowScope.WindowStyle(isDarkTheme: Boolean, backdropType: WindowBackdrop = WindowBackdrop.Mica) {
-        val manager = remember { WindowManager(window as JFrame, isDarkTheme, backdropType) }
-
-        LaunchedEffect(isDarkTheme) {
-            manager.isDarkTheme = isDarkTheme
-        }
-
-        LaunchedEffect(backdropType) {
-            manager.backdropType = backdropType
-        }
-    }
-
-
     fun toggleFullscreen(windowState: WindowState) {
         if (windowState.placement != WindowPlacement.Fullscreen) {
             windowState.placement = WindowPlacement.Fullscreen

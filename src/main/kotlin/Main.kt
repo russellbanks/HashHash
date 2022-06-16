@@ -45,6 +45,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleC
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.mayakapps.compose.windowstyler.WindowBackdrop
+import com.mayakapps.compose.windowstyler.WindowStyle
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Root
@@ -65,7 +66,6 @@ import helper.GitHub
 import helper.Icons
 import helper.Ktor
 import helper.Window
-import helper.Window.WindowStyle
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
 import io.ktor.client.HttpClient

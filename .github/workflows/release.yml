@@ -56,7 +56,7 @@ jobs:
     needs: [ build_release ]
     runs-on: windows-latest
     steps:
-      - uses: vedantmgoyal2009/vedantmgoyal2009/winget-pkgs-automation/releaser-action@v1.0.0
+      - uses: vedantmgoyal2009/winget-releaser@latest
         with:
           identifier: RussellBanks.HashHash
           installers-regex: '\.msi$'

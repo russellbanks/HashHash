@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.dialogs
+package components.dialogs.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +42,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import components.dialogs.CloseDialogFooter
+import components.dialogs.TranslucentDialogOverlay
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -78,7 +79,7 @@ fun SettingsDialog(
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(modifier = Modifier.weight(1f, false)) {
+                    Column(modifier = Modifier.weight(weight = 1f, fill = false)) {
                         LabelProjection(
                             contentModel = LabelContentModel(text = "Settings"),
                             presentationModel = LabelPresentationModel(

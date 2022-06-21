@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.dialogs
+package components.dialogs.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -72,7 +72,7 @@ fun SettingsItems(
     }
     Column(Modifier.padding(30.dp)) {
         LazyColumn(
-            modifier = Modifier.weight(1f, false),
+            modifier = Modifier.weight(weight = 1f, fill = false),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item {

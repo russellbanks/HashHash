@@ -31,9 +31,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -93,15 +91,15 @@ fun AboutDialog(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
-                modifier = Modifier.width(450.dp).height(310.dp),
+                modifier = Modifier.width(450.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = backgroundColorScheme.backgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
                 elevation = 4.dp
             ) {
                 Column {
-                    Row(modifier = Modifier.weight(1f).fillMaxSize().padding(30.dp)) {
-                        Box(Modifier.fillMaxHeight().padding(end = 30.dp)) {
+                    Row(modifier = Modifier.weight(weight = 1f, fill = false).padding(30.dp)) {
+                        Box(Modifier.padding(end = 30.dp)) {
                             Image(
                                 painter = Icons.logo(),
                                 contentDescription = "${BuildConfig.appName} logo",

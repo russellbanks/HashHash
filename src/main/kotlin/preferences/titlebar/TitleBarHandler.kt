@@ -31,8 +31,10 @@ class TitleBarHandler : Klogging {
 
     var titleBarListeners = ArrayList<(KProperty<*>, TitleBar?, TitleBar?) -> Unit>()
 
-    private var cachedTitleBar: TitleBar? by Delegates.observable(initialValue = null) { property, oldValue, newValue ->
-        titleBarListeners.forEach { it(property, oldValue, newValue) }
+    private var cachedTitleBar: TitleBar? by Delegates.observable(
+        initialValue = null
+    ) { property, oldTitleBar, newTitleBar ->
+        titleBarListeners.forEach { it(property, oldTitleBar, newTitleBar) }
     }
 
     fun getTitleBar(): TitleBar {
@@ -46,7 +48,7 @@ class TitleBarHandler : Klogging {
         cachedTitleBar = titleBar
         logger.info {
             "Put ${titleBar.name} into preferences with the key of " +
-                    "\"${titleBarKey}\" and the value of ${titleBar.ordinal}"
+                    "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
         }
     }
 

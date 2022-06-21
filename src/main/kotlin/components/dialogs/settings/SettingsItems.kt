@@ -64,11 +64,14 @@ fun SettingsItems(
 ) {
     val scope = rememberCoroutineScope()
     var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
+    themeHandler.themeListeners.add { _, _, newTheme -> if (newTheme != null) selectedTheme = newTheme }
     var selectedTitleBar by remember { mutableStateOf(titleBarHandler.getTitleBar()) }
+    titleBarHandler.titleBarListeners.add { _, _, newTitleBar ->
+        if (newTitleBar != null) selectedTitleBar = newTitleBar
+    }
     var selectedWindowCorner by remember { mutableStateOf(windowCornerHandler.getWindowCorner()) }
-    var isWindowNative by remember { mutableStateOf(titleBarHandler.getTitleBar() == TitleBar.Native) }
-    titleBarHandler.titleBarListeners.add { _, _, newValue ->
-        if (newValue != null) isWindowNative = newValue == TitleBar.Native
+    windowCornerHandler.windowCornerListeners.add { _, _, newWindowCorner ->
+        if (newWindowCorner != null) selectedWindowCorner = newWindowCorner
     }
     Column(Modifier.padding(30.dp)) {
         LazyColumn(
@@ -86,7 +89,6 @@ fun SettingsItems(
                             selectedItem = selectedTheme,
                             onTriggerItemSelectedChange = {
                                 if (themeHandler.getTheme(scope) != it) {
-                                    selectedTheme = it
                                     scope.launch(Dispatchers.Default) { themeHandler.putTheme(it) }
                                 }
                             }
@@ -111,7 +113,6 @@ fun SettingsItems(
                                 selectedItem = selectedTitleBar,
                                 onTriggerItemSelectedChange = {
                                     if (titleBarHandler.getTitleBar() != it) {
-                                        selectedTitleBar = it
                                         scope.launch(Dispatchers.Default) {
                                             titleBarHandler.putTitleBar(it)
                                         }
@@ -139,7 +140,7 @@ fun SettingsItems(
             }
             if (hostOs.isWindows && windowsBuild >= 22_000) {
                 item {
-                    AnimatedVisibility(visible = isWindowNative) {
+                    AnimatedVisibility(visible = selectedTitleBar == TitleBar.Native) {
                         Column {
                             Row {
                                 Box(Modifier.weight(1f)) {
@@ -151,7 +152,6 @@ fun SettingsItems(
                                         selectedItem = selectedWindowCorner,
                                         onTriggerItemSelectedChange = {
                                             if (windowCornerHandler.getWindowCorner() != it) {
-                                                selectedWindowCorner = it
                                                 scope.launch(Dispatchers.Default) {
                                                     windowCornerHandler.putWindowCorner(it)
                                                 }

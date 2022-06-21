@@ -66,9 +66,11 @@ fun ControlPane(
     fileScreen: FileScreenComponent,
     compareScreen: CompareFilesComponent,
     activeComponent: Root.Child,
+    modeHandler: ModeHandler
 ) {
     val scope = rememberCoroutineScope()
-    var mode by remember { mutableStateOf(ModeHandler.getMode(scope)) }
+    var selectedMode by remember { mutableStateOf(modeHandler.getMode(scope)) }
+    modeHandler.modeListeners.add { _, _, newMode -> if (newMode != null) selectedMode = newMode }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier
@@ -152,18 +154,18 @@ fun ControlPane(
                     CheckBoxProjection(
                         contentModel = SelectorContentModel(
                             text = "",
-                            selected = mode == Mode.SIMPLE,
+                            selected = selectedMode == Mode.SIMPLE,
                             onTriggerSelectedChange = {
-                                val newMode = if (mode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
-                                scope.launch(Dispatchers.Default) { ModeHandler.putMode(newMode) }
-                                mode = newMode
+                                scope.launch(Dispatchers.Default) {
+                                    modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED)
+                                }
                             }
                         )
                     ).project()
                 }
                 AlgorithmSelectionList(
                     algorithm = fileScreen.algorithm,
-                    mode = mode,
+                    mode = selectedMode,
                     onAlgorithmClick = {
                         scope.launch(Dispatchers.Default) {
                             ControlPaneHelper.onAlgorithmClick(algorithm = it, component = fileScreen)

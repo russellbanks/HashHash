@@ -25,13 +25,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
-object ModeHandler : Klogging {
-    private const val modeKey = "mode"
+class ModeHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    var cachedMode: Mode? = null
+    var modeListeners = ArrayList<(KProperty<*>, Mode?, Mode?) -> Unit>()
+
+    private var cachedMode: Mode? by Delegates.observable(initialValue = null) { property, oldMode, newMode ->
+        modeListeners.forEach { it(property, oldMode, newMode) }
+    }
 
     fun getMode(scope: CoroutineScope): Mode {
         return cachedMode
@@ -44,9 +49,14 @@ object ModeHandler : Klogging {
 
     suspend fun putMode(mode: Mode) = preferences.putInt(modeKey, mode.ordinal)
         .also {
+            cachedMode = mode
             logger.info {
                 "Put ${mode.name} into preferences with the key of \"$modeKey\" and the value of ${mode.ordinal}"
             }
         }
+
+    companion object {
+        private const val modeKey = "mode"
+    }
 
 }

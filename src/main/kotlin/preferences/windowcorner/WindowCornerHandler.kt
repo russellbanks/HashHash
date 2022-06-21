@@ -23,16 +23,24 @@ package preferences.windowcorner
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
 import io.klogging.Klogging
 import java.util.prefs.Preferences
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 class WindowCornerHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    private var cachedWindowCorner: WindowCornerPreference? = null
+    var windowCornerListeners = ArrayList<(KProperty<*>, WindowCornerPreference?, WindowCornerPreference?) -> Unit>()
+
+    private var cachedWindowCorner: WindowCornerPreference? by Delegates.observable(
+        initialValue = null
+    ) { property, oldWindowCorner, newWindowCorner ->
+        windowCornerListeners.forEach { it(property, oldWindowCorner, newWindowCorner) }
+    }
 
     fun getWindowCorner(): WindowCornerPreference {
         return cachedWindowCorner
-            ?: (when (preferences.getInt(titleBarKey, WindowCornerPreference.DEFAULT.ordinal)) {
+            ?: (when (preferences.getInt(windowCornerKey, WindowCornerPreference.DEFAULT.ordinal)) {
                 WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.NOT_ROUNDED.ordinal -> WindowCornerPreference.NOT_ROUNDED
                 WindowCornerPreference.SMALL_ROUNDED.ordinal -> WindowCornerPreference.SMALL_ROUNDED
@@ -41,15 +49,15 @@ class WindowCornerHandler : Klogging {
     }
 
     suspend fun putWindowCorner(windowCornerPreference: WindowCornerPreference) {
-        preferences.putInt(titleBarKey, windowCornerPreference.ordinal)
+        preferences.putInt(windowCornerKey, windowCornerPreference.ordinal)
         cachedWindowCorner = windowCornerPreference
         logger.info {
             "Put ${windowCornerPreference.name} into preferences with the key of " +
-                    "\"${titleBarKey}\" and the value of ${windowCornerPreference.ordinal}"
+                    "\"${windowCornerKey}\" and the value of ${windowCornerPreference.ordinal}"
         }
     }
 
     companion object {
-        private const val titleBarKey = "windowCorner"
+        private const val windowCornerKey = "windowCorner"
     }
 }

@@ -79,6 +79,7 @@ import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
+import preferences.mode.ModeHandler
 import preferences.theme.ThemeHandler
 import preferences.theme.toAuroraTheme
 import preferences.titlebar.TitleBar
@@ -112,8 +113,9 @@ fun main() {
         val systemDark = isSystemInDarkTheme()
         val themeHandler = remember { ThemeHandler() }
         var auroraSkin by remember { mutableStateOf(themeHandler.getTheme(scope).toAuroraTheme(systemDark)) }
-        themeHandler.themeListeners.add { _, _, newValue ->
-            if (newValue != null) auroraSkin = newValue.toAuroraTheme(systemDark)
+        val modeHandler = remember { ModeHandler() }
+        themeHandler.themeListeners.add { _, _, newTheme ->
+            if (newTheme != null) auroraSkin = newTheme.toAuroraTheme(systemDark)
         }
         val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
@@ -176,7 +178,8 @@ fun main() {
                         ControlPane(
                             fileScreen = fileScreenComponent,
                             compareScreen = compareFilesComponent,
-                            activeComponent = activeComponent
+                            activeComponent = activeComponent,
+                            modeHandler = modeHandler,
                         )
                         VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                         Column {

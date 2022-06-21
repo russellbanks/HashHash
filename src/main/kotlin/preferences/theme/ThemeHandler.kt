@@ -36,8 +36,8 @@ class ThemeHandler : Klogging {
 
     var themeListeners = ArrayList<(KProperty<*>, Theme?, Theme?) -> Unit>()
 
-    private var cachedTheme: Theme? by Delegates.observable(initialValue = null) { property, oldValue, newValue ->
-        themeListeners.forEach { it(property, oldValue, newValue) }
+    private var cachedTheme: Theme? by Delegates.observable(initialValue = null) { property, oldTheme, newTheme ->
+        themeListeners.forEach { it(property, oldTheme, newTheme) }
     }
 
     @Composable

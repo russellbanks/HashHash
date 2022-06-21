@@ -54,7 +54,7 @@ class ThemeHandler : Klogging {
             scope.launch(Dispatchers.Default) {
                 logger.info("Returned ${it?.name} (${if (it == null) "Created" else "Cached"})")
             }
-        } ?: when (preferences.getInt(themeKey, defaultThemeOrdinal)) {
+        } ?: when (preferences.getInt(themeKey, Theme.SYSTEM.ordinal)) {
             Theme.LIGHT.ordinal -> Theme.LIGHT
             Theme.DARK.ordinal -> Theme.DARK
             else -> Theme.SYSTEM
@@ -71,6 +71,5 @@ class ThemeHandler : Klogging {
 
     companion object {
         const val themeKey = "theme"
-        const val defaultThemeOrdinal = -1
     }
 }

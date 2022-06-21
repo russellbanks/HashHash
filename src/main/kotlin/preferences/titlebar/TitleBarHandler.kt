@@ -37,7 +37,7 @@ class TitleBarHandler : Klogging {
 
     fun getTitleBar(): TitleBar {
         return cachedTitleBar
-            ?: (if (preferences.getInt(titleBarKey, defaultTitleBarOrdinal) == TitleBar.Custom.ordinal) TitleBar.Custom
+            ?: (if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) TitleBar.Custom
             else TitleBar.Native).also { cachedTitleBar = it }
     }
 
@@ -51,7 +51,6 @@ class TitleBarHandler : Klogging {
     }
 
     companion object {
-        private const val defaultTitleBarOrdinal = -1
         private const val titleBarKey = "titleBar"
     }
 }

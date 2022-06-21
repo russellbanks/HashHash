@@ -32,7 +32,7 @@ class WindowCornerHandler : Klogging {
 
     fun getWindowCorner(): WindowCornerPreference {
         return cachedWindowCorner
-            ?: (when (preferences.getInt(titleBarKey, defaultWindowCornerOrdinal)) {
+            ?: (when (preferences.getInt(titleBarKey, WindowCornerPreference.DEFAULT.ordinal)) {
                 WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.NOT_ROUNDED.ordinal -> WindowCornerPreference.NOT_ROUNDED
                 WindowCornerPreference.SMALL_ROUNDED.ordinal -> WindowCornerPreference.SMALL_ROUNDED
@@ -51,6 +51,5 @@ class WindowCornerHandler : Klogging {
 
     companion object {
         private const val titleBarKey = "windowCorner"
-        private const val defaultWindowCornerOrdinal = -1
     }
 }

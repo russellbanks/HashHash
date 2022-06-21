@@ -18,16 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package preferences.theme
+package helper.windows.jna.structs
 
-import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
+import com.sun.jna.Structure
 
-fun Theme?.toAuroraTheme(systemDark: Boolean): AuroraSkinDefinition {
-    return when (this) {
-        Theme.LIGHT -> dustSkin()
-        Theme.DARK -> nightShadeSkin()
-        else -> if (systemDark) nightShadeSkin() else dustSkin()
-    }
+internal open class BaseStructure : Structure(), Structure.ByReference {
+    open fun dispose() = clear()
 }

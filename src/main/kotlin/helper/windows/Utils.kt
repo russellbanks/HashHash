@@ -18,16 +18,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package preferences.theme
+package helper.windows
 
-import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
+import helper.windows.jna.Nt
 
-fun Theme?.toAuroraTheme(systemDark: Boolean): AuroraSkinDefinition {
-    return when (this) {
-        Theme.LIGHT -> dustSkin()
-        Theme.DARK -> nightShadeSkin()
-        else -> if (systemDark) nightShadeSkin() else dustSkin()
-    }
+internal val windowsBuild by lazy {
+    val osVersionInfo = Nt.getVersion()
+    val buildNumber = osVersionInfo.buildNumber
+    osVersionInfo.dispose()
+    buildNumber
 }

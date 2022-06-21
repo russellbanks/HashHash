@@ -45,6 +45,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleC
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.mayakapps.compose.windowstyler.WindowBackdrop
+import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
@@ -82,6 +83,7 @@ import preferences.theme.ThemeHandler
 import preferences.theme.toAuroraTheme
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
+import preferences.windowcorner.WindowCornerHandler
 
 @OptIn(ExperimentalDecomposeApi::class)
 fun main() {
@@ -94,7 +96,8 @@ fun main() {
     var githubData: GitHubData? = null
     var retrievedGitHubData = false
     var httpClient: HttpClient? = null
-    val undecorated = TitleBarHandler.getTitleBar() == TitleBar.Custom
+    val titleBarHandler = TitleBarHandler()
+    val undecorated = titleBarHandler.getTitleBar() == TitleBar.Custom
     var isAboutOpen by mutableStateOf(false)
     var isPreferencesOpen by mutableStateOf(false)
     auroraApplication {
@@ -112,6 +115,7 @@ fun main() {
         themeHandler.themeListeners.add { _, _, newValue ->
             if (newValue != null) auroraSkin = newValue.toAuroraTheme(systemDark)
         }
+        val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
         val fileScreenComponent = remember {
             FileScreenComponent(
@@ -145,7 +149,11 @@ fun main() {
             undecorated = undecorated,
             onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
         ) {
-            WindowStyle(isDarkTheme = themeHandler.isDark(), backdropType = WindowBackdrop.Mica)
+            WindowStyle(
+                isDarkTheme = themeHandler.isDark(),
+                backdropType = WindowBackdrop.Mica,
+                frameStyle = WindowFrameStyle(cornerPreference = windowCornerHandler.getWindowCorner())
+            )
             Window.setupAWTWindow(
                 window = window,
                 fileScreenComponent = fileScreenComponent,
@@ -195,6 +203,8 @@ fun main() {
                 SettingsDialog(
                     visible = isPreferencesOpen,
                     themeHandler = themeHandler,
+                    titleBarHandler = titleBarHandler,
+                    windowCornerHandler = windowCornerHandler,
                     onCloseRequest = { isPreferencesOpen = false }
                 )
                 AboutDialog(

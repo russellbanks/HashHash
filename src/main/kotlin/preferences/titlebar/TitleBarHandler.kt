@@ -22,16 +22,18 @@ package preferences.titlebar
 
 import io.klogging.Klogging
 import java.util.prefs.Preferences
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
-object TitleBarHandler : Klogging {
-
-    private const val titleBarKey = "titleBar"
-
-    private const val defaultTitleBarOrdinal = -1
+class TitleBarHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    private var cachedTitleBar: TitleBar? = null
+    var titleBarListeners = ArrayList<(KProperty<*>, TitleBar?, TitleBar?) -> Unit>()
+
+    private var cachedTitleBar: TitleBar? by Delegates.observable(initialValue = null) { property, oldValue, newValue ->
+        titleBarListeners.forEach { it(property, oldValue, newValue) }
+    }
 
     fun getTitleBar(): TitleBar {
         return cachedTitleBar
@@ -44,7 +46,12 @@ object TitleBarHandler : Klogging {
         cachedTitleBar = titleBar
         logger.info {
             "Put ${titleBar.name} into preferences with the key of " +
-                    "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
+                    "\"${titleBarKey}\" and the value of ${titleBar.ordinal}"
         }
+    }
+
+    companion object {
+        private const val defaultTitleBarOrdinal = -1
+        private const val titleBarKey = "titleBar"
     }
 }

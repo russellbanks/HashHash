@@ -18,16 +18,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package preferences.theme
+package helper.windows.jna
 
-import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
+import helper.windows.jna.structs.OsVersionInfo
+import com.sun.jna.Native
+import com.sun.jna.win32.StdCallLibrary
+import com.sun.jna.win32.W32APIOptions
 
-fun Theme?.toAuroraTheme(systemDark: Boolean): AuroraSkinDefinition {
-    return when (this) {
-        Theme.LIGHT -> dustSkin()
-        Theme.DARK -> nightShadeSkin()
-        else -> if (systemDark) nightShadeSkin() else dustSkin()
-    }
+internal object Nt {
+    fun getVersion() = OsVersionInfo().also { NtImpl.RtlGetVersion(it) }
+}
+
+@Suppress("SpellCheckingInspection")
+private object NtImpl : NtApi by Native.load("Ntdll", NtApi::class.java, W32APIOptions.DEFAULT_OPTIONS)
+
+@Suppress("FunctionName")
+private interface NtApi : StdCallLibrary {
+    fun RtlGetVersion(osVersionInfo: OsVersionInfo): Int
 }

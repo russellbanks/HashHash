@@ -49,11 +49,15 @@ import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjecti
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 import preferences.theme.ThemeHandler
+import preferences.titlebar.TitleBarHandler
+import preferences.windowcorner.WindowCornerHandler
 
 @Composable
 fun SettingsDialog(
     visible: Boolean,
     themeHandler: ThemeHandler,
+    titleBarHandler: TitleBarHandler,
+    windowCornerHandler: WindowCornerHandler,
     onCloseRequest: () -> Unit
 ) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
@@ -67,7 +71,7 @@ fun SettingsDialog(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
-                modifier = Modifier.width(450.dp).height(290.dp),
+                modifier = Modifier.width(450.dp).height(350.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = backgroundColorScheme.backgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
@@ -85,7 +89,11 @@ fun SettingsDialog(
                             )
                         ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        SettingsItems(themeHandler = themeHandler)
+                        SettingsItems(
+                            themeHandler = themeHandler,
+                            titleBarHandler = titleBarHandler,
+                            windowCornerHandler = windowCornerHandler
+                        )
                     }
                     CloseDialogFooter(onCloseRequest = onCloseRequest)
                 }

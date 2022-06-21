@@ -44,6 +44,10 @@ dependencies {
     // Flow Extensions - https://github.com/hoc081098/FlowExt
     implementation(libs.flowext)
 
+    // Java Native Access - https://github.com/java-native-access/jna
+    implementation(libs.jna)
+    implementation(libs.jna.platform)
+
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
     implementation(libs.klogging.slf4j)

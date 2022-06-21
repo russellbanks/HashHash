@@ -37,8 +37,8 @@ class TitleBarHandler : Klogging {
 
     fun getTitleBar(): TitleBar {
         return cachedTitleBar
-            ?: (if (preferences.getInt(titleBarKey, defaultTitleBarOrdinal) == TitleBar.Native.ordinal) TitleBar.Native
-            else TitleBar.Custom).also { cachedTitleBar = it }
+            ?: (if (preferences.getInt(titleBarKey, defaultTitleBarOrdinal) == TitleBar.Custom.ordinal) TitleBar.Custom
+            else TitleBar.Native).also { cachedTitleBar = it }
     }
 
     suspend fun putTitleBar(titleBar: TitleBar) {

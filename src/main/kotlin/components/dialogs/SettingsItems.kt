@@ -72,7 +72,7 @@ fun SettingsItems(
     }
     Column(Modifier.padding(30.dp)) {
         LazyColumn(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f, false),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             item {

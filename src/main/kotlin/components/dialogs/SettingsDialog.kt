@@ -71,14 +71,14 @@ fun SettingsDialog(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
-                modifier = Modifier.width(450.dp).height(350.dp),
+                modifier = Modifier.width(450.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = backgroundColorScheme.backgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
                 elevation = 4.dp
             ) {
                 Column {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.weight(1f, false)) {
                         LabelProjection(
                             contentModel = LabelContentModel(text = "Settings"),
                             presentationModel = LabelPresentationModel(

@@ -34,7 +34,6 @@ dependencies {
 
     // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
     implementation(libs.coroutines.core)
-    implementation(libs.coroutines.swing)
 
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)

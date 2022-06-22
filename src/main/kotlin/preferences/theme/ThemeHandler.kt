@@ -20,41 +20,42 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.jthemedetecor.OsThemeDetector
 import io.klogging.Klogging
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import org.pushingpixels.aurora.theming.AuroraSkinDefinition
+import org.pushingpixels.aurora.theming.dustSkin
+import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
-import kotlin.properties.Delegates
-import kotlin.reflect.KProperty
 
 class ThemeHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    var themeListeners = ArrayList<(KProperty<*>, Theme?, Theme?) -> Unit>()
+    private var cachedTheme: Theme? = null
 
-    private var cachedTheme: Theme? by Delegates.observable(initialValue = null) { property, oldTheme, newTheme ->
-        themeListeners.forEach { it(property, oldTheme, newTheme) }
+    private val detector = OsThemeDetector.getDetector()
+
+    var auroraSkin by mutableStateOf(getTheme().toAuroraTheme())
+
+    fun registerThemeListener() {
+        detector.registerListener { isDark: Boolean ->
+            if (getTheme() == Theme.SYSTEM) auroraSkin = if (isDark) nightShadeSkin() else dustSkin()
+        }
     }
 
-    @Composable
     fun isDark(): Boolean {
         return when (cachedTheme) {
             Theme.DARK -> true
             Theme.LIGHT -> false
-            else -> isSystemInDarkTheme()
+            else -> detector.isDark
         }
     }
 
-    fun getTheme(scope: CoroutineScope): Theme {
-        return cachedTheme.also {
-            scope.launch(Dispatchers.Default) {
-                logger.info("Returned ${it?.name} (${if (it == null) "Created" else "Cached"})")
-            }
-        } ?: when (preferences.getInt(themeKey, Theme.SYSTEM.ordinal)) {
+    fun getTheme(): Theme {
+        return cachedTheme ?: when (preferences.getInt(themeKey, Theme.SYSTEM.ordinal)) {
             Theme.LIGHT.ordinal -> Theme.LIGHT
             Theme.DARK.ordinal -> Theme.DARK
             else -> Theme.SYSTEM
@@ -64,10 +65,19 @@ class ThemeHandler : Klogging {
     suspend fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)
         .also {
             cachedTheme = theme
+            auroraSkin = theme.toAuroraTheme()
             logger.info {
                 "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
             }
         }
+
+    private fun Theme?.toAuroraTheme(): AuroraSkinDefinition {
+        return when (this) {
+            Theme.LIGHT -> dustSkin()
+            Theme.DARK -> nightShadeSkin()
+            else -> if (detector.isDark) nightShadeSkin() else dustSkin()
+        }
+    }
 
     companion object {
         const val themeKey = "theme"

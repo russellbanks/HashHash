@@ -26,12 +26,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -44,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.dialogs.CloseDialogFooter
 import components.dialogs.TranslucentDialogOverlay
+import helper.windows.windowsBuild
+import org.jetbrains.skiko.hostOs
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -90,11 +94,23 @@ fun SettingsDialog(
                             )
                         ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        SettingsItems(
-                            themeHandler = themeHandler,
-                            titleBarHandler = titleBarHandler,
-                            windowCornerHandler = windowCornerHandler
-                        )
+                        Column(Modifier.padding(30.dp)) {
+                            LazyColumn(
+                                modifier = Modifier.weight(weight = 1f, fill = false),
+                                verticalArrangement = Arrangement.spacedBy(20.dp)
+                            ) {
+                                item { ThemeItem(themeHandler = themeHandler) }
+                                item { TitleBarItem(titleBarHandler = titleBarHandler) }
+                                if (hostOs.isWindows && windowsBuild >= 22_000) {
+                                    item {
+                                        WindowCornerItem(
+                                            windowCornerHandler = windowCornerHandler,
+                                            titleBarHandler = titleBarHandler
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                     CloseDialogFooter(onCloseRequest = onCloseRequest)
                 }

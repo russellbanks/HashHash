@@ -20,6 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.titlebar
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import io.klogging.Klogging
 import java.util.prefs.Preferences
 
@@ -27,7 +30,7 @@ class TitleBarHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    private var cachedTitleBar: TitleBar? = null
+    private var cachedTitleBar: TitleBar? by mutableStateOf(null)
 
     fun getTitleBar(): TitleBar {
         return cachedTitleBar

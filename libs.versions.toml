@@ -27,7 +27,6 @@ aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "
 aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "aurora" }
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "cryptohash" }
 

@@ -19,7 +19,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +43,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.jthemedetecor.OsThemeDetector
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
@@ -78,13 +76,10 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
-import org.pushingpixels.aurora.theming.dustSkin
-import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.mode.ModeHandler
 import preferences.theme.ThemeHandler
-import preferences.theme.toAuroraTheme
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
@@ -104,7 +99,7 @@ fun main() {
     val undecorated = titleBarHandler.getTitleBar() == TitleBar.Custom
     var isAboutOpen by mutableStateOf(false)
     var isPreferencesOpen by mutableStateOf(false)
-    val detector = OsThemeDetector.getDetector()
+    val themeHandler = ThemeHandler().apply { registerThemeListener() }
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
@@ -114,16 +109,7 @@ fun main() {
             position = WindowPosition(Alignment.Center),
             size = DpSize(width = 1035.dp, height = 750.dp)
         )
-        val systemDark = isSystemInDarkTheme()
-        val themeHandler = remember { ThemeHandler() }
-        var auroraSkin by remember { mutableStateOf(themeHandler.getTheme(scope).toAuroraTheme(systemDark)) }
-        remember { detector.registerListener { isDark: Boolean ->
-            scope.launch(Dispatchers.Main) { auroraSkin = if (isDark) nightShadeSkin() else dustSkin() }
-        } }
         val modeHandler = remember { ModeHandler() }
-        remember { themeHandler.themeListeners.add { _, _, newTheme ->
-            if (newTheme != null) auroraSkin = newTheme.toAuroraTheme(systemDark)
-        } }
         val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
         val fileScreenComponent = remember {
@@ -143,7 +129,7 @@ fun main() {
         }
         LifecycleController(lifecycle, windowState)
         AuroraWindow(
-            skin = auroraSkin,
+            skin = themeHandler.auroraSkin,
             state = windowState,
             title = BuildConfig.appName,
             icon = Icons.logo(),

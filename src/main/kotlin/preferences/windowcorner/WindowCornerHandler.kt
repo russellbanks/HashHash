@@ -20,6 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.windowcorner
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
 import io.klogging.Klogging
 import java.util.prefs.Preferences
@@ -28,7 +31,7 @@ class WindowCornerHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    private var cachedWindowCorner: WindowCornerPreference? = null
+    private var cachedWindowCorner: WindowCornerPreference? by mutableStateOf(null)
 
     fun getWindowCorner(): WindowCornerPreference {
         return cachedWindowCorner

@@ -44,6 +44,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.jthemedetecor.OsThemeDetector
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
@@ -53,8 +54,8 @@ import components.Root
 import components.RootComponent
 import components.Tabs
 import components.controlpane.ControlPane
-import components.dialogs.settings.SettingsDialog
 import components.dialogs.about.AboutDialog
+import components.dialogs.settings.SettingsDialog
 import components.screens.ParentComponent
 import components.screens.compare.CompareFilesComponent
 import components.screens.compare.CompareFilesScreen
@@ -77,6 +78,8 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
+import org.pushingpixels.aurora.theming.dustSkin
+import org.pushingpixels.aurora.theming.nightShadeSkin
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.mode.ModeHandler
@@ -101,6 +104,7 @@ fun main() {
     val undecorated = titleBarHandler.getTitleBar() == TitleBar.Custom
     var isAboutOpen by mutableStateOf(false)
     var isPreferencesOpen by mutableStateOf(false)
+    val detector = OsThemeDetector.getDetector()
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
@@ -113,6 +117,9 @@ fun main() {
         val systemDark = isSystemInDarkTheme()
         val themeHandler = remember { ThemeHandler() }
         var auroraSkin by remember { mutableStateOf(themeHandler.getTheme(scope).toAuroraTheme(systemDark)) }
+        remember { detector.registerListener { isDark: Boolean ->
+            scope.launch(Dispatchers.Main) { auroraSkin = if (isDark) nightShadeSkin() else dustSkin() }
+        } }
         val modeHandler = remember { ModeHandler() }
         themeHandler.themeListeners.add { _, _, newTheme ->
             if (newTheme != null) auroraSkin = newTheme.toAuroraTheme(systemDark)

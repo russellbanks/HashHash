@@ -88,7 +88,7 @@ fun SettingsItems(
                             items = Theme.values().toList(),
                             selectedItem = selectedTheme,
                             onTriggerItemSelectedChange = {
-                                if (themeHandler.getTheme(scope) != it || it == Theme.SYSTEM) {
+                                if (themeHandler.getTheme(scope) != it) {
                                     scope.launch(Dispatchers.Default) { themeHandler.putTheme(it) }
                                 }
                             }

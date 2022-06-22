@@ -41,8 +41,8 @@ class WindowCornerHandler : Klogging {
     fun getWindowCorner(): WindowCornerPreference {
         return cachedWindowCorner
             ?: (when (preferences.getInt(windowCornerKey, WindowCornerPreference.DEFAULT.ordinal)) {
-                WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.NOT_ROUNDED.ordinal -> WindowCornerPreference.NOT_ROUNDED
+                WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.SMALL_ROUNDED.ordinal -> WindowCornerPreference.SMALL_ROUNDED
                 else -> WindowCornerPreference.DEFAULT
             }).also { cachedWindowCorner = it }

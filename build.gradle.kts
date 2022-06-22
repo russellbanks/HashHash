@@ -18,6 +18,7 @@ repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -33,6 +34,7 @@ dependencies {
 
     // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
     implementation(libs.coroutines.core)
+    implementation(libs.coroutines.swing)
 
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
@@ -57,6 +59,9 @@ dependencies {
 
     // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
     implementation(libs.kotlinx.datetime)
+
+    // jSystemThemeDetector - https://github.com/Dansoftowner/jSystemThemeDetector
+    implementation(libs.jsystemthemedetector)
 
     // KotlinX Serialization - https://github.com/Kotlin/kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)

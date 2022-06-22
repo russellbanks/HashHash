@@ -9,6 +9,7 @@ decompose = "0.6.0"
 detekt = "1.20.0"
 flowext = "0.3.0"
 jna = "5.11.0"
+jsystemthemedetector = "3.6"
 klogging = "0.4.9"
 klogging-slf4j = "0.2.7"
 kotlin = "1.6.21"
@@ -26,6 +27,7 @@ aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "
 aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "aurora" }
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "cryptohash" }
 
@@ -38,6 +40,8 @@ flowext = { module = "io.github.hoc081098:FlowExt", version.ref = "flowext" }
 
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
+
+jsystemthemedetector = { module = "com.github.Dansoftowner:jSystemThemeDetector", version.ref = "jsystemthemedetector" }
 
 klogging-jvm = { module = "io.klogging:klogging-jvm", version.ref = "klogging" }
 klogging-slf4j = { module = "io.klogging:slf4j-klogging", version.ref = "klogging-slf4j" }

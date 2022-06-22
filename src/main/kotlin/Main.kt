@@ -52,6 +52,7 @@ import components.Root
 import components.RootComponent
 import components.Tabs
 import components.controlpane.ControlPane
+import components.dialogs.TranslucentDialogOverlay
 import components.dialogs.about.AboutDialog
 import components.dialogs.settings.SettingsDialog
 import components.screens.ParentComponent
@@ -197,6 +198,10 @@ fun main() {
                                 compareScreen = compareFilesComponent
                             )
                         }
+                        TranslucentDialogOverlay(
+                            visible = dialogState.areDialogsOpen(),
+                            onClick = dialogState::closeAll
+                        )
                         SettingsDialog(
                             dialogState = dialogState,
                             themeHandler = themeHandler,

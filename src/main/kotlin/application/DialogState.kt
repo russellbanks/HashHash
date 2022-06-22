@@ -23,40 +23,47 @@ package application
 import androidx.compose.runtime.mutableStateOf
 
 class DialogState {
-    var isAboutOpen = mutableStateOf(false)
-    var isSettingsOpen = mutableStateOf(false)
-
-    var listOfDialogs = listOf(
-        isAboutOpen,
-        isSettingsOpen
+    private var listOfDialogs = hashMapOf(
+        Dialogs.ABOUT to mutableStateOf(false),
+        Dialogs.SETTINGS to mutableStateOf(false)
     )
+
+    fun areDialogsOpen(): Boolean {
+        return listOfDialogs.values.any { it.value }
+    }
+
+    fun closeAll() {
+        listOfDialogs.forEach {
+            it.value.value = false
+        }
+    }
 
     inner class Settings : Dialog {
         override fun open() {
             for (dialog in listOfDialogs) {
-                dialog.value = dialog == isSettingsOpen
+                dialog.value.value = dialog.key == Dialogs.SETTINGS
             }
         }
 
         override fun close() {
-            isSettingsOpen.value = false
+            listOfDialogs[Dialogs.SETTINGS]?.value = false
         }
 
-        override fun isOpen() = isSettingsOpen.value
+        override fun isOpen() = listOfDialogs[Dialogs.SETTINGS]?.value == true
     }
 
     inner class About : Dialog {
         override fun open() {
             for (dialog in listOfDialogs) {
-                dialog.value = dialog == isAboutOpen
+                dialog.value.value = dialog.key == Dialogs.ABOUT
             }
         }
 
         override fun close() {
-            isAboutOpen.value = false
+            listOfDialogs[Dialogs.ABOUT]?.value = false
         }
 
-        override fun isOpen() = isAboutOpen.value
+        override fun isOpen() = listOfDialogs[Dialogs.ABOUT]?.value == true
     }
 
     interface Dialog {
@@ -65,6 +72,11 @@ class DialogState {
         fun close()
 
         fun isOpen(): Boolean
+    }
+
+    enum class Dialogs {
+        ABOUT,
+        SETTINGS
     }
 
 }

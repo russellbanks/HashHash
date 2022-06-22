@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.DialogState
 import com.russellbanks.HashHash.BuildConfig
-import components.dialogs.TranslucentDialogOverlay
 import data.GitHubData
 import helper.GitHub
 import helper.Icons
@@ -82,7 +81,6 @@ fun AboutDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    TranslucentDialogOverlay(visible = dialogState.About().isOpen(), onClick = dialogState.About()::close)
     AnimatedVisibility(
         visible = dialogState.About().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),

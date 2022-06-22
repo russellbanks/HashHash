@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
 import application.DialogState
-import components.dialogs.TranslucentDialogOverlay
 import helper.windows.windowsBuild
 import org.jetbrains.skiko.hostOs
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -69,7 +68,6 @@ fun SettingsDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    TranslucentDialogOverlay(visible = dialogState.Settings().isOpen(), onClick = dialogState.Settings()::close)
     AnimatedVisibility(
         visible = dialogState.Settings().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),

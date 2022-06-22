@@ -103,7 +103,6 @@ fun main() {
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
-
         val scope = rememberCoroutineScope()
         val windowState = rememberWindowState(
             position = WindowPosition(Alignment.Center),

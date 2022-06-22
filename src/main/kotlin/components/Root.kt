@@ -33,12 +33,17 @@ interface Root {
     val routerState: Value<RouterState<*, Child>>
 
     fun onFileTabClicked()
+
     fun onTextTabClicked()
+
     fun onCompareFilesTabClicked()
 
     sealed class Child {
+
         object File : Child()
+
         object Text : Child()
+
         object CompareFiles : Child()
 
         fun toInt(): Int {

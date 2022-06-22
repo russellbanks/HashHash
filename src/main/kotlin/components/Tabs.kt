@@ -47,7 +47,6 @@ fun Tabs(activeComponent: Root.Child, root: RootComponent) {
                 }
             }
         ),
-
         presentationModel = TabsPresentationModel(
             leadingMargin = 30.dp,
             trailingMargin = 30.dp,

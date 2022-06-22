@@ -76,11 +76,7 @@ fun OutputTextFieldRow(
                         Command(
                             text = "Copy",
                             icon = Icons.Utility.copy(),
-                            action = {
-                                if (value.isNotBlank()) {
-                                    clipboardManager.setText(AnnotatedString(text = value))
-                                }
-                            }
+                            action = { if (value.isNotBlank()) clipboardManager.setText(AnnotatedString(text = value)) }
                         ),
                         Command(
                             text = "Case",

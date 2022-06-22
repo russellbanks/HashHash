@@ -48,7 +48,7 @@ class WindowCornerHandler : Klogging {
         cachedWindowCorner = windowCornerPreference
         logger.info {
             "Put ${windowCornerPreference.name} into preferences with the key of " +
-                    "\"${windowCornerKey}\" and the value of ${windowCornerPreference.ordinal}"
+                    "\"$windowCornerKey\" and the value of ${windowCornerPreference.ordinal}"
         }
     }
 

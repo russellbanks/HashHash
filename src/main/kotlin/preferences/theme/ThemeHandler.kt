@@ -36,12 +36,12 @@ class ThemeHandler : Klogging {
 
     private var cachedTheme: Theme? = null
 
-    private val detector = OsThemeDetector.getDetector()
+    private val osThemeDetector = OsThemeDetector.getDetector()
 
     var auroraSkin by mutableStateOf(getTheme().toAuroraTheme())
 
     fun registerThemeListener() {
-        detector.registerListener { isDark: Boolean ->
+        osThemeDetector.registerListener { isDark: Boolean ->
             if (getTheme() == Theme.SYSTEM) auroraSkin = if (isDark) nightShadeSkin() else dustSkin()
         }
     }
@@ -50,7 +50,7 @@ class ThemeHandler : Klogging {
         return when (cachedTheme) {
             Theme.DARK -> true
             Theme.LIGHT -> false
-            else -> detector.isDark
+            else -> osThemeDetector.isDark
         }
     }
 
@@ -75,7 +75,7 @@ class ThemeHandler : Klogging {
         return when (this) {
             Theme.LIGHT -> dustSkin()
             Theme.DARK -> nightShadeSkin()
-            else -> if (detector.isDark) nightShadeSkin() else dustSkin()
+            else -> if (osThemeDetector.isDark) nightShadeSkin() else dustSkin()
         }
     }
 

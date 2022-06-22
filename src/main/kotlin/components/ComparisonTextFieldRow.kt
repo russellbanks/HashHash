@@ -70,16 +70,8 @@ fun ComparisonTextFieldRow(
             CommandButtonStripProjection(
                 contentModel = CommandGroup(
                     commands = listOf(
-                        Command(
-                            text = "Paste",
-                            icon = Icons.Utility.clipboard(),
-                            action = onPasteClick
-                        ),
-                        Command(
-                            text = "Clear",
-                            icon = Icons.Utility.eraser(),
-                            action = onClearClick
-                        )
+                        Command(text = "Paste", icon = Icons.Utility.clipboard(), action = onPasteClick),
+                        Command(text = "Clear", icon = Icons.Utility.eraser(), action = onClearClick)
                     )
                 ),
                 presentationModel = CommandStripPresentationModel(

@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
+import application.ApplicationWindowState
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +46,11 @@ import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
 @Composable
-fun WindowCornerItem(windowCornerHandler: WindowCornerHandler, titleBarHandler: TitleBarHandler) {
+fun WindowCornerItem(
+    windowCornerHandler: WindowCornerHandler,
+    titleBarHandler: TitleBarHandler,
+    window: ApplicationWindowState
+) {
     val scope = rememberCoroutineScope()
     AnimatedVisibility(visible = titleBarHandler.getTitleBar() == TitleBar.Native) {
         Column {
@@ -61,6 +66,7 @@ fun WindowCornerItem(windowCornerHandler: WindowCornerHandler, titleBarHandler: 
                             if (windowCornerHandler.getWindowCorner() != it) {
                                 scope.launch(Dispatchers.Default) {
                                     windowCornerHandler.putWindowCorner(it)
+                                    window.checkWindowNeedsRestarting(titleBarHandler, windowCornerHandler)
                                 }
                             }
                         }

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import application.ApplicationState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
@@ -80,7 +82,6 @@ import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.mode.ModeHandler
 import preferences.theme.ThemeHandler
-import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
@@ -96,7 +97,6 @@ fun main() {
     var retrievedGitHubData = false
     var httpClient: HttpClient? = null
     val titleBarHandler = TitleBarHandler()
-    val undecorated = titleBarHandler.getTitleBar() == TitleBar.Custom
     var isAboutOpen by mutableStateOf(false)
     var isPreferencesOpen by mutableStateOf(false)
     val themeHandler = ThemeHandler().apply { registerThemeListener() }
@@ -104,10 +104,6 @@ fun main() {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
         val scope = rememberCoroutineScope()
-        val windowState = rememberWindowState(
-            position = WindowPosition(Alignment.Center),
-            size = DpSize(width = 1035.dp, height = 750.dp)
-        )
         val modeHandler = remember { ModeHandler() }
         val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
@@ -126,97 +122,110 @@ fun main() {
                 componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
             )
         }
-        LifecycleController(lifecycle, windowState)
-        AuroraWindow(
-            skin = themeHandler.auroraSkin,
-            state = windowState,
-            title = BuildConfig.appName,
-            icon = Icons.logo(),
-            onCloseRequest = ::exitApplication,
-            menuCommands = Window.Header.commands(
-                auroraApplicationScope = this,
-                windowState = windowState,
-                gitHubData = githubData,
-                preferencesAction = { isPreferencesOpen = true },
-                aboutAction = { isAboutOpen = true }
-            ),
-            undecorated = undecorated,
-            onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
-        ) {
-            WindowStyle(
-                isDarkTheme = themeHandler.isDark(),
-                backdropType = WindowBackdrop.Mica,
-                frameStyle = WindowFrameStyle(cornerPreference = windowCornerHandler.getWindowCorner())
-            )
-            Window.setupAWTWindow(
-                window = window,
-                fileScreenComponent = fileScreenComponent,
-                compareFilesComponent = compareFilesComponent,
-                activeComponent = activeComponent
-            )
-            if (!retrievedGitHubData) {
-                retrievedGitHubData = true
-                httpClient = Ktor.createHttpClient().also { client ->
-                    scope.launch(Dispatchers.Default) {
-                        httpResponse = client.get(GitHub.HashHash.API.latest).also {
-                            if (it.status == HttpStatusCode.OK) githubData = it.body()
-                        }
-                    }
-                }
-            }
-            Box {
-                Column {
-                    Row(Modifier.fillMaxSize().weight(1f)) {
-                        ControlPane(
-                            fileScreen = fileScreenComponent,
-                            compareScreen = compareFilesComponent,
-                            activeComponent = activeComponent,
-                            modeHandler = modeHandler,
-                        )
-                        VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
-                        Column {
-                            Tabs(activeComponent = activeComponent, root = root)
-                            Children(
-                                routerState = routerState.value,
-                                animation = childAnimation(fade(tween(durationMillis = 200)))
-                            ) {
-                                when (it.instance) {
-                                    is Root.Child.File -> FileScreen(fileScreenComponent)
-                                    is Root.Child.Text -> TextScreen(textScreenComponent)
-                                    is Root.Child.CompareFiles -> CompareFilesScreen(compareFilesComponent)
+        val windowState = rememberWindowState(
+            position = WindowPosition(Alignment.Center),
+            size = DpSize(width = 1035.dp, height = 750.dp)
+        )
+        val applicationState = remember { ApplicationState(
+            titleBarHandler = titleBarHandler,
+            windowCornerHandler = windowCornerHandler
+        ) }
+        for (window in applicationState.windows) {
+            key(window) {
+                LifecycleController(lifecycle, windowState)
+                AuroraWindow(
+                    skin = themeHandler.auroraSkin,
+                    state = windowState,
+                    title = BuildConfig.appName,
+                    icon = Icons.logo(),
+                    onCloseRequest = ::exitApplication,
+                    menuCommands = Window.Header.commands(
+                        auroraApplicationScope = this,
+                        windowState = windowState,
+                        gitHubData = githubData,
+                        preferencesAction = { isPreferencesOpen = true },
+                        aboutAction = { isAboutOpen = true }
+                    ),
+                    undecorated = window.isUndecorated,
+                    onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
+                ) {
+                    WindowStyle(
+                        isDarkTheme = themeHandler.isDark(),
+                        backdropType = WindowBackdrop.Mica,
+                        frameStyle = WindowFrameStyle(cornerPreference = windowCornerHandler.getWindowCorner())
+                    )
+                    Window.setupAWTWindow(
+                        window = this.window,
+                        fileScreenComponent = fileScreenComponent,
+                        compareFilesComponent = compareFilesComponent,
+                        activeComponent = activeComponent
+                    )
+                    if (!retrievedGitHubData) {
+                        retrievedGitHubData = true
+                        httpClient = Ktor.createHttpClient().also { client ->
+                            scope.launch(Dispatchers.Default) {
+                                httpResponse = client.get(GitHub.HashHash.API.latest).also {
+                                    if (it.status == HttpStatusCode.OK) githubData = it.body()
                                 }
                             }
                         }
                     }
-                    Footer(
-                        activeComponent = activeComponent,
-                        fileScreen = fileScreenComponent,
-                        textScreen = textScreenComponent,
-                        compareScreen = compareFilesComponent
-                    )
-                }
-                SettingsDialog(
-                    visible = isPreferencesOpen,
-                    themeHandler = themeHandler,
-                    titleBarHandler = titleBarHandler,
-                    windowCornerHandler = windowCornerHandler,
-                    onCloseRequest = { isPreferencesOpen = false }
-                )
-                AboutDialog(
-                    visible = isAboutOpen,
-                    onCloseRequest = { isAboutOpen = false },
-                    httpClient = httpClient,
-                    httpResponse = httpResponse,
-                    githubData = githubData,
-                    onUpdateCheck = { response ->
-                        httpResponse = response
-                        if (response.status == HttpStatusCode.OK) {
-                            scope.launch(Dispatchers.Default) {
-                                githubData = response.body()
+                    Box {
+                        Column {
+                            Row(Modifier.fillMaxSize().weight(1f)) {
+                                ControlPane(
+                                    fileScreen = fileScreenComponent,
+                                    compareScreen = compareFilesComponent,
+                                    activeComponent = activeComponent,
+                                    modeHandler = modeHandler,
+                                )
+                                VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
+                                Column {
+                                    Tabs(activeComponent = activeComponent, root = root)
+                                    Children(
+                                        routerState = routerState.value,
+                                        animation = childAnimation(fade(tween(durationMillis = 200)))
+                                    ) {
+                                        when (it.instance) {
+                                            is Root.Child.File -> FileScreen(fileScreenComponent)
+                                            is Root.Child.Text -> TextScreen(textScreenComponent)
+                                            is Root.Child.CompareFiles -> CompareFilesScreen(compareFilesComponent)
+                                        }
+                                    }
+                                }
                             }
+                            Footer(
+                                activeComponent = activeComponent,
+                                fileScreen = fileScreenComponent,
+                                textScreen = textScreenComponent,
+                                compareScreen = compareFilesComponent
+                            )
                         }
+                        SettingsDialog(
+                            visible = isPreferencesOpen,
+                            themeHandler = themeHandler,
+                            titleBarHandler = titleBarHandler,
+                            windowCornerHandler = windowCornerHandler,
+                            onCloseRequest = { isPreferencesOpen = false },
+                            window = window
+                        )
+                        AboutDialog(
+                            visible = isAboutOpen,
+                            onCloseRequest = { isAboutOpen = false },
+                            httpClient = httpClient,
+                            httpResponse = httpResponse,
+                            githubData = githubData,
+                            onUpdateCheck = { response ->
+                                httpResponse = response
+                                if (response.status == HttpStatusCode.OK) {
+                                    scope.launch(Dispatchers.Default) {
+                                        githubData = response.body()
+                                    }
+                                }
+                            }
+                        )
                     }
-                )
+                }
             }
         }
     }

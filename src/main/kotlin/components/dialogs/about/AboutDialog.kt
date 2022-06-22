@@ -51,7 +51,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.russellbanks.HashHash.BuildConfig
-import components.dialogs.CloseDialogFooter
 import components.dialogs.TranslucentDialogOverlay
 import data.GitHubData
 import helper.GitHub

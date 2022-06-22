@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
+import application.ApplicationWindowState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.ComboBoxContentModel
@@ -40,9 +41,14 @@ import org.pushingpixels.aurora.component.projection.ComboBoxProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
+import preferences.windowcorner.WindowCornerHandler
 
 @Composable
-fun TitleBarItem(titleBarHandler: TitleBarHandler) {
+fun TitleBarItem(
+    titleBarHandler: TitleBarHandler,
+    windowCornerHandler: WindowCornerHandler,
+    window: ApplicationWindowState
+) {
     val scope = rememberCoroutineScope()
     Column {
         Row {
@@ -57,6 +63,11 @@ fun TitleBarItem(titleBarHandler: TitleBarHandler) {
                         if (titleBarHandler.getTitleBar() != it) {
                             scope.launch(Dispatchers.Default) {
                                 titleBarHandler.putTitleBar(it)
+                                if (it == TitleBar.Custom == window.isUndecorated) {
+                                    window.needsRestarting = false
+                                } else {
+                                    window.checkWindowNeedsRestarting(titleBarHandler, windowCornerHandler)
+                                }
                             }
                         }
                     }

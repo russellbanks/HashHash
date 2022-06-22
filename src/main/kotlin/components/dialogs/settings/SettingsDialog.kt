@@ -44,7 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import components.dialogs.CloseDialogFooter
+import application.ApplicationWindowState
 import components.dialogs.TranslucentDialogOverlay
 import helper.windows.windowsBuild
 import org.jetbrains.skiko.hostOs
@@ -63,7 +63,8 @@ fun SettingsDialog(
     themeHandler: ThemeHandler,
     titleBarHandler: TitleBarHandler,
     windowCornerHandler: WindowCornerHandler,
-    onCloseRequest: () -> Unit
+    onCloseRequest: () -> Unit,
+    window: ApplicationWindowState
 ) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
@@ -100,19 +101,24 @@ fun SettingsDialog(
                                 verticalArrangement = Arrangement.spacedBy(20.dp)
                             ) {
                                 item { ThemeItem(themeHandler = themeHandler) }
-                                item { TitleBarItem(titleBarHandler = titleBarHandler) }
+                                item { TitleBarItem(
+                                    titleBarHandler = titleBarHandler,
+                                    windowCornerHandler = windowCornerHandler,
+                                    window = window
+                                ) }
                                 if (hostOs.isWindows && windowsBuild >= 22_000) {
                                     item {
                                         WindowCornerItem(
                                             windowCornerHandler = windowCornerHandler,
-                                            titleBarHandler = titleBarHandler
+                                            titleBarHandler = titleBarHandler,
+                                            window = window
                                         )
                                     }
                                 }
                             }
                         }
                     }
-                    CloseDialogFooter(onCloseRequest = onCloseRequest)
+                    RestartWindowFooter(onCloseRequest = onCloseRequest, window = window)
                 }
             }
         }

@@ -64,15 +64,8 @@ fun SettingsItems(
 ) {
     val scope = rememberCoroutineScope()
     var selectedTheme by remember { mutableStateOf(themeHandler.getTheme(scope)) }
-    themeHandler.themeListeners.add { _, _, newTheme -> if (newTheme != null) selectedTheme = newTheme }
     var selectedTitleBar by remember { mutableStateOf(titleBarHandler.getTitleBar()) }
-    titleBarHandler.titleBarListeners.add { _, _, newTitleBar ->
-        if (newTitleBar != null) selectedTitleBar = newTitleBar
-    }
     var selectedWindowCorner by remember { mutableStateOf(windowCornerHandler.getWindowCorner()) }
-    windowCornerHandler.windowCornerListeners.add { _, _, newWindowCorner ->
-        if (newWindowCorner != null) selectedWindowCorner = newWindowCorner
-    }
     Column(Modifier.padding(30.dp)) {
         LazyColumn(
             modifier = Modifier.weight(weight = 1f, fill = false),
@@ -90,6 +83,7 @@ fun SettingsItems(
                             onTriggerItemSelectedChange = {
                                 if (themeHandler.getTheme(scope) != it) {
                                     scope.launch(Dispatchers.Default) { themeHandler.putTheme(it) }
+                                    selectedTheme = it
                                 }
                             }
                         ),
@@ -116,6 +110,7 @@ fun SettingsItems(
                                         scope.launch(Dispatchers.Default) {
                                             titleBarHandler.putTitleBar(it)
                                         }
+                                        selectedTitleBar = it
                                     }
                                 }
                             ),
@@ -155,6 +150,7 @@ fun SettingsItems(
                                                 scope.launch(Dispatchers.Default) {
                                                     windowCornerHandler.putWindowCorner(it)
                                                 }
+                                                selectedWindowCorner = it
                                             }
                                         }
                                     ),

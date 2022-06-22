@@ -22,20 +22,12 @@ package preferences.titlebar
 
 import io.klogging.Klogging
 import java.util.prefs.Preferences
-import kotlin.properties.Delegates
-import kotlin.reflect.KProperty
 
 class TitleBarHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    var titleBarListeners = ArrayList<(KProperty<*>, TitleBar?, TitleBar?) -> Unit>()
-
-    private var cachedTitleBar: TitleBar? by Delegates.observable(
-        initialValue = null
-    ) { property, oldTitleBar, newTitleBar ->
-        titleBarListeners.forEach { it(property, oldTitleBar, newTitleBar) }
-    }
+    private var cachedTitleBar: TitleBar? = null
 
     fun getTitleBar(): TitleBar {
         return cachedTitleBar

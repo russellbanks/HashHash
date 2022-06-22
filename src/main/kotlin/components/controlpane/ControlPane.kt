@@ -70,7 +70,6 @@ fun ControlPane(
 ) {
     val scope = rememberCoroutineScope()
     var selectedMode by remember { mutableStateOf(modeHandler.getMode(scope)) }
-    modeHandler.modeListeners.add { _, _, newMode -> if (newMode != null) selectedMode = newMode }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier
@@ -157,7 +156,9 @@ fun ControlPane(
                             selected = selectedMode == Mode.SIMPLE,
                             onTriggerSelectedChange = {
                                 scope.launch(Dispatchers.Default) {
-                                    modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED)
+                                    val newMode = if (it) Mode.SIMPLE else Mode.ADVANCED
+                                    modeHandler.putMode(newMode)
+                                    selectedMode = newMode
                                 }
                             }
                         )

@@ -23,20 +23,12 @@ package preferences.windowcorner
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
 import io.klogging.Klogging
 import java.util.prefs.Preferences
-import kotlin.properties.Delegates
-import kotlin.reflect.KProperty
 
 class WindowCornerHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    var windowCornerListeners = ArrayList<(KProperty<*>, WindowCornerPreference?, WindowCornerPreference?) -> Unit>()
-
-    private var cachedWindowCorner: WindowCornerPreference? by Delegates.observable(
-        initialValue = null
-    ) { property, oldWindowCorner, newWindowCorner ->
-        windowCornerListeners.forEach { it(property, oldWindowCorner, newWindowCorner) }
-    }
+    private var cachedWindowCorner: WindowCornerPreference? = null
 
     fun getWindowCorner(): WindowCornerPreference {
         return cachedWindowCorner

@@ -121,9 +121,9 @@ fun main() {
             scope.launch(Dispatchers.Main) { auroraSkin = if (isDark) nightShadeSkin() else dustSkin() }
         } }
         val modeHandler = remember { ModeHandler() }
-        themeHandler.themeListeners.add { _, _, newTheme ->
+        remember { themeHandler.themeListeners.add { _, _, newTheme ->
             if (newTheme != null) auroraSkin = newTheme.toAuroraTheme(systemDark)
-        }
+        } }
         val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
         val fileScreenComponent = remember {

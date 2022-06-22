@@ -25,18 +25,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
-import kotlin.properties.Delegates
-import kotlin.reflect.KProperty
 
 class ModeHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
-    var modeListeners = ArrayList<(KProperty<*>, Mode?, Mode?) -> Unit>()
-
-    private var cachedMode: Mode? by Delegates.observable(initialValue = null) { property, oldMode, newMode ->
-        modeListeners.forEach { it(property, oldMode, newMode) }
-    }
+    private var cachedMode: Mode? = null
 
     fun getMode(scope: CoroutineScope): Mode {
         return cachedMode

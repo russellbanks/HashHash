@@ -31,6 +31,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
+import application.DialogState
 import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
@@ -100,25 +101,21 @@ object Window {
             auroraApplicationScope: AuroraApplicationScope,
             windowState: WindowState,
             gitHubData: GitHubData?,
-            preferencesAction: () -> Unit,
-            aboutAction: () -> Unit
+            dialogState: DialogState
         ): CommandGroup {
             return CommandGroup(
                 commands = listOf(
-                    fileHeaderButton(
-                        auroraApplicationScope = auroraApplicationScope,
-                        preferencesAction = preferencesAction
-                    ),
+                    fileHeaderButton(auroraApplicationScope = auroraApplicationScope, dialogState = dialogState),
                     viewHeaderButton(windowState = windowState),
                     windowHeaderButton(windowState = windowState),
-                    helpHeaderButton(gitHubData = gitHubData, aboutAction = aboutAction)
+                    helpHeaderButton(gitHubData = gitHubData, dialogState = dialogState)
                 )
             )
         }
 
         private fun fileHeaderButton(
             auroraApplicationScope: AuroraApplicationScope,
-            preferencesAction: () -> Unit
+            dialogState: DialogState
         ): Command {
             return Command(
                 text = "File",
@@ -128,7 +125,7 @@ object Window {
                             commands = listOf(
                                 Command(
                                     text = "Settings",
-                                    action = preferencesAction
+                                    action = dialogState.Settings()::open
                                 )
                             )
                         ),
@@ -180,7 +177,7 @@ object Window {
         @Composable
         private fun helpHeaderButton(
             gitHubData: GitHubData?,
-            aboutAction: () -> Unit
+            dialogState: DialogState
         ): Command {
             val scope = rememberCoroutineScope()
             return Command(
@@ -221,7 +218,7 @@ object Window {
                             commands = listOf(
                                 Command(
                                     text = "About",
-                                    action = aboutAction
+                                    action = dialogState.About()::open
                                 )
                             )
                         )

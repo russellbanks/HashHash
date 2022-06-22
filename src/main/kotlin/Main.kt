@@ -24,12 +24,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
@@ -37,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import application.ApplicationState
+import application.DialogState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
@@ -97,8 +95,7 @@ fun main() {
     var retrievedGitHubData = false
     var httpClient: HttpClient? = null
     val titleBarHandler = TitleBarHandler()
-    var isAboutOpen by mutableStateOf(false)
-    var isPreferencesOpen by mutableStateOf(false)
+    val dialogState = DialogState()
     val themeHandler = ThemeHandler().apply { registerThemeListener() }
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
@@ -143,8 +140,7 @@ fun main() {
                         auroraApplicationScope = this,
                         windowState = windowState,
                         gitHubData = githubData,
-                        preferencesAction = { isPreferencesOpen = true },
-                        aboutAction = { isAboutOpen = true }
+                        dialogState = dialogState
                     ),
                     undecorated = window.isUndecorated,
                     onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
@@ -202,16 +198,14 @@ fun main() {
                             )
                         }
                         SettingsDialog(
-                            visible = isPreferencesOpen,
+                            dialogState = dialogState,
                             themeHandler = themeHandler,
                             titleBarHandler = titleBarHandler,
                             windowCornerHandler = windowCornerHandler,
-                            onCloseRequest = { isPreferencesOpen = false },
                             window = window
                         )
                         AboutDialog(
-                            visible = isAboutOpen,
-                            onCloseRequest = { isAboutOpen = false },
+                            dialogState = dialogState,
                             httpClient = httpClient,
                             httpResponse = httpResponse,
                             githubData = githubData,

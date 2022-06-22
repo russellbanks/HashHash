@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
+import application.DialogState
 import components.dialogs.TranslucentDialogOverlay
 import helper.windows.windowsBuild
 import org.jetbrains.skiko.hostOs
@@ -59,19 +60,18 @@ import preferences.windowcorner.WindowCornerHandler
 
 @Composable
 fun SettingsDialog(
-    visible: Boolean,
+    dialogState: DialogState,
     themeHandler: ThemeHandler,
     titleBarHandler: TitleBarHandler,
     windowCornerHandler: WindowCornerHandler,
-    onCloseRequest: () -> Unit,
     window: ApplicationWindowState
 ) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    TranslucentDialogOverlay(visible = visible, onClick = onCloseRequest)
+    TranslucentDialogOverlay(visible = dialogState.Settings().isOpen(), onClick = dialogState.Settings()::close)
     AnimatedVisibility(
-        visible = visible,
+        visible = dialogState.Settings().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
         exit = fadeOut() + slideOutVertically(targetOffsetY = { -it / 10 })
     ) {
@@ -118,7 +118,7 @@ fun SettingsDialog(
                             }
                         }
                     }
-                    RestartWindowFooter(onCloseRequest = onCloseRequest, window = window)
+                    RestartWindowFooter(onCloseRequest = dialogState.Settings()::open, window = window)
                 }
             }
         }

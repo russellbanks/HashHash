@@ -50,6 +50,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import application.DialogState
 import com.russellbanks.HashHash.BuildConfig
 import components.dialogs.TranslucentDialogOverlay
 import data.GitHubData
@@ -69,8 +70,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
 fun AboutDialog(
-    visible: Boolean,
-    onCloseRequest: () -> Unit,
+    dialogState: DialogState,
     httpClient: HttpClient?,
     httpResponse: HttpResponse?,
     githubData: GitHubData?,
@@ -82,9 +82,9 @@ fun AboutDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    TranslucentDialogOverlay(visible = visible, onClick = onCloseRequest)
+    TranslucentDialogOverlay(visible = dialogState.About().isOpen(), onClick = dialogState.About()::close)
     AnimatedVisibility(
-        visible = visible,
+        visible = dialogState.About().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
         exit = fadeOut() + slideOutVertically(targetOffsetY = { -it / 10 })
     ) {
@@ -139,7 +139,7 @@ fun AboutDialog(
                             }
                         }
                     }
-                    CloseDialogFooter(onCloseRequest = onCloseRequest)
+                    CloseDialogFooter(onCloseRequest = dialogState.About()::close)
                 }
             }
         }

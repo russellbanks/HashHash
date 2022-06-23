@@ -20,14 +20,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -54,12 +52,7 @@ fun FileInfoSection(file: File?) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = Icons.FileTypes.getFileIcon(file),
-                contentDescription = "${(file?.extension ?: "file")
-                    .lowercase().replaceFirstChar { it.titlecase() }} icon",
-                modifier = Modifier.size(80.dp).padding(start = 20.dp)
-            )
+            Icons.SystemIcon(file)
             FlowRow(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 mainAxisAlignment = FlowMainAxisAlignment.SpaceEvenly

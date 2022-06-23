@@ -20,15 +20,58 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import java.awt.AlphaComposite
+import java.awt.image.BufferedImage
 import java.io.File
+import javax.swing.Icon
+import javax.swing.filechooser.FileSystemView
 
 object Icons {
 
     @Composable
     fun logo() = painterResource("logo.svg")
+
+    @Composable
+    fun file() = painterResource("file types/file.svg")
+
+    @Composable
+    fun FileImage() = Image(
+        painter = file(),
+        contentDescription = null,
+        modifier = Modifier.size(80.dp).padding(start = 20.dp)
+    )
+
+    @Composable
+    fun SystemIcon(file: File?) {
+        file?.let {
+            FileSystemView.getFileSystemView().getSystemIcon(it, /* width = */ 64, /* height = */ 64)?.also { icon ->
+                Image(
+                    painter = icon.toBufferedImage().toPainter(),
+                    contentDescription = null,
+                    modifier = Modifier.size(80.dp).padding(start = 20.dp)
+                )
+            } ?: FileImage()
+        } ?: FileImage()
+    }
+
+    private fun Icon.toBufferedImage(): BufferedImage {
+        return BufferedImage(iconWidth, iconHeight, BufferedImage.TYPE_INT_ARGB).apply {
+            createGraphics().apply {
+                composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER)
+                paintIcon(null, this, 0, 0)
+                dispose()
+            }
+        }
+    }
+
 
     object Utility {
 
@@ -60,22 +103,5 @@ object Icons {
 
         @Composable
         fun lowerCaseA() = painterResource("$prefixPath/lowercase-a.svg")
-    }
-
-    object FileTypes {
-
-        @Composable
-        fun getFileIcon(file: File?): Painter {
-            listOf(
-                "ai", "apk", "avi", "css", "csv", "dbf", "dll", "doc", "docx", "dwg", "exe", "file", "html", "iso",
-                "jar", "java", "jpg", "js", "json", "kt", "log", "md", "mp3", "mp4", "msi", "pdf", "png", "ppt", "pptx",
-                "rpf", "rtf", "svg", "txt", "xls", "xlsx", "xml", "zip"
-            ).also {
-                return painterResource(
-                    resourcePath = "file types/${it.getOrNull(it.indexOf(file?.extension?.lowercase() ?: "file"))
-                        ?: "file"}.svg"
-                )
-            }
-        }
     }
 }

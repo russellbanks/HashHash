@@ -20,9 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import api.Ktor
 import com.russellbanks.HashHash.BuildConfig
-import data.GitHubData
-import io.ktor.client.statement.HttpResponse
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -43,24 +42,20 @@ object GitHub {
         }
     }
 
-    fun getUpdateResponseText(
-        checkingGitHubAPI: Boolean,
-        gitHubData: GitHubData?,
-        httpResponse: HttpResponse?
-    ) = when {
+    fun getUpdateResponseText(checkingGitHubAPI: Boolean, ktor: Ktor) = when {
         checkingGitHubAPI -> "Checking"
-        gitHubData?.tagName?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
-        gitHubData?.tagName?.contains(BuildConfig.appVersion) == false -> {
-            "Out of date. Latest version is ${gitHubData.tagName.removePrefix("v")}"
+        ktor.githubData?.tagName?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
+        ktor.githubData?.tagName?.contains(BuildConfig.appVersion) == false -> {
+            "Out of date. Latest version is ${ktor.githubData?.tagName?.removePrefix("v")}"
         }
-        (httpResponse?.headers?.get("X-RateLimit-Remaining")?.toInt() ?: -1) == 0 -> {
-            val epochSeconds = httpResponse?.headers?.get("X-RateLimit-Reset")?.toLong()
+        (ktor.httpResponse?.headers?.get("X-RateLimit-Remaining")?.toInt() ?: -1) == 0 -> {
+            val epochSeconds = ktor.httpResponse?.headers?.get("X-RateLimit-Reset")?.toLong()
             val instantEpochSeconds = epochSeconds?.let { Instant.fromEpochSeconds(it) }
             var minutesLeft = instantEpochSeconds?.let { Clock.System.now().until(it, DateTimeUnit.MINUTE) }
             if (minutesLeft == 0L) minutesLeft = 1L
             "Rate limited. Check back in $minutesLeft minute${if (minutesLeft != 1L) "s" else ""}"
         }
-        httpResponse != null -> "${httpResponse.status} - Check back later"
+        ktor.httpResponse != null -> "${ktor.httpResponse?.status} - Check back later"
         else -> "Error accessing GitHub API"
     }
 }

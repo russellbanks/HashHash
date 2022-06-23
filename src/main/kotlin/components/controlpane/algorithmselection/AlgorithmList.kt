@@ -26,15 +26,8 @@ import components.controlpane.NestedAlgorithm
 object AlgorithmList {
 
     val simple = listOf(
-        Algorithm.MD5,
-        Algorithm.SHA_1,
-        Algorithm.SHA3_256,
-        Algorithm.SHA_256,
-        Algorithm.SHA_512,
-        Algorithm.XXHash64(),
-        Algorithm.Blake2b_256,
-        Algorithm.Blake3(),
-        Algorithm.CRC32
+        Algorithm.MD5, Algorithm.SHA_1, Algorithm.SHA3_256, Algorithm.SHA_256, Algorithm.SHA_512, Algorithm.XXHash64(),
+        Algorithm.Blake2b_256, Algorithm.Blake3(), Algorithm.CRC32
     )
 
     val advanced = listOf(

@@ -23,30 +23,30 @@ package application
 import androidx.compose.runtime.mutableStateMapOf
 
 class DialogState {
-    private var listOfDialogs = mutableStateMapOf(Dialogs.ABOUT to false, Dialogs.SETTINGS to false)
+    private var dialogsMap = mutableStateMapOf(Dialogs.ABOUT to false, Dialogs.SETTINGS to false)
 
-    fun areDialogsOpen() = listOfDialogs.values.any { it }
+    fun areDialogsOpen() = dialogsMap.values.any { it }
 
-    fun closeAllDialogs() = listOfDialogs.forEach { listOfDialogs[it.key] = false }
+    fun closeAllDialogs() = dialogsMap.forEach { dialogsMap[it.key] = false }
 
     inner class Settings : Dialog {
-        override fun open() = listOfDialogs.forEach { listOfDialogs[it.key] = it.key == Dialogs.SETTINGS }
+        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.SETTINGS }
 
         override fun close() {
-            listOfDialogs[Dialogs.SETTINGS] = false
+            dialogsMap[Dialogs.SETTINGS] = false
         }
 
-        override fun isOpen() = listOfDialogs[Dialogs.SETTINGS] == true
+        override fun isOpen() = dialogsMap[Dialogs.SETTINGS] == true
     }
 
     inner class About : Dialog {
-        override fun open() = listOfDialogs.forEach { listOfDialogs[it.key] = it.key == Dialogs.ABOUT }
+        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.ABOUT }
 
         override fun close() {
-            listOfDialogs[Dialogs.ABOUT] = false
+            dialogsMap[Dialogs.ABOUT] = false
         }
 
-        override fun isOpen() = listOfDialogs[Dialogs.ABOUT] == true
+        override fun isOpen() = dialogsMap[Dialogs.ABOUT] == true
     }
 
     interface Dialog {

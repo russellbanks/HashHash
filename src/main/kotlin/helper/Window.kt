@@ -31,11 +31,11 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
+import api.Ktor
 import application.DialogState
 import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
-import data.GitHubData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -57,11 +57,11 @@ object Window {
         compareFilesComponent: CompareFilesComponent,
         activeComponent: Root.Child
     ) {
-        val scope = rememberCoroutineScope()
+        val scope = rememberCoroutineScope { Dispatchers.Default }
         with(window) {
             minimumSize = Dimension(minWindowWidth, minWindowHeight)
             dropTarget = DragAndDrop.target(scope) { droppedItems ->
-                scope.launch(Dispatchers.Default) {
+                scope.launch {
                     DragAndDrop.setResult(
                         droppedItems = droppedItems,
                         fileScreenComponent = fileScreenComponent,
@@ -100,7 +100,7 @@ object Window {
         fun commands(
             auroraApplicationScope: AuroraApplicationScope,
             windowState: WindowState,
-            gitHubData: GitHubData?,
+            ktor: Ktor,
             dialogState: DialogState
         ): CommandGroup {
             return CommandGroup(
@@ -108,7 +108,7 @@ object Window {
                     fileHeaderButton(auroraApplicationScope = auroraApplicationScope, dialogState = dialogState),
                     viewHeaderButton(windowState = windowState),
                     windowHeaderButton(windowState = windowState),
-                    helpHeaderButton(gitHubData = gitHubData, dialogState = dialogState)
+                    helpHeaderButton(ktor = ktor, dialogState = dialogState)
                 )
             )
         }
@@ -176,7 +176,7 @@ object Window {
 
         @Composable
         private fun helpHeaderButton(
-            gitHubData: GitHubData?,
+            ktor: Ktor,
             dialogState: DialogState
         ): Command {
             val scope = rememberCoroutineScope()
@@ -207,7 +207,7 @@ object Window {
                                     action = {
                                         scope.launch(Dispatchers.Default) {
                                             Browser.open(
-                                                URL(gitHubData?.htmlUrl ?: GitHub.HashHash.Repository.releases)
+                                                URL(ktor.githubData?.htmlUrl ?: GitHub.HashHash.Repository.releases)
                                             )
                                         }
                                     }

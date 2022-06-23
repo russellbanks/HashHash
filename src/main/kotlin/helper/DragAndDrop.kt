@@ -77,12 +77,10 @@ object DragAndDrop : Klogging {
     }
 
     private suspend fun setCompareScreenFiles(file: File, compareFilesComponent: CompareFilesComponent) {
-        if (compareFilesComponent.fileOne == null) {
-            compareFilesComponent.fileOne = file
-            logger.info("Set ${file.name} as the 1st comparison file")
-        } else {
-            compareFilesComponent.fileTwo = file
-            logger.info("Set ${file.name} as the 2nd comparison file")
+        if (compareFilesComponent.fileOne == null) compareFilesComponent.fileOne = file.also {
+            logger.info("Set ${it.name} as the 1st comparison file")
+        } else compareFilesComponent.fileTwo = file.also {
+            logger.info("Set ${it.name} as the 2nd comparison file")
         }
     }
 }

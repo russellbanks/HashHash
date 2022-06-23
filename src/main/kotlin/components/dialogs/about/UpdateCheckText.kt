@@ -40,10 +40,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.GitHubData
+import api.Ktor
 import helper.GitHub
 import helper.Icons
-import io.ktor.client.statement.HttpResponse
 import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -54,8 +53,7 @@ import java.text.SimpleDateFormat
 @Composable
 fun UpdateCheckText(
     checkingGitHubAPI: Boolean,
-    httpResponse: HttpResponse?,
-    gitHubData: GitHubData?,
+    ktor: Ktor,
     lastChecked: Instant?
 ) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
@@ -86,9 +84,7 @@ fun UpdateCheckText(
                 }
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = GitHub.getUpdateResponseText(
-                            checkingGitHubAPI = checkingGitHubAPI, gitHubData = gitHubData, httpResponse = httpResponse
-                        )
+                        text = GitHub.getUpdateResponseText(checkingGitHubAPI = checkingGitHubAPI, ktor = ktor)
                     ),
                     presentationModel = LabelPresentationModel(
                         textStyle = TextStyle(fontSize = 12.sp)

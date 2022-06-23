@@ -18,27 +18,51 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package helper
+package api
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import data.GitHubData
+import helper.GitHub
 import io.klogging.Klogging
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-object Ktor : Klogging {
+class Ktor : Klogging {
+
+    var httpResponse: HttpResponse? = null
+    var githubData: GitHubData? = null
+    var retrievedGitHubData = false
+    var httpClient: HttpClient? = null
 
     @Composable
-    fun createHttpClient(): HttpClient {
-        val scope = rememberCoroutineScope()
+    fun retrieveGitHubData() {
+        if (retrievedGitHubData) { return }
+        retrievedGitHubData = true
+        httpClient = createHttpClient().also { client ->
+            rememberCoroutineScope { Dispatchers.IO }.launch(Dispatchers.Default) {
+                httpResponse = client.get(GitHub.HashHash.API.latest).also {
+                    if (it.status == HttpStatusCode.OK) githubData = it.body()
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun createHttpClient(): HttpClient {
+        val scope = rememberCoroutineScope { Dispatchers.IO }
         return HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(

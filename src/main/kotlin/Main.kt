@@ -26,13 +26,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import api.Ktor
 import application.ApplicationState
 import application.DialogState
 import com.arkivanov.decompose.DefaultComponentContext
@@ -62,20 +62,10 @@ import components.screens.file.FileScreen
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreen
 import components.screens.text.TextScreenComponent
-import data.GitHubData
-import helper.GitHub
 import helper.Icons
-import helper.Ktor
 import helper.Window
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -91,17 +81,13 @@ fun main() {
     val lifecycle = LifecycleRegistry()
     val root = RootComponent(DefaultComponentContext(lifecycle))
 
-    var httpResponse: HttpResponse? = null
-    var githubData: GitHubData? = null
-    var retrievedGitHubData = false
-    var httpClient: HttpClient? = null
+    val ktor = Ktor()
     val titleBarHandler = TitleBarHandler()
     val dialogState = DialogState()
     val themeHandler = ThemeHandler().apply { registerThemeListener() }
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
-        val scope = rememberCoroutineScope()
         val modeHandler = remember { ModeHandler() }
         val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
@@ -140,7 +126,7 @@ fun main() {
                     menuCommands = Window.Header.commands(
                         auroraApplicationScope = this,
                         windowState = windowState,
-                        gitHubData = githubData,
+                        ktor = ktor,
                         dialogState = dialogState
                     ),
                     undecorated = window.isUndecorated,
@@ -157,16 +143,7 @@ fun main() {
                         compareFilesComponent = compareFilesComponent,
                         activeComponent = activeComponent
                     )
-                    if (!retrievedGitHubData) {
-                        retrievedGitHubData = true
-                        httpClient = Ktor.createHttpClient().also { client ->
-                            scope.launch(Dispatchers.Default) {
-                                httpResponse = client.get(GitHub.HashHash.API.latest).also {
-                                    if (it.status == HttpStatusCode.OK) githubData = it.body()
-                                }
-                            }
-                        }
-                    }
+                    ktor.retrieveGitHubData()
                     Box {
                         Column {
                             Row(Modifier.fillMaxSize().weight(1f)) {
@@ -206,20 +183,7 @@ fun main() {
                             windowCornerHandler = windowCornerHandler,
                             window = window
                         )
-                        AboutDialog(
-                            dialogState = dialogState,
-                            httpClient = httpClient,
-                            httpResponse = httpResponse,
-                            githubData = githubData,
-                            onUpdateCheck = { response ->
-                                httpResponse = response
-                                if (response.status == HttpStatusCode.OK) {
-                                    scope.launch(Dispatchers.Default) {
-                                        githubData = response.body()
-                                    }
-                                }
-                            }
-                        )
+                        AboutDialog(dialogState = dialogState, ktor = ktor)
                     }
                 }
             }

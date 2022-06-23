@@ -39,13 +39,8 @@ class ApplicationState(val titleBarHandler: TitleBarHandler, val windowCornerHan
         windows += windowState()
     }
 
-    private fun exit() {
-        windows.clear()
-    }
-
     private fun windowState() = ApplicationWindowState(
         openNewWindow = ::openNewWindow,
-        exit = ::exit,
         windows::remove,
         titleBarHandler = titleBarHandler,
         windowCornerHandler = windowCornerHandler
@@ -54,7 +49,6 @@ class ApplicationState(val titleBarHandler: TitleBarHandler, val windowCornerHan
 
 class ApplicationWindowState(
     val openNewWindow: () -> Unit,
-    val exit: () -> Unit,
     private val close: (ApplicationWindowState) -> Unit,
     titleBarHandler: TitleBarHandler,
     windowCornerHandler: WindowCornerHandler

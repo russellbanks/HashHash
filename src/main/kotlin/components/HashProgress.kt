@@ -61,9 +61,7 @@ fun HashProgress(
             }
         }
         DeterminateLinearProgressProjection(
-            contentModel = ProgressDeterminateContentModel(
-                progress = fileHashProgress
-            )
+            contentModel = ProgressDeterminateContentModel(progress = fileHashProgress)
         ).project(Modifier.fillMaxWidth())
     }
 }

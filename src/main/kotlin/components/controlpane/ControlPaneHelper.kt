@@ -64,14 +64,12 @@ object ControlPaneHelper : Klogging {
         compareFilesComponent: CompareFilesComponent
     ) {
         if (buttonIndex == 0) {
-            if (compareFilesComponent.fileOne != file) {
-                compareFilesComponent.fileOne = file
-                logger.info("Set user selected file ${file.absolutePath} as 1st comparison file")
+            if (compareFilesComponent.fileOne != file) compareFilesComponent.fileOne = file.also {
+                logger.info("Set user selected file ${it.absolutePath} as 1st comparison file")
             }
         } else {
-            if (compareFilesComponent.fileTwo != file) {
-                compareFilesComponent.fileTwo = file
-                logger.info("Set user selected file ${file.absolutePath} as 2nd comparison file")
+            if (compareFilesComponent.fileTwo != file) compareFilesComponent.fileTwo = file.also {
+                logger.info("Set user selected file ${it.absolutePath} as 2nd comparison file")
             }
         }
     }

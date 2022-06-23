@@ -50,14 +50,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import api.Ktor
 import application.DialogState
 import com.russellbanks.HashHash.BuildConfig
-import data.GitHubData
 import helper.GitHub
 import helper.Icons
-import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -68,13 +68,7 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
-fun AboutDialog(
-    dialogState: DialogState,
-    httpClient: HttpClient?,
-    httpResponse: HttpResponse?,
-    githubData: GitHubData?,
-    onUpdateCheck: (HttpResponse) -> Unit
-) {
+fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
     val scope = rememberCoroutineScope()
     var checkingGitHubAPI by remember { mutableStateOf(false) }
     var lastChecked: Instant? by remember { mutableStateOf(null) }
@@ -112,9 +106,16 @@ fun AboutDialog(
                                         action = {
                                             if (!checkingGitHubAPI) {
                                                 scope.launch(Dispatchers.Default) {
-                                                    httpClient?.run {
+                                                    ktor.httpClient?.run {
                                                         checkingGitHubAPI = true
-                                                        onUpdateCheck(get(GitHub.HashHash.API.latest))
+                                                        get(GitHub.HashHash.API.latest).also { response ->
+                                                            ktor.httpResponse = response
+                                                            if (response.status == HttpStatusCode.OK) {
+                                                                scope.launch(Dispatchers.Default) {
+                                                                    ktor.githubData = response.body()
+                                                                }
+                                                            }
+                                                        }
                                                         lastChecked = Clock.System.now()
                                                         checkingGitHubAPI = false
                                                     }
@@ -126,11 +127,10 @@ fun AboutDialog(
                                         textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
                                     )
                                 ).project()
-                                AnimatedVisibility(checkingGitHubAPI || httpResponse != null) {
+                                AnimatedVisibility(checkingGitHubAPI || ktor.httpResponse != null) {
                                     UpdateCheckText(
                                         checkingGitHubAPI = checkingGitHubAPI,
-                                        httpResponse = httpResponse,
-                                        gitHubData = githubData,
+                                        ktor = ktor,
                                         lastChecked = lastChecked
                                     )
                                 }

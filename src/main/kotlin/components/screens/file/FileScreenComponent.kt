@@ -95,9 +95,7 @@ class FileScreenComponent(
 
     fun switchHashCase() {
         hashedTextUppercase = !hashedTextUppercase
-        resultMap[algorithm]?.let {
-            resultMap[algorithm] = it.run { if (hashedTextUppercase) uppercase() else lowercase() }
-        }
+        resultMap[algorithm]?.run { resultMap[algorithm] = if (hashedTextUppercase) uppercase() else lowercase() }
     }
 
     fun getFooterText(): String {

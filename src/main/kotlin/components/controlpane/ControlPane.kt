@@ -96,7 +96,11 @@ fun ControlPane(
                                 action = {
                                     FileUtils.openFileDialogAndGetResult().also {
                                         scope.launch(Dispatchers.Default) {
-                                            fileScreen.resultMap.clear()
+                                            if (activeComponent is Root.Child.File) {
+                                                fileScreen.resultMap.clear()
+                                            } else if (activeComponent is Root.Child.CompareFiles) {
+                                                compareScreen.fileOneResultMap.clear()
+                                            }
                                             ControlPaneHelper.setFiles(
                                                 fileScreenComponent = fileScreen,
                                                 compareFilesComponent = compareScreen,
@@ -123,6 +127,9 @@ fun ControlPane(
                                     action = {
                                         FileUtils.openFileDialogAndGetResult().also {
                                             scope.launch(Dispatchers.Default) {
+                                                if (activeComponent is Root.Child.CompareFiles) {
+                                                    compareScreen.fileTwoResultMap.clear()
+                                                }
                                                 ControlPaneHelper.setFiles(
                                                     fileScreenComponent = fileScreen,
                                                     compareFilesComponent = compareScreen,
@@ -169,7 +176,11 @@ fun ControlPane(
                     mode = selectedMode,
                     onAlgorithmClick = {
                         scope.launch(Dispatchers.Default) {
-                            ControlPaneHelper.onAlgorithmClick(algorithm = it, component = fileScreen)
+                            ControlPaneHelper.onAlgorithmClick(
+                                algorithm = it,
+                                fileScreenComponent = fileScreen,
+                                compareFilesComponent = compareScreen
+                            )
                         }
                     }
                 )

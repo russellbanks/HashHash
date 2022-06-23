@@ -22,8 +22,11 @@ package components.screens.compare
 
 import Hashing.hash
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
+import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.hoc081098.flowext.interval
 import components.Timer
@@ -49,16 +52,16 @@ class CompareFilesComponent(
     parentComponent: ParentComponent
 ) : ComponentContext by componentContext, ParentInterface by parentComponent, Klogging {
     var fileOne: File? by mutableStateOf(null)
-    var fileOneHash by mutableStateOf("")
     var fileOneHashUppercase by mutableStateOf(true)
     var fileOneHashProgress by mutableStateOf(0F)
     var fileOneTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+    var fileOneResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
     var fileTwo: File? by mutableStateOf(null)
-    var fileTwoHash by mutableStateOf("")
     var fileTwoHashUppercase by mutableStateOf(true)
     var fileTwoHashProgress by mutableStateOf(0F)
     var fileTwoTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+    var fileTwoResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
     var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
     var filesMatch by mutableStateOf(false)
@@ -69,7 +72,7 @@ class CompareFilesComponent(
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
                         try {
-                            fileOneHash = fileOne?.hash(
+                            fileOneResultMap[algorithm] = fileOne?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileOneHashProgress = it }
                             )?.run { if (fileOneHashUppercase) uppercase() else lowercase() } ?: ""
@@ -80,7 +83,7 @@ class CompareFilesComponent(
                     },
                     async(Dispatchers.IO) {
                         try {
-                            fileTwoHash = fileTwo?.hash(
+                            fileTwoResultMap[algorithm] = fileTwo?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileTwoHashProgress = it }
                             )?.run { if (fileTwoHashUppercase) uppercase() else lowercase() } ?: ""
@@ -111,7 +114,7 @@ class CompareFilesComponent(
                         }
                 }
                 comparisonJobList?.awaitAll()
-                filesMatch = fileOneHash.equals(fileTwoHash, ignoreCase = true)
+                filesMatch = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
                 comparisonJobList = null
             }
         } else {
@@ -125,10 +128,14 @@ class CompareFilesComponent(
     fun switchHashCase(fileComparison: FileComparison) {
         if (fileComparison == FileComparison.FileComparisonOne) {
             fileOneHashUppercase = !fileOneHashUppercase
-            fileOneHash = fileOneHash.run { if (fileOneHashUppercase) uppercase() else lowercase() }
+            fileOneResultMap[algorithm]?.run {
+                fileOneResultMap[algorithm] = if (fileOneHashUppercase) uppercase() else lowercase()
+            }
         } else if (fileComparison == FileComparison.FileComparisonTwo) {
             fileTwoHashUppercase = !fileTwoHashUppercase
-            fileTwoHash = fileTwoHash.run { if (fileTwoHashUppercase) uppercase() else lowercase() }
+            fileTwoResultMap[algorithm]?.run {
+                fileTwoResultMap[algorithm] = if (fileTwoHashUppercase) uppercase() else lowercase()
+            }
         }
     }
 
@@ -138,16 +145,28 @@ class CompareFilesComponent(
             fileOne == null && fileTwo != null -> "1st file not selected"
             fileOne != null && fileTwo == null -> "2nd file not selected"
             areFileHashesBlank() -> "No hashes"
-            fileOneHash.isBlank() && fileTwoHash.isNotBlank() -> "No hash for 1st file"
-            fileOneHash.isNotBlank() && fileTwoHash.isBlank() -> "No hash for 2nd file"
+            isFileHashOneBlankAndNotTwo() -> "No hash for 1st file"
+            isFileHashTwoBlankAndNotOne() -> "No hash for 2nd file"
             areFileHashesNotBlank() -> doFilesMatchString()
             else -> ""
         }
     }
 
-    private fun areFileHashesBlank() = fileOneHash.isBlank() && fileTwoHash.isBlank()
+    private fun areFileHashesBlank(): Boolean {
+        return fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true
+    }
 
-    private fun areFileHashesNotBlank() =  fileOneHash.isNotBlank() && fileTwoHash.isNotBlank()
+    private fun isFileHashOneBlankAndNotTwo(): Boolean {
+        return fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
+    }
+
+    private fun isFileHashTwoBlankAndNotOne(): Boolean {
+        return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true
+    }
+
+    private fun areFileHashesNotBlank(): Boolean {
+        return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
+    }
 
     private fun doFilesMatchString() = if (filesMatch) "Files match" else "Files do not match"
 

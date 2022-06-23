@@ -76,13 +76,26 @@ object ControlPaneHelper : Klogging {
         }
     }
 
-    suspend fun onAlgorithmClick(algorithm: Algorithm, component: FileScreenComponent) {
-        if (algorithm != component.algorithm) {
-            component.algorithm = algorithm
-            component.resultMap[algorithm]?.let {
-                component.resultMap[algorithm] = it
-                if (component.hashedTextUppercase) component.resultMap[algorithm] = it.uppercase()
-                else component.resultMap[algorithm] = it.lowercase()
+    suspend fun onAlgorithmClick(
+        algorithm: Algorithm,
+        fileScreenComponent: FileScreenComponent,
+        compareFilesComponent: CompareFilesComponent) {
+        if (algorithm != fileScreenComponent.algorithm) {
+            fileScreenComponent.algorithm = algorithm
+            fileScreenComponent.resultMap[algorithm]?.run {
+                fileScreenComponent.resultMap[algorithm] = if (fileScreenComponent.hashedTextUppercase) {
+                    uppercase()
+                } else lowercase()
+            }
+            compareFilesComponent.fileOneResultMap[algorithm]?.run {
+                compareFilesComponent.fileOneResultMap[algorithm] = if (compareFilesComponent.fileOneHashUppercase) {
+                    uppercase()
+                } else lowercase()
+            }
+            compareFilesComponent.fileTwoResultMap[algorithm]?.run {
+                compareFilesComponent.fileTwoResultMap[algorithm] = if (compareFilesComponent.fileTwoHashUppercase) {
+                    uppercase()
+                } else lowercase()
             }
             logger.info("Set algorithm as ${algorithm.algorithmName}")
         }

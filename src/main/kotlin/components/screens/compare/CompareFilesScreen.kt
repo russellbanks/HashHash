@@ -48,7 +48,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 HashProgress(fileHashProgress = component.fileOneHashProgress, timer = component.fileOneTimer)
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
-                    value = component.fileOneHash,
+                    value = component.fileOneResultMap.getOrDefault(component.algorithm, ""),
                     isValueUppercase = component.fileOneHashUppercase,
                     onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonOne) }
                 )
@@ -68,7 +68,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 OutputTextFieldRow(
                     algorithm = component.algorithm,
                     isValueUppercase = component.fileTwoHashUppercase,
-                    value = component.fileTwoHash,
+                    value = component.fileTwoResultMap.getOrDefault(component.algorithm, ""),
                     onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonTwo) }
                 )
             }

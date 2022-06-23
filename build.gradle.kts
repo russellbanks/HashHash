@@ -104,6 +104,7 @@ compose.desktop {
                 menuGroup = project.name
             }
             macOS {
+                iconFile.set(project.file("src/main/resources/logo.icns"))
                 bundleID = "${project.group}.${project.name.toLowerCase()}"
             }
             windows {

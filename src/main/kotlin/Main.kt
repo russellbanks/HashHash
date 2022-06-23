@@ -120,7 +120,7 @@ fun main() {
                 AuroraWindow(
                     skin = themeHandler.auroraSkin,
                     state = windowState,
-                    title = BuildConfig.appName,
+                    title = "",
                     icon = Icons.logo(),
                     onCloseRequest = ::exitApplication,
                     menuCommands = Window.Header.commands(

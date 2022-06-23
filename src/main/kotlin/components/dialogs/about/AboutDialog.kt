@@ -137,7 +137,7 @@ fun AboutDialog(
                             }
                         }
                     }
-                    CloseDialogFooter(onCloseRequest = dialogState.About()::close)
+                    CloseDialogFooter(dialogState = dialogState)
                 }
             }
         }

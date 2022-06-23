@@ -31,19 +31,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import application.DialogState
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 
 @Composable
-fun CloseDialogFooter(onCloseRequest: () -> Unit) {
+fun CloseDialogFooter(dialogState: DialogState) {
     Column {
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         CommandButtonProjection(
             contentModel = Command(
                 text = "Close",
-                action = onCloseRequest
+                action = dialogState.About()::close
             ),
             presentationModel = CommandButtonPresentationModel(
                 textStyle = TextStyle(

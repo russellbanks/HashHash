@@ -31,18 +31,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import application.DialogState
 
 @Composable
-fun TranslucentDialogOverlay(
-    visible: Boolean,
-    onClick: () -> Unit
-) {
-    AnimatedVisibility(visible = visible, enter = fadeIn(), exit = fadeOut()) {
+fun TranslucentDialogOverlay(dialogState: DialogState) {
+    AnimatedVisibility(visible = dialogState.areDialogsOpen(), enter = fadeIn(), exit = fadeOut()) {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f))
-                .clickable(interactionSource = MutableInteractionSource(), indication = null, onClick = onClick)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = dialogState::closeAllDialogs
+                )
         )
     }
 }

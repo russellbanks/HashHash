@@ -20,50 +20,33 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package application
 
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 
 class DialogState {
-    private var listOfDialogs = hashMapOf(
-        Dialogs.ABOUT to mutableStateOf(false),
-        Dialogs.SETTINGS to mutableStateOf(false)
-    )
+    private var listOfDialogs = mutableStateMapOf(Dialogs.ABOUT to false, Dialogs.SETTINGS to false)
 
-    fun areDialogsOpen(): Boolean {
-        return listOfDialogs.values.any { it.value }
-    }
+    fun areDialogsOpen() = listOfDialogs.values.any { it }
 
-    fun closeAll() {
-        listOfDialogs.forEach {
-            it.value.value = false
-        }
-    }
+    fun closeAllDialogs() = listOfDialogs.forEach { listOfDialogs[it.key] = false }
 
     inner class Settings : Dialog {
-        override fun open() {
-            for (dialog in listOfDialogs) {
-                dialog.value.value = dialog.key == Dialogs.SETTINGS
-            }
-        }
+        override fun open() = listOfDialogs.forEach { listOfDialogs[it.key] = it.key == Dialogs.SETTINGS }
 
         override fun close() {
-            listOfDialogs[Dialogs.SETTINGS]?.value = false
+            listOfDialogs[Dialogs.SETTINGS] = false
         }
 
-        override fun isOpen() = listOfDialogs[Dialogs.SETTINGS]?.value == true
+        override fun isOpen() = listOfDialogs[Dialogs.SETTINGS] == true
     }
 
     inner class About : Dialog {
-        override fun open() {
-            for (dialog in listOfDialogs) {
-                dialog.value.value = dialog.key == Dialogs.ABOUT
-            }
-        }
+        override fun open() = listOfDialogs.forEach { listOfDialogs[it.key] = it.key == Dialogs.ABOUT }
 
         override fun close() {
-            listOfDialogs[Dialogs.ABOUT]?.value = false
+            listOfDialogs[Dialogs.ABOUT] = false
         }
 
-        override fun isOpen() = listOfDialogs[Dialogs.ABOUT]?.value == true
+        override fun isOpen() = listOfDialogs[Dialogs.ABOUT] == true
     }
 
     interface Dialog {

@@ -116,7 +116,7 @@ fun SettingsDialog(
                             }
                         }
                     }
-                    RestartWindowFooter(onCloseRequest = dialogState.Settings()::open, window = window)
+                    RestartWindowFooter(dialogState = dialogState, window = window)
                 }
             }
         }

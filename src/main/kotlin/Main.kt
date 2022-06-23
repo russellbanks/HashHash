@@ -198,10 +198,7 @@ fun main() {
                                 compareScreen = compareFilesComponent
                             )
                         }
-                        TranslucentDialogOverlay(
-                            visible = dialogState.areDialogsOpen(),
-                            onClick = dialogState::closeAll
-                        )
+                        TranslucentDialogOverlay(dialogState = dialogState)
                         SettingsDialog(
                             dialogState = dialogState,
                             themeHandler = themeHandler,

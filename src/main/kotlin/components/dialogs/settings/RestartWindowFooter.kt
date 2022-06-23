@@ -33,13 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
+import application.DialogState
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 
 @Composable
-fun RestartWindowFooter(onCloseRequest: () -> Unit, window: ApplicationWindowState) {
+fun RestartWindowFooter(dialogState: DialogState, window: ApplicationWindowState) {
     Column {
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         Row(Modifier.padding(20.dp)) {
@@ -67,7 +68,7 @@ fun RestartWindowFooter(onCloseRequest: () -> Unit, window: ApplicationWindowSta
             CommandButtonProjection(
                 contentModel = Command(
                     text = "Close",
-                    action = onCloseRequest
+                    action = dialogState.Settings()::close
                 ),
                 presentationModel = CommandButtonPresentationModel(
                     textStyle = TextStyle(

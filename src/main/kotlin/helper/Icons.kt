@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import helper.Icons.isImage
 import io.kamel.image.KamelImage
 import io.kamel.image.lazyPainterResource
 import io.klogging.Klogging
@@ -59,7 +60,7 @@ object Icons : Klogging {
     @Composable
     fun SystemIcon(file: File?) {
         if (file != null) {
-            if (ImageIO.read(file.inputStream()) != null) {
+            if (file.isImage()) {
                 KamelImage(
                     resource = lazyPainterResource(file),
                     contentDescription = null,
@@ -72,6 +73,14 @@ object Icons : Klogging {
                 )
             } else getSystemImage(file)
         } else FileImage()
+    }
+
+    fun File.isImage(): Boolean {
+        return try {
+            ImageIO.read(inputStream()) != null
+        } catch (_: Exception) {
+            false
+        }
     }
 
     @Composable

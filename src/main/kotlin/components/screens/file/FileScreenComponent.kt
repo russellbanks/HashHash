@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.File
+import java.io.FileNotFoundException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -79,6 +80,8 @@ class FileScreenComponent(
                     )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
                     instantAfterHash = Clock.System.now()
                 } catch (_: CancellationException) {
+                } catch (fileNotFoundException: FileNotFoundException) {
+                    exception = fileNotFoundException
                 } catch (illegalArgumentException: IllegalArgumentException) {
                     exception = illegalArgumentException
                 } catch (illegalStateException: IllegalStateException) {

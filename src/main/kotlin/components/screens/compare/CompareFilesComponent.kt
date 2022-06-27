@@ -42,6 +42,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileNotFoundException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -77,6 +78,8 @@ class CompareFilesComponent(
                                 hashProgressCallback = { fileOneHashProgress = it }
                             )?.run { if (fileOneHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
+                        } catch (fileNotFoundException: FileNotFoundException) {
+                            logger.error(fileNotFoundException)
                         } catch (illegalArgumentException: IllegalArgumentException) {
                             logger.error(illegalArgumentException)
                         }
@@ -88,6 +91,8 @@ class CompareFilesComponent(
                                 hashProgressCallback = { fileTwoHashProgress = it }
                             )?.run { if (fileTwoHashUppercase) uppercase() else lowercase() } ?: ""
                         } catch (_: CancellationException) {
+                        } catch (fileNotFoundException: FileNotFoundException) {
+                            logger.error(fileNotFoundException)
                         } catch (illegalArgumentException: IllegalArgumentException) {
                             logger.error(illegalArgumentException)
                         }

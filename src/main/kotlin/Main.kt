@@ -49,6 +49,7 @@ import com.mayakapps.compose.windowstyler.WindowStyle
 import components.Footer
 import components.Root
 import components.RootComponent
+import components.Snackbar
 import components.Tabs
 import components.controlpane.ControlPane
 import components.dialogs.TranslucentDialogOverlay
@@ -174,6 +175,7 @@ fun main() {
                                 compareScreen = compareFilesComponent
                             )
                         }
+                        Snackbar(parentComponent = parentComponent)
                         TranslucentDialogOverlay(dialogState = dialogState)
                         SettingsDialog(
                             dialogState = dialogState,

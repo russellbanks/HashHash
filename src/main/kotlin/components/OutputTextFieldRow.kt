@@ -25,7 +25,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
@@ -34,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.appmattus.crypto.Algorithm
 import helper.Icons
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationState
 import org.pushingpixels.aurora.component.model.CommandGroup
@@ -51,9 +55,11 @@ fun OutputTextFieldRow(
     algorithm: Algorithm,
     value: String,
     isValueUppercase: Boolean,
+    snackbarHostState: SnackbarHostState,
     onCaseClick: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
+    val scope = rememberCoroutineScope() { Dispatchers.Default }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
             contentModel = LabelContentModel(text = "${algorithm.algorithmName} Hash"),
@@ -76,7 +82,13 @@ fun OutputTextFieldRow(
                         Command(
                             text = "Copy",
                             icon = Icons.Utility.copy(),
-                            action = { if (value.isNotBlank()) clipboardManager.setText(AnnotatedString(text = value)) }
+                            action = {
+                                if (value.isNotBlank()) {
+                                    clipboardManager.setText(AnnotatedString(text = value))
+                                    snackbarHostState.currentSnackbarData?.dismiss()
+                                    scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
+                                }
+                            }
                         ),
                         Command(
                             text = "Case",

@@ -71,6 +71,7 @@ fun TextScreen(component: TextScreenComponent) {
             algorithm = component.algorithm,
             value = if (component.givenText.isNotEmpty()) component.hashGivenText() else "",
             isValueUppercase = component.hashedTextUppercase,
+            snackbarHostState = component.snackbarHostState,
             onCaseClick = { component.hashedTextUppercase = !component.hashedTextUppercase }
         )
         ComparisonTextFieldRow(

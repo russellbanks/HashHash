@@ -50,6 +50,7 @@ fun FileScreen(component: FileScreenComponent) {
                 algorithm = component.algorithm,
                 value = component.resultMap.getOrDefault(component.algorithm, ""),
                 isValueUppercase = component.hashedTextUppercase,
+                snackbarHostState = component.snackbarHostState,
                 onCaseClick = { component.switchHashCase() }
             )
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())

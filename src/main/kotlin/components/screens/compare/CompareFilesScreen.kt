@@ -50,6 +50,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                     algorithm = component.algorithm,
                     value = component.fileOneResultMap.getOrDefault(component.algorithm, ""),
                     isValueUppercase = component.fileOneHashUppercase,
+                    snackbarHostState = component.snackbarHostState,
                     onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonOne) }
                 )
             }
@@ -69,6 +70,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                     algorithm = component.algorithm,
                     isValueUppercase = component.fileTwoHashUppercase,
                     value = component.fileTwoResultMap.getOrDefault(component.algorithm, ""),
+                    snackbarHostState = component.snackbarHostState,
                     onCaseClick = { component.switchHashCase(CompareFilesComponent.FileComparison.FileComparisonTwo) }
                 )
             }

@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
 import java.io.File
-import java.nio.file.Files
+import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.filechooser.FileSystemView
 
@@ -59,7 +59,7 @@ object Icons : Klogging {
     @Composable
     fun SystemIcon(file: File?) {
         if (file != null) {
-            if (file.isImage()) {
+            if (ImageIO.read(file.inputStream()) != null) {
                 KamelImage(
                     resource = lazyPainterResource(file),
                     contentDescription = null,
@@ -88,10 +88,6 @@ object Icons : Klogging {
 
     private fun getSystemIcon(file: File): Icon? {
         return FileSystemView.getFileSystemView().getSystemIcon(file, /* width = */ 64, /* height = */ 64)
-    }
-
-    private fun File.isImage(): Boolean {
-        return Files.probeContentType(toPath()).startsWith("image")
     }
 
     private fun Icon.toBufferedImage(): BufferedImage {

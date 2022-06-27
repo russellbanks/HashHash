@@ -17,9 +17,9 @@
 
 ## About The Project
 
-HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash files whilst remaining multiplatform. It supports Windows, Linux and MacOS.
+HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash data whilst remaining multiplatform. It supports Windows, Linux and macOS.
 
-![java_aZEVPvpKPW](https://user-images.githubusercontent.com/74878137/169644388-b45deed3-e15c-48ed-81c4-294603b947c9.png)
+![java_aZEVPvpKPW](https://user-images.githubusercontent.com/74878137/176003766-aa704d18-5e69-4c8a-97c3-cec2ad4b54cd.png)
 
 ## Supporting algorithms
 
@@ -28,26 +28,31 @@ HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) i
 ## Built With
 
 * [Compose for Desktop](https://github.com/JetBrains/compose-jb)
-* [Kotlin](https://kotlinlang.org/)
-* [Aurora](https://github.com/kirill-grouchnikov/aurora)
-* [crypto](https://github.com/appmattus/crypto)
+* [Kotlin](https://kotlinlang.org/) - The Kotlin Programming Language
+* [Aurora](https://github.com/kirill-grouchnikov/aurora) - A modern, responsive, and beautiful UI framework for Compose for Desktop
+* [crypto](https://github.com/appmattus/crypto) - Provides the functionality for each hash
 * [LWJGL](https://github.com/LWJGL/lwjgl3) - Java bindings to [Tiny File Dialogs](https://sourceforge.net/projects/tinyfiledialogs/)
+* [Compose Window Styler](https://github.com/MayakaApps/ComposeWindowStyler) - Styles the window to be more native and modern
 
 ## Installation
 
-You can get the latest copy of HashHash from GitHub releases, or via WinGet
+You can get the latest copy of HashHash from GitHub releases, or via WinGet:
 
-<pre>
+```
 winget install RussellBanks.HashHash
-</pre>
+```
 
 ## Usage
 
-Once HashHash has been ran, you can select your hashing algorithm of choice and then input a file from your operating system's file manager. Then, you can begin hashing the file by pressing the calculate button.
+HashHash has three main screens: the file hashing screen, the text hashing screen and the compare files screen. You can select the hashing algorithm of choice and input the data you wish to hash.
+
+1. On the file screen, you can input a file and press the calculate button.
+2. On the text screen, you can input text, and it will begin hashing straight away.
+3. On the compare files screen, you can input two files, and press the calculate button. HashHash will then tell you if the files match or do not match, according to the hashing algorithm.
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 * If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/BanDev/HashHash/issues/new) to discuss it, or directly create a pull request after you edit the *README.md* file with necessary changes.
 * Please make sure you check your spelling and grammar.

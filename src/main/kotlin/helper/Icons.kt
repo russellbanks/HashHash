@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
 import java.io.File
+import java.nio.file.Files
 import javax.swing.Icon
 import javax.swing.filechooser.FileSystemView
 
@@ -90,10 +91,7 @@ object Icons : Klogging {
     }
 
     private fun File.isImage(): Boolean {
-        return when (extension.lowercase()) {
-            "jpg", "jpeg", "png", "gif", "bmp", "webp" -> true
-            else -> false
-        }
+        return Files.probeContentType(toPath()).startsWith("image")
     }
 
     private fun Icon.toBufferedImage(): BufferedImage {

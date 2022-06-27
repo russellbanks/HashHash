@@ -24,17 +24,23 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import io.kamel.image.KamelImage
+import io.kamel.image.lazyPainterResource
+import io.klogging.Klogging
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.swing.Icon
 import javax.swing.filechooser.FileSystemView
 
-object Icons {
+object Icons : Klogging {
 
     @Composable
     fun logo() = painterResource("logo.svg")
@@ -51,15 +57,43 @@ object Icons {
 
     @Composable
     fun SystemIcon(file: File?) {
-        file?.let {
-            FileSystemView.getFileSystemView().getSystemIcon(it, /* width = */ 64, /* height = */ 64)?.also { icon ->
-                Image(
-                    painter = icon.toBufferedImage().toPainter(),
+        if (file != null) {
+            if (file.isImage()) {
+                KamelImage(
+                    resource = lazyPainterResource(file),
                     contentDescription = null,
-                    modifier = Modifier.size(80.dp).padding(start = 20.dp)
+                    modifier = Modifier.size(80.dp).padding(start = 20.dp),
+                    onLoading = { getSystemImage(file) },
+                    onFailure = {
+                        rememberCoroutineScope { Dispatchers.Default }.launch { logger.error(it.message) }
+                        getSystemImage(file)
+                    }
                 )
-            } ?: FileImage()
-        } ?: FileImage()
+            } else getSystemImage(file)
+        } else FileImage()
+    }
+
+    @Composable
+    private fun getSystemImage(file: File) {
+        val icon = getSystemIcon(file)
+        return if (icon != null) {
+            Image(
+                painter = icon.toBufferedImage().toPainter(),
+                contentDescription = null,
+                modifier = Modifier.size(80.dp).padding(start = 20.dp)
+            )
+        } else FileImage()
+    }
+
+    private fun getSystemIcon(file: File): Icon? {
+        return FileSystemView.getFileSystemView().getSystemIcon(file, /* width = */ 64, /* height = */ 64)
+    }
+
+    private fun File.isImage(): Boolean {
+        return when (extension.lowercase()) {
+            "jpg", "jpeg", "png", "gif", "bmp", "webp" -> true
+            else -> false
+        }
     }
 
     private fun Icon.toBufferedImage(): BufferedImage {
@@ -71,7 +105,6 @@ object Icons {
             }
         }
     }
-
 
     object Utility {
 

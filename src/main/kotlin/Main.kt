@@ -46,7 +46,6 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
-import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Root
 import components.RootComponent

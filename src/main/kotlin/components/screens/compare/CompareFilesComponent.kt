@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.compare
 
+import Hashing
 import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -33,7 +34,6 @@ import components.Timer
 import components.screens.ParentComponent
 import components.screens.ParentInterface
 import io.klogging.Klogging
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +42,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileNotFoundException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -72,29 +71,19 @@ class CompareFilesComponent(
             scope.launch(Dispatchers.Default) {
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
-                        try {
+                        Hashing.catchHashingExceptions {
                             fileOneResultMap[algorithm] = fileOne?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileOneHashProgress = it }
                             )?.run { if (fileOneHashUppercase) uppercase() else lowercase() } ?: ""
-                        } catch (_: CancellationException) {
-                        } catch (fileNotFoundException: FileNotFoundException) {
-                            logger.error(fileNotFoundException)
-                        } catch (illegalArgumentException: IllegalArgumentException) {
-                            logger.error(illegalArgumentException)
                         }
                     },
                     async(Dispatchers.IO) {
-                        try {
+                        Hashing.catchHashingExceptions {
                             fileTwoResultMap[algorithm] = fileTwo?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileTwoHashProgress = it }
                             )?.run { if (fileTwoHashUppercase) uppercase() else lowercase() } ?: ""
-                        } catch (_: CancellationException) {
-                        } catch (fileNotFoundException: FileNotFoundException) {
-                            logger.error(fileNotFoundException)
-                        } catch (illegalArgumentException: IllegalArgumentException) {
-                            logger.error(illegalArgumentException)
                         }
                     }
                 )

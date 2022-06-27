@@ -19,13 +19,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import com.appmattus.crypto.Algorithm
+import io.klogging.Klogging
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.IOException
 
-object Hashing {
+object Hashing : Klogging {
 
     @Throws(IOException::class, IllegalArgumentException::class, IllegalStateException::class)
     suspend fun File.hash(
@@ -59,4 +62,20 @@ object Hashing {
             append(((bytes[index].toInt() and 0xff) + 0x100).toString(radix = 16).substring(startIndex = 1))
         }
     }.toString()
+
+    suspend fun catchHashingExceptions(block: suspend () -> Unit) {
+        try {
+            withContext(Dispatchers.IO) { block() }
+        } catch (_: CancellationException) {
+            // Cancellations are intended
+        } catch (IOException: IOException) {
+            logger.error(IOException.message.toString(), IOException)
+        } catch (fileNotFoundException: FileNotFoundException) {
+            logger.error(fileNotFoundException.message.toString(), fileNotFoundException)
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            logger.error(illegalArgumentException.message.toString(), illegalArgumentException)
+        } catch (illegalStateException: IllegalStateException) {
+            logger.error(illegalStateException.message.toString(), illegalStateException)
+        }
+    }
 }

@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.file
 
+import Hashing
 import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -32,7 +33,6 @@ import com.hoc081098.flowext.interval
 import components.Timer
 import components.screens.ParentComponent
 import components.screens.ParentInterface
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,7 +41,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.io.File
-import java.io.FileNotFoundException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -57,7 +56,6 @@ class FileScreenComponent(
     var hashProgress by mutableStateOf(0F)
     var instantBeforeHash: Instant? by mutableStateOf(null)
     var instantAfterHash: Instant? by mutableStateOf(null)
-    private var exception: Exception? by mutableStateOf(null)
     var hashedTextUppercase by mutableStateOf(true)
     var resultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
     var timer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
@@ -73,19 +71,12 @@ class FileScreenComponent(
             }
             fileHashJob = scope.launch(Dispatchers.IO) {
                 instantBeforeHash = Clock.System.now()
-                try {
+                Hashing.catchHashingExceptions {
                     resultMap[algorithm] = file?.hash(
                         algorithm = algorithm,
                         hashProgressCallback = { hashProgress = it }
                     )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
                     instantAfterHash = Clock.System.now()
-                } catch (_: CancellationException) {
-                } catch (fileNotFoundException: FileNotFoundException) {
-                    exception = fileNotFoundException
-                } catch (illegalArgumentException: IllegalArgumentException) {
-                    exception = illegalArgumentException
-                } catch (illegalStateException: IllegalStateException) {
-                    exception = illegalStateException
                 }
                 fileHashJob = null
             }

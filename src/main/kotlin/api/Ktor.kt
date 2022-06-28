@@ -21,7 +21,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package api
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import data.GitHubData
 import helper.GitHub
 import io.klogging.Klogging
@@ -36,8 +39,11 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 
 class Ktor : Klogging {
@@ -46,6 +52,8 @@ class Ktor : Klogging {
     var githubData: GitHubData? = null
     var retrievedGitHubData = false
     var httpClient: HttpClient? = null
+    var checkingGitHubAPI by mutableStateOf(false)
+    var lastChecked: Instant? by mutableStateOf(null)
 
     @Composable
     fun retrieveGitHubData() {
@@ -56,6 +64,7 @@ class Ktor : Klogging {
                 httpResponse = client.get(GitHub.HashHash.API.latest).also {
                     if (it.status == HttpStatusCode.OK) githubData = it.body()
                 }
+                lastChecked = Clock.System.now()
             }
         }
     }
@@ -78,6 +87,26 @@ class Ktor : Klogging {
                     }
                 }
                 level = LogLevel.INFO
+            }
+        }
+    }
+
+    fun checkForHashHashUpdate(scope: CoroutineScope) {
+        if (!checkingGitHubAPI) {
+            scope.launch {
+                httpClient?.run {
+                    checkingGitHubAPI = true
+                    get(GitHub.HashHash.API.latest).also { response ->
+                        httpResponse = response
+                        if (response.status == HttpStatusCode.OK) {
+                            scope.launch(Dispatchers.Default) {
+                                githubData = response.body()
+                            }
+                        }
+                    }
+                    lastChecked = Clock.System.now()
+                    checkingGitHubAPI = false
+                }
             }
         }
     }

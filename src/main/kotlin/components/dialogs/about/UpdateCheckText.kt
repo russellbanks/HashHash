@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import api.Ktor
 import helper.GitHub
 import helper.Icons
-import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
@@ -51,11 +50,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import java.text.SimpleDateFormat
 
 @Composable
-fun UpdateCheckText(
-    checkingGitHubAPI: Boolean,
-    ktor: Ktor,
-    lastChecked: Instant?
-) {
+fun UpdateCheckText(ktor: Ktor) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -70,7 +65,7 @@ fun UpdateCheckText(
     SelectionContainer {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (checkingGitHubAPI) {
+                if (ktor.checkingGitHubAPI) {
                     Image(
                         painter = Icons.Utility.refresh(),
                         contentDescription = null,
@@ -84,19 +79,19 @@ fun UpdateCheckText(
                 }
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = GitHub.getUpdateResponseText(checkingGitHubAPI = checkingGitHubAPI, ktor = ktor)
+                        text = GitHub.getUpdateResponseText(checkingGitHubAPI = ktor.checkingGitHubAPI, ktor = ktor)
                     ),
                     presentationModel = LabelPresentationModel(
                         textStyle = TextStyle(fontSize = 12.sp)
                     )
                 ).project()
             }
-            AnimatedVisibility(lastChecked != null) {
+            AnimatedVisibility(ktor.lastChecked != null) {
                 LabelProjection(
                     contentModel = LabelContentModel(
                         text = "Last checked: " +
                             SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
-                                .format(lastChecked?.toEpochMilliseconds())
+                                .format(ktor.lastChecked?.toEpochMilliseconds())
                     ),
                     presentationModel = LabelPresentationModel(
                         textStyle = TextStyle(fontSize = 12.sp)

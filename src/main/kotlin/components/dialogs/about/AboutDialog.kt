@@ -38,11 +38,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,15 +49,8 @@ import androidx.compose.ui.unit.sp
 import api.Ktor
 import application.DialogState
 import com.russellbanks.HashHash.BuildConfig
-import helper.GitHub
 import helper.Icons
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
@@ -69,12 +58,10 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
 fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
-    val scope = rememberCoroutineScope()
-    var checkingGitHubAPI by remember { mutableStateOf(false) }
-    var lastChecked: Instant? by remember { mutableStateOf(null) }
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
+    val scope = rememberCoroutineScope { Dispatchers.Default }
     AnimatedVisibility(
         visible = dialogState.About().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
@@ -103,36 +90,14 @@ fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
                                 CommandButtonProjection(
                                     contentModel = Command(
                                         text = "Check for Updates",
-                                        action = {
-                                            if (!checkingGitHubAPI) {
-                                                scope.launch(Dispatchers.Default) {
-                                                    ktor.httpClient?.run {
-                                                        checkingGitHubAPI = true
-                                                        get(GitHub.HashHash.API.latest).also { response ->
-                                                            ktor.httpResponse = response
-                                                            if (response.status == HttpStatusCode.OK) {
-                                                                scope.launch(Dispatchers.Default) {
-                                                                    ktor.githubData = response.body()
-                                                                }
-                                                            }
-                                                        }
-                                                        lastChecked = Clock.System.now()
-                                                        checkingGitHubAPI = false
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        action = { ktor.checkForHashHashUpdate(scope) }
                                     ),
                                     presentationModel = CommandButtonPresentationModel(
                                         textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
                                     )
                                 ).project()
-                                AnimatedVisibility(checkingGitHubAPI || ktor.httpResponse != null) {
-                                    UpdateCheckText(
-                                        checkingGitHubAPI = checkingGitHubAPI,
-                                        ktor = ktor,
-                                        lastChecked = lastChecked
-                                    )
+                                AnimatedVisibility(ktor.checkingGitHubAPI || ktor.httpResponse != null) {
+                                    UpdateCheckText(ktor = ktor)
                                 }
                             }
                         }

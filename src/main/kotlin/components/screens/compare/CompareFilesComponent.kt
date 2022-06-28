@@ -141,7 +141,7 @@ class CompareFilesComponent(
             areFileHashesBlank() -> "No hashes"
             isFileHashOneBlankAndNotTwo() -> "No hash for 1st file"
             isFileHashTwoBlankAndNotOne() -> "No hash for 2nd file"
-            areFileHashesNotBlank() -> doFilesMatchString()
+            areFileHashesNotBlank() -> if (filesMatch) "Files match" else "Files do not match"
             else -> ""
         }
     }
@@ -161,8 +161,6 @@ class CompareFilesComponent(
     private fun areFileHashesNotBlank(): Boolean {
         return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
     }
-
-    private fun doFilesMatchString() = if (filesMatch) "Files match" else "Files do not match"
 
     enum class FileComparison {
         FileComparisonOne,

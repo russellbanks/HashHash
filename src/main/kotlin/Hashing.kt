@@ -63,18 +63,22 @@ object Hashing : Klogging {
         }
     }.toString()
 
-    suspend fun catchHashingExceptions(block: suspend () -> Unit) {
+    suspend fun catchHashingExceptions(exceptionCallback: (Exception) -> Unit = {}, block: suspend () -> Unit) {
         try {
             withContext(Dispatchers.IO) { block() }
         } catch (_: CancellationException) {
             // Cancellations are intended
         } catch (IOException: IOException) {
+            exceptionCallback(IOException)
             logger.error(IOException.message.toString(), IOException)
         } catch (fileNotFoundException: FileNotFoundException) {
+            exceptionCallback(fileNotFoundException)
             logger.error(fileNotFoundException.message.toString(), fileNotFoundException)
         } catch (illegalArgumentException: IllegalArgumentException) {
+            exceptionCallback(illegalArgumentException)
             logger.error(illegalArgumentException.message.toString(), illegalArgumentException)
         } catch (illegalStateException: IllegalStateException) {
+            exceptionCallback(illegalStateException)
             logger.error(illegalStateException.message.toString(), illegalStateException)
         }
     }

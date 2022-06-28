@@ -25,11 +25,22 @@ import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import io.klogging.Klogging
+import preferences.mode.Mode
 import java.io.File
 
 object ControlPaneHelper : Klogging {
 
     const val BoxHeight = 32
+
+    fun isCalculateButtonEnabled(
+        activeComponent: Root.Child,
+        compareScreen: CompareFilesComponent,
+        fileScreen: FileScreenComponent
+    ) = when (activeComponent) {
+        is Root.Child.File -> fileScreen.file != null
+        is Root.Child.Text -> false
+        is Root.Child.CompareFiles -> compareScreen.fileOne != null && compareScreen.fileTwo != null
+    }
 
     suspend fun setFiles(
         fileScreenComponent: FileScreenComponent,
@@ -51,10 +62,11 @@ object ControlPaneHelper : Klogging {
         }
     }
 
+    fun listSelectorText() = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
+
     private suspend fun setFileScreenFiles(file: File, fileScreenComponent: FileScreenComponent) {
-        if (fileScreenComponent.file != file) {
-            fileScreenComponent.file = file
-            logger.info("Set user selected file ${file.absolutePath} as main file")
+        if (fileScreenComponent.file != file) fileScreenComponent.file = file.also {
+            logger.info("Set user selected file ${it.absolutePath} as main file")
         }
     }
 
@@ -74,7 +86,7 @@ object ControlPaneHelper : Klogging {
         }
     }
 
-    suspend fun onAlgorithmClick(
+    fun onAlgorithmClick(
         algorithm: Algorithm,
         fileScreenComponent: FileScreenComponent,
         compareFilesComponent: CompareFilesComponent) {
@@ -95,7 +107,6 @@ object ControlPaneHelper : Klogging {
                     uppercase()
                 } else lowercase()
             }
-            logger.info("Set algorithm as ${algorithm.algorithmName}")
         }
     }
 }

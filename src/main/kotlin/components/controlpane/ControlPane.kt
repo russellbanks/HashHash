@@ -22,7 +22,6 @@ package components.controlpane
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,11 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -50,15 +45,10 @@ import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationState
-import org.pushingpixels.aurora.component.model.LabelContentModel
-import org.pushingpixels.aurora.component.model.SelectorContentModel
-import org.pushingpixels.aurora.component.projection.CheckBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
-import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
-import preferences.mode.Mode
 import preferences.mode.ModeHandler
 
 @Composable
@@ -69,7 +59,6 @@ fun ControlPane(
     modeHandler: ModeHandler
 ) {
     val scope = rememberCoroutineScope()
-    var selectedMode by remember { mutableStateOf(modeHandler.getMode(scope)) }
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier
@@ -80,10 +69,7 @@ fun ControlPane(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 AnimatedVisibility(visible = activeComponent !is Root.Child.Text) {
                     Row {
                         CommandButtonProjection(
@@ -116,10 +102,7 @@ fun ControlPane(
                                 presentationState = CommandButtonPresentationState.Tile,
                                 textStyle = TextStyle(textAlign = TextAlign.Center),
                             )
-                        ).project(
-                            Modifier
-                                .fillMaxWidth(fraction = if (activeComponent is Root.Child.CompareFiles) 0.5f else 1f)
-                        )
+                        ).project(Modifier.fillMaxWidth(if (activeComponent is Root.Child.CompareFiles) 0.5f else 1f))
                         AnimatedVisibility(visible = activeComponent is Root.Child.CompareFiles) {
                             CommandButtonProjection(
                                 contentModel = Command(
@@ -149,39 +132,16 @@ fun ControlPane(
                         }
                     }
                 }
-                Row {
-                    Box(Modifier.weight(1f)) {
-                        LabelProjection(
-                            contentModel = LabelContentModel(
-                                text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
-                            )
-                        ).project()
-                    }
-                    CheckBoxProjection(
-                        contentModel = SelectorContentModel(
-                            text = "",
-                            selected = selectedMode == Mode.SIMPLE,
-                            onTriggerSelectedChange = {
-                                scope.launch(Dispatchers.Default) {
-                                    val newMode = if (it) Mode.SIMPLE else Mode.ADVANCED
-                                    modeHandler.putMode(newMode)
-                                    selectedMode = newMode
-                                }
-                            }
-                        )
-                    ).project()
-                }
+                ModeSelector(modeHandler)
                 AlgorithmSelectionList(
                     algorithm = fileScreen.algorithm,
-                    mode = selectedMode,
+                    modeHandler = modeHandler,
                     onAlgorithmClick = {
-                        scope.launch(Dispatchers.Default) {
-                            ControlPaneHelper.onAlgorithmClick(
-                                algorithm = it,
-                                fileScreenComponent = fileScreen,
-                                compareFilesComponent = compareScreen
-                            )
-                        }
+                        ControlPaneHelper.onAlgorithmClick(
+                            algorithm = it,
+                            fileScreenComponent = fileScreen,
+                            compareFilesComponent = compareScreen
+                        )
                     }
                 )
             }
@@ -206,11 +166,9 @@ fun ControlPane(
                                 compareScreen.onCalculateClicked(scope)
                             }
                         },
-                        isActionEnabled = if (activeComponent is Root.Child.CompareFiles) {
-                            compareScreen.fileOne != null && compareScreen.fileTwo != null
-                        } else {
-                            fileScreen.file != null
-                        }
+                        isActionEnabled = ControlPaneHelper.isCalculateButtonEnabled(
+                            activeComponent, compareScreen, fileScreen
+                        )
                     ),
                     presentationModel = CommandButtonPresentationModel(
                         presentationState = CommandButtonPresentationState.Tile

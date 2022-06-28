@@ -20,10 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package preferences.mode
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import io.klogging.Klogging
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
 class ModeHandler : Klogging {
@@ -32,22 +32,22 @@ class ModeHandler : Klogging {
 
     private var cachedMode: Mode? = null
 
-    fun getMode(scope: CoroutineScope): Mode {
+    var selectedMode by mutableStateOf(getMode())
+
+    private fun getMode(): Mode {
         return cachedMode
             ?: (if (preferences.getInt(modeKey, Mode.SIMPLE.ordinal) == Mode.ADVANCED.ordinal) Mode.ADVANCED
-            else Mode.SIMPLE).also {
-                cachedMode = it
-                scope.launch(Dispatchers.Default) { logger.info("Returned ${it.name}") }
-            }
+            else Mode.SIMPLE).also { cachedMode = it }
     }
 
-    suspend fun putMode(mode: Mode) = preferences.putInt(modeKey, mode.ordinal)
-        .also {
-            cachedMode = mode
-            logger.info {
-                "Put ${mode.name} into preferences with the key of \"$modeKey\" and the value of ${mode.ordinal}"
-            }
+    suspend fun putMode(mode: Mode) {
+        preferences.putInt(modeKey, mode.ordinal)
+        cachedMode = mode
+        selectedMode = mode
+        logger.info {
+            "Put ${mode.name} into preferences with the key of \"$modeKey\" and the value of ${mode.ordinal}"
         }
+    }
 
     companion object {
         private const val modeKey = "mode"

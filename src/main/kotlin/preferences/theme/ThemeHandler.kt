@@ -62,14 +62,14 @@ class ThemeHandler : Klogging {
         }.also { cachedTheme = it }
     }
 
-    suspend fun putTheme(theme: Theme) = preferences.putInt(themeKey, theme.ordinal)
-        .also {
-            cachedTheme = theme
-            auroraSkin = theme.toAuroraTheme()
-            logger.info {
-                "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
-            }
+    suspend fun putTheme(theme: Theme) {
+        preferences.putInt(themeKey, theme.ordinal)
+        cachedTheme = theme
+        auroraSkin = theme.toAuroraTheme()
+        logger.info {
+            "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
         }
+    }
 
     private fun Theme?.toAuroraTheme(): AuroraSkinDefinition {
         return when (this) {

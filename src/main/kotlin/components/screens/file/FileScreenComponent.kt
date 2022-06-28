@@ -59,6 +59,7 @@ class FileScreenComponent(
     var hashedTextUppercase by mutableStateOf(true)
     var resultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
     var timer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+    private var exception: Exception? by mutableStateOf(null)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if (fileHashJob?.isActive != true) {
@@ -71,7 +72,7 @@ class FileScreenComponent(
             }
             fileHashJob = scope.launch(Dispatchers.IO) {
                 instantBeforeHash = Clock.System.now()
-                Hashing.catchHashingExceptions {
+                Hashing.catchHashingExceptions(exceptionCallback = { exception = it }) {
                     resultMap[algorithm] = file?.hash(
                         algorithm = algorithm,
                         hashProgressCallback = { hashProgress = it }
@@ -94,6 +95,7 @@ class FileScreenComponent(
 
     fun getFooterText(): String {
         return when {
+            exception != null -> exception?.message!!
             fileHashJob?.isActive == true -> "Hashing file"
             resultMap[algorithm] != null -> "Done!"
             file != null -> "No hash"

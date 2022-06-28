@@ -45,12 +45,12 @@ import com.appmattus.crypto.Algorithm
 import components.controlpane.NestedAlgorithm
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
-import preferences.mode.Mode
+import preferences.mode.ModeHandler
 
 @Composable
 fun AlgorithmSelectionList(
     algorithm: Algorithm,
-    mode: Mode,
+    modeHandler: ModeHandler,
     onAlgorithmClick: (item: Algorithm) -> Unit
 ) {
     Box(Modifier.fillMaxWidth()) {
@@ -62,7 +62,7 @@ fun AlgorithmSelectionList(
                 .padding(end = ScrollBarSizingConstants.DefaultScrollBarThickness),
             state = lazyListState
         ) {
-            itemsIndexed(if (mode == Mode.SIMPLE) AlgorithmList.simple else AlgorithmList.advanced) { index, item ->
+            itemsIndexed(AlgorithmList.getAlgorithmList(modeHandler)) { index, item ->
                 if (item is Algorithm) {
                     AlgorithmBox(item = item, algorithm = algorithm, index = index, onAlgorithmClick = onAlgorithmClick)
                 } else if (item is NestedAlgorithm) {

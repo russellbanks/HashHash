@@ -26,17 +26,24 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,14 +53,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
 import application.DialogState
-import helper.windows.windowsBuild
-import org.jetbrains.skiko.hostOs
+import com.mayakapps.compose.windowstyler.WindowCornerPreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
+import preferences.theme.Theme
 import preferences.theme.ThemeHandler
+import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
@@ -68,6 +79,8 @@ fun SettingsDialog(
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
+    var selectedCategory by remember { mutableStateOf(Category.Theme) }
+    val scope = rememberCoroutineScope()
     AnimatedVisibility(
         visible = dialogState.Settings().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
@@ -75,7 +88,7 @@ fun SettingsDialog(
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Surface(
-                modifier = Modifier.width(450.dp),
+                modifier = Modifier.width(400.dp),
                 shape = RoundedCornerShape(8.dp),
                 color = backgroundColorScheme.backgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
@@ -87,30 +100,129 @@ fun SettingsDialog(
                             contentModel = LabelContentModel(text = "Settings"),
                             presentationModel = LabelPresentationModel(
                                 textStyle = TextStyle(
-                                    fontSize = 16.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             )
-                        ).project(Modifier.align(Alignment.CenterHorizontally).padding(20.dp))
+                        ).project(Modifier.padding(14.dp))
                         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-                        Column(Modifier.padding(30.dp)) {
-                            LazyColumn(
-                                modifier = Modifier.weight(weight = 1f, fill = false),
-                                verticalArrangement = Arrangement.spacedBy(20.dp)
-                            ) {
-                                item { ThemeItem(themeHandler = themeHandler) }
-                                item { TitleBarItem(
-                                    titleBarHandler = titleBarHandler,
-                                    windowCornerHandler = windowCornerHandler,
-                                    window = window
-                                ) }
-                                if (hostOs.isWindows && windowsBuild >= 22_000) {
-                                    item {
-                                        WindowCornerItem(
-                                            windowCornerHandler = windowCornerHandler,
-                                            titleBarHandler = titleBarHandler,
-                                            window = window
-                                        )
+                        Row {
+                            LazyColumn(Modifier.background(backgroundColorScheme.accentedBackgroundFillColor)) {
+                                items(Category.values()) { category ->
+                                    AuroraBoxWithHighlights(
+                                        modifier = Modifier
+                                            .width(120.dp)
+                                            .padding(6.dp),
+                                        selected = selectedCategory == category,
+                                        onClick = { selectedCategory = category }
+                                    ) {
+                                        LabelProjection(
+                                            contentModel = LabelContentModel(
+                                                text = category.name.toFriendlyCase()
+                                            ),
+                                            presentationModel = LabelPresentationModel(
+                                                textStyle = TextStyle(fontSize = 12.sp)
+                                            )
+                                        ).project(Modifier.padding(4.dp))
+                                    }
+                                }
+                            }
+                            when (selectedCategory) {
+                                Category.Theme -> {
+                                    LazyColumn(Modifier.padding(10.dp)) {
+                                        items(Theme.values()) { theme ->
+                                            AuroraBoxWithHighlights(
+                                                modifier = Modifier.fillMaxWidth().padding(6.dp),
+                                                selected = theme == themeHandler.getTheme(),
+                                                onClick = {
+                                                    if (themeHandler.getTheme() != theme) {
+                                                        scope.launch(Dispatchers.Default) {
+                                                            themeHandler.putTheme(theme)
+                                                        }
+                                                    }
+                                                }
+                                            ) {
+                                                LabelProjection(
+                                                    contentModel = LabelContentModel(text = theme.name),
+                                                    presentationModel = LabelPresentationModel(
+                                                        textStyle = TextStyle(
+                                                            fontSize = 12.sp,
+                                                            fontWeight = FontWeight.SemiBold
+                                                        )
+                                                    )
+                                                ).project(Modifier.padding(4.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                                Category.TitleBar -> {
+                                    LazyColumn {
+                                        items(TitleBar.values()) { titleBar ->
+                                            AuroraBoxWithHighlights(
+                                                modifier = Modifier.fillMaxWidth().padding(6.dp),
+                                                selected = titleBar == titleBarHandler.getTitleBar(),
+                                                onClick = {
+                                                    if (titleBarHandler.getTitleBar() != titleBar) {
+                                                        scope.launch(Dispatchers.Default) {
+                                                            titleBarHandler.putTitleBar(titleBar)
+                                                            window.checkWindowNeedsRestarting(
+                                                                titleBarHandler = titleBarHandler,
+                                                                windowCornerHandler = windowCornerHandler
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            ) {
+                                                LabelProjection(
+                                                    contentModel = LabelContentModel(text = titleBar.name),
+                                                    presentationModel = LabelPresentationModel(
+                                                        textStyle = TextStyle(
+                                                            fontSize = 12.sp,
+                                                            fontWeight = FontWeight.SemiBold
+                                                        )
+                                                    )
+                                                ).project(Modifier.padding(4.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                                Category.WindowCorner -> {
+                                    LazyColumn {
+                                        items(WindowCornerPreference.values()) { windowCornerPreference ->
+                                            AuroraBoxWithHighlights(
+                                                modifier = Modifier.fillMaxWidth().padding(6.dp),
+                                                selected = windowCornerPreference ==
+                                                        windowCornerHandler.getWindowCorner(),
+                                                onClick = {
+                                                    if (
+                                                        windowCornerHandler.getWindowCorner() != windowCornerPreference
+                                                    ) {
+                                                        scope.launch(Dispatchers.Default) {
+                                                            windowCornerHandler.putWindowCorner(windowCornerPreference)
+                                                            window.checkWindowNeedsRestarting(
+                                                                titleBarHandler = titleBarHandler,
+                                                                windowCornerHandler = windowCornerHandler
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            ) {
+                                                LabelProjection(
+                                                    contentModel = LabelContentModel(
+                                                        text = windowCornerPreference.name
+                                                            .lowercase()
+                                                            .replaceFirstChar { char -> char.titlecase() }
+                                                            .replace(oldValue = "_", newValue = " ")
+                                                    ),
+                                                    presentationModel = LabelPresentationModel(
+                                                        textStyle = TextStyle(
+                                                            fontSize = 12.sp,
+                                                            fontWeight = FontWeight.SemiBold
+                                                        )
+                                                    )
+                                                ).project(Modifier.padding(4.dp))
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -121,4 +233,10 @@ fun SettingsDialog(
             }
         }
     }
+}
+
+enum class Category {
+    Theme,
+    TitleBar,
+    WindowCorner
 }

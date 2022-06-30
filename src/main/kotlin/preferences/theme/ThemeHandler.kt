@@ -42,23 +42,23 @@ class ThemeHandler : Klogging {
 
     fun registerThemeListener() {
         osThemeDetector.registerListener { isDark: Boolean ->
-            if (getTheme() == Theme.SYSTEM) auroraSkin = if (isDark) nightShadeSkin() else dustSkin()
+            if (getTheme() == Theme.System) auroraSkin = if (isDark) nightShadeSkin() else dustSkin()
         }
     }
 
     fun isDark(): Boolean {
         return when (cachedTheme) {
-            Theme.DARK -> true
-            Theme.LIGHT -> false
+            Theme.Dark -> true
+            Theme.Light -> false
             else -> osThemeDetector.isDark
         }
     }
 
     fun getTheme(): Theme {
-        return cachedTheme ?: when (preferences.getInt(themeKey, Theme.SYSTEM.ordinal)) {
-            Theme.LIGHT.ordinal -> Theme.LIGHT
-            Theme.DARK.ordinal -> Theme.DARK
-            else -> Theme.SYSTEM
+        return cachedTheme ?: when (preferences.getInt(themeKey, Theme.System.ordinal)) {
+            Theme.Light.ordinal -> Theme.Light
+            Theme.Dark.ordinal -> Theme.Dark
+            else -> Theme.System
         }.also { cachedTheme = it }
     }
 
@@ -73,8 +73,8 @@ class ThemeHandler : Klogging {
 
     private fun Theme?.toAuroraTheme(): AuroraSkinDefinition {
         return when (this) {
-            Theme.LIGHT -> dustSkin()
-            Theme.DARK -> nightShadeSkin()
+            Theme.Light -> dustSkin()
+            Theme.Dark -> nightShadeSkin()
             else -> if (osThemeDetector.isDark) nightShadeSkin() else dustSkin()
         }
     }

@@ -18,10 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package preferences.theme
+package components.dialogs.settings
 
-enum class Theme {
-    Light,
-    Dark,
-    System
-}
+fun String.toFriendlyCase() = replace(
+    Regex("(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])"), " "
+)

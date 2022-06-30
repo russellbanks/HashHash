@@ -69,7 +69,7 @@ fun Toolbar(
                     contentModel = Command(
                         text = "",
                         icon = Icons.Utility.settings(),
-                        action = { dialogState.Settings().open() }
+                        action = dialogState.Settings()::open
                     ),
                     presentationModel = CommandButtonPresentationModel(
                         backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,

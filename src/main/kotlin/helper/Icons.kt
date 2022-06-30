@@ -134,6 +134,9 @@ object Icons : Klogging {
         fun refresh() = painterResource("$prefixPath/refresh.svg")
 
         @Composable
+        fun settings() = painterResource("$prefixPath/settings.svg")
+
+        @Composable
         fun capitalA() = painterResource("$prefixPath/capital-a.svg")
 
         @Composable

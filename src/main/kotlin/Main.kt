@@ -56,6 +56,7 @@ import components.controlpane.ControlPane
 import components.dialogs.TranslucentDialogOverlay
 import components.dialogs.about.AboutDialog
 import components.dialogs.settings.SettingsDialog
+import components.dialogs.settings.SettingsRootComponent
 import components.screens.ParentComponent
 import components.screens.compare.CompareFilesComponent
 import components.screens.compare.CompareFilesScreen
@@ -81,6 +82,7 @@ fun main() {
 
     val lifecycle = LifecycleRegistry()
     val root = RootComponent(DefaultComponentContext(lifecycle))
+    val settingsRoot = SettingsRootComponent(DefaultComponentContext(lifecycle))
 
     val ktor = Ktor()
     val titleBarHandler = TitleBarHandler()
@@ -89,6 +91,9 @@ fun main() {
     auroraApplication {
         val routerState = root.routerState.subscribeAsState()
         val activeComponent = routerState.value.activeChild.instance
+        val settingsRouterState = settingsRoot.routerState.subscribeAsState()
+        val activeSettingsComponent = settingsRouterState.value.activeChild.instance
+
         val modeHandler = remember { ModeHandler() }
         val windowCornerHandler = remember { WindowCornerHandler() }
         val parentComponent = remember { ParentComponent() }
@@ -180,6 +185,9 @@ fun main() {
                         Snackbar(parentComponent = parentComponent)
                         TranslucentDialogOverlay(dialogState = dialogState)
                         SettingsDialog(
+                            activeComponent = activeSettingsComponent,
+                            root = settingsRoot,
+                            routerState = settingsRouterState,
                             dialogState = dialogState,
                             themeHandler = themeHandler,
                             titleBarHandler = titleBarHandler,

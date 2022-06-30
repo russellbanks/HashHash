@@ -61,14 +61,12 @@ object Window {
         with(window) {
             minimumSize = Dimension(minWindowWidth, minWindowHeight)
             dropTarget = DragAndDrop.target(scope) { droppedItems ->
-                scope.launch {
-                    DragAndDrop.setResult(
-                        droppedItems = droppedItems,
-                        fileScreenComponent = fileScreenComponent,
-                        compareFilesComponent = compareFilesComponent,
-                        activeComponent = activeComponent
-                    )
-                }
+                DragAndDrop.setResult(
+                    droppedItems = droppedItems,
+                    fileScreenComponent = fileScreenComponent,
+                    compareFilesComponent = compareFilesComponent,
+                    activeComponent = activeComponent
+                )
             }
         }
     }

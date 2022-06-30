@@ -133,6 +133,16 @@ class CompareFilesComponent(
         }
     }
 
+    fun setDroppedFile(file: File?) {
+        if (fileOne == null) {
+            fileOneResultMap.clear()
+            fileOne = file
+        } else {
+            fileTwoResultMap.clear()
+            fileTwo = file
+        }
+    }
+
     fun isActionButtonEnabled() = fileOne != null && fileTwo != null
 
     fun getActionButtonText() = if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
@@ -156,7 +166,9 @@ class CompareFilesComponent(
             fileOne == null && fileTwo == null -> "No files selected"
             fileOne == null && fileTwo != null -> "1st file not selected"
             fileOne != null && fileTwo == null -> "2nd file not selected"
-            areFileHashesBlank() -> "No hashes"
+            fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
+                "No hashes"
+            }
             isFileHashOneBlankAndNotTwo() -> "No hash for 1st file"
             isFileHashTwoBlankAndNotOne() -> "No hash for 2nd file"
             areFileHashesNotBlank() -> if (fileOneResultMap[algorithm].equals(
@@ -164,10 +176,6 @@ class CompareFilesComponent(
                 )) "Files match" else "Files do not match"
             else -> ""
         }
-    }
-
-    private fun areFileHashesBlank(): Boolean {
-        return fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true
     }
 
     private fun isFileHashOneBlankAndNotTwo(): Boolean {

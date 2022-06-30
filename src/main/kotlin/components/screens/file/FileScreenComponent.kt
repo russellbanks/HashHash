@@ -91,10 +91,14 @@ class FileScreenComponent(
 
     fun selectFile() {
         FileUtils.openFileDialogAndGetResult().also {
-            if (it != null) {
-                resultMap.clear()
-                file = it
-            }
+            setComponentFile(it)
+        }
+    }
+
+    fun setComponentFile(file: File?) {
+        if (file != null && file != this@FileScreenComponent.file) {
+            resultMap.clear()
+            this@FileScreenComponent.file = file
         }
     }
 

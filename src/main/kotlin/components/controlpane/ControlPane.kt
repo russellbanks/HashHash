@@ -39,9 +39,6 @@ import components.Root
 import components.controlpane.algorithmselection.AlgorithmSelectionList
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
-import helper.FileUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationState
@@ -59,6 +56,7 @@ fun ControlPane(
     modeHandler: ModeHandler
 ) {
     val scope = rememberCoroutineScope()
+    val controlPaneHelper = ControlPaneHelper(fileScreen, compareScreen, activeComponent, modeHandler, scope)
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier
@@ -74,55 +72,19 @@ fun ControlPane(
                     Row {
                         CommandButtonProjection(
                             contentModel = Command(
-                                text = when (activeComponent) {
-                                    is Root.Child.File -> "Select file"
-                                    is Root.Child.CompareFiles -> "Select 1st file"
-                                    else -> ""
-                                },
-                                action = {
-                                    FileUtils.openFileDialogAndGetResult().also {
-                                        scope.launch(Dispatchers.Default) {
-                                            if (activeComponent is Root.Child.File) {
-                                                fileScreen.resultMap.clear()
-                                            } else if (activeComponent is Root.Child.CompareFiles) {
-                                                compareScreen.fileOneResultMap.clear()
-                                            }
-                                            ControlPaneHelper.setFiles(
-                                                fileScreenComponent = fileScreen,
-                                                compareFilesComponent = compareScreen,
-                                                activeComponent = activeComponent,
-                                                file = it,
-                                                buttonIndex = 0
-                                            )
-                                        }
-                                    }
-                                }
+                                text = controlPaneHelper.getSelectFileButtonText(FileSelectButton.ONE),
+                                action = { controlPaneHelper.getSelectFileButtonAction(FileSelectButton.ONE) }
                             ),
                             presentationModel = CommandButtonPresentationModel(
                                 presentationState = CommandButtonPresentationState.Tile,
-                                textStyle = TextStyle(textAlign = TextAlign.Center),
+                                textStyle = TextStyle(textAlign = TextAlign.Center)
                             )
                         ).project(Modifier.fillMaxWidth(if (activeComponent is Root.Child.CompareFiles) 0.5f else 1f))
                         AnimatedVisibility(visible = activeComponent is Root.Child.CompareFiles) {
                             CommandButtonProjection(
                                 contentModel = Command(
-                                    text = if (activeComponent is Root.Child.CompareFiles) "Select 2nd file" else "",
-                                    action = {
-                                        FileUtils.openFileDialogAndGetResult().also {
-                                            scope.launch(Dispatchers.Default) {
-                                                if (activeComponent is Root.Child.CompareFiles) {
-                                                    compareScreen.fileTwoResultMap.clear()
-                                                }
-                                                ControlPaneHelper.setFiles(
-                                                    fileScreenComponent = fileScreen,
-                                                    compareFilesComponent = compareScreen,
-                                                    activeComponent = activeComponent,
-                                                    file = it,
-                                                    buttonIndex = 1
-                                                )
-                                            }
-                                        }
-                                    }
+                                    text = controlPaneHelper.getSelectFileButtonText(FileSelectButton.TWO),
+                                    action = { controlPaneHelper.getSelectFileButtonAction(FileSelectButton.TWO) }
                                 ),
                                 presentationModel = CommandButtonPresentationModel(
                                     presentationState = CommandButtonPresentationState.Tile,
@@ -132,43 +94,15 @@ fun ControlPane(
                         }
                     }
                 }
-                ModeSelector(modeHandler)
-                AlgorithmSelectionList(
-                    algorithm = fileScreen.algorithm,
-                    modeHandler = modeHandler,
-                    onAlgorithmClick = {
-                        ControlPaneHelper.onAlgorithmClick(
-                            algorithm = it,
-                            fileScreenComponent = fileScreen,
-                            compareFilesComponent = compareScreen
-                        )
-                    }
-                )
+                ModeSelector(controlPaneHelper)
+                AlgorithmSelectionList(controlPaneHelper)
             }
             AnimatedVisibility(visible = activeComponent !is Root.Child.Text) {
                 CommandButtonProjection(
                     contentModel = Command(
-                        text = when (activeComponent) {
-                            is Root.Child.File -> if (fileScreen.fileHashJob?.isActive != true) {
-                                "Calculate"
-                            } else "Cancel"
-                            is Root.Child.Text -> ""
-                            is Root.Child.CompareFiles -> {
-                                if ((compareScreen.comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
-                                    "Compare"
-                                } else "Cancel"
-                            }
-                        },
-                        action = {
-                            if (activeComponent is Root.Child.File) {
-                                fileScreen.onCalculateClicked(scope)
-                            } else if (activeComponent is Root.Child.CompareFiles) {
-                                compareScreen.onCalculateClicked(scope)
-                            }
-                        },
-                        isActionEnabled = ControlPaneHelper.isCalculateButtonEnabled(
-                            activeComponent, compareScreen, fileScreen
-                        )
+                        text = controlPaneHelper.getActionButtonText(),
+                        action = controlPaneHelper::getActionButtonAction,
+                        isActionEnabled = controlPaneHelper.isActionButtonEnabled()
                     ),
                     presentationModel = CommandButtonPresentationModel(
                         presentationState = CommandButtonPresentationState.Tile

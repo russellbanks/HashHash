@@ -33,6 +33,7 @@ import com.hoc081098.flowext.interval
 import components.Timer
 import components.screens.ParentComponent
 import components.screens.ParentInterface
+import helper.FileUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -87,6 +88,19 @@ class FileScreenComponent(
             fileHashJob = null
         }
     }
+
+    fun selectFile() {
+        FileUtils.openFileDialogAndGetResult().also {
+            if (it != null) {
+                resultMap.clear()
+                file = it
+            }
+        }
+    }
+
+    fun isActionButtonEnabled() = file != null
+
+    fun getActionButtonText() = if (fileHashJob?.isActive != true) "Calculate" else "Cancel"
 
     fun switchHashCase() {
         hashedTextUppercase = !hashedTextUppercase

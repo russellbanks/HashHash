@@ -25,88 +25,79 @@ import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
 import preferences.mode.Mode
-import java.io.File
+import preferences.mode.ModeHandler
 
-object ControlPaneHelper : Klogging {
+class ControlPaneHelper(
+    val fileScreen: FileScreenComponent,
+    private val compareScreen: CompareFilesComponent,
+    private val activeComponent: Root.Child,
+    val modeHandler: ModeHandler,
+    val scope: CoroutineScope
+) : Klogging {
 
-    const val BoxHeight = 32
-
-    fun isCalculateButtonEnabled(
-        activeComponent: Root.Child,
-        compareScreen: CompareFilesComponent,
-        fileScreen: FileScreenComponent
-    ) = when (activeComponent) {
-        is Root.Child.File -> fileScreen.file != null
-        is Root.Child.Text -> false
-        is Root.Child.CompareFiles -> compareScreen.fileOne != null && compareScreen.fileTwo != null
-    }
-
-    suspend fun setFiles(
-        fileScreenComponent: FileScreenComponent,
-        compareFilesComponent: CompareFilesComponent,
-        activeComponent: Root.Child,
-        file: File?,
-        buttonIndex: Int
-    ) {
-        if (file != null) {
-            if (activeComponent is Root.Child.File) {
-                setFileScreenFiles(file = file, fileScreenComponent = fileScreenComponent)
-            } else if (activeComponent is Root.Child.CompareFiles) {
-                setCompareScreenFiles(
-                    file = file,
-                    buttonIndex = buttonIndex,
-                    compareFilesComponent = compareFilesComponent
-                )
-            }
-        }
-    }
-
-    fun listSelectorText() = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
-
-    private suspend fun setFileScreenFiles(file: File, fileScreenComponent: FileScreenComponent) {
-        if (fileScreenComponent.file != file) fileScreenComponent.file = file.also {
-            logger.info("Set user selected file ${it.absolutePath} as main file")
-        }
-    }
-
-    private suspend fun setCompareScreenFiles(
-        file: File,
-        buttonIndex: Int,
-        compareFilesComponent: CompareFilesComponent
-    ) {
-        if (buttonIndex == 0) {
-            if (compareFilesComponent.fileOne != file) compareFilesComponent.fileOne = file.also {
-                logger.info("Set user selected file ${it.absolutePath} as 1st comparison file")
+    fun getSelectFileButtonText(fileSelectButton: FileSelectButton): String {
+        return if (fileSelectButton == FileSelectButton.ONE) {
+            when (activeComponent) {
+                is Root.Child.File -> "Select file"
+                is Root.Child.CompareFiles -> "Select 1st file"
+                else -> ""
             }
         } else {
-            if (compareFilesComponent.fileTwo != file) compareFilesComponent.fileTwo = file.also {
-                logger.info("Set user selected file ${it.absolutePath} as 2nd comparison file")
+            if (activeComponent is Root.Child.CompareFiles) "Select 2nd file" else ""
+        }
+    }
+
+    fun getSelectFileButtonAction(fileSelectButton: FileSelectButton) {
+        if (activeComponent is Root.Child.File) fileScreen.selectFile()
+        else if (activeComponent is Root.Child.CompareFiles) compareScreen.selectFile(fileSelectButton)
+    }
+
+    fun isActionButtonEnabled(): Boolean {
+        return when (activeComponent) {
+            is Root.Child.File -> fileScreen.isActionButtonEnabled()
+            is Root.Child.CompareFiles -> compareScreen.isActionButtonEnabled()
+            else -> false
+        }
+    }
+
+    fun getActionButtonText(): String {
+        return when (activeComponent) {
+            is Root.Child.File -> fileScreen.getActionButtonText()
+            is Root.Child.CompareFiles -> compareScreen.getActionButtonText()
+            else -> ""
+        }
+    }
+
+    fun getActionButtonAction() {
+        if (activeComponent is Root.Child.File) {
+            fileScreen.onCalculateClicked(scope)
+        } else if (activeComponent is Root.Child.CompareFiles) {
+            compareScreen.onCalculateClicked(scope)
+        }
+    }
+
+    fun getListSelectorText() = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
+
+    fun onAlgorithmClick(algorithm: Algorithm) {
+        if (algorithm != fileScreen.algorithm) {
+            fileScreen.algorithm = algorithm
+            fileScreen.resultMap[algorithm]?.run {
+                fileScreen.resultMap[algorithm] = if (fileScreen.hashedTextUppercase) uppercase() else lowercase()
+            }
+            compareScreen.fileOneResultMap[algorithm]?.run {
+                compareScreen.fileOneResultMap[algorithm] = if (compareScreen.fileOneHashUppercase) uppercase()
+                else lowercase()
+            }
+            compareScreen.fileTwoResultMap[algorithm]?.run {
+                compareScreen.fileTwoResultMap[algorithm] = if (compareScreen.fileTwoHashUppercase) uppercase()
+                else lowercase()
             }
         }
     }
 
-    fun onAlgorithmClick(
-        algorithm: Algorithm,
-        fileScreenComponent: FileScreenComponent,
-        compareFilesComponent: CompareFilesComponent) {
-        if (algorithm != fileScreenComponent.algorithm) {
-            fileScreenComponent.algorithm = algorithm
-            fileScreenComponent.resultMap[algorithm]?.run {
-                fileScreenComponent.resultMap[algorithm] = if (fileScreenComponent.hashedTextUppercase) {
-                    uppercase()
-                } else lowercase()
-            }
-            compareFilesComponent.fileOneResultMap[algorithm]?.run {
-                compareFilesComponent.fileOneResultMap[algorithm] = if (compareFilesComponent.fileOneHashUppercase) {
-                    uppercase()
-                } else lowercase()
-            }
-            compareFilesComponent.fileTwoResultMap[algorithm]?.run {
-                compareFilesComponent.fileTwoResultMap[algorithm] = if (compareFilesComponent.fileTwoHashUppercase) {
-                    uppercase()
-                } else lowercase()
-            }
-        }
+    companion object {
+        const val BoxHeight = 32
     }
 }

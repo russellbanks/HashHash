@@ -31,8 +31,10 @@ import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.hoc081098.flowext.interval
 import components.Timer
+import components.controlpane.FileSelectButton
 import components.screens.ParentComponent
 import components.screens.ParentInterface
+import helper.FileUtils
 import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -63,8 +65,7 @@ class CompareFilesComponent(
     var fileTwoTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
     var fileTwoResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
-    var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
-    var filesMatch by mutableStateOf(false)
+    private var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
@@ -108,7 +109,6 @@ class CompareFilesComponent(
                         }
                 }
                 comparisonJobList?.awaitAll()
-                filesMatch = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
                 comparisonJobList = null
             }
         } else {
@@ -119,13 +119,31 @@ class CompareFilesComponent(
         }
     }
 
+    fun selectFile(fileSelectButton: FileSelectButton) {
+        FileUtils.openFileDialogAndGetResult().also {
+            if (it != null) {
+                if (fileSelectButton == FileSelectButton.ONE) {
+                    fileOneResultMap.clear()
+                    fileOne = it
+                } else if (fileSelectButton == FileSelectButton.TWO) {
+                    fileTwoResultMap.clear()
+                    fileTwo = it
+                }
+            }
+        }
+    }
+
+    fun isActionButtonEnabled() = fileOne != null && fileTwo != null
+
+    fun getActionButtonText() = if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
+
     fun switchHashCase(fileComparison: FileComparison) {
-        if (fileComparison == FileComparison.FileComparisonOne) {
+        if (fileComparison == FileComparison.ONE) {
             fileOneHashUppercase = !fileOneHashUppercase
             fileOneResultMap[algorithm]?.run {
                 fileOneResultMap[algorithm] = if (fileOneHashUppercase) uppercase() else lowercase()
             }
-        } else if (fileComparison == FileComparison.FileComparisonTwo) {
+        } else if (fileComparison == FileComparison.TWO) {
             fileTwoHashUppercase = !fileTwoHashUppercase
             fileTwoResultMap[algorithm]?.run {
                 fileTwoResultMap[algorithm] = if (fileTwoHashUppercase) uppercase() else lowercase()
@@ -141,7 +159,9 @@ class CompareFilesComponent(
             areFileHashesBlank() -> "No hashes"
             isFileHashOneBlankAndNotTwo() -> "No hash for 1st file"
             isFileHashTwoBlankAndNotOne() -> "No hash for 2nd file"
-            areFileHashesNotBlank() -> if (filesMatch) "Files match" else "Files do not match"
+            areFileHashesNotBlank() -> if (fileOneResultMap[algorithm].equals(
+                    fileTwoResultMap[algorithm], ignoreCase = true
+                )) "Files match" else "Files do not match"
             else -> ""
         }
     }
@@ -163,7 +183,7 @@ class CompareFilesComponent(
     }
 
     enum class FileComparison {
-        FileComparisonOne,
-        FileComparisonTwo
+        ONE,
+        TWO
     }
 }

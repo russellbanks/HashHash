@@ -32,21 +32,20 @@ import org.pushingpixels.aurora.component.model.SelectorContentModel
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.mode.Mode
-import preferences.mode.ModeHandler
 
 @Composable
-fun ModeSelector(modeHandler: ModeHandler) {
+fun ModeSelector(controlPaneHelper: ControlPaneHelper) {
     val scope = rememberCoroutineScope { Dispatchers.Default }
     Row {
         Box(Modifier.weight(1f)) {
-            LabelProjection(contentModel = LabelContentModel(text = ControlPaneHelper.listSelectorText())).project()
+            LabelProjection(contentModel = LabelContentModel(text = controlPaneHelper.getListSelectorText())).project()
         }
         CheckBoxProjection(
             contentModel = SelectorContentModel(
                 text = "",
-                selected = modeHandler.selectedMode == Mode.SIMPLE,
+                selected = controlPaneHelper.modeHandler.selectedMode == Mode.SIMPLE,
                 onTriggerSelectedChange = {
-                    scope.launch { modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED) }
+                    scope.launch { controlPaneHelper.modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED) }
                 }
             )
         ).project()

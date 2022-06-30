@@ -42,17 +42,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
+import components.controlpane.ControlPaneHelper
 import components.controlpane.NestedAlgorithm
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
-import preferences.mode.ModeHandler
 
 @Composable
-fun AlgorithmSelectionList(
-    algorithm: Algorithm,
-    modeHandler: ModeHandler,
-    onAlgorithmClick: (item: Algorithm) -> Unit
-) {
+fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper) {
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
         LazyColumn(
@@ -62,18 +58,23 @@ fun AlgorithmSelectionList(
                 .padding(end = ScrollBarSizingConstants.DefaultScrollBarThickness),
             state = lazyListState
         ) {
-            itemsIndexed(AlgorithmList.getAlgorithmList(modeHandler)) { index, item ->
+            itemsIndexed(AlgorithmList.getAlgorithmList(controlPaneHelper.modeHandler)) { index, item ->
                 if (item is Algorithm) {
-                    AlgorithmBox(item = item, algorithm = algorithm, index = index, onAlgorithmClick = onAlgorithmClick)
+                    AlgorithmBox(
+                        item = item,
+                        algorithm = controlPaneHelper.fileScreen.algorithm,
+                        index = index,
+                        onAlgorithmClick = { controlPaneHelper.onAlgorithmClick(algorithm = it) }
+                    )
                 } else if (item is NestedAlgorithm) {
                     var nestedVisibility by rememberSaveable { mutableStateOf(false) }
                     DropDownAlgorithmBox(item = item, index = index, onClick = { nestedVisibility = !nestedVisibility })
                     AnimatedVisibility(visible = nestedVisibility) {
                         NestedAlgorithmLazyColumn(
-                            algorithm = algorithm,
+                            algorithm = controlPaneHelper.fileScreen.algorithm,
                             item = item,
                             itemIndex = index,
-                            onAlgorithmClick = onAlgorithmClick
+                            onAlgorithmClick = { controlPaneHelper.onAlgorithmClick(algorithm = it) }
                         )
                     }
                 }

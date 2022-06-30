@@ -151,7 +151,7 @@ fun main() {
                                     fileScreen = fileScreenComponent,
                                     compareScreen = compareFilesComponent,
                                     activeComponent = activeComponent,
-                                    modeHandler = modeHandler,
+                                    modeHandler = modeHandler
                                 )
                                 VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                                 Column {

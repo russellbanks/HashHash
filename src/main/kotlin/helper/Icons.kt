@@ -131,10 +131,19 @@ object Icons : Klogging {
         fun eraser() = painterResource("$prefixPath/eraser.svg")
 
         @Composable
+        fun paintBrush() = painterResource("$prefixPath/paint-brush.svg")
+
+        @Composable
         fun refresh() = painterResource("$prefixPath/refresh.svg")
 
         @Composable
         fun settings() = painterResource("$prefixPath/settings.svg")
+
+        @Composable
+        fun window() = painterResource("$prefixPath/bx-window.svg")
+
+        @Composable
+        fun windowAlt() = painterResource("$prefixPath/bxs-window-alt.svg")
 
         @Composable
         fun capitalA() = painterResource("$prefixPath/capital-a.svg")

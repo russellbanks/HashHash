@@ -54,6 +54,7 @@ import components.Tabs
 import components.Toolbar
 import components.controlpane.ControlPane
 import components.dialogs.TranslucentDialogOverlay
+import components.dialogs.UpdateAvailableDialog
 import components.dialogs.about.AboutDialog
 import components.dialogs.settings.SettingsDialog
 import components.dialogs.settings.SettingsRootComponent
@@ -152,7 +153,7 @@ fun main() {
                     ktor.retrieveGitHubData()
                     Box {
                         Column {
-                            Toolbar(dialogState = dialogState)
+                            Toolbar(dialogState = dialogState, ktor = ktor)
                             Row(Modifier.fillMaxSize().weight(1f)) {
                                 ControlPane(
                                     fileScreen = fileScreenComponent,
@@ -184,6 +185,7 @@ fun main() {
                         }
                         Snackbar(parentComponent = parentComponent)
                         TranslucentDialogOverlay(dialogState = dialogState)
+                        UpdateAvailableDialog(dialogState = dialogState, ktor = ktor)
                         SettingsDialog(
                             activeComponent = activeSettingsComponent,
                             root = settingsRoot,

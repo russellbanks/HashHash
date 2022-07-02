@@ -41,7 +41,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.Ktor
-import helper.GitHub
 import helper.Icons
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -69,21 +68,13 @@ fun UpdateCheckText(ktor: Ktor) {
                     Image(
                         painter = Icons.Utility.refresh(),
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .graphicsLayer { rotationZ = rotationAngle },
-                        colorFilter = ColorFilter.tint(
-                            backgroundColorScheme.foregroundColor
-                        )
+                        modifier = Modifier.size(16.dp).graphicsLayer { rotationZ = rotationAngle },
+                        colorFilter = ColorFilter.tint(backgroundColorScheme.foregroundColor)
                     )
                 }
                 LabelProjection(
-                    contentModel = LabelContentModel(
-                        text = GitHub.getUpdateResponseText(checkingGitHubAPI = ktor.checkingGitHubAPI, ktor = ktor)
-                    ),
-                    presentationModel = LabelPresentationModel(
-                        textStyle = TextStyle(fontSize = 12.sp)
-                    )
+                    contentModel = LabelContentModel(text = ktor.getUpdateResponseText()),
+                    presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 12.sp))
                 ).project()
             }
             AnimatedVisibility(ktor.lastChecked != null) {

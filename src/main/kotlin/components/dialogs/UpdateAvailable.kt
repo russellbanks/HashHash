@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package components.dialogs.about
+package components.dialogs
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -43,27 +43,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import api.Ktor
 import application.DialogState
 import com.russellbanks.HashHash.BuildConfig
+import components.dialogs.about.DialogHeader
+import helper.Browser
+import helper.GitHub
 import helper.Icons
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
-import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
+import java.net.URL
 
 @Composable
-fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
+fun UpdateAvailableDialog(dialogState: DialogState, ktor: Ktor) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val scope = rememberCoroutineScope { Dispatchers.Default }
+    val scope = rememberCoroutineScope() { Dispatchers.Default }
     AnimatedVisibility(
-        visible = dialogState.About().isOpen(),
+        visible = dialogState.Update().isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
         exit = fadeOut() + slideOutVertically(targetOffsetY = { -it / 10 })
     ) {
@@ -76,7 +82,7 @@ fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
                 elevation = 4.dp
             ) {
                 Column {
-                    DialogHeader(dialogState = dialogState, dialog = DialogState.Dialogs.About)
+                    DialogHeader(dialogState = dialogState, dialog = DialogState.Dialogs.Update)
                     Row(Modifier.padding(30.dp)) {
                         Box(Modifier.padding(end = 30.dp)) {
                             Image(
@@ -85,22 +91,30 @@ fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
                                 modifier = Modifier.size(60.dp)
                             )
                         }
-                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            JVMInformationText()
-                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                CommandButtonProjection(
-                                    contentModel = Command(
-                                        text = "Check for Updates",
-                                        action = { ktor.checkForHashHashUpdate(scope) }
-                                    ),
-                                    presentationModel = CommandButtonPresentationModel(
-                                        textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
-                                    )
-                                ).project()
-                                AnimatedVisibility(ktor.checkingGitHubAPI || ktor.httpResponse != null) {
-                                    UpdateCheckText(ktor = ktor)
-                                }
-                            }
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            LabelProjection(
+                                contentModel = LabelContentModel(text = "There is a new update available!"),
+                                presentationModel = LabelPresentationModel(
+                                    textStyle = TextStyle(fontWeight = FontWeight.SemiBold)
+                                )
+                            ).project()
+                            LabelProjection(
+                                contentModel = LabelContentModel(
+                                    text = "${BuildConfig.appVersion} ➝ ${ktor.getReleasedVersion()}"
+                                )
+                            ).project()
+                            CommandButtonProjection(
+                                contentModel = Command(
+                                    text = "Go to release page",
+                                    action = {
+                                        scope.launch {
+                                            Browser.open(
+                                                URL(ktor.githubData?.htmlUrl ?: GitHub.HashHash.Repository.releases)
+                                            )
+                                        }
+                                    }
+                                )
+                            ).project()
                         }
                     }
                 }

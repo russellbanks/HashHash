@@ -122,6 +122,9 @@ object Icons : Klogging {
         fun clipboard() = painterResource("$prefixPath/clipboard.svg")
 
         @Composable
+        fun close() = painterResource("$prefixPath/window-close.svg")
+
+        @Composable
         fun copy() = painterResource("$prefixPath/copy.svg")
 
         @Composable
@@ -129,6 +132,9 @@ object Icons : Klogging {
 
         @Composable
         fun eraser() = painterResource("$prefixPath/eraser.svg")
+
+        @Composable
+        fun info() = painterResource("$prefixPath/info.svg")
 
         @Composable
         fun paintBrush() = painterResource("$prefixPath/paint-brush.svg")

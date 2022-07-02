@@ -23,30 +23,49 @@ package application
 import androidx.compose.runtime.mutableStateMapOf
 
 class DialogState {
-    private var dialogsMap = mutableStateMapOf(Dialogs.ABOUT to false, Dialogs.SETTINGS to false)
+    private var dialogsMap = mutableStateMapOf(
+        Dialogs.About to false, Dialogs.Settings to false, Dialogs.Update to false
+    )
 
     fun areDialogsOpen() = dialogsMap.values.any { it }
 
     fun closeAllDialogs() = dialogsMap.forEach { dialogsMap[it.key] = false }
 
+    fun getClass(dialog: Dialogs) = when (dialog) {
+        Dialogs.About -> About()
+        Dialogs.Settings -> Settings()
+        Dialogs.Update -> Update()
+    }
+
     inner class Settings : Dialog {
-        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.SETTINGS }
+        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Settings }
 
         override fun close() {
-            dialogsMap[Dialogs.SETTINGS] = false
+            dialogsMap[Dialogs.Settings] = false
         }
 
-        override fun isOpen() = dialogsMap[Dialogs.SETTINGS] == true
+        override fun isOpen() = dialogsMap[Dialogs.Settings] == true
     }
 
     inner class About : Dialog {
-        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.ABOUT }
+        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.About }
 
         override fun close() {
-            dialogsMap[Dialogs.ABOUT] = false
+            dialogsMap[Dialogs.About] = false
         }
 
-        override fun isOpen() = dialogsMap[Dialogs.ABOUT] == true
+        override fun isOpen() = dialogsMap[Dialogs.About] == true
+    }
+
+    inner class Update : Dialog {
+        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Update }
+
+        override fun close() {
+            dialogsMap[Dialogs.Update] = false
+        }
+
+        override fun isOpen() = dialogsMap[Dialogs.Update] == true
+
     }
 
     interface Dialog {
@@ -58,8 +77,9 @@ class DialogState {
     }
 
     enum class Dialogs {
-        ABOUT,
-        SETTINGS
+        About,
+        Settings,
+        Update
     }
 
 }

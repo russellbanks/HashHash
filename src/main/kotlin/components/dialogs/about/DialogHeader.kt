@@ -20,40 +20,52 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.dialogs.about
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.DialogState
+import helper.Icons
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
+import org.pushingpixels.aurora.theming.BackgroundAppearanceStrategy
+import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 @Composable
-fun CloseDialogFooter(dialogState: DialogState) {
-    Column {
-        HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+fun DialogHeader(dialogState: DialogState, dialog: DialogState.Dialogs) {
+    Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.weight(1f)) {
+            LabelProjection(
+                contentModel = LabelContentModel(text = dialog.name),
+                presentationModel = LabelPresentationModel(
+                    textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                )
+            ).project()
+        }
         CommandButtonProjection(
             contentModel = Command(
-                text = "Close",
-                action = dialogState.About()::close
+                text = "",
+                icon = Icons.Utility.close(),
+                action = dialogState.getClass(dialog)::close
             ),
             presentationModel = CommandButtonPresentationModel(
-                textStyle = TextStyle(
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center
-                ),
-                horizontalGapScaleFactor = 1.8f,
-                verticalGapScaleFactor = 1.5f
+                backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,
+                iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText
             )
-        ).project(Modifier.width(150.dp).align(Alignment.End).padding(20.dp))
+        ).project()
     }
+    HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
 }

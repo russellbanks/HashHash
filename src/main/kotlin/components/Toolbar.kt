@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import api.Ktor
 import application.DialogState
 import helper.Icons
 import org.pushingpixels.aurora.component.model.Command
@@ -39,6 +41,7 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.theming.BackgroundAppearanceStrategy
 import org.pushingpixels.aurora.theming.DecorationAreaType
+import org.pushingpixels.aurora.theming.IconFilterStrategy
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
 
@@ -46,6 +49,7 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 fun Toolbar(
     modifier: Modifier = Modifier,
     dialogState: DialogState,
+    ktor: Ktor,
     iconDimension: Dp = 16.dp
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Toolbar) {
@@ -63,6 +67,22 @@ fun Toolbar(
 
             }
             Row {
+                AnimatedVisibility(ktor.isUpdateAvailable()) {
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "",
+                            icon = Icons.Utility.info(),
+                            action = dialogState.Update()::open
+                        ),
+                        presentationModel = CommandButtonPresentationModel(
+                            backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,
+                            iconDimension = iconDimension,
+                            iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                            iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText
+                        )
+                    ).project()
+                }
+                Spacer(modifier = Modifier.width(4.dp))
                 VerticalSeparatorProjection().project(modifier = Modifier.height(20.dp))
                 Spacer(modifier = Modifier.width(4.dp))
                 CommandButtonProjection(
@@ -73,7 +93,9 @@ fun Toolbar(
                     ),
                     presentationModel = CommandButtonPresentationModel(
                         backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,
-                        iconDimension = iconDimension
+                        iconDimension = iconDimension,
+                        iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                        iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText
                     )
                 ).project()
             }

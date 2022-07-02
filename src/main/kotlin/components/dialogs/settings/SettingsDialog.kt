@@ -91,7 +91,7 @@ fun SettingsDialog(
             Surface(
                 modifier = Modifier.width(500.dp),
                 shape = RoundedCornerShape(8.dp),
-                color = backgroundColorScheme.backgroundFillColor,
+                color = backgroundColorScheme.accentedBackgroundFillColor,
                 border = BorderStroke(1.dp, Color.Black),
                 elevation = 4.dp
             ) {

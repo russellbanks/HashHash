@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.russellbanks.HashHash.BuildConfig
 import data.GitHubData
 import helper.GitHub
 import io.klogging.Klogging
@@ -43,7 +44,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
+import kotlinx.datetime.until
 import kotlinx.serialization.json.Json
 
 class Ktor : Klogging {
@@ -108,6 +111,29 @@ class Ktor : Klogging {
                     checkingGitHubAPI = false
                 }
             }
+        }
+    }
+
+    fun isUpdateAvailable() = githubData?.tagName?.contains(BuildConfig.appVersion) == false
+
+    fun getReleasedVersion() = githubData?.tagName?.replace("v", "")
+
+    fun getUpdateResponseText(): String {
+        return when {
+            checkingGitHubAPI -> "Checking"
+            githubData?.tagName?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
+            githubData?.tagName?.contains(BuildConfig.appVersion) == false -> {
+                "Out of date. Latest version is ${githubData?.tagName?.removePrefix("v")}"
+            }
+            (httpResponse?.headers?.get("X-RateLimit-Remaining")?.toInt() ?: -1) == 0 -> {
+                val epochSeconds = httpResponse?.headers?.get("X-RateLimit-Reset")?.toLong()
+                val instantEpochSeconds = epochSeconds?.let { Instant.fromEpochSeconds(it) }
+                var minutesLeft = instantEpochSeconds?.let { Clock.System.now().until(it, DateTimeUnit.MINUTE) }
+                if (minutesLeft == 0L) minutesLeft = 1L
+                "Rate limited. Check back in $minutesLeft minute${if (minutesLeft != 1L) "s" else ""}"
+            }
+            httpResponse != null -> "${httpResponse?.status} - Check back later"
+            else -> "Error accessing GitHub API"
         }
     }
 

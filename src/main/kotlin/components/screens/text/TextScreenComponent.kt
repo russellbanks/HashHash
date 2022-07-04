@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.text
 
+import Hashing.catchTextHashingException
 import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,21 +34,20 @@ class TextScreenComponent(
     parentComponent: ParentComponent
 ) : ComponentContext by componentContext, ParentInterface by parentComponent {
     var givenText by mutableStateOf("")
+    var givenTextHash by mutableStateOf("")
     var comparisonHash by mutableStateOf("")
     var hashedTextUppercase by mutableStateOf(true)
     private var exception: Exception? by mutableStateOf(null)
 
-    fun hashGivenText(): String {
-        return try {
-            exception = null
-            givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            exception = illegalArgumentException
-            ""
-        } catch (illegalStateException: IllegalStateException) {
-            exception = illegalStateException
-            ""
-        }
+    suspend fun hashGivenText() {
+        if (givenText.isNotEmpty()) {
+            catchTextHashingException(exceptionCallback = {
+                exception = it
+                if (exception != null) givenTextHash = ""
+            }) {
+                givenTextHash = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
+            }
+        } else givenTextHash = ""
     }
 
     fun characterCountAsString(): String {

@@ -74,7 +74,7 @@ class FileScreenComponent(
                 }
                 fileHashJob = scope.launch(Dispatchers.IO) {
                     instantBeforeHash = Clock.System.now()
-                    Hashing.catchHashingExceptions(exceptionCallback = { exception = it }) {
+                    Hashing.catchFileHashingExceptions(exceptionCallback = { exception = it }) {
                         resultMap[algorithm] = file.hash(
                             algorithm = algorithm,
                             hashProgressCallback = { hashProgress = it }

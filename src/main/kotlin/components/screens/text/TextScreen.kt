@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
@@ -51,6 +53,7 @@ fun TextScreen(component: TextScreenComponent) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -67,20 +70,30 @@ fun TextScreen(component: TextScreenComponent) {
             TextFieldStringProjection(
                 contentModel = TextFieldStringContentModel(
                     value = component.givenText,
-                    onValueChange = { component.givenText = it }
+                    onValueChange = {
+                        with(component) {
+                            givenText = it
+                            scope.launch { hashGivenText() }
+                        }
+                    }
                 )
             ).project(Modifier.fillMaxWidth().fillMaxHeight(fraction = 0.5f).padding(horizontal = 4.dp))
             TextFieldShortcuts(component = component)
         }
         OutputTextFieldRow(
             algorithm = component.algorithm,
-            value = if (component.givenText.isNotEmpty()) component.hashGivenText() else "",
+            value = component.givenTextHash,
             isValueUppercase = component.hashedTextUppercase,
             snackbarHostState = component.snackbarHostState,
-            onCaseClick = { component.hashedTextUppercase = !component.hashedTextUppercase }
+            onCaseClick = {
+                with(component) {
+                    hashedTextUppercase = !hashedTextUppercase
+                    givenTextHash = givenTextHash.run { if (hashedTextUppercase) uppercase() else lowercase() }
+                }
+            }
         )
         ComparisonTextFieldRow(
-            hashedOutput = "",
+            hashedOutput = component.givenTextHash,
             comparisonHash = component.comparisonHash,
             onPasteClick = {
                 component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }

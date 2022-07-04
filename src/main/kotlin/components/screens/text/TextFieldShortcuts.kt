@@ -25,13 +25,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun TextFieldShortcuts(component: TextScreenComponent) {
+    val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier.fillMaxWidth().padding(4.dp),
         horizontalArrangement = Arrangement.Center
@@ -39,19 +42,34 @@ fun TextFieldShortcuts(component: TextScreenComponent) {
         CommandButtonProjection(
             contentModel = Command(
                 text = "Uppercase",
-                action = { component.givenText = component.givenText.uppercase() }
+                action = {
+                    with(component) {
+                        givenText = givenText.uppercase()
+                        scope.launch { hashGivenText() }
+                    }
+                }
             )
         ).project(Modifier.fillMaxWidth(fraction = 1f / 3))
         CommandButtonProjection(
             contentModel = Command(
                 text = "Lowercase",
-                action = { component.givenText = component.givenText.lowercase() }
+                action = {
+                    with(component) {
+                        givenText = givenText.lowercase()
+                        scope.launch { hashGivenText() }
+                    }
+                }
             )
         ).project(Modifier.fillMaxWidth(fraction = 1f / 2))
         CommandButtonProjection(
             contentModel = Command(
                 text = "Clear text area",
-                action = { component.givenText = "" }
+                action = {
+                    with(component) {
+                        givenText = ""
+                        givenTextHash = ""
+                    }
+                }
             )
         ).project(Modifier.fillMaxWidth())
     }

@@ -83,7 +83,7 @@ fun FileScreen(component: FileScreenComponent) {
                     textStyle = TextStyle(textAlign = TextAlign.Center)
                 )
             ).project()
-            LabelProjection(contentModel = LabelContentModel(text = "or drag and drop a file"),).project()
+            LabelProjection(contentModel = LabelContentModel(text = "or drag and drop a file")).project()
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Icons.SystemIcon(modifier = Modifier.size(60.dp), file = component.file)

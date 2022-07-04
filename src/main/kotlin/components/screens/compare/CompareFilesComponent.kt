@@ -94,7 +94,7 @@ class CompareFilesComponent(
             scope.launch(Dispatchers.Default) {
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
-                        Hashing.catchHashingExceptions {
+                        Hashing.catchFileHashingExceptions {
                             fileOneResultMap[algorithm] = fileOne?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileOneHashProgress = it }
@@ -102,7 +102,7 @@ class CompareFilesComponent(
                         }
                     },
                     async(Dispatchers.IO) {
-                        Hashing.catchHashingExceptions {
+                        Hashing.catchFileHashingExceptions {
                             fileTwoResultMap[algorithm] = fileTwo?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileTwoHashProgress = it }

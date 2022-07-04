@@ -22,19 +22,33 @@ package components.screens.compare
 
 import Hashing
 import Hashing.hash
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.hoc081098.flowext.interval
+import components.HashProgress
+import components.OutputTextFieldRow
 import components.Timer
-import components.controlpane.FileSelectButton
 import components.screens.ParentComponent
 import components.screens.ParentInterface
 import helper.FileUtils
+import helper.Icons
 import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -43,7 +57,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.pushingpixels.aurora.component.model.Command
+import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.projection.CommandButtonProjection
+import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
+import org.pushingpixels.aurora.theming.IconFilterStrategy
 import java.io.File
+import java.nio.file.Files
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -55,17 +77,17 @@ class CompareFilesComponent(
 ) : ComponentContext by componentContext, ParentInterface by parentComponent, Klogging {
     var fileOne: File? by mutableStateOf(null)
     var fileOneHashUppercase by mutableStateOf(true)
-    var fileOneHashProgress by mutableStateOf(0F)
-    var fileOneTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+    private var fileOneHashProgress by mutableStateOf(0F)
+    private var fileOneTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
     var fileOneResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
     var fileTwo: File? by mutableStateOf(null)
     var fileTwoHashUppercase by mutableStateOf(true)
-    var fileTwoHashProgress by mutableStateOf(0F)
-    var fileTwoTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
+    private var fileTwoHashProgress by mutableStateOf(0F)
+    private var fileTwoTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
     var fileTwoResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
-    private var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
+    var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
@@ -119,13 +141,13 @@ class CompareFilesComponent(
         }
     }
 
-    fun selectFile(fileSelectButton: FileSelectButton) {
+    private fun selectFile(fileComparison: FileComparison) {
         FileUtils.openFileDialogAndGetResult().also {
             if (it != null) {
-                if (fileSelectButton == FileSelectButton.One) {
+                if (fileComparison == FileComparison.One) {
                     fileOneResultMap.clear()
                     fileOne = it
-                } else if (fileSelectButton == FileSelectButton.Two) {
+                } else if (fileComparison == FileComparison.Two) {
                     fileTwoResultMap.clear()
                     fileTwo = it
                 }
@@ -143,11 +165,7 @@ class CompareFilesComponent(
         }
     }
 
-    fun isActionButtonEnabled() = fileOne != null && fileTwo != null
-
-    fun getActionButtonText() = if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
-
-    fun switchHashCase(fileComparison: FileComparison) {
+    private fun switchHashCase(fileComparison: FileComparison) {
         if (fileComparison == FileComparison.One) {
             fileOneHashUppercase = !fileOneHashUppercase
             fileOneResultMap[algorithm]?.run {
@@ -193,5 +211,82 @@ class CompareFilesComponent(
     enum class FileComparison {
         One,
         Two
+    }
+
+    @Composable
+    fun FileComparisonColumn(modifier: Modifier = Modifier, fileComparison: FileComparison) {
+        if (fileComparison == FileComparison.One) {
+            FileComparisonColumn(
+                modifier = modifier,
+                file = fileOne,
+                fileResultMap = fileOneResultMap,
+                isHashUppercase = fileOneHashUppercase,
+                fileComparison = fileComparison,
+            )
+        } else if (fileComparison == FileComparison.Two) {
+            FileComparisonColumn(
+                modifier = modifier,
+                file = fileTwo,
+                fileResultMap = fileTwoResultMap,
+                isHashUppercase = fileTwoHashUppercase,
+                fileComparison = fileComparison,
+            )
+        }
+    }
+
+    @Composable
+    private fun FileComparisonColumn(
+        modifier: Modifier = Modifier,
+        file: File?,
+        fileResultMap: SnapshotStateMap<Algorithm, String>,
+        isHashUppercase: Boolean,
+        fileComparison: FileComparison,
+    ) {
+        Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            CommandButtonProjection(
+                contentModel = Command(
+                    text = "Select file",
+                    icon = Icons.Utility.folderOpen(),
+                    action = { selectFile(fileComparison) }
+                ),
+                presentationModel = CommandButtonPresentationModel(
+                    iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                    iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                    textStyle = TextStyle(textAlign = TextAlign.Center)
+                )
+            ).project()
+            SelectionContainer {
+                Column {
+                    Icons.SystemIcon(modifier = Modifier.size(60.dp), file = file)
+                    Spacer(Modifier.height(10.dp))
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "Type: ${if (file != null)
+                            Files.probeContentType(file.toPath()) else ""
+                        }")
+                    ).project()
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "Extension: ${file?.extension ?: ""}")
+                    ).project()
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "Size: ${if (file != null)
+                            FileUtils.getFormattedBytes(file.length()) else ""
+                        }")
+                    ).project()
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "Path: ${file?.absolutePath ?: ""}")
+                    ).project()
+                }
+            }
+            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+            OutputTextFieldRow(
+                algorithm = algorithm,
+                value = fileResultMap.getOrDefault(algorithm, ""),
+                isValueUppercase = isHashUppercase,
+                snackbarHostState = snackbarHostState,
+                onCaseClick = { switchHashCase(fileComparison) }
+            )
+            HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
+            HashProgress(fileHashProgress = fileOneHashProgress, timer = fileOneTimer)
+        }
     }
 }

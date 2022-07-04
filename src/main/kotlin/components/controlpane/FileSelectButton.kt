@@ -21,6 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.controlpane
 
 enum class FileSelectButton {
-    ONE,
-    TWO
+    One,
+    Two
 }

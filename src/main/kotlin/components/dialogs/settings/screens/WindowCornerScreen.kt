@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -36,8 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -51,36 +48,26 @@ fun WindowCornerScreen(
     titleBarHandler: TitleBarHandler,
     window: ApplicationWindowState
 ) {
-    val scope = rememberCoroutineScope()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Window Corner")).project()
         LabelProjection(
             contentModel = LabelContentModel(text = "Requires Restart"),
             presentationModel = LabelPresentationModel(
-                textStyle = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                    fontStyle = FontStyle.Italic
-                )
+                textStyle = TextStyle(color = Color.Gray, fontSize = 12.sp, fontStyle = FontStyle.Italic)
             )
         ).project()
         LazyColumn {
             items(WindowCornerPreference.values()) { windowCornerPreference ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
-                    selected = windowCornerPreference ==
-                            windowCornerHandler.getWindowCorner(),
+                    selected = windowCornerPreference == windowCornerHandler.getWindowCorner(),
                     onClick = {
-                        if (
-                            windowCornerHandler.getWindowCorner() != windowCornerPreference
-                        ) {
-                            scope.launch(Dispatchers.Default) {
-                                windowCornerHandler.putWindowCorner(windowCornerPreference)
-                                window.checkWindowNeedsRestarting(
-                                    titleBarHandler = titleBarHandler,
-                                    windowCornerHandler = windowCornerHandler
-                                )
-                            }
+                        if (windowCornerHandler.getWindowCorner() != windowCornerPreference) {
+                            windowCornerHandler.putWindowCorner(windowCornerPreference)
+                            window.checkWindowNeedsRestarting(
+                                titleBarHandler = titleBarHandler,
+                                windowCornerHandler = windowCornerHandler
+                            )
                         }
                     }
                 ) {
@@ -92,10 +79,7 @@ fun WindowCornerScreen(
                                 .replace(oldValue = "_", newValue = " ")
                         ),
                         presentationModel = LabelPresentationModel(
-                            textStyle = TextStyle(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                            textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         )
                     ).project(Modifier.padding(4.dp))
                 }

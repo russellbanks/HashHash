@@ -25,6 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.jthemedetecor.OsThemeDetector
 import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.theming.AuroraSkinDefinition
 import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
@@ -40,7 +43,7 @@ class ThemeHandler : Klogging {
 
     var auroraSkin by mutableStateOf(getTheme().toAuroraTheme())
 
-    fun registerThemeListener() {
+    init {
         osThemeDetector.registerListener { isDark: Boolean ->
             if (getTheme() == Theme.System) auroraSkin = if (isDark) nightShadeSkin() else dustSkin()
         }
@@ -62,12 +65,14 @@ class ThemeHandler : Klogging {
         }.also { cachedTheme = it }
     }
 
-    suspend fun putTheme(theme: Theme) {
+    fun putTheme(theme: Theme) {
         preferences.putInt(themeKey, theme.ordinal)
         cachedTheme = theme
         auroraSkin = theme.toAuroraTheme()
-        logger.info {
-            "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
+        CoroutineScope(Dispatchers.Default).launch {
+            logger.info {
+                "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
+            }
         }
     }
 

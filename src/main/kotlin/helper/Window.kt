@@ -131,7 +131,7 @@ object Window {
                             commands = listOf(
                                 Command(
                                     text = "Exit",
-                                    action = { auroraApplicationScope.exitApplication() }
+                                    action = auroraApplicationScope::exitApplication
                                 )
                             )
                         )

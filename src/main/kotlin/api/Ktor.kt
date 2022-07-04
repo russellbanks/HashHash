@@ -20,10 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package api
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.russellbanks.HashHash.BuildConfig
 import data.GitHubData
@@ -54,16 +52,15 @@ class Ktor : Klogging {
     var httpResponse: HttpResponse? = null
     var githubData: GitHubData? = null
     var retrievedGitHubData = false
-    var httpClient: HttpClient? = null
+    private var httpClient: HttpClient? = null
     var checkingGitHubAPI by mutableStateOf(false)
     var lastChecked: Instant? by mutableStateOf(null)
 
-    @Composable
-    fun retrieveGitHubData() {
-        if (retrievedGitHubData) { return }
+    init {
+        val scope = CoroutineScope(Dispatchers.Default)
         retrievedGitHubData = true
-        httpClient = createHttpClient().also { client ->
-            rememberCoroutineScope { Dispatchers.IO }.launch(Dispatchers.Default) {
+        httpClient = scope.createHttpClient().also { client ->
+            scope.launch(Dispatchers.Default) {
                 httpResponse = client.get(GitHub.HashHash.API.latest).also {
                     if (it.status == HttpStatusCode.OK) githubData = it.body()
                 }
@@ -72,9 +69,7 @@ class Ktor : Klogging {
         }
     }
 
-    @Composable
-    private fun createHttpClient(): HttpClient {
-        val scope = rememberCoroutineScope { Dispatchers.IO }
+    private fun CoroutineScope.createHttpClient(): HttpClient {
         return HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(
@@ -86,7 +81,7 @@ class Ktor : Klogging {
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
-                        scope.launch(Dispatchers.Default) { this@Ktor.logger.info(message) }
+                        launch(Dispatchers.Default) { this@Ktor.logger.info(message) }
                     }
                 }
                 level = LogLevel.INFO

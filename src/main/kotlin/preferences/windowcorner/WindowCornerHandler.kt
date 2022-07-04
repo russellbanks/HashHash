@@ -25,6 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
 import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
 class WindowCornerHandler : Klogging {
@@ -35,20 +38,22 @@ class WindowCornerHandler : Klogging {
 
     fun getWindowCorner(): WindowCornerPreference {
         return cachedWindowCorner
-            ?: (when (preferences.getInt(windowCornerKey, WindowCornerPreference.DEFAULT.ordinal)) {
+            ?: when (preferences.getInt(windowCornerKey, WindowCornerPreference.DEFAULT.ordinal)) {
                 WindowCornerPreference.NOT_ROUNDED.ordinal -> WindowCornerPreference.NOT_ROUNDED
                 WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.SMALL_ROUNDED.ordinal -> WindowCornerPreference.SMALL_ROUNDED
                 else -> WindowCornerPreference.DEFAULT
-            }).also { cachedWindowCorner = it }
+            }.also { cachedWindowCorner = it }
     }
 
-    suspend fun putWindowCorner(windowCornerPreference: WindowCornerPreference) {
+    fun putWindowCorner(windowCornerPreference: WindowCornerPreference) {
         preferences.putInt(windowCornerKey, windowCornerPreference.ordinal)
         cachedWindowCorner = windowCornerPreference
-        logger.info {
-            "Put ${windowCornerPreference.name} into preferences with the key of " +
-                    "\"$windowCornerKey\" and the value of ${windowCornerPreference.ordinal}"
+        CoroutineScope(Dispatchers.Default).launch {
+            logger.info {
+                "Put ${windowCornerPreference.name} into preferences with the key of " +
+                        "\"$windowCornerKey\" and the value of ${windowCornerPreference.ordinal}"
+            }
         }
     }
 

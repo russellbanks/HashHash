@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpSize
@@ -88,39 +87,19 @@ fun main() {
     val ktor = Ktor()
     val titleBarHandler = TitleBarHandler()
     val dialogState = DialogState()
-    val themeHandler = ThemeHandler().apply { registerThemeListener() }
+    val themeHandler = ThemeHandler()
+    val modeHandler = ModeHandler()
+    val windowCornerHandler = WindowCornerHandler()
+    val parentComponent = ParentComponent()
+    val fileScreenComponent = FileScreenComponent(DefaultComponentContext(lifecycle), parentComponent)
+    val textScreenComponent = TextScreenComponent(DefaultComponentContext(lifecycle), parentComponent)
+    val compareFilesComponent = CompareFilesComponent(DefaultComponentContext(lifecycle), parentComponent)
+    val applicationState = ApplicationState(titleBarHandler, windowCornerHandler)
     auroraApplication {
-        val routerState = root.routerState.subscribeAsState()
-        val activeComponent = routerState.value.activeChild.instance
-        val settingsRouterState = settingsRoot.routerState.subscribeAsState()
-        val activeSettingsComponent = settingsRouterState.value.activeChild.instance
-
-        val modeHandler = remember { ModeHandler() }
-        val windowCornerHandler = remember { WindowCornerHandler() }
-        val parentComponent = remember { ParentComponent() }
-        val fileScreenComponent = remember {
-            FileScreenComponent(
-                componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
-            )
-        }
-        val textScreenComponent = remember {
-            TextScreenComponent(
-                componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
-            )
-        }
-        val compareFilesComponent = remember {
-            CompareFilesComponent(
-                componentContext = DefaultComponentContext(lifecycle), parentComponent = parentComponent
-            )
-        }
         val windowState = rememberWindowState(
             position = WindowPosition(Alignment.Center),
             size = DpSize(width = 1035.dp, height = 750.dp)
         )
-        val applicationState = remember { ApplicationState(
-            titleBarHandler = titleBarHandler,
-            windowCornerHandler = windowCornerHandler
-        ) }
         for (window in applicationState.windows) {
             key(window) {
                 LifecycleController(lifecycle, windowState)
@@ -139,6 +118,8 @@ fun main() {
                     undecorated = window.isUndecorated,
                     onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
                 ) {
+                    val routerState = root.routerState.subscribeAsState()
+                    val activeComponent = routerState.value.activeChild.instance
                     WindowStyle(
                         isDarkTheme = themeHandler.isDark(),
                         backdropType = WindowBackdrop.Mica,
@@ -150,20 +131,18 @@ fun main() {
                         compareFilesComponent = compareFilesComponent,
                         activeComponent = activeComponent
                     )
-                    ktor.retrieveGitHubData()
                     Box {
                         Column {
                             Toolbar(dialogState = dialogState, ktor = ktor)
+                            Tabs(activeComponent = activeComponent, root = root)
                             Row(Modifier.fillMaxSize().weight(1f)) {
                                 ControlPane(
                                     fileScreen = fileScreenComponent,
                                     compareScreen = compareFilesComponent,
-                                    activeComponent = activeComponent,
                                     modeHandler = modeHandler
                                 )
                                 VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                                 Column {
-                                    Tabs(activeComponent = activeComponent, root = root)
                                     Children(
                                         routerState = routerState.value,
                                         animation = childAnimation(fade(tween(durationMillis = 200)))
@@ -187,9 +166,7 @@ fun main() {
                         TranslucentDialogOverlay(dialogState = dialogState)
                         UpdateAvailableDialog(dialogState = dialogState, ktor = ktor)
                         SettingsDialog(
-                            activeComponent = activeSettingsComponent,
                             root = settingsRoot,
-                            routerState = settingsRouterState,
                             dialogState = dialogState,
                             themeHandler = themeHandler,
                             titleBarHandler = titleBarHandler,

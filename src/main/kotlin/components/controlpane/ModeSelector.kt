@@ -23,30 +23,29 @@ package components.controlpane
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.SelectorContentModel
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.mode.Mode
+import preferences.mode.ModeHandler
 
 @Composable
-fun ModeSelector(controlPaneHelper: ControlPaneHelper) {
-    val scope = rememberCoroutineScope { Dispatchers.Default }
+fun ModeSelector(modeHandler: ModeHandler) {
     Row {
         Box(Modifier.weight(1f)) {
-            LabelProjection(contentModel = LabelContentModel(text = controlPaneHelper.getListSelectorText())).project()
+            LabelProjection(
+                contentModel = LabelContentModel(
+                    text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
+                )
+            ).project()
         }
         CheckBoxProjection(
             contentModel = SelectorContentModel(
                 text = "",
-                selected = controlPaneHelper.modeHandler.selectedMode == Mode.SIMPLE,
-                onTriggerSelectedChange = {
-                    scope.launch { controlPaneHelper.modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED) }
-                }
+                selected = modeHandler.selectedMode == Mode.SIMPLE,
+                onTriggerSelectedChange = { modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED) }
             )
         ).project()
     }

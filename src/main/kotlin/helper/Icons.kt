@@ -21,14 +21,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package helper
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import io.kamel.image.KamelImage
 import io.kamel.image.lazyPainterResource
 import io.klogging.Klogging
@@ -50,28 +47,28 @@ object Icons : Klogging {
     fun file() = painterResource("file types/file.svg")
 
     @Composable
-    fun FileImage() = Image(
+    fun FileImage(modifier: Modifier) = Image(
         painter = file(),
         contentDescription = null,
-        modifier = Modifier.size(80.dp).padding(start = 20.dp)
+        modifier = modifier
     )
 
     @Composable
-    fun SystemIcon(file: File?) {
+    fun SystemIcon(modifier: Modifier, file: File?) {
         if (file != null) {
             if (file.isImage()) {
                 KamelImage(
                     resource = lazyPainterResource(file),
                     contentDescription = null,
-                    modifier = Modifier.size(80.dp).padding(start = 20.dp),
-                    onLoading = { getSystemImage(file) },
+                    modifier = modifier,
+                    onLoading = { getSystemImage(modifier, file) },
                     onFailure = {
                         rememberCoroutineScope { Dispatchers.Default }.launch { logger.error(it.message) }
-                        getSystemImage(file)
+                        getSystemImage(modifier, file)
                     }
                 )
-            } else getSystemImage(file)
-        } else FileImage()
+            } else getSystemImage(modifier, file)
+        } else FileImage(modifier)
     }
 
     private fun File.isImage(): Boolean {
@@ -83,15 +80,15 @@ object Icons : Klogging {
     }
 
     @Composable
-    private fun getSystemImage(file: File) {
+    private fun getSystemImage(modifier: Modifier, file: File) {
         val icon = getSystemIcon(file)
         return if (icon != null) {
             Image(
                 painter = icon.toBufferedImage().toPainter(),
                 contentDescription = null,
-                modifier = Modifier.size(80.dp).padding(start = 20.dp)
+                modifier = modifier
             )
-        } else FileImage()
+        } else FileImage(modifier)
     }
 
     private fun getSystemIcon(file: File): Icon? {
@@ -134,7 +131,13 @@ object Icons : Klogging {
         fun eraser() = painterResource("$prefixPath/eraser.svg")
 
         @Composable
+        fun folderOpen() = painterResource("$prefixPath/bxs-folder-open.svg")
+
+        @Composable
         fun info() = painterResource("$prefixPath/info.svg")
+
+        @Composable
+        fun microChip() = painterResource("$prefixPath/bxs-microchip.svg")
 
         @Composable
         fun paintBrush() = painterResource("$prefixPath/paint-brush.svg")

@@ -21,64 +21,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.controlpane
 
 import com.appmattus.crypto.Algorithm
-import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import io.klogging.Klogging
-import kotlinx.coroutines.CoroutineScope
-import preferences.mode.Mode
-import preferences.mode.ModeHandler
 
 class ControlPaneHelper(
     val fileScreen: FileScreenComponent,
-    private val compareScreen: CompareFilesComponent,
-    private val activeComponent: Root.Child,
-    val modeHandler: ModeHandler,
-    val scope: CoroutineScope
+    private val compareScreen: CompareFilesComponent
 ) : Klogging {
-
-    fun getSelectFileButtonText(fileSelectButton: FileSelectButton): String {
-        return if (fileSelectButton == FileSelectButton.ONE) {
-            when (activeComponent) {
-                is Root.Child.File -> "Select file"
-                is Root.Child.CompareFiles -> "Select 1st file"
-                else -> ""
-            }
-        } else {
-            if (activeComponent is Root.Child.CompareFiles) "Select 2nd file" else ""
-        }
-    }
-
-    fun getSelectFileButtonAction(fileSelectButton: FileSelectButton) {
-        if (activeComponent is Root.Child.File) fileScreen.selectFile()
-        else if (activeComponent is Root.Child.CompareFiles) compareScreen.selectFile(fileSelectButton)
-    }
-
-    fun isActionButtonEnabled(): Boolean {
-        return when (activeComponent) {
-            is Root.Child.File -> fileScreen.isActionButtonEnabled()
-            is Root.Child.CompareFiles -> compareScreen.isActionButtonEnabled()
-            else -> false
-        }
-    }
-
-    fun getActionButtonText(): String {
-        return when (activeComponent) {
-            is Root.Child.File -> fileScreen.getActionButtonText()
-            is Root.Child.CompareFiles -> compareScreen.getActionButtonText()
-            else -> ""
-        }
-    }
-
-    fun getActionButtonAction() {
-        if (activeComponent is Root.Child.File) {
-            fileScreen.onCalculateClicked(scope)
-        } else if (activeComponent is Root.Child.CompareFiles) {
-            compareScreen.onCalculateClicked(scope)
-        }
-    }
-
-    fun getListSelectorText() = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
 
     fun onAlgorithmClick(algorithm: Algorithm) {
         if (algorithm != fileScreen.algorithm) {

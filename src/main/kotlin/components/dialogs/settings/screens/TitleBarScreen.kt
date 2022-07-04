@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -35,8 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -51,17 +48,12 @@ fun TitleBarScreen(
     windowCornerHandler: WindowCornerHandler,
     window: ApplicationWindowState
 ) {
-    val scope = rememberCoroutineScope()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Title Bar")).project()
         LabelProjection(
             contentModel = LabelContentModel(text = "Requires Restart"),
             presentationModel = LabelPresentationModel(
-                textStyle = TextStyle(
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                    fontStyle = FontStyle.Italic
-                )
+                textStyle = TextStyle(color = Color.Gray, fontSize = 12.sp, fontStyle = FontStyle.Italic)
             )
         ).project()
         LazyColumn {
@@ -71,13 +63,11 @@ fun TitleBarScreen(
                     selected = titleBar == titleBarHandler.getTitleBar(),
                     onClick = {
                         if (titleBarHandler.getTitleBar() != titleBar) {
-                            scope.launch(Dispatchers.Default) {
-                                titleBarHandler.putTitleBar(titleBar)
-                                window.checkWindowNeedsRestarting(
-                                    titleBarHandler = titleBarHandler,
-                                    windowCornerHandler = windowCornerHandler
-                                )
-                            }
+                            titleBarHandler.putTitleBar(titleBar)
+                            window.checkWindowNeedsRestarting(
+                                titleBarHandler = titleBarHandler,
+                                windowCornerHandler = windowCornerHandler
+                            )
                         }
                     }
                 ) {

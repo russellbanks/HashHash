@@ -46,9 +46,10 @@ import components.controlpane.ControlPaneHelper
 import components.controlpane.NestedAlgorithm
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
+import preferences.mode.ModeHandler
 
 @Composable
-fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper) {
+fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper, modeHandler: ModeHandler) {
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
         LazyColumn(
@@ -58,7 +59,7 @@ fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper) {
                 .padding(end = ScrollBarSizingConstants.DefaultScrollBarThickness),
             state = lazyListState
         ) {
-            itemsIndexed(AlgorithmList.getAlgorithmList(controlPaneHelper.modeHandler)) { index, item ->
+            itemsIndexed(AlgorithmList.getAlgorithmList(modeHandler)) { index, item ->
                 if (item is Algorithm) {
                     AlgorithmBox(
                         item = item,

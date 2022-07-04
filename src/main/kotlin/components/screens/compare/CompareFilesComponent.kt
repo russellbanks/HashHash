@@ -122,10 +122,10 @@ class CompareFilesComponent(
     fun selectFile(fileSelectButton: FileSelectButton) {
         FileUtils.openFileDialogAndGetResult().also {
             if (it != null) {
-                if (fileSelectButton == FileSelectButton.ONE) {
+                if (fileSelectButton == FileSelectButton.One) {
                     fileOneResultMap.clear()
                     fileOne = it
-                } else if (fileSelectButton == FileSelectButton.TWO) {
+                } else if (fileSelectButton == FileSelectButton.Two) {
                     fileTwoResultMap.clear()
                     fileTwo = it
                 }
@@ -148,12 +148,12 @@ class CompareFilesComponent(
     fun getActionButtonText() = if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel"
 
     fun switchHashCase(fileComparison: FileComparison) {
-        if (fileComparison == FileComparison.ONE) {
+        if (fileComparison == FileComparison.One) {
             fileOneHashUppercase = !fileOneHashUppercase
             fileOneResultMap[algorithm]?.run {
                 fileOneResultMap[algorithm] = if (fileOneHashUppercase) uppercase() else lowercase()
             }
-        } else if (fileComparison == FileComparison.TWO) {
+        } else if (fileComparison == FileComparison.Two) {
             fileTwoHashUppercase = !fileTwoHashUppercase
             fileTwoResultMap[algorithm]?.run {
                 fileTwoResultMap[algorithm] = if (fileTwoHashUppercase) uppercase() else lowercase()
@@ -191,7 +191,7 @@ class CompareFilesComponent(
     }
 
     enum class FileComparison {
-        ONE,
-        TWO
+        One,
+        Two
     }
 }

@@ -38,10 +38,7 @@ import org.pushingpixels.aurora.component.projection.DeterminateLinearProgressPr
 import org.pushingpixels.aurora.component.projection.LabelProjection
 
 @Composable
-fun HashProgress(
-    fileHashProgress: Float,
-    timer: Timer?
-) {
+fun HashProgress(fileHashProgress: Float, timer: Timer?) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row {
             LabelProjection(

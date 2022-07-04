@@ -28,7 +28,7 @@ import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
-class ApplicationState(val titleBarHandler: TitleBarHandler, val windowCornerHandler: WindowCornerHandler) {
+class ApplicationState(private val titleBar: TitleBarHandler, private val windowCorner: WindowCornerHandler) {
     val windows = mutableStateListOf<ApplicationWindowState>()
 
     init {
@@ -42,8 +42,8 @@ class ApplicationState(val titleBarHandler: TitleBarHandler, val windowCornerHan
     private fun windowState() = ApplicationWindowState(
         openNewWindow = ::openNewWindow,
         windows::remove,
-        titleBarHandler = titleBarHandler,
-        windowCornerHandler = windowCornerHandler
+        titleBarHandler = titleBar,
+        windowCornerHandler = windowCorner
     )
 }
 
@@ -64,5 +64,10 @@ class ApplicationWindowState(
                 windowCornerHandler.getWindowCorner() != windowCorner
     }
 
-    fun close() = close(this)
+    fun restart() {
+        openNewWindow()
+        close()
+    }
+
+    private fun close() = close(this)
 }

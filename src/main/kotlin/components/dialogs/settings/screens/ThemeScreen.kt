@@ -62,10 +62,7 @@ fun ThemeScreen(themeHandler: ThemeHandler) {
                     LabelProjection(
                         contentModel = LabelContentModel(text = theme.name),
                         presentationModel = LabelPresentationModel(
-                            textStyle = TextStyle(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                            textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         )
                     ).project(Modifier.padding(4.dp))
                 }

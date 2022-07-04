@@ -63,29 +63,31 @@ class FileScreenComponent(
     private var exception: Exception? by mutableStateOf(null)
 
     fun onCalculateClicked(scope: CoroutineScope) {
-        if (fileHashJob?.isActive != true) {
-            scope.launch(Dispatchers.Default) {
-                interval(Duration.ZERO, 1.seconds)
-                    .takeWhile { fileHashJob?.isActive == true }
-                    .collect {
-                        timer = Timer(minutes = it.toDuration(DurationUnit.SECONDS).inWholeMinutes, seconds = it)
-                    }
-            }
-            fileHashJob = scope.launch(Dispatchers.IO) {
-                instantBeforeHash = Clock.System.now()
-                Hashing.catchHashingExceptions(exceptionCallback = { exception = it }) {
-                    resultMap[algorithm] = file?.hash(
-                        algorithm = algorithm,
-                        hashProgressCallback = { hashProgress = it }
-                    )?.run { if (hashedTextUppercase) uppercase() else lowercase() }.toString()
-                    instantAfterHash = Clock.System.now()
+        file?.let { file ->
+            if (fileHashJob?.isActive != true) {
+                scope.launch(Dispatchers.Default) {
+                    interval(Duration.ZERO, 1.seconds)
+                        .takeWhile { fileHashJob?.isActive == true }
+                        .collect {
+                            timer = Timer(minutes = it.toDuration(DurationUnit.SECONDS).inWholeMinutes, seconds = it)
+                        }
                 }
+                fileHashJob = scope.launch(Dispatchers.IO) {
+                    instantBeforeHash = Clock.System.now()
+                    Hashing.catchHashingExceptions(exceptionCallback = { exception = it }) {
+                        resultMap[algorithm] = file.hash(
+                            algorithm = algorithm,
+                            hashProgressCallback = { hashProgress = it }
+                        ).run { if (hashedTextUppercase) uppercase() else lowercase() }
+                        instantAfterHash = Clock.System.now()
+                    }
+                    fileHashJob = null
+                }
+            } else {
+                hashProgress = 0F
+                fileHashJob?.cancel()
                 fileHashJob = null
             }
-        } else {
-            hashProgress = 0F
-            fileHashJob?.cancel()
-            fileHashJob = null
         }
     }
 
@@ -102,10 +104,6 @@ class FileScreenComponent(
         }
     }
 
-    fun isActionButtonEnabled() = file != null
-
-    fun getActionButtonText() = if (fileHashJob?.isActive != true) "Calculate" else "Cancel"
-
     fun switchHashCase() {
         hashedTextUppercase = !hashedTextUppercase
         resultMap[algorithm]?.run { resultMap[algorithm] = if (hashedTextUppercase) uppercase() else lowercase() }
@@ -120,4 +118,5 @@ class FileScreenComponent(
             else -> "No file selected"
         }
     }
+
 }

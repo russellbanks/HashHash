@@ -20,16 +20,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.text
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -41,22 +44,24 @@ import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
+import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
 fun TextScreen(component: TextScreenComponent) {
+    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+        decorationAreaType = AuroraSkin.decorationAreaType
+    )
     Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier
+            .padding(16.dp)
+            .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         val clipboardManager = LocalClipboardManager.current
         Column {
             Row {
-                Box(Modifier.weight(1f)) {
-                    LabelProjection(
-                        contentModel = LabelContentModel(text = "Text Hashing"),
-                        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 18.sp))
-                    ).project()
-                }
+                Box(Modifier.weight(1f))
                 LabelProjection(contentModel = LabelContentModel(text = component.characterCountAsString())).project()
             }
             TextFieldStringProjection(
@@ -84,4 +89,10 @@ fun TextScreen(component: TextScreenComponent) {
             onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
         )
     }
+    LabelProjection(
+        contentModel = LabelContentModel(text = "Text hashing"),
+        presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 18.sp))
+    ).project(
+        Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorScheme.backgroundFillColor)
+    )
 }

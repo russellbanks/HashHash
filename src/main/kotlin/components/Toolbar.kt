@@ -48,9 +48,9 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 @Composable
 fun Toolbar(
     modifier: Modifier = Modifier,
+    iconDimension: Dp = 16.dp,
     dialogState: DialogState,
-    ktor: Ktor,
-    iconDimension: Dp = 16.dp
+    ktor: Ktor
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Toolbar) {
         Row(
@@ -64,7 +64,7 @@ fun Toolbar(
                 modifier = Modifier.weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-
+                // TODO
             }
             Row {
                 AnimatedVisibility(ktor.isUpdateAvailable()) {

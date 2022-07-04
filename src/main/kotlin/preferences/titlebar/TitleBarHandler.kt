@@ -24,6 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
 class TitleBarHandler : Klogging {
@@ -34,16 +37,18 @@ class TitleBarHandler : Klogging {
 
     fun getTitleBar(): TitleBar {
         return cachedTitleBar
-            ?: (if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) TitleBar.Custom
-            else TitleBar.Native).also { cachedTitleBar = it }
+            ?: if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) TitleBar.Custom
+            else { TitleBar.Native }.also { cachedTitleBar = it }
     }
 
-    suspend fun putTitleBar(titleBar: TitleBar) {
+    fun putTitleBar(titleBar: TitleBar) {
         preferences.putInt(titleBarKey, titleBar.ordinal)
         cachedTitleBar = titleBar
-        logger.info {
-            "Put ${titleBar.name} into preferences with the key of " +
-                    "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
+        CoroutineScope(Dispatchers.Default).launch {
+            logger.info {
+                "Put ${titleBar.name} into preferences with the key of " +
+                        "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
+            }
         }
     }
 

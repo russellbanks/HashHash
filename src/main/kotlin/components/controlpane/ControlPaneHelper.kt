@@ -23,10 +23,15 @@ package components.controlpane
 import com.appmattus.crypto.Algorithm
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreenComponent
 import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ControlPaneHelper(
     val fileScreen: FileScreenComponent,
+    val textScreen: TextScreenComponent,
     private val compareScreen: CompareFilesComponent
 ) : Klogging {
 
@@ -36,6 +41,7 @@ class ControlPaneHelper(
             fileScreen.resultMap[algorithm]?.run {
                 fileScreen.resultMap[algorithm] = if (fileScreen.hashedTextUppercase) uppercase() else lowercase()
             }
+            CoroutineScope(Dispatchers.Default).launch { textScreen.hashGivenText() }
             compareScreen.fileOneResultMap[algorithm]?.run {
                 compareScreen.fileOneResultMap[algorithm] = if (compareScreen.fileOneHashUppercase) uppercase()
                 else lowercase()

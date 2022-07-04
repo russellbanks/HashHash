@@ -74,7 +74,7 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
         }
         CommandButtonProjection(
             contentModel = Command(
-                text = if ((component.comparisonJobList?.count { it.isActive } ?: 0) <= 0) "Compare" else "Cancel",
+                text = if (component.areJobsActive()) "Compare" else "Cancel",
                 icon = Icons.Utility.microChip(),
                 action = { component.onCalculateClicked(scope) },
                 isActionEnabled = component.fileOne != null && component.fileTwo != null

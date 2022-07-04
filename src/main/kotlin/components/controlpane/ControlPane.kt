@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import components.controlpane.algorithmselection.AlgorithmSelectionList
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreenComponent
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
@@ -40,10 +41,11 @@ import preferences.mode.ModeHandler
 @Composable
 fun ControlPane(
     fileScreen: FileScreenComponent,
+    textScreen: TextScreenComponent,
     compareScreen: CompareFilesComponent,
     modeHandler: ModeHandler
 ) {
-    val controlPaneHelper = ControlPaneHelper(fileScreen, compareScreen)
+    val controlPaneHelper = ControlPaneHelper(fileScreen, textScreen, compareScreen)
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
         Column(
             modifier = Modifier

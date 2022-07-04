@@ -22,11 +22,23 @@ package components.screens.file
 
 import Hashing
 import Hashing.hash
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.hoc081098.flowext.interval
@@ -34,6 +46,7 @@ import components.Timer
 import components.screens.ParentComponent
 import components.screens.ParentInterface
 import helper.FileUtils
+import helper.Icons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,7 +54,14 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.pushingpixels.aurora.component.model.Command
+import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
+import org.pushingpixels.aurora.component.model.LabelContentModel
+import org.pushingpixels.aurora.component.projection.CommandButtonProjection
+import org.pushingpixels.aurora.component.projection.LabelProjection
+import org.pushingpixels.aurora.theming.IconFilterStrategy
 import java.io.File
+import java.nio.file.Files
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -117,6 +137,71 @@ class FileScreenComponent(
             file != null -> "No hash"
             else -> "No file selected"
         }
+    }
+
+    @Composable
+    fun FileInfoRow() {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icons.SystemIcon(modifier = Modifier.size(60.dp), file = file)
+            SelectionContainer {
+                Column {
+                    file?.let { file ->
+                        Files.probeContentType(file.toPath())?.let {
+                            LabelProjection(contentModel = LabelContentModel(text = "Type: $it")).project()
+                        }
+                    }
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "Extension: ${file?.extension ?: ""}")
+                    ).project()
+                    LabelProjection(
+                        contentModel = LabelContentModel(
+                            text = "Size: ${file?.let { FileUtils.getFormattedBytes(it.length()) } ?: ""}"
+                        )
+                    ).project()
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "Path: ${file?.absolutePath ?: ""}")
+                    ).project()
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun SelectFileRow() {
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            CommandButtonProjection(
+                contentModel = Command(
+                    text = "Select file",
+                    icon = Icons.Utility.folderOpen(),
+                    action = ::selectFile
+                ),
+                presentationModel = CommandButtonPresentationModel(
+                    iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                    iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                    textStyle = TextStyle(textAlign = TextAlign.Center)
+                )
+            ).project()
+            LabelProjection(contentModel = LabelContentModel(text = "or drag and drop a file")).project()
+        }
+    }
+
+    @Composable
+    fun HashButton() {
+        val scope = rememberCoroutineScope()
+        CommandButtonProjection(
+            contentModel = Command(
+                text = if (fileHashJob?.isActive == true) "Cancel" else "Hash",
+                icon = Icons.Utility.microChip(),
+                action = { onCalculateClicked(scope) },
+                isActionEnabled = file != null
+            ),
+            presentationModel = CommandButtonPresentationModel(
+                iconDisabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText,
+                textStyle = TextStyle(textAlign = TextAlign.Center)
+            )
+        ).project()
     }
 
 }

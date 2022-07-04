@@ -138,6 +138,7 @@ fun main() {
                             Row(Modifier.fillMaxSize().weight(1f)) {
                                 ControlPane(
                                     fileScreen = fileScreenComponent,
+                                    textScreen = textScreenComponent,
                                     compareScreen = compareFilesComponent,
                                     modeHandler = modeHandler
                                 )

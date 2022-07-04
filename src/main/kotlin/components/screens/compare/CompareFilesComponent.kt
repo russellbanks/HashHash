@@ -141,6 +141,8 @@ class CompareFilesComponent(
         }
     }
 
+    fun areJobsActive() = (comparisonJobList?.count { it.isActive } ?: 0) <= 0
+
     private fun selectFile(fileComparison: FileComparison) {
         FileUtils.openFileDialogAndGetResult().also {
             if (it != null) {
@@ -189,9 +191,11 @@ class CompareFilesComponent(
             }
             isFileHashOneBlankAndNotTwo() -> "No hash for 1st file"
             isFileHashTwoBlankAndNotOne() -> "No hash for 2nd file"
-            areFileHashesNotBlank() -> if (fileOneResultMap[algorithm].equals(
-                    fileTwoResultMap[algorithm], ignoreCase = true
-                )) "Files match" else "Files do not match"
+            fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true -> {
+                if (fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)) {
+                    "Files match"
+                } else "Files do not match"
+            }
             else -> ""
         }
     }
@@ -202,10 +206,6 @@ class CompareFilesComponent(
 
     private fun isFileHashTwoBlankAndNotOne(): Boolean {
         return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true
-    }
-
-    private fun areFileHashesNotBlank(): Boolean {
-        return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
     }
 
     enum class FileComparison {

@@ -55,10 +55,7 @@ fun TextScreen(component: TextScreenComponent) {
     )
     val scope = rememberCoroutineScope()
     Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
-            .padding(16.dp),
+        modifier = Modifier.padding(16.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         val clipboardManager = LocalClipboardManager.current

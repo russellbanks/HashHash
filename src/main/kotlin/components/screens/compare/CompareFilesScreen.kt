@@ -20,6 +20,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.compare
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -85,6 +86,15 @@ fun CompareFilesScreen(component: CompareFilesComponent) {
                 iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText
             )
         ).project(Modifier.align(Alignment.CenterHorizontally).width(100.dp).height(30.dp))
+        AnimatedVisibility(modifier = Modifier.fillMaxWidth(), visible = component.areHashesNotBlank()) {
+            val hashesMatch = component.doHashesMatch()
+            LabelProjection(
+                contentModel = LabelContentModel(
+                    text = if (hashesMatch) "Files match" else "Files do not match",
+                    icon = if (hashesMatch) Icons.Utility.check() else Icons.Utility.cross()
+                )
+            ).project(Modifier.align(Alignment.CenterHorizontally))
+        }
     }
     LabelProjection(
         contentModel = LabelContentModel(text = "Compare files"),

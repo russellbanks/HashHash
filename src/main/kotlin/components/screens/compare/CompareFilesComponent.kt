@@ -189,24 +189,21 @@ class CompareFilesComponent(
             fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
                 "No hashes"
             }
-            isFileHashOneBlankAndNotTwo() -> "No hash for 1st file"
-            isFileHashTwoBlankAndNotOne() -> "No hash for 2nd file"
-            fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true -> {
-                if (fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)) {
-                    "Files match"
-                } else "Files do not match"
+            fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true -> {
+                "No hash for 1st file"
+            }
+            fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
+                "No hash for 2nd file"
             }
             else -> ""
         }
     }
 
-    private fun isFileHashOneBlankAndNotTwo(): Boolean {
-        return fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
+    fun areHashesNotBlank(): Boolean {
+        return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
     }
 
-    private fun isFileHashTwoBlankAndNotOne(): Boolean {
-        return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true
-    }
+    fun doHashesMatch() = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
 
     enum class FileComparison {
         One,

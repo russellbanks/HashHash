@@ -43,6 +43,8 @@ import components.dialogs.settings.screens.ThemeScreen
 import components.dialogs.settings.screens.TitleBarScreen
 import components.dialogs.settings.screens.WindowCornerScreen
 import helper.Icons
+import helper.windows.windowsBuild
+import org.jetbrains.skiko.hostOs
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -126,4 +128,4 @@ fun listOfCategories() = listOf(
     Category.Theme to Icons.Utility.paintBrush(),
     Category.TitleBar to Icons.Utility.windowAlt(),
     Category.WindowCorner to Icons.Utility.window()
-)
+).filter { if (it.first == Category.WindowCorner) hostOs.isWindows && windowsBuild >= 22_000 else true }

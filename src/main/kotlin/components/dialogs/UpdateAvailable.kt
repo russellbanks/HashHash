@@ -34,7 +34,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import api.Ktor
-import application.DialogState
 import com.russellbanks.HashHash.BuildConfig
 import helper.Browser
 import helper.GitHub

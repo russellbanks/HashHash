@@ -32,7 +32,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import api.Ktor
-import application.DialogState
+import components.dialogs.DialogState
 import components.Root
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent

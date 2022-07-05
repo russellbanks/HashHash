@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.Ktor
-import application.DialogState
+import components.dialogs.DialogState
 import com.russellbanks.HashHash.BuildConfig
 import components.dialogs.Dialog
 import helper.Icons

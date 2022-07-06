@@ -38,13 +38,11 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.chil
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
 import components.Footer
 import components.Root
-import components.RootComponent
 import components.Snackbar
 import components.Tabs
 import components.Toolbar
@@ -53,7 +51,6 @@ import components.dialogs.TranslucentDialogOverlay
 import components.dialogs.UpdateAvailableDialog
 import components.dialogs.about.AboutDialog
 import components.dialogs.settings.SettingsDialog
-import components.dialogs.settings.SettingsRootComponent
 import components.screens.compare.CompareFilesScreen
 import components.screens.file.FileScreen
 import components.screens.text.TextScreen
@@ -67,18 +64,14 @@ import preferences.theme.ThemeHandler
 import preferences.windowcorner.WindowCornerHandler
 
 @OptIn(ExperimentalDecomposeApi::class)
-fun hashHashApplication(
-    lifecycle: LifecycleRegistry,
-    root: RootComponent,
-    settingsRoot: SettingsRootComponent
-) = auroraApplication {
+fun hashHashApplication() = auroraApplication {
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 750.dp)
     )
     for (window in get<ApplicationState>().windows) {
         key(window) {
-            LifecycleController(lifecycle, windowState)
+            LifecycleController(get(), windowState)
             AuroraWindow(
                 skin = get<ThemeHandler>().auroraSkin,
                 state = windowState,
@@ -89,7 +82,7 @@ fun hashHashApplication(
                 undecorated = window.isUndecorated,
                 onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
             ) {
-                val routerState = root.routerState.subscribeAsState()
+                val routerState = get<Root>().routerState.subscribeAsState()
                 val activeComponent = routerState.value.activeChild.instance
                 WindowStyle(
                     isDarkTheme = get<ThemeHandler>().isDark(),
@@ -100,7 +93,7 @@ fun hashHashApplication(
                 Box {
                     Column {
                         Toolbar()
-                        Tabs(activeComponent = activeComponent, root = root)
+                        Tabs(activeComponent = activeComponent)
                         Row(Modifier.fillMaxSize().weight(1f)) {
                             ControlPane()
                             VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
@@ -122,7 +115,7 @@ fun hashHashApplication(
                     Snackbar()
                     TranslucentDialogOverlay()
                     UpdateAvailableDialog()
-                    SettingsDialog(root = settingsRoot, window = window)
+                    SettingsDialog(window)
                     AboutDialog()
                 }
             }

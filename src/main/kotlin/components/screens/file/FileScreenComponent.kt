@@ -41,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.hoc081098.flowext.interval
 import components.Timer
 import components.screens.ParentComponent
@@ -53,6 +55,7 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.ext.inject
@@ -69,9 +72,10 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@Single
 class FileScreenComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext, KoinComponent {
+    lifecycle: LifecycleRegistry
+) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent {
     val parent: ParentComponent by inject()
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)

@@ -26,12 +26,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import components.screens.ParentComponent
+import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.ext.inject
 
-class TextScreenComponent(componentContext: ComponentContext) : ComponentContext by componentContext, KoinComponent {
+@Single
+class TextScreenComponent(
+    lifecycle: LifecycleRegistry
+) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent {
     private val parent: ParentComponent by inject()
     var givenText by mutableStateOf("")
     var givenTextHash by mutableStateOf("")

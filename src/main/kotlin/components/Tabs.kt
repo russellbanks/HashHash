@@ -23,6 +23,7 @@ package components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import koin.inject
 import org.pushingpixels.aurora.component.model.TabContentModel
 import org.pushingpixels.aurora.component.model.TabsContentModel
 import org.pushingpixels.aurora.component.model.TabsPresentationModel
@@ -30,7 +31,8 @@ import org.pushingpixels.aurora.component.projection.TabsProjection
 import org.pushingpixels.aurora.theming.TabContentSeparatorKind
 
 @Composable
-fun Tabs(activeComponent: Root.Child, root: RootComponent) {
+fun Tabs(activeComponent: Root.Child) {
+    val root: Root by inject()
     TabsProjection(
         contentModel = TabsContentModel(
             tabs = listOf(

@@ -41,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.hoc081098.flowext.interval
 import components.HashProgress
 import components.OutputTextFieldRow
@@ -56,6 +58,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.pushingpixels.aurora.component.model.Command
@@ -72,9 +75,10 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@Single
 class CompareFilesComponent(
-    componentContext: ComponentContext
-) : ComponentContext by componentContext, KoinComponent, Klogging {
+    lifecycle: LifecycleRegistry
+) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent, Klogging {
     private val parent: ParentComponent by inject()
     val algorithm = parent.algorithm
     var fileOne: File? by mutableStateOf(null)

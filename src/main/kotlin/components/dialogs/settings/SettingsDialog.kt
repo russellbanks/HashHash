@@ -44,6 +44,7 @@ import components.dialogs.settings.screens.TitleBarScreen
 import components.dialogs.settings.screens.WindowCornerScreen
 import helper.Icons
 import helper.windows.windowsBuild
+import koin.inject
 import org.jetbrains.skiko.hostOs
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.Command
@@ -56,7 +57,8 @@ import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-fun SettingsDialog(root: SettingsRoot, window: ApplicationWindowState) {
+fun SettingsDialog(window: ApplicationWindowState) {
+    val root: SettingsRoot by inject()
     val routerState = root.routerState.subscribeAsState()
     val activeComponent = routerState.value.activeChild.instance
     Dialog(dialog = DialogState.Dialogs.Settings) {

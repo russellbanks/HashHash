@@ -46,7 +46,9 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.until
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 
+@Single
 class Ktor : Klogging {
 
     var httpResponse: HttpResponse? = null

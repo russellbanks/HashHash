@@ -21,12 +21,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.bringToFront
 import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import org.koin.core.annotation.Single
 
 interface Root {
 
@@ -56,9 +59,8 @@ interface Root {
     }
 }
 
-class RootComponent(
-    componentContext: ComponentContext
-) : Root, ComponentContext by componentContext {
+@Single
+class RootComponent(lifecycle: LifecycleRegistry) : Root, ComponentContext by DefaultComponentContext(lifecycle) {
 
     private val router =
         router<Config, Root.Child>(

@@ -27,8 +27,10 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 import java.util.prefs.Preferences
 
+@Single
 class ModeHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)

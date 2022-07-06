@@ -25,7 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
+import org.koin.core.annotation.Single
 
+@Single
 class ParentComponent {
     var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
     var snackbarHostState: SnackbarHostState = SnackbarHostState()

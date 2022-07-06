@@ -21,12 +21,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.dialogs.settings
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.router.RouterState
 import com.arkivanov.decompose.router.bringToFront
 import com.arkivanov.decompose.router.router
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import org.koin.core.annotation.Single
 
 interface SettingsRoot {
 
@@ -49,9 +52,10 @@ interface SettingsRoot {
     }
 }
 
+@Single
 class SettingsRootComponent(
-    componentContext: ComponentContext
-) : SettingsRoot, ComponentContext by componentContext {
+    lifecycle: LifecycleRegistry
+) : SettingsRoot, ComponentContext by DefaultComponentContext(lifecycle) {
 
     private val router =
         router<Config, SettingsRoot.Child>(

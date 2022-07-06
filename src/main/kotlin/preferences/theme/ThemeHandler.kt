@@ -28,11 +28,13 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Single
 import org.pushingpixels.aurora.theming.AuroraSkinDefinition
 import org.pushingpixels.aurora.theming.dustSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
 
+@Single
 class ThemeHandler : Klogging {
 
     private val preferences = Preferences.userNodeForPackage(javaClass)

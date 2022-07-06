@@ -21,7 +21,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.dialogs
 
 import androidx.compose.runtime.mutableStateMapOf
+import org.koin.core.annotation.Single
 
+@Single
 class DialogState {
     private var dialogsMap = mutableStateMapOf(
         Dialogs.About to false, Dialogs.Settings to false, Dialogs.Update to false

@@ -18,19 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import io.klogging.config.ANSI_CONSOLE
-import io.klogging.config.loggingConfiguration
-import koin.KoinLogger
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.ksp.generated.defaultModule
+package application
 
-fun main() {
-    loggingConfiguration { ANSI_CONSOLE() }
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import org.koin.core.annotation.Single
 
-    startKoin {
-        defaultModule()
-        logger(KoinLogger())
-    }
-
-    hashHashApplication()
-}
+@Single
+class HashHashLifecycleRegistry: LifecycleRegistry by LifecycleRegistry()

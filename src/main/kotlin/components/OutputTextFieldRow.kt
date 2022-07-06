@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -34,8 +33,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.appmattus.crypto.Algorithm
+import components.screens.ParentComponent
 import helper.Icons
+import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -51,18 +51,13 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 
 @Composable
-fun OutputTextFieldRow(
-    algorithm: Algorithm,
-    value: String,
-    isValueUppercase: Boolean,
-    snackbarHostState: SnackbarHostState,
-    onCaseClick: () -> Unit
-) {
+fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: () -> Unit) {
+    val parent: ParentComponent by inject()
     val clipboardManager = LocalClipboardManager.current
     val scope = rememberCoroutineScope() { Dispatchers.Default }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
-            contentModel = LabelContentModel(text = "${algorithm.algorithmName} Hash"),
+            contentModel = LabelContentModel(text = "${parent.algorithm.algorithmName} Hash"),
             presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 15.sp))
         ).project()
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -85,8 +80,8 @@ fun OutputTextFieldRow(
                             action = {
                                 if (value.isNotBlank()) {
                                     clipboardManager.setText(AnnotatedString(text = value))
-                                    snackbarHostState.currentSnackbarData?.dismiss()
-                                    scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
+                                    parent.snackbarHostState.currentSnackbarData?.dismiss()
+                                    scope.launch { parent.snackbarHostState.showSnackbar("Copied to clipboard") }
                                 }
                             }
                         ),

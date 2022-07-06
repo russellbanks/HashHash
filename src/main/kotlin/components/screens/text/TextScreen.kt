@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
+import koin.inject
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -49,7 +50,8 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
-fun TextScreen(component: TextScreenComponent) {
+fun TextScreen() {
+    val component: TextScreenComponent by inject()
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -78,10 +80,8 @@ fun TextScreen(component: TextScreenComponent) {
             TextFieldShortcuts(component = component)
         }
         OutputTextFieldRow(
-            algorithm = component.algorithm,
             value = component.givenTextHash,
             isValueUppercase = component.hashedTextUppercase,
-            snackbarHostState = component.snackbarHostState,
             onCaseClick = {
                 with(component) {
                     hashedTextUppercase = !hashedTextUppercase

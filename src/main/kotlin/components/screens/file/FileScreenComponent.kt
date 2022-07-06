@@ -44,7 +44,6 @@ import com.arkivanov.decompose.ComponentContext
 import com.hoc081098.flowext.interval
 import components.Timer
 import components.screens.ParentComponent
-import components.screens.ParentInterface
 import helper.FileUtils
 import helper.Icons
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +53,9 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.ext.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -68,9 +70,9 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class FileScreenComponent(
-    componentContext: ComponentContext,
-    parentComponent: ParentComponent
-) : ComponentContext by componentContext, ParentInterface by parentComponent {
+    componentContext: ComponentContext
+) : ComponentContext by componentContext, KoinComponent {
+    val parent: ParentComponent by inject()
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
     var fileHashJob: Job? by mutableStateOf(null)
@@ -95,8 +97,8 @@ class FileScreenComponent(
                 fileHashJob = scope.launch(Dispatchers.IO) {
                     instantBeforeHash = Clock.System.now()
                     Hashing.catchFileHashingExceptions(exceptionCallback = { exception = it }) {
-                        resultMap[algorithm] = file.hash(
-                            algorithm = algorithm,
+                        resultMap[parent.algorithm] = file.hash(
+                            algorithm = parent.algorithm,
                             hashProgressCallback = { hashProgress = it }
                         ).run { if (hashedTextUppercase) uppercase() else lowercase() }
                         instantAfterHash = Clock.System.now()
@@ -108,6 +110,12 @@ class FileScreenComponent(
                 fileHashJob?.cancel()
                 fileHashJob = null
             }
+        }
+    }
+
+    fun onAlgorithmClick(algorithm: Algorithm) {
+        resultMap[algorithm]?.run {
+            resultMap[algorithm] = if (hashedTextUppercase) uppercase() else lowercase()
         }
     }
 
@@ -126,14 +134,16 @@ class FileScreenComponent(
 
     fun switchHashCase() {
         hashedTextUppercase = !hashedTextUppercase
-        resultMap[algorithm]?.run { resultMap[algorithm] = if (hashedTextUppercase) uppercase() else lowercase() }
+        resultMap[parent.algorithm]?.run {
+            resultMap[parent.algorithm] = if (hashedTextUppercase) uppercase() else lowercase()
+        }
     }
 
     fun getFooterText(): String {
         return when {
             exception != null -> exception?.message!!
             fileHashJob?.isActive == true -> "Hashing file"
-            resultMap[algorithm] != null -> "Done!"
+            resultMap[parent.algorithm] != null -> "Done!"
             file != null -> "No hash"
             else -> "No file selected"
         }

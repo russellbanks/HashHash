@@ -27,12 +27,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.decompose.ComponentContext
 import components.screens.ParentComponent
-import components.screens.ParentInterface
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.ext.inject
 
-class TextScreenComponent(
-    componentContext: ComponentContext,
-    parentComponent: ParentComponent
-) : ComponentContext by componentContext, ParentInterface by parentComponent {
+class TextScreenComponent(componentContext: ComponentContext) : ComponentContext by componentContext, KoinComponent {
+    private val parent: ParentComponent by inject()
     var givenText by mutableStateOf("")
     var givenTextHash by mutableStateOf("")
     var comparisonHash by mutableStateOf("")
@@ -45,10 +45,14 @@ class TextScreenComponent(
                 exception = it
                 if (exception != null) givenTextHash = ""
             }) {
-                givenTextHash = givenText.hash(algorithm).run { if (hashedTextUppercase) uppercase() else lowercase() }
+                givenTextHash = givenText.hash(parent.algorithm).run {
+                    if (hashedTextUppercase) uppercase() else lowercase()
+                }
             }
         } else givenTextHash = ""
     }
+
+    suspend fun onAlgorithmClick() = hashGivenText()
 
     fun characterCountAsString(): String {
         return "${"%,d".format(givenText.count())} character${if (givenText.count() != 1) "s" else ""}"
@@ -56,7 +60,7 @@ class TextScreenComponent(
 
     fun getFooterText(): String {
         return if (exception != null) {
-            "${algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar { it.titlecase() }}"
+            "${parent.algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar { it.titlecase() }}"
         } else ""
     }
 

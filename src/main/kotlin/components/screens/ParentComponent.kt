@@ -26,12 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.appmattus.crypto.Algorithm
 
-interface ParentInterface {
-    var algorithm: Algorithm
-    var snackbarHostState: SnackbarHostState
-}
-
-open class ParentComponent : ParentInterface {
-    override var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
-    override var snackbarHostState: SnackbarHostState = SnackbarHostState()
+class ParentComponent {
+    var algorithm: Algorithm by mutableStateOf(Algorithm.MD5)
+    var snackbarHostState: SnackbarHostState = SnackbarHostState()
 }

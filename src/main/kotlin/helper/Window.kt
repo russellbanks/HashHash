@@ -34,8 +34,6 @@ import androidx.compose.ui.window.WindowState
 import api.Ktor
 import components.Root
 import components.dialogs.DialogState
-import components.screens.compare.CompareFilesComponent
-import components.screens.file.FileScreenComponent
 import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,8 +52,6 @@ object Window {
     @Composable
     fun setupAWTWindow(
         window: java.awt.Window,
-        fileScreenComponent: FileScreenComponent,
-        compareFilesComponent: CompareFilesComponent,
         activeComponent: Root.Child
     ) {
         val scope = rememberCoroutineScope { Dispatchers.Default }
@@ -64,8 +60,6 @@ object Window {
             dropTarget = DragAndDrop.target(scope) { droppedItems ->
                 DragAndDrop.setResult(
                     droppedItems = droppedItems,
-                    fileScreenComponent = fileScreenComponent,
-                    compareFilesComponent = compareFilesComponent,
                     activeComponent = activeComponent
                 )
             }

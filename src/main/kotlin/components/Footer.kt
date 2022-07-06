@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreenComponent
+import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
@@ -37,12 +38,10 @@ import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
 
 @Composable
-fun Footer(
-    activeComponent: Root.Child,
-    fileScreen: FileScreenComponent,
-    textScreen: TextScreenComponent,
-    compareScreen: CompareFilesComponent
-) {
+fun Footer(activeComponent: Root.Child) {
+    val fileScreen: FileScreenComponent by inject()
+    val textScreen: TextScreenComponent by inject()
+    val compareScreen: CompareFilesComponent by inject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(

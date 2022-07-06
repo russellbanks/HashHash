@@ -35,6 +35,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,16 +43,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
-import components.controlpane.ControlPaneHelper
 import components.controlpane.NestedAlgorithm
+import components.screens.ParentComponent
+import components.screens.compare.CompareFilesComponent
+import components.screens.file.FileScreenComponent
+import components.screens.text.TextScreenComponent
 import koin.inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
 import preferences.mode.ModeHandler
 
 @Composable
-fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper) {
+fun AlgorithmSelectionList() {
     val modeHandler: ModeHandler by inject()
+    val parent: ParentComponent by inject()
+    val fileScreenComponent: FileScreenComponent by inject()
+    val textScreenComponent: TextScreenComponent by inject()
+    val compareFilesComponent: CompareFilesComponent by inject()
+    val scope = rememberCoroutineScope()
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
         LazyColumn(
@@ -65,19 +76,33 @@ fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper) {
                 if (item is Algorithm) {
                     AlgorithmBox(
                         item = item,
-                        algorithm = controlPaneHelper.fileScreen.algorithm,
+                        algorithm = parent.algorithm,
                         index = index,
-                        onAlgorithmClick = { controlPaneHelper.onAlgorithmClick(algorithm = it) }
+                        onAlgorithmClick = {
+                            if (it != parent.algorithm) {
+                                parent.algorithm = it
+                                fileScreenComponent.onAlgorithmClick(it)
+                                scope.launch(Dispatchers.Default) { textScreenComponent.onAlgorithmClick() }
+                                compareFilesComponent.onAlgorithmClick(it)
+                            }
+                        }
                     )
                 } else if (item is NestedAlgorithm) {
                     var nestedVisibility by rememberSaveable { mutableStateOf(false) }
                     DropDownAlgorithmBox(item = item, index = index, onClick = { nestedVisibility = !nestedVisibility })
                     AnimatedVisibility(visible = nestedVisibility) {
                         NestedAlgorithmLazyColumn(
-                            algorithm = controlPaneHelper.fileScreen.algorithm,
+                            algorithm = parent.algorithm,
                             item = item,
                             itemIndex = index,
-                            onAlgorithmClick = { controlPaneHelper.onAlgorithmClick(algorithm = it) }
+                            onAlgorithmClick = {
+                                if (it != parent.algorithm) {
+                                    parent.algorithm = it
+                                    fileScreenComponent.onAlgorithmClick(it)
+                                    scope.launch(Dispatchers.Default) { textScreenComponent.onAlgorithmClick() }
+                                    compareFilesComponent.onAlgorithmClick(it)
+                                }
+                            }
                         )
                     }
                 }

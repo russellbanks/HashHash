@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
-import components.controlpane.ControlPaneHelper
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
@@ -43,7 +42,7 @@ fun AlgorithmBox(item: Algorithm, algorithm: Algorithm, index: Int, onAlgorithmC
     val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
     val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
     AuroraBoxWithHighlights(
-        modifier = Modifier.fillMaxWidth().height(ControlPaneHelper.BoxHeight.dp)
+        modifier = Modifier.fillMaxWidth().height(32.dp)
             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
         selected = (algorithm == item),
         onClick = { onAlgorithmClick(item) },

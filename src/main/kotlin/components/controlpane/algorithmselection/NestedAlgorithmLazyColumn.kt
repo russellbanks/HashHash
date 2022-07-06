@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
-import components.controlpane.ControlPaneHelper
 import components.controlpane.NestedAlgorithm
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -55,12 +54,12 @@ fun NestedAlgorithmLazyColumn(
     )
     val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
     val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
-    LazyColumn(Modifier.fillMaxWidth().height((ControlPaneHelper.BoxHeight * item.listOfAlgorithms.count()).dp)) {
+    LazyColumn(Modifier.fillMaxWidth().height((32 * item.listOfAlgorithms.count()).dp)) {
         items(item.listOfAlgorithms) { nestedItem ->
             AuroraBoxWithHighlights(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(ControlPaneHelper.BoxHeight.dp)
+                    .height(32.dp)
                     .background(if (itemIndex % 2 == 0) backgroundEvenRows else backgroundOddRows),
                 selected = algorithm == nestedItem,
                 onClick = { onAlgorithmClick(nestedItem) },

@@ -46,7 +46,6 @@ import components.HashProgress
 import components.OutputTextFieldRow
 import components.Timer
 import components.screens.ParentComponent
-import components.screens.ParentInterface
 import helper.FileUtils
 import helper.Icons
 import io.klogging.Klogging
@@ -57,6 +56,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -72,9 +73,10 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class CompareFilesComponent(
-    componentContext: ComponentContext,
-    parentComponent: ParentComponent
-) : ComponentContext by componentContext, ParentInterface by parentComponent, Klogging {
+    componentContext: ComponentContext
+) : ComponentContext by componentContext, KoinComponent, Klogging {
+    private val parent: ParentComponent by inject()
+    val algorithm = parent.algorithm
     var fileOne: File? by mutableStateOf(null)
     var fileOneHashUppercase by mutableStateOf(true)
     private var fileOneHashProgress by mutableStateOf(0F)
@@ -138,6 +140,15 @@ class CompareFilesComponent(
             comparisonJobList = null
             fileOneHashProgress = 0F
             fileTwoHashProgress = 0F
+        }
+    }
+
+    fun onAlgorithmClick(algorithm: Algorithm) {
+        fileOneResultMap[algorithm]?.run {
+            fileOneResultMap[algorithm] = if (fileOneHashUppercase) uppercase() else lowercase()
+        }
+        fileTwoResultMap[algorithm]?.run {
+            fileTwoResultMap[algorithm] = if (fileTwoHashUppercase) uppercase() else lowercase()
         }
     }
 
@@ -276,10 +287,8 @@ class CompareFilesComponent(
             }
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
             OutputTextFieldRow(
-                algorithm = algorithm,
                 value = fileResultMap.getOrDefault(algorithm, ""),
                 isValueUppercase = isHashUppercase,
-                snackbarHostState = snackbarHostState,
                 onCaseClick = { switchHashCase(fileComparison) }
             )
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())

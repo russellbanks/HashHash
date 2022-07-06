@@ -35,12 +35,14 @@ import androidx.compose.ui.unit.dp
 import components.screens.ParentComponent
 import helper.Icons
 import koin.get
+import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
-fun BoxScope.Snackbar(parentComponent: ParentComponent) {
+fun BoxScope.Snackbar() {
+    val parentComponent: ParentComponent by inject()
     SnackbarHost(
         modifier = Modifier.align(Alignment.BottomCenter).padding(50.dp),
         hostState = parentComponent.snackbarHostState,

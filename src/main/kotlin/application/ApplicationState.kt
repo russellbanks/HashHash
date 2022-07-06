@@ -25,7 +25,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
@@ -52,11 +51,10 @@ class ApplicationWindowState(
     val openNewWindow: () -> Unit,
     private val close: (ApplicationWindowState) -> Unit,
 ) : KoinComponent {
-
-    val isUndecorated = get<TitleBarHandler>().getTitleBar() == TitleBar.Custom
-
     private val windowCornerHandler: WindowCornerHandler by inject()
     private val titleBarHandler: TitleBarHandler by inject()
+
+    val isUndecorated = titleBarHandler.getTitleBar() == TitleBar.Custom
 
     private val windowCorner = windowCornerHandler.getWindowCorner()
 

@@ -27,6 +27,8 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.UnsupportedFlavorException
 import java.awt.dnd.DnDConstants
@@ -35,7 +37,10 @@ import java.awt.dnd.DropTargetDropEvent
 import java.io.File
 import java.io.IOException
 
-object DragAndDrop : Klogging {
+object DragAndDrop : KoinComponent, Klogging {
+    private val fileScreenComponent: FileScreenComponent by inject()
+    private val compareFilesComponent: CompareFilesComponent by inject()
+
     fun target(
         scope: CoroutineScope,
         result: (List<*>) -> Unit
@@ -57,8 +62,6 @@ object DragAndDrop : Klogging {
 
     fun setResult(
         droppedItems: List<*>,
-        fileScreenComponent: FileScreenComponent,
-        compareFilesComponent: CompareFilesComponent,
         activeComponent: Root.Child
     ) {
         droppedItems.first().let {

@@ -38,6 +38,8 @@ import components.ComparisonTextFieldRow
 import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
+import koin.get
+import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -45,7 +47,8 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
-fun FileScreen(component: FileScreenComponent) {
+fun FileScreen() {
+    val component: FileScreenComponent by inject()
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -63,16 +66,14 @@ fun FileScreen(component: FileScreenComponent) {
         }
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         OutputTextFieldRow(
-            algorithm = component.algorithm,
-            value = component.resultMap.getOrDefault(component.algorithm, ""),
+            value = component.resultMap.getOrDefault(component.parent.algorithm, ""),
             isValueUppercase = component.hashedTextUppercase,
-            snackbarHostState = component.snackbarHostState,
             onCaseClick = component::switchHashCase
         )
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         val clipboardManager = LocalClipboardManager.current
         ComparisonTextFieldRow(
-            hashedOutput = component.resultMap.getOrDefault(component.algorithm, ""),
+            hashedOutput = component.resultMap.getOrDefault(component.parent.algorithm, ""),
             comparisonHash = component.comparisonHash,
             onPasteClick = {
                 component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }

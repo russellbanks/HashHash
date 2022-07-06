@@ -55,6 +55,7 @@ class Ktor : Klogging {
     private var httpClient: HttpClient? = null
     var checkingGitHubAPI by mutableStateOf(false)
     var lastChecked: Instant? by mutableStateOf(null)
+    var isUpdateAvailable by mutableStateOf(false)
 
     init {
         val scope = CoroutineScope(Dispatchers.Default)
@@ -65,6 +66,7 @@ class Ktor : Klogging {
                     if (it.status == HttpStatusCode.OK) githubData = it.body()
                 }
                 lastChecked = Clock.System.now()
+                isUpdateAvailable = githubData?.tagName?.contains(BuildConfig.appVersion) == false
             }
         }
     }
@@ -104,22 +106,19 @@ class Ktor : Klogging {
                     }
                     lastChecked = Clock.System.now()
                     checkingGitHubAPI = false
+                    isUpdateAvailable = githubData?.tagName?.contains(BuildConfig.appVersion) == false
                 }
             }
         }
     }
-
-    fun isUpdateAvailable() = githubData?.tagName?.contains(BuildConfig.appVersion) == false
 
     fun getReleasedVersion() = githubData?.tagName?.replace("v", "")
 
     fun getUpdateResponseText(): String {
         return when {
             checkingGitHubAPI -> "Checking"
-            githubData?.tagName?.contains(BuildConfig.appVersion) == true -> "You have the latest version"
-            githubData?.tagName?.contains(BuildConfig.appVersion) == false -> {
-                "Out of date. Latest version is ${githubData?.tagName?.removePrefix("v")}"
-            }
+            !isUpdateAvailable -> "You have the latest version"
+            isUpdateAvailable -> "Out of date. Latest version is ${githubData?.tagName?.removePrefix("v")}"
             (httpResponse?.headers?.get("X-RateLimit-Remaining")?.toInt() ?: -1) == 0 -> {
                 val epochSeconds = httpResponse?.headers?.get("X-RateLimit-Reset")?.toLong()
                 val instantEpochSeconds = epochSeconds?.let { Instant.fromEpochSeconds(it) }

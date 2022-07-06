@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import api.Ktor
 import components.dialogs.DialogState
 import helper.Icons
+import koin.get
+import koin.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
@@ -48,10 +50,10 @@ import org.pushingpixels.aurora.window.AuroraDecorationArea
 @Composable
 fun Toolbar(
     modifier: Modifier = Modifier,
-    iconDimension: Dp = 16.dp,
-    dialogState: DialogState,
-    ktor: Ktor
+    iconDimension: Dp = 16.dp
 ) {
+    val dialogState: DialogState by inject()
+    val ktor: Ktor by inject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Toolbar) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -67,7 +69,7 @@ fun Toolbar(
                 // TODO
             }
             Row {
-                AnimatedVisibility(ktor.isUpdateAvailable()) {
+                AnimatedVisibility(ktor.isUpdateAvailable) {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "",

@@ -24,11 +24,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.component.inject
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
-class ApplicationState(private val titleBar: TitleBarHandler, private val windowCorner: WindowCornerHandler) {
+class ApplicationState {
     val windows = mutableStateListOf<ApplicationWindowState>()
 
     init {
@@ -41,25 +44,25 @@ class ApplicationState(private val titleBar: TitleBarHandler, private val window
 
     private fun windowState() = ApplicationWindowState(
         openNewWindow = ::openNewWindow,
-        windows::remove,
-        titleBarHandler = titleBar,
-        windowCornerHandler = windowCorner
+        windows::remove
     )
 }
 
 class ApplicationWindowState(
     val openNewWindow: () -> Unit,
     private val close: (ApplicationWindowState) -> Unit,
-    titleBarHandler: TitleBarHandler,
-    windowCornerHandler: WindowCornerHandler
-) {
-    val isUndecorated = titleBarHandler.getTitleBar() == TitleBar.Custom
+) : KoinComponent {
+
+    val isUndecorated = get<TitleBarHandler>().getTitleBar() == TitleBar.Custom
+
+    private val windowCornerHandler: WindowCornerHandler by inject()
+    private val titleBarHandler: TitleBarHandler by inject()
 
     private val windowCorner = windowCornerHandler.getWindowCorner()
 
     var needsRestarting by mutableStateOf(false)
 
-    fun checkWindowNeedsRestarting(titleBarHandler: TitleBarHandler, windowCornerHandler: WindowCornerHandler) {
+    fun checkWindowNeedsRestarting() {
         needsRestarting = titleBarHandler.getTitleBar() == TitleBar.Custom != isUndecorated ||
                 windowCornerHandler.getWindowCorner() != windowCorner
     }

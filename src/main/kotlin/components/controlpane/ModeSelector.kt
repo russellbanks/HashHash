@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.SelectorContentModel
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
@@ -32,7 +33,8 @@ import preferences.mode.Mode
 import preferences.mode.ModeHandler
 
 @Composable
-fun ModeSelector(modeHandler: ModeHandler) {
+fun ModeSelector() {
+    val modeHandler: ModeHandler by inject()
     Row {
         Box(Modifier.weight(1f)) {
             LabelProjection(

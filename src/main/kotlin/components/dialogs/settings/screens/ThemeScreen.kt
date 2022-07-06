@@ -32,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
@@ -42,8 +43,9 @@ import preferences.theme.Theme
 import preferences.theme.ThemeHandler
 
 @Composable
-fun ThemeScreen(themeHandler: ThemeHandler) {
+fun ThemeScreen() {
     val scope = rememberCoroutineScope()
+    val themeHandler: ThemeHandler by inject()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
         LazyColumn {

@@ -44,12 +44,14 @@ import androidx.compose.ui.unit.dp
 import com.appmattus.crypto.Algorithm
 import components.controlpane.ControlPaneHelper
 import components.controlpane.NestedAlgorithm
+import koin.inject
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
 import preferences.mode.ModeHandler
 
 @Composable
-fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper, modeHandler: ModeHandler) {
+fun AlgorithmSelectionList(controlPaneHelper: ControlPaneHelper) {
+    val modeHandler: ModeHandler by inject()
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
         LazyColumn(

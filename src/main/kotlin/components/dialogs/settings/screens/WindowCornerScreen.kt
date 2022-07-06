@@ -35,19 +35,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
+import koin.inject
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
-import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
 @Composable
-fun WindowCornerScreen(
-    windowCornerHandler: WindowCornerHandler,
-    titleBarHandler: TitleBarHandler,
-    window: ApplicationWindowState
-) {
+fun WindowCornerScreen(window: ApplicationWindowState) {
+    val windowCornerHandler: WindowCornerHandler by inject()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Window Corner")).project()
         LabelProjection(
@@ -64,10 +61,7 @@ fun WindowCornerScreen(
                     onClick = {
                         if (windowCornerHandler.getWindowCorner() != windowCornerPreference) {
                             windowCornerHandler.putWindowCorner(windowCornerPreference)
-                            window.checkWindowNeedsRestarting(
-                                titleBarHandler = titleBarHandler,
-                                windowCornerHandler = windowCornerHandler
-                            )
+                            window.checkWindowNeedsRestarting()
                         }
                     }
                 ) {

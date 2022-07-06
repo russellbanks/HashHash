@@ -32,10 +32,11 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import api.Ktor
-import components.dialogs.DialogState
 import components.Root
+import components.dialogs.DialogState
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
+import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -98,9 +99,9 @@ object Window {
         fun commands(
             auroraApplicationScope: AuroraApplicationScope,
             windowState: WindowState,
-            ktor: Ktor,
-            dialogState: DialogState
         ): CommandGroup {
+            val ktor: Ktor by inject()
+            val dialogState: DialogState by inject()
             return CommandGroup(
                 commands = listOf(
                     fileHeaderButton(auroraApplicationScope = auroraApplicationScope, dialogState = dialogState),

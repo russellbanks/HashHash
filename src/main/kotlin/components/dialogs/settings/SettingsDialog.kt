@@ -34,11 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
-import components.dialogs.DialogState
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import components.dialogs.Dialog
+import components.dialogs.DialogState
 import components.dialogs.settings.screens.ThemeScreen
 import components.dialogs.settings.screens.TitleBarScreen
 import components.dialogs.settings.screens.WindowCornerScreen
@@ -53,23 +53,13 @@ import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.IconFilterStrategy
-import preferences.theme.ThemeHandler
-import preferences.titlebar.TitleBarHandler
-import preferences.windowcorner.WindowCornerHandler
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
-fun SettingsDialog(
-    root: SettingsRoot,
-    dialogState: DialogState,
-    themeHandler: ThemeHandler,
-    titleBarHandler: TitleBarHandler,
-    windowCornerHandler: WindowCornerHandler,
-    window: ApplicationWindowState
-) {
+fun SettingsDialog(root: SettingsRoot, window: ApplicationWindowState) {
     val routerState = root.routerState.subscribeAsState()
     val activeComponent = routerState.value.activeChild.instance
-    Dialog(dialogState = dialogState, dialog = DialogState.Dialogs.Settings) {
+    Dialog(dialog = DialogState.Dialogs.Settings) {
         Row {
             val list = listOfCategories()
             Column(Modifier.padding(horizontal = 15.dp, vertical = 6.dp)) {
@@ -110,13 +100,9 @@ fun SettingsDialog(
             }
             Children(routerState = routerState.value) {
                 when (it.instance) {
-                    is SettingsRoot.Child.Theme -> ThemeScreen(themeHandler)
-                    is SettingsRoot.Child.TitleBar -> TitleBarScreen(
-                        titleBarHandler = titleBarHandler, windowCornerHandler = windowCornerHandler, window = window
-                    )
-                    is SettingsRoot.Child.WindowCorner -> WindowCornerScreen(
-                        windowCornerHandler = windowCornerHandler, titleBarHandler = titleBarHandler, window = window
-                    )
+                    is SettingsRoot.Child.Theme -> ThemeScreen()
+                    is SettingsRoot.Child.TitleBar -> TitleBarScreen(window)
+                    is SettingsRoot.Child.WindowCorner -> WindowCornerScreen(window)
                 }
             }
         }

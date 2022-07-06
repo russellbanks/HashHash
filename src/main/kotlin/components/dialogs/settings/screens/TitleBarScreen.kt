@@ -34,20 +34,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
+import koin.inject
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
-import preferences.windowcorner.WindowCornerHandler
 
 @Composable
-fun TitleBarScreen(
-    titleBarHandler: TitleBarHandler,
-    windowCornerHandler: WindowCornerHandler,
-    window: ApplicationWindowState
-) {
+fun TitleBarScreen(window: ApplicationWindowState) {
+    val titleBarHandler: TitleBarHandler by inject()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Title Bar")).project()
         LabelProjection(
@@ -64,20 +61,14 @@ fun TitleBarScreen(
                     onClick = {
                         if (titleBarHandler.getTitleBar() != titleBar) {
                             titleBarHandler.putTitleBar(titleBar)
-                            window.checkWindowNeedsRestarting(
-                                titleBarHandler = titleBarHandler,
-                                windowCornerHandler = windowCornerHandler
-                            )
+                            window.checkWindowNeedsRestarting()
                         }
                     }
                 ) {
                     LabelProjection(
                         contentModel = LabelContentModel(text = titleBar.name),
                         presentationModel = LabelPresentationModel(
-                            textStyle = TextStyle(
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                            textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         )
                     ).project(Modifier.padding(4.dp))
                 }

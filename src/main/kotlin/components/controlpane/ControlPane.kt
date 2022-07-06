@@ -36,14 +36,12 @@ import components.screens.text.TextScreenComponent
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
-import preferences.mode.ModeHandler
 
 @Composable
 fun ControlPane(
     fileScreen: FileScreenComponent,
     textScreen: TextScreenComponent,
-    compareScreen: CompareFilesComponent,
-    modeHandler: ModeHandler
+    compareScreen: CompareFilesComponent
 ) {
     val controlPaneHelper = ControlPaneHelper(fileScreen, textScreen, compareScreen)
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.ControlPane) {
@@ -56,8 +54,8 @@ fun ControlPane(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ModeSelector(modeHandler)
-            AlgorithmSelectionList(controlPaneHelper = controlPaneHelper, modeHandler = modeHandler)
+            ModeSelector()
+            AlgorithmSelectionList(controlPaneHelper = controlPaneHelper)
         }
     }
 }

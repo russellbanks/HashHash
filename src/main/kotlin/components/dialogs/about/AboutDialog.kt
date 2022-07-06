@@ -40,15 +40,18 @@ import components.dialogs.DialogState
 import com.russellbanks.HashHash.BuildConfig
 import components.dialogs.Dialog
 import helper.Icons
+import koin.get
+import koin.inject
 import kotlinx.coroutines.Dispatchers
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
-fun AboutDialog(dialogState: DialogState, ktor: Ktor) {
+fun AboutDialog() {
+    val ktor: Ktor by inject()
     val scope = rememberCoroutineScope { Dispatchers.Default }
-    Dialog(dialogState = dialogState, dialog = DialogState.Dialogs.About) {
+    Dialog(dialog = DialogState.Dialogs.About) {
         Row(Modifier.padding(30.dp)) {
             Box(Modifier.padding(end = 30.dp)) {
                 Image(

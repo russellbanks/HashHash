@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class ControlPaneHelper(
     val fileScreen: FileScreenComponent,
-    val textScreen: TextScreenComponent,
+    private val textScreen: TextScreenComponent,
     private val compareScreen: CompareFilesComponent
 ) : Klogging {
 

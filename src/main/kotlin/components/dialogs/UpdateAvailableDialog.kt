@@ -38,6 +38,7 @@ import com.russellbanks.HashHash.BuildConfig
 import helper.Browser
 import helper.GitHub
 import helper.Icons
+import koin.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -48,9 +49,9 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import java.net.URL
 
 @Composable
-fun UpdateAvailableDialog(dialogState: DialogState, ktor: Ktor) {
+fun UpdateAvailableDialog(ktor: Ktor = get()) {
     val scope = rememberCoroutineScope { Dispatchers.Default }
-    Dialog(dialogState = dialogState, dialog = DialogState.Dialogs.Update) {
+    Dialog(dialog = DialogState.Dialogs.Update) {
         Row(Modifier.padding(30.dp)) {
             Box(Modifier.padding(end = 30.dp)) {
                 Image(

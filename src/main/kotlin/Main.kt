@@ -33,7 +33,6 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import api.Ktor
 import application.ApplicationState
-import components.dialogs.DialogState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
@@ -52,6 +51,7 @@ import components.Snackbar
 import components.Tabs
 import components.Toolbar
 import components.controlpane.ControlPane
+import components.dialogs.DialogState
 import components.dialogs.TranslucentDialogOverlay
 import components.dialogs.UpdateAvailableDialog
 import components.dialogs.about.AboutDialog
@@ -68,6 +68,11 @@ import helper.Icons
 import helper.Window
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
+import koin.KoinLogger
+import koin.get
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -84,36 +89,42 @@ fun main() {
     val root = RootComponent(DefaultComponentContext(lifecycle))
     val settingsRoot = SettingsRootComponent(DefaultComponentContext(lifecycle))
 
-    val ktor = Ktor()
-    val titleBarHandler = TitleBarHandler()
-    val dialogState = DialogState()
-    val themeHandler = ThemeHandler()
-    val modeHandler = ModeHandler()
-    val windowCornerHandler = WindowCornerHandler()
+    startKoin {
+        modules(
+            module {
+                singleOf(::Ktor)
+                singleOf(::TitleBarHandler)
+                singleOf(::WindowCornerHandler)
+                singleOf(::DialogState)
+                singleOf(::ThemeHandler)
+                singleOf(::ModeHandler)
+                singleOf(::ApplicationState)
+            }
+        )
+        logger(KoinLogger())
+    }
+
     val parentComponent = ParentComponent()
     val fileScreenComponent = FileScreenComponent(DefaultComponentContext(lifecycle), parentComponent)
     val textScreenComponent = TextScreenComponent(DefaultComponentContext(lifecycle), parentComponent)
     val compareFilesComponent = CompareFilesComponent(DefaultComponentContext(lifecycle), parentComponent)
-    val applicationState = ApplicationState(titleBarHandler, windowCornerHandler)
     auroraApplication {
         val windowState = rememberWindowState(
             position = WindowPosition(Alignment.Center),
             size = DpSize(width = 1035.dp, height = 750.dp)
         )
-        for (window in applicationState.windows) {
+        for (window in get<ApplicationState>().windows) {
             key(window) {
                 LifecycleController(lifecycle, windowState)
                 AuroraWindow(
-                    skin = themeHandler.auroraSkin,
+                    skin = get<ThemeHandler>().auroraSkin,
                     state = windowState,
                     title = "",
                     icon = Icons.logo(),
                     onCloseRequest = ::exitApplication,
                     menuCommands = Window.Header.commands(
                         auroraApplicationScope = this,
-                        windowState = windowState,
-                        ktor = ktor,
-                        dialogState = dialogState
+                        windowState = windowState
                     ),
                     undecorated = window.isUndecorated,
                     onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
@@ -121,9 +132,9 @@ fun main() {
                     val routerState = root.routerState.subscribeAsState()
                     val activeComponent = routerState.value.activeChild.instance
                     WindowStyle(
-                        isDarkTheme = themeHandler.isDark(),
+                        isDarkTheme = get<ThemeHandler>().isDark(),
                         backdropType = WindowBackdrop.Mica,
-                        frameStyle = WindowFrameStyle(cornerPreference = windowCornerHandler.getWindowCorner())
+                        frameStyle = WindowFrameStyle(cornerPreference = get<WindowCornerHandler>().getWindowCorner())
                     )
                     Window.setupAWTWindow(
                         window = this.window,
@@ -133,14 +144,13 @@ fun main() {
                     )
                     Box {
                         Column {
-                            Toolbar(dialogState = dialogState, ktor = ktor)
+                            Toolbar()
                             Tabs(activeComponent = activeComponent, root = root)
                             Row(Modifier.fillMaxSize().weight(1f)) {
                                 ControlPane(
                                     fileScreen = fileScreenComponent,
                                     textScreen = textScreenComponent,
-                                    compareScreen = compareFilesComponent,
-                                    modeHandler = modeHandler
+                                    compareScreen = compareFilesComponent
                                 )
                                 VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                                 Column {
@@ -164,17 +174,10 @@ fun main() {
                             )
                         }
                         Snackbar(parentComponent = parentComponent)
-                        TranslucentDialogOverlay(dialogState = dialogState)
-                        UpdateAvailableDialog(dialogState = dialogState, ktor = ktor)
-                        SettingsDialog(
-                            root = settingsRoot,
-                            dialogState = dialogState,
-                            themeHandler = themeHandler,
-                            titleBarHandler = titleBarHandler,
-                            windowCornerHandler = windowCornerHandler,
-                            window = window
-                        )
-                        AboutDialog(dialogState = dialogState, ktor = ktor)
+                        TranslucentDialogOverlay()
+                        UpdateAvailableDialog()
+                        SettingsDialog(root = settingsRoot, window = window)
+                        AboutDialog()
                     }
                 }
             }

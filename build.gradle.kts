@@ -65,6 +65,9 @@ dependencies {
     // jSystemThemeDetector - https://github.com/Dansoftowner/jSystemThemeDetector
     implementation(libs.jsystemthemedetector)
 
+    // Koin - https://github.com/InsertKoinIO/koin
+    implementation(libs.koin.core)
+
     // KotlinX Serialization - https://github.com/Kotlin/kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)
 

@@ -41,6 +41,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
+import com.russellbanks.HashHash.BuildConfig
 import components.Footer
 import components.Root
 import components.Snackbar
@@ -75,7 +76,7 @@ fun hashHashApplication() = auroraApplication {
             AuroraWindow(
                 skin = get<ThemeHandler>().auroraSkin,
                 state = windowState,
-                title = "",
+                title = BuildConfig.appName,
                 icon = Icons.logo(),
                 onCloseRequest = ::exitApplication,
                 menuCommands = Window.Header.commands(auroraApplicationScope = this, windowState = windowState),

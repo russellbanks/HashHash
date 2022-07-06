@@ -82,7 +82,7 @@ class FileScreenComponent(
     var timer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
     private var exception: Exception? by mutableStateOf(null)
 
-    fun onCalculateClicked(scope: CoroutineScope) {
+    private fun onCalculateClicked(scope: CoroutineScope) {
         file?.let { file ->
             if (fileHashJob?.isActive != true) {
                 scope.launch(Dispatchers.Default) {
@@ -111,7 +111,7 @@ class FileScreenComponent(
         }
     }
 
-    fun selectFile() {
+    private fun selectFile() {
         FileUtils.openFileDialogAndGetResult().also {
             setComponentFile(it)
         }

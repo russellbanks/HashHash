@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreenComponent
@@ -38,7 +39,8 @@ import org.pushingpixels.aurora.theming.auroraBackground
 import org.pushingpixels.aurora.window.AuroraDecorationArea
 
 @Composable
-fun Footer(activeComponent: Root.Child) {
+fun Footer() {
+    val root: Root by inject()
     val fileScreen: FileScreenComponent by inject()
     val textScreen: TextScreenComponent by inject()
     val compareScreen: CompareFilesComponent by inject()
@@ -46,7 +48,7 @@ fun Footer(activeComponent: Root.Child) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(
                 contentModel = LabelContentModel(
-                    text = when (activeComponent) {
+                    text = when (root.routerState.subscribeAsState().value.activeChild.instance) {
                         is Root.Child.File -> fileScreen.getFooterText()
                         is Root.Child.Text -> textScreen.getFooterText()
                         is Root.Child.CompareFiles -> compareScreen.getFooterText()

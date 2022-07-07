@@ -40,6 +40,7 @@ import java.io.IOException
 object DragAndDrop : KoinComponent, Klogging {
     private val fileScreenComponent: FileScreenComponent by inject()
     private val compareFilesComponent: CompareFilesComponent by inject()
+    private val root: Root by inject()
 
     fun target(
         scope: CoroutineScope,
@@ -60,10 +61,8 @@ object DragAndDrop : KoinComponent, Klogging {
         }
     }
 
-    fun setResult(
-        droppedItems: List<*>,
-        activeComponent: Root.Child
-    ) {
+    fun setResult(droppedItems: List<*>, ) {
+        val activeComponent = root.routerState.value.activeChild.instance
         droppedItems.first().let {
             if (it is File && it.isFile) {
                 if (activeComponent is Root.Child.File) {

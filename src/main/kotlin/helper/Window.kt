@@ -32,7 +32,6 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import api.Ktor
-import components.Root
 import components.dialogs.DialogState
 import koin.inject
 import kotlinx.coroutines.Dispatchers
@@ -50,18 +49,12 @@ object Window {
     private const val minWindowHeight = 600
 
     @Composable
-    fun setupAWTWindow(
-        window: java.awt.Window,
-        activeComponent: Root.Child
-    ) {
+    fun setupAWTWindow(window: java.awt.Window, ) {
         val scope = rememberCoroutineScope { Dispatchers.Default }
         with(window) {
             minimumSize = Dimension(minWindowWidth, minWindowHeight)
             dropTarget = DragAndDrop.target(scope) { droppedItems ->
-                DragAndDrop.setResult(
-                    droppedItems = droppedItems,
-                    activeComponent = activeComponent
-                )
+                DragAndDrop.setResult(droppedItems = droppedItems)
             }
         }
     }

@@ -37,7 +37,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
 import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
@@ -83,24 +82,22 @@ fun hashHashApplication() = auroraApplication {
                 undecorated = window.isUndecorated,
                 onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
             ) {
-                val routerState = get<Root>().routerState.subscribeAsState()
-                val activeComponent = routerState.value.activeChild.instance
                 WindowStyle(
                     isDarkTheme = get<ThemeHandler>().isDark(),
                     backdropType = WindowBackdrop.Mica,
                     frameStyle = WindowFrameStyle(cornerPreference = get<WindowCornerHandler>().getWindowCorner())
                 )
-                Window.setupAWTWindow(window = this.window, activeComponent = activeComponent)
+                Window.setupAWTWindow(window = this.window)
                 Box {
                     Column {
                         Toolbar()
-                        Tabs(activeComponent = activeComponent)
+                        Tabs()
                         Row(Modifier.fillMaxSize().weight(1f)) {
                             ControlPane()
                             VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                             Column {
                                 Children(
-                                    routerState = routerState.value,
+                                    routerState = get<Root>().routerState,
                                     animation = childAnimation(fade(tween(durationMillis = 200)))
                                 ) {
                                     when (it.instance) {
@@ -111,7 +108,7 @@ fun hashHashApplication() = auroraApplication {
                                 }
                             }
                         }
-                        Footer(activeComponent = activeComponent)
+                        Footer()
                     }
                     Snackbar()
                     TranslucentDialogOverlay()

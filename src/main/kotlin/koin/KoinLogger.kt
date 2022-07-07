@@ -34,8 +34,9 @@ class KoinLogger : Logger(), Klogging {
         scope.launch {
             when (level) {
                 Level.DEBUG -> logger.debug(msg)
+                Level.INFO -> logger.info(msg)
                 Level.ERROR -> logger.error(msg)
-                else -> logger.info(msg)
+                Level.NONE -> logger.log(io.klogging.Level.NONE, msg)
             }
         }
     }

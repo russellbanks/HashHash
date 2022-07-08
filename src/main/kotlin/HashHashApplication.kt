@@ -83,7 +83,7 @@ fun hashHashApplication() = auroraApplication {
                 onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
             ) {
                 WindowStyle(
-                    isDarkTheme = get<ThemeHandler>().isDark(),
+                    isDarkTheme = true,
                     backdropType = WindowBackdrop.Mica,
                     frameStyle = WindowFrameStyle(cornerPreference = get<WindowCornerHandler>().getWindowCorner())
                 )

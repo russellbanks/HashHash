@@ -30,7 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import org.pushingpixels.aurora.theming.AuroraSkinDefinition
-import org.pushingpixels.aurora.theming.dustSkin
+import org.pushingpixels.aurora.theming.geminiSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
 
@@ -46,16 +46,8 @@ class ThemeHandler : Klogging {
     var auroraSkin by mutableStateOf(getTheme().toAuroraTheme())
 
     init {
-        osThemeDetector.registerListener { isDark: Boolean ->
-            if (getTheme() == Theme.System) auroraSkin = if (isDark) nightShadeSkin() else dustSkin()
-        }
-    }
-
-    fun isDark(): Boolean {
-        return when (cachedTheme) {
-            Theme.Dark -> true
-            Theme.Light -> false
-            else -> osThemeDetector.isDark
+        osThemeDetector.registerListener {
+            getTheme().also { if (it == Theme.System) auroraSkin = it.toAuroraTheme() }
         }
     }
 
@@ -80,9 +72,9 @@ class ThemeHandler : Klogging {
 
     private fun Theme?.toAuroraTheme(): AuroraSkinDefinition {
         return when (this) {
-            Theme.Light -> dustSkin()
+            Theme.Light -> geminiSkin()
             Theme.Dark -> nightShadeSkin()
-            else -> if (osThemeDetector.isDark) nightShadeSkin() else dustSkin()
+            else -> if (osThemeDetector.isDark) nightShadeSkin() else geminiSkin()
         }
     }
 

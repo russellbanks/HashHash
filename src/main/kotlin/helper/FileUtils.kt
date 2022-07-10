@@ -28,8 +28,8 @@ import org.lwjgl.system.MemoryUtil.memAddressSafe
 import org.lwjgl.system.MemoryUtil.memUTF8Safe
 import org.lwjgl.system.NativeType
 import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_openFileDialog
+import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_saveFileDialog
 import java.io.File
-import java.nio.file.Files
 import java.util.Locale
 
 object FileUtils {
@@ -44,12 +44,6 @@ object FileUtils {
         )
     }
 
-    fun getFileType(file: File?): String {
-        return if (file != null) {
-            Files.probeContentType(file.toPath())?.replaceFirstChar { it.titlecase() } ?: file.extension
-        } else "Type"
-    }
-
     /**
      * Displays a file open dialog.
      *
@@ -62,7 +56,7 @@ object FileUtils {
      * @return the file(s) selected or {@code NULL} on cancel. In case of multiple files, the separator is '|'.
      */
     @NativeType("char const *")
-    fun openTinyFileDialog(
+    fun openFileDialog(
         @NativeType("char const *") title: CharSequence?,
         @NativeType("char const *") defaultPathAndFile: CharSequence?,
         @NativeType("char const * const *") filterPatterns: PointerBuffer?,
@@ -93,7 +87,7 @@ object FileUtils {
     }
 
     fun openFileDialogAndGetResult(): File? {
-        openTinyFileDialog(
+        openFileDialog(
             title = "Open",
             defaultPathAndFile = null,
             filterPatterns = null,
@@ -103,4 +97,44 @@ object FileUtils {
             return if (it != null) File(it) else null
         }
     }
+
+    /**
+     * Displays a file save dialog.
+     *
+     * @param title                   the dialog title or `NULL`
+     * @param defaultPathAndFile      the default path and/or file or `NULL`
+     * @param filterPatterns          an array of file type patterns (`NULL` or {"*.jpg","*.png"}
+     * @param singleFilterDescription `NULL` or "image files"
+     *
+     * @return the selected file path or `NULL` on cancel
+     */
+    @NativeType("char const *")
+    fun openSaveFileDialog(
+        @NativeType("char const *") title: CharSequence?,
+        @NativeType("char const *") defaultPathAndFile: CharSequence?,
+        @NativeType("char const * const *") filterPatterns: PointerBuffer?,
+        @NativeType("char const *") singleFilterDescription: CharSequence?
+    ): String? {
+        val stack = stackGet()
+        val stackPointer = stack.pointer
+        return try {
+            stack.nUTF8Safe(title, true)
+            val titleEncoded = if (title == null) NULL else stack.pointerAddress
+            stack.nUTF8Safe(defaultPathAndFile, true)
+            val defaultPathAndFileEncoded = if (defaultPathAndFile == null) NULL else stack.pointerAddress
+            stack.nUTF8Safe(singleFilterDescription, true)
+            val singleFilterDescriptionEncoded = if (singleFilterDescription == null) NULL else stack.pointerAddress
+            val result = ntinyfd_saveFileDialog(
+                titleEncoded,
+                defaultPathAndFileEncoded,
+                remainingSafe(filterPatterns),
+                memAddressSafe(filterPatterns),
+                singleFilterDescriptionEncoded
+            )
+            memUTF8Safe(result)
+        } finally {
+            stack.pointer = stackPointer
+        }
+    }
+
 }

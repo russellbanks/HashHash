@@ -20,10 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.text
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -41,10 +42,15 @@ import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
 import koin.inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
+import org.pushingpixels.aurora.component.model.SelectorContentModel
 import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
+import org.pushingpixels.aurora.component.projection.CheckBoxProjection
+import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
@@ -55,29 +61,71 @@ fun TextScreen() {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope() { Dispatchers.Default }
     Column(
         modifier = Modifier.padding(16.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         val clipboardManager = LocalClipboardManager.current
         Column {
-            Row {
-                Box(Modifier.weight(1f))
-                LabelProjection(contentModel = LabelContentModel(text = component.characterCountAsString())).project()
-            }
+            LabelProjection(
+                contentModel = LabelContentModel(text = component.characterCountAsString())
+            ).project(Modifier.align(Alignment.End))
             TextFieldStringProjection(
                 contentModel = TextFieldStringContentModel(
                     value = component.givenText,
                     onValueChange = {
                         with(component) {
                             givenText = it
+                            isTextLineByLineErrorVisible = false
                             scope.launch { hashGivenText() }
                         }
                     }
                 )
-            ).project(Modifier.fillMaxWidth().fillMaxHeight(fraction = 0.5f).padding(horizontal = 4.dp))
-            TextFieldShortcuts(component = component)
+            ).project(Modifier.fillMaxWidth().fillMaxHeight(0.5f).padding(horizontal = 4.dp))
+            TextFieldShortcuts()
+        }
+        Column(Modifier.border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CommandButtonProjection(
+                    contentModel = Command(
+                        text = "Hash text line-by-line",
+                        action = {
+                            if (component.givenText.isNotEmpty()) {
+                                scope.launch { component.hashTextLineByLine() }
+                            } else {
+                                component.isTextLineByLineErrorVisible = true
+                            }
+                        }
+                    )
+                ).project()
+                CheckBoxProjection(
+                    contentModel = SelectorContentModel(
+                        text = "Ignore empty lines",
+                        selected = component.ignoreEmptyLines,
+                        onTriggerSelectedChange = { component.ignoreEmptyLines = it }
+                    )
+                ).project()
+                CheckBoxProjection(
+                    contentModel = SelectorContentModel(
+                        text = "Uppercase hash",
+                        selected = component.isTextLineByLineUppercase,
+                        onTriggerSelectedChange = { component.isTextLineByLineUppercase = it }
+                    )
+                ).project()
+                CheckBoxProjection(
+                    contentModel = SelectorContentModel(
+                        text = "Include source text in output",
+                        selected = component.includeSourceText,
+                        onTriggerSelectedChange = { component.includeSourceText = it }
+                    )
+                ).project()
+            }
+            AnimatedVisibility(visible = component.isTextLineByLineErrorVisible) {
+                LabelProjection(
+                    contentModel = LabelContentModel(text = "No text entered")
+                ).project()
+            }
         }
         OutputTextFieldRow(
             value = component.givenTextHash,

@@ -28,12 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import koin.inject
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
-fun TextFieldShortcuts(component: TextScreenComponent) {
+fun TextFieldShortcuts() {
+    val component: TextScreenComponent by inject()
     val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier.fillMaxWidth().padding(4.dp),

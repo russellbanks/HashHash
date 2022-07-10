@@ -71,6 +71,9 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
 
+    // Kotlin CSV - https://github.com/doyaaaaaken/kotlin-csv
+    implementation(libs.kotlincsv)
+
     // KotlinX Serialization - https://github.com/Kotlin/kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)
 

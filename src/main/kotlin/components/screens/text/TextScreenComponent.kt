@@ -52,6 +52,7 @@ class TextScreenComponent(
     var isTextLineByLineErrorVisible by mutableStateOf(false)
     var isTextLineByLineUppercase by mutableStateOf(true)
     var includeSourceText by mutableStateOf(true)
+    var selectedDelimiter by mutableStateOf(Delimiter.NewLine)
 
     suspend fun hashGivenText() {
         if (givenText.isNotEmpty()) {
@@ -81,7 +82,7 @@ class TextScreenComponent(
             csvWriter().openAsync(path) {
                 writeRow("Text", "${parent.algorithm.algorithmName} hash")
                 text
-                    .split("\n")
+                    .split(selectedDelimiter.delimiter)
                     .filterNot { if (ignoreEmptyLines) it.isEmpty() else false }
                     .map {
                         it to it.hash(parent.algorithm).run {

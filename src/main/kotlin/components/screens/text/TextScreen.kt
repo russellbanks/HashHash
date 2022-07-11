@@ -42,15 +42,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
+import components.dialogs.settings.toFriendlyCase
 import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.pushingpixels.aurora.component.model.ComboBoxContentModel
+import org.pushingpixels.aurora.component.model.ComboBoxPresentationModel
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.model.SelectorContentModel
 import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
+import org.pushingpixels.aurora.component.projection.ComboBoxProjection
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
@@ -108,6 +112,23 @@ fun TextScreen() {
                             action = { scope.launch { component.hashFileLineByLine() } }
                         )
                     ).project()
+                    Row {
+                        LabelProjection(
+                            contentModel = LabelContentModel(text = "Delimiter:")
+                        ).project()
+                        ComboBoxProjection(
+                            contentModel = ComboBoxContentModel(
+                                items = Delimiter.values().toList(),
+                                selectedItem = component.selectedDelimiter,
+                                onTriggerItemSelectedChange = {
+                                    component.selectedDelimiter = it
+                                }
+                            ),
+                            presentationModel = ComboBoxPresentationModel(
+                                displayConverter = { it.name.toFriendlyCase() }
+                            )
+                        ).project()
+                    }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     CheckBoxProjection(

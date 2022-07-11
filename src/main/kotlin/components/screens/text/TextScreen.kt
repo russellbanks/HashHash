@@ -24,6 +24,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -82,50 +83,65 @@ fun TextScreen() {
                         }
                     }
                 )
-            ).project(Modifier.fillMaxWidth().fillMaxHeight(0.5f).padding(horizontal = 4.dp))
+            ).project(Modifier.fillMaxWidth().fillMaxHeight(0.4f).padding(horizontal = 4.dp))
             TextFieldShortcuts()
         }
-        Column(Modifier.border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                CommandButtonProjection(
-                    contentModel = Command(
-                        text = "Hash text line-by-line",
-                        action = {
-                            if (component.givenText.isNotEmpty()) {
-                                scope.launch { component.hashTextLineByLine() }
-                            } else {
-                                component.isTextLineByLineErrorVisible = true
+        Box {
+            Column(Modifier.padding(top = 10.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(20.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Hash text line-by-line",
+                            extraText = "test",
+                            action = {
+                                if (component.givenText.isNotEmpty()) {
+                                    scope.launch { component.hashTextLineByLine(component.givenText) }
+                                } else {
+                                    component.isTextLineByLineErrorVisible = true
+                                }
                             }
-                        }
-                    )
-                ).project()
-                CheckBoxProjection(
-                    contentModel = SelectorContentModel(
-                        text = "Ignore empty lines",
-                        selected = component.ignoreEmptyLines,
-                        onTriggerSelectedChange = { component.ignoreEmptyLines = it }
-                    )
-                ).project()
-                CheckBoxProjection(
-                    contentModel = SelectorContentModel(
-                        text = "Uppercase hash",
-                        selected = component.isTextLineByLineUppercase,
-                        onTriggerSelectedChange = { component.isTextLineByLineUppercase = it }
-                    )
-                ).project()
-                CheckBoxProjection(
-                    contentModel = SelectorContentModel(
-                        text = "Include source text in output",
-                        selected = component.includeSourceText,
-                        onTriggerSelectedChange = { component.includeSourceText = it }
-                    )
-                ).project()
+                        )
+                    ).project()
+                    CommandButtonProjection(
+                        contentModel = Command(
+                            text = "Hash file line-by-line",
+                            action = { scope.launch { component.hashFileLineByLine() } }
+                        )
+                    ).project()
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CheckBoxProjection(
+                        contentModel = SelectorContentModel(
+                            text = "Ignore empty lines",
+                            selected = component.ignoreEmptyLines,
+                            onTriggerSelectedChange = { component.ignoreEmptyLines = it }
+                        )
+                    ).project()
+                    CheckBoxProjection(
+                        contentModel = SelectorContentModel(
+                            text = "Uppercase hash",
+                            selected = component.isTextLineByLineUppercase,
+                            onTriggerSelectedChange = { component.isTextLineByLineUppercase = it }
+                        )
+                    ).project()
+                    CheckBoxProjection(
+                        contentModel = SelectorContentModel(
+                            text = "Include source text in output",
+                            selected = component.includeSourceText,
+                            onTriggerSelectedChange = { component.includeSourceText = it }
+                        )
+                    ).project()
+                }
+                AnimatedVisibility(visible = component.isTextLineByLineErrorVisible) {
+                    LabelProjection(
+                        contentModel = LabelContentModel(text = "No text entered")
+                    ).project()
+                }
             }
-            AnimatedVisibility(visible = component.isTextLineByLineErrorVisible) {
-                LabelProjection(
-                    contentModel = LabelContentModel(text = "No text entered")
-                ).project()
-            }
+            LabelProjection(
+                contentModel = LabelContentModel(text = "Line-By-Line hashing options"),
+                presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 12.sp))
+            ).project(Modifier.padding(horizontal = 10.dp).background(backgroundColorScheme.backgroundFillColor))
         }
         OutputTextFieldRow(
             value = component.givenTextHash,

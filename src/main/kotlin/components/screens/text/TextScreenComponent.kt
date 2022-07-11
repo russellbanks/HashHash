@@ -68,7 +68,7 @@ class TextScreenComponent(
 
     suspend fun onAlgorithmClick() = hashGivenText()
 
-    suspend fun hashTextLineByLine() {
+    suspend fun hashTextLineByLine(text: String) {
         FileUtils.openSaveFileDialog(
             title = "Save",
             defaultPathAndFile = null,
@@ -80,7 +80,7 @@ class TextScreenComponent(
         )?.let { path ->
             csvWriter().openAsync(path) {
                 writeRow("Text", "${parent.algorithm.algorithmName} hash")
-                givenText
+                text
                     .split("\n")
                     .filterNot { if (ignoreEmptyLines) it.isEmpty() else false }
                     .map {
@@ -93,6 +93,10 @@ class TextScreenComponent(
                     }
             }
         }
+    }
+
+    suspend fun hashFileLineByLine() {
+        FileUtils.openFileDialogAndGetResult()?.readText()?.let { hashTextLineByLine(it) }
     }
 
     fun characterCountAsString(): String {

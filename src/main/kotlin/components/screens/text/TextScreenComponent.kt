@@ -70,6 +70,10 @@ class TextScreenComponent(
     suspend fun onAlgorithmClick() = hashGivenText()
 
     suspend fun hashTextLineByLine(text: String) {
+        hashTextLineByLine(text.splitToSequence(selectedDelimiter.delimiter))
+    }
+
+    private suspend fun hashTextLineByLine(lines: Sequence<String>) {
         FileUtils.openSaveFileDialog(
             title = "Save",
             defaultPathAndFile = null,
@@ -77,27 +81,33 @@ class TextScreenComponent(
                 put(MemoryUtil.memASCII("*.csv"))
                 rewind()
             },
-            singleFilterDescription = null
+            singleFilterDescription = "Comma separated values (*.csv)",
         )?.let { path ->
             csvWriter().openAsync(path) {
-                writeRow("Text", "${parent.algorithm.algorithmName} hash")
-                text
-                    .split(selectedDelimiter.delimiter)
+                if (includeSourceText) writeRow("Text", "${parent.algorithm.algorithmName} hash")
+                else writeRow("Hash")
+                lines
                     .filterNot { if (ignoreEmptyLines) it.isEmpty() else false }
-                    .map {
-                        it to it.hash(parent.algorithm).run {
-                            if (isTextLineByLineUppercase) uppercase() else lowercase()
-                        }
-                    }
-                    .forEach { (text, hash) ->
-                        if (includeSourceText) writeRow(text, hash) else writeRow(hash)
+                    .forEach {
+                        if (includeSourceText) {
+                            writeRow(
+                                it, it.hash(parent.algorithm).run {
+                                    if (isTextLineByLineUppercase) uppercase() else lowercase()
+                                }
+                            )
+                        } else writeRow(it)
                     }
             }
         }
     }
 
     suspend fun hashFileLineByLine() {
-        FileUtils.openFileDialogAndGetResult()?.readText()?.let { hashTextLineByLine(it) }
+        FileUtils.openFileDialogAndGetResult()?.useLines { lines ->
+            if (selectedDelimiter == Delimiter.NewLine) hashTextLineByLine(lines)
+            else hashTextLineByLine(
+                lines.joinToString(Delimiter.NewLine.delimiter).splitToSequence(selectedDelimiter.delimiter)
+            )
+        }
     }
 
     fun characterCountAsString(): String {

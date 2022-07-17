@@ -33,10 +33,10 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import application.ApplicationState
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.childAnimation
-import com.arkivanov.decompose.extensions.compose.jetbrains.animation.child.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
@@ -97,8 +97,8 @@ fun hashHashApplication() = auroraApplication {
                             VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                             Column {
                                 Children(
-                                    routerState = get<Root>().routerState,
-                                    animation = childAnimation(fade(tween(durationMillis = 200)))
+                                    stack = get<Root>().childStack,
+                                    animation = stackAnimation(fade(tween(durationMillis = 200)))
                                 ) {
                                     when (it.instance) {
                                         is Root.Child.File -> FileScreen()

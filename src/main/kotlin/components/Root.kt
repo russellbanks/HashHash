@@ -22,9 +22,10 @@ package components
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.bringToFront
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -33,7 +34,7 @@ import org.koin.core.annotation.Single
 
 interface Root {
 
-    val routerState: Value<RouterState<*, Child>>
+    val childStack: Value<ChildStack<*, Child>>
 
     fun onFileTabClicked()
 
@@ -61,25 +62,26 @@ interface Root {
 
 @Single
 class RootComponent(lifecycle: LifecycleRegistry) : Root, ComponentContext by DefaultComponentContext(lifecycle) {
+    private val navigation = StackNavigation<Config>()
 
-    private val router =
-        router<Config, Root.Child>(
-            initialConfiguration = Config.File,
-            childFactory = ::createChild
-        )
+    private val stack = childStack(
+        source = navigation,
+        initialConfiguration = Config.File,
+        childFactory = ::createChild
+    )
 
-    override val routerState: Value<RouterState<*, Root.Child>> = router.state
+    override val childStack: Value<ChildStack<*, Root.Child>> get() = stack
 
     override fun onFileTabClicked() {
-        router.bringToFront(Config.File)
+        navigation.bringToFront(Config.File)
     }
 
     override fun onTextTabClicked() {
-        router.bringToFront(Config.Text)
+        navigation.bringToFront(Config.Text)
     }
 
     override fun onCompareFilesTabClicked() {
-        router.bringToFront(Config.CompareFiles)
+        navigation.bringToFront(Config.CompareFiles)
     }
 
     private fun createChild(config: Config, @Suppress("UNUSED_PARAMETER") componentContext: ComponentContext) =

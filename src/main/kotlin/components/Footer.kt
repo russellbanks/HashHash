@@ -48,7 +48,7 @@ fun Footer() {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(
                 contentModel = LabelContentModel(
-                    text = when (root.routerState.subscribeAsState().value.activeChild.instance) {
+                    text = when (root.childStack.subscribeAsState().value.active.instance) {
                         is Root.Child.File -> fileScreen.getFooterText()
                         is Root.Child.Text -> textScreen.getFooterText()
                         is Root.Child.CompareFiles -> compareScreen.getFooterText()

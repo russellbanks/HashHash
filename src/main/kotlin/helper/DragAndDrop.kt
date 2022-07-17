@@ -62,7 +62,7 @@ object DragAndDrop : KoinComponent, Klogging {
     }
 
     fun setResult(droppedItems: List<*>, ) {
-        val activeComponent = root.routerState.value.activeChild.instance
+        val activeComponent = root.childStack.value.active.instance
         droppedItems.first().let {
             if (it is File && it.isFile) {
                 if (activeComponent is Root.Child.File) {

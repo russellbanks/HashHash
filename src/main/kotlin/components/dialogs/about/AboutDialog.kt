@@ -36,11 +36,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.Ktor
-import components.dialogs.DialogState
 import com.russellbanks.HashHash.BuildConfig
 import components.dialogs.Dialog
+import components.dialogs.DialogState
 import helper.Icons
-import koin.get
 import koin.inject
 import kotlinx.coroutines.Dispatchers
 import org.pushingpixels.aurora.component.model.Command

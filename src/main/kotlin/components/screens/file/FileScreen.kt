@@ -38,7 +38,6 @@ import components.ComparisonTextFieldRow
 import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
-import koin.get
 import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel

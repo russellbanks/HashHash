@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import api.Ktor
 import components.dialogs.DialogState
 import helper.Icons
-import koin.get
 import koin.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel

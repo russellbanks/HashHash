@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import components.dialogs.Dialog
 import components.dialogs.DialogState
@@ -59,8 +59,8 @@ import org.pushingpixels.aurora.theming.IconFilterStrategy
 @Composable
 fun SettingsDialog(window: ApplicationWindowState) {
     val root: SettingsRoot by inject()
-    val routerState = root.routerState.subscribeAsState()
-    val activeComponent = routerState.value.activeChild.instance
+    val childStack = root.childStack.subscribeAsState()
+    val activeComponent = childStack.value.active.instance
     Dialog(dialog = DialogState.Dialogs.Settings) {
         Row {
             val list = listOfCategories()
@@ -100,7 +100,7 @@ fun SettingsDialog(window: ApplicationWindowState) {
                     ).project(Modifier.width(140.dp).padding(6.dp))
                 }
             }
-            Children(routerState = routerState.value) {
+            Children(stack = root.childStack) {
                 when (it.instance) {
                     is SettingsRoot.Child.Theme -> ThemeScreen()
                     is SettingsRoot.Child.TitleBar -> TitleBarScreen(window)

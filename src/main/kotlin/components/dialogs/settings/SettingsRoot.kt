@@ -22,9 +22,10 @@ package components.dialogs.settings
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.router.RouterState
-import com.arkivanov.decompose.router.bringToFront
-import com.arkivanov.decompose.router.router
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
+import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.parcelable.Parcelable
@@ -33,7 +34,7 @@ import org.koin.core.annotation.Single
 
 interface SettingsRoot {
 
-    val routerState: Value<RouterState<*, Child>>
+    val childStack: Value<ChildStack<*, Child>>
 
     fun onThemeTabClicked()
 
@@ -56,25 +57,27 @@ interface SettingsRoot {
 class SettingsRootComponent(
     lifecycle: LifecycleRegistry
 ) : SettingsRoot, ComponentContext by DefaultComponentContext(lifecycle) {
+    private val navigation = StackNavigation<Config>()
 
-    private val router =
-        router<Config, SettingsRoot.Child>(
-            initialConfiguration = Config.Theme,
-            childFactory = ::createChild
-        )
+    private val stack = childStack(
+        source = navigation,
+        initialConfiguration = Config.Theme,
+        childFactory = ::createChild
+    )
 
-    override val routerState: Value<RouterState<*, SettingsRoot.Child>> = router.state
+    override val childStack: Value<ChildStack<*, SettingsRoot.Child>> get() = stack
+
 
     override fun onThemeTabClicked() {
-        router.bringToFront(Config.Theme)
+        navigation.bringToFront(Config.Theme)
     }
 
     override fun onTitleBarTabClicked() {
-        router.bringToFront(Config.TitleBar)
+        navigation.bringToFront(Config.TitleBar)
     }
 
     override fun onWindowCornerTabClicked() {
-        router.bringToFront(Config.WindowCorner)
+        navigation.bringToFront(Config.WindowCorner)
     }
 
     private fun createChild(config: Config, @Suppress("UNUSED_PARAMETER") componentContext: ComponentContext) =

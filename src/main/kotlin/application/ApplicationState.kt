@@ -24,16 +24,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import com.arkivanov.essenty.lifecycle.destroy
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.pushingpixels.aurora.window.AuroraApplicationScope
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
 @Single
-class ApplicationState {
+class ApplicationState : KoinComponent {
     val windows = mutableStateListOf<ApplicationWindowState>()
+    private val lifecycle: LifecycleRegistry by inject()
 
     init {
         windows += windowState()
@@ -47,6 +51,11 @@ class ApplicationState {
         openNewWindow = ::openNewWindow,
         windows::remove
     )
+
+    fun exitApplication(auroraApplicationScope: AuroraApplicationScope) {
+        auroraApplicationScope.exitApplication()
+        lifecycle.destroy()
+    }
 }
 
 class ApplicationWindowState(

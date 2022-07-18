@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import application.ApplicationState
+import application.LifecycleController
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
@@ -57,6 +57,7 @@ import components.screens.text.TextScreen
 import helper.Icons
 import helper.Window
 import koin.get
+import koin.inject
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -69,7 +70,8 @@ fun hashHashApplication() = auroraApplication {
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 750.dp)
     )
-    for (window in get<ApplicationState>().windows) {
+    val applicationState: ApplicationState by inject()
+    for (window in applicationState.windows) {
         key(window) {
             LifecycleController(get(), windowState)
             AuroraWindow(
@@ -77,7 +79,7 @@ fun hashHashApplication() = auroraApplication {
                 state = windowState,
                 title = BuildConfig.appName,
                 icon = Icons.logo(),
-                onCloseRequest = ::exitApplication,
+                onCloseRequest = { applicationState.exitApplication(this) },
                 menuCommands = Window.Header.commands(auroraApplicationScope = this, windowState = windowState),
                 undecorated = window.isUndecorated,
                 onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }

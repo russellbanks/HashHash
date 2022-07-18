@@ -32,15 +32,18 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import api.Ktor
+import application.ApplicationState
 import components.dialogs.DialogState
-import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
 import org.pushingpixels.aurora.window.AuroraApplicationScope
 import java.awt.Dimension
+import java.awt.Window
 import java.net.URL
 
 object Window {
@@ -49,7 +52,7 @@ object Window {
     private const val minWindowHeight = 600
 
     @Composable
-    fun setupAWTWindow(window: java.awt.Window, ) {
+    fun setupAWTWindow(window: Window) {
         val scope = rememberCoroutineScope { Dispatchers.Default }
         with(window) {
             minimumSize = Dimension(minWindowWidth, minWindowHeight)
@@ -80,7 +83,8 @@ object Window {
         }
     }
 
-    object Header {
+    object Header : KoinComponent {
+        private val applicationState: ApplicationState by inject()
 
         @Composable
         fun commands(
@@ -119,7 +123,7 @@ object Window {
                             commands = listOf(
                                 Command(
                                     text = "Exit",
-                                    action = auroraApplicationScope::exitApplication
+                                    action = { applicationState.exitApplication(auroraApplicationScope) }
                                 )
                             )
                         )

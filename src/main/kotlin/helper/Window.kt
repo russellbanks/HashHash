@@ -89,7 +89,7 @@ object Window {
         @Composable
         fun commands(
             auroraApplicationScope: AuroraApplicationScope,
-            windowState: WindowState,
+            windowState: WindowState
         ): CommandGroup {
             val ktor: Ktor by inject()
             val dialogState: DialogState by inject()

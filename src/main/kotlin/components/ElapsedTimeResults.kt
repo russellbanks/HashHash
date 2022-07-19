@@ -47,7 +47,7 @@ fun ElapsedTimeResults(instantBeforeHash: Instant?, instantAfterHash: Instant?) 
                 contentModel = LabelContentModel(
                     text = "Finished at: ${
                         if (instantAfterHash != null) SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
-                            .format(instantAfterHash.toEpochMilliseconds()) 
+                            .format(instantAfterHash.toEpochMilliseconds())
                         else "-"
                     }"
                 )
@@ -55,7 +55,7 @@ fun ElapsedTimeResults(instantBeforeHash: Instant?, instantAfterHash: Instant?) 
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = "Time taken: ${
-                        if (instantBeforeHash != null && instantAfterHash != null && 
+                        if (instantBeforeHash != null && instantAfterHash != null &&
                             (instantAfterHash - instantBeforeHash).isPositive()
                         ) (instantAfterHash - instantBeforeHash).toString(unit = DurationUnit.SECONDS, decimals = 3)
                         else "-"

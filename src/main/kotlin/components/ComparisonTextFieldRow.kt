@@ -50,7 +50,7 @@ fun ComparisonTextFieldRow(
     comparisonHash: String,
     onPasteClick: () -> Unit,
     onClearClick: () -> Unit,
-    onTextFieldChange: (String) -> Unit,
+    onTextFieldChange: (String) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(

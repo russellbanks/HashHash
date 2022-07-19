@@ -99,5 +99,4 @@ object Hashing : Klogging {
             exceptionCallback(illegalStateException)
         }
     }
-
 }

@@ -59,5 +59,4 @@ class ModeHandler : Klogging {
     companion object {
         private const val modeKey = "mode"
     }
-
 }

@@ -40,5 +40,4 @@ class KoinLogger : Logger(), Klogging {
             }
         }
     }
-
 }

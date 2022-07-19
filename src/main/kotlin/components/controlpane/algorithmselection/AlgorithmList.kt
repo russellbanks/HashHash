@@ -236,5 +236,4 @@ object AlgorithmList {
     )
 
     fun getAlgorithmList(modeHandler: ModeHandler) = if (modeHandler.selectedMode == Mode.SIMPLE) simple else advanced
-
 }

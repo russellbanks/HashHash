@@ -59,8 +59,7 @@ fun JVMInformationText() {
                 ).project()
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "VM: " + System.getProperty("java.vm.name") + " by " +
-                                System.getProperty("java.vm.vendor")
+                        text = "VM: ${System.getProperty("java.vm.name")} by ${System.getProperty("java.vm.vendor")}"
                     ),
                     presentationModel = LabelPresentationModel(
                         textStyle = TextStyle(fontSize = 12.sp)

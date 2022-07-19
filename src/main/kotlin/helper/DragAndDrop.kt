@@ -61,7 +61,7 @@ object DragAndDrop : KoinComponent, Klogging {
         }
     }
 
-    fun setResult(droppedItems: List<*>, ) {
+    fun setResult(droppedItems: List<*>) {
         val activeComponent = root.childStack.value.active.instance
         droppedItems.first().let {
             if (it is File && it.isFile) {
@@ -73,5 +73,4 @@ object DragAndDrop : KoinComponent, Klogging {
             }
         }
     }
-
 }

@@ -67,7 +67,7 @@ fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit)
             rotate = !rotate
             onClick()
         },
-        sides = Sides(straightSides = Side.values().toSet()),
+        sides = Sides(straightSides = Side.values().toSet())
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(

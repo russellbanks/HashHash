@@ -132,5 +132,4 @@ class Ktor : Klogging {
             else -> "Error accessing GitHub API"
         }
     }
-
 }

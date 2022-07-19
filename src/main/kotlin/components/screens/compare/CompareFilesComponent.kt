@@ -233,7 +233,7 @@ class CompareFilesComponent(
                 file = fileOne,
                 fileResultMap = fileOneResultMap,
                 isHashUppercase = fileOneHashUppercase,
-                fileComparison = fileComparison,
+                fileComparison = fileComparison
             )
         } else if (fileComparison == FileComparison.Two) {
             FileComparisonColumn(
@@ -241,7 +241,7 @@ class CompareFilesComponent(
                 file = fileTwo,
                 fileResultMap = fileTwoResultMap,
                 isHashUppercase = fileTwoHashUppercase,
-                fileComparison = fileComparison,
+                fileComparison = fileComparison
             )
         }
     }
@@ -252,7 +252,7 @@ class CompareFilesComponent(
         file: File?,
         fileResultMap: SnapshotStateMap<Algorithm, String>,
         isHashUppercase: Boolean,
-        fileComparison: FileComparison,
+        fileComparison: FileComparison
     ) {
         Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             CommandButtonProjection(
@@ -272,17 +272,17 @@ class CompareFilesComponent(
                     Icons.SystemIcon(modifier = Modifier.size(60.dp), file = file)
                     Spacer(Modifier.height(10.dp))
                     LabelProjection(
-                        contentModel = LabelContentModel(text = "Type: ${if (file != null)
-                            Files.probeContentType(file.toPath()) else ""
-                        }")
+                        contentModel = LabelContentModel(
+                            text = "Type: ${if (file != null) Files.probeContentType(file.toPath()) else ""}"
+                        )
                     ).project()
                     LabelProjection(
                         contentModel = LabelContentModel(text = "Extension: ${file?.extension ?: ""}")
                     ).project()
                     LabelProjection(
-                        contentModel = LabelContentModel(text = "Size: ${if (file != null)
-                            FileUtils.getFormattedBytes(file.length()) else ""
-                        }")
+                        contentModel = LabelContentModel(
+                            text = "Size: ${if (file != null) FileUtils.getFormattedBytes(file.length()) else ""}"
+                        )
                     ).project()
                     LabelProjection(
                         contentModel = LabelContentModel(text = "Path: ${file?.absolutePath ?: ""}")

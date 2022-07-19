@@ -54,7 +54,7 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: () -> Unit) {
     val parent: ParentComponent by inject()
     val clipboardManager = LocalClipboardManager.current
-    val scope = rememberCoroutineScope() { Dispatchers.Default }
+    val scope = rememberCoroutineScope { Dispatchers.Default }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
             contentModel = LabelContentModel(text = "${parent.algorithm.algorithmName} Hash"),

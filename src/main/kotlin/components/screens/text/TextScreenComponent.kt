@@ -81,7 +81,7 @@ class TextScreenComponent(
                 put(MemoryUtil.memASCII("*.csv"))
                 rewind()
             },
-            singleFilterDescription = "Comma separated values (*.csv)",
+            singleFilterDescription = "Comma separated values (*.csv)"
         )?.let { path ->
             csvWriter().openAsync(path) {
                 if (includeSourceText) writeRow("Text", "${parent.algorithm.algorithmName} hash")
@@ -91,7 +91,8 @@ class TextScreenComponent(
                     .forEach {
                         if (includeSourceText) {
                             writeRow(
-                                it, it.hash(parent.algorithm).run {
+                                it,
+                                it.hash(parent.algorithm).run {
                                     if (isTextLineByLineUppercase) uppercase() else lowercase()
                                 }
                             )
@@ -119,5 +120,4 @@ class TextScreenComponent(
             "${parent.algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar { it.titlecase() }}"
         } else ""
     }
-
 }

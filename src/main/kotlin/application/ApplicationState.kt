@@ -60,7 +60,7 @@ class ApplicationState : KoinComponent {
 
 class ApplicationWindowState(
     val openNewWindow: () -> Unit,
-    private val close: (ApplicationWindowState) -> Unit,
+    private val close: (ApplicationWindowState) -> Unit
 ) : KoinComponent {
     private val windowCornerHandler: WindowCornerHandler by inject()
     private val titleBarHandler: TitleBarHandler by inject()

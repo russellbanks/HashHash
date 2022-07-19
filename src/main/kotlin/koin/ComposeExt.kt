@@ -34,7 +34,7 @@ import org.koin.core.scope.Scope
 inline fun <reified T> get(
     qualifier: Qualifier? = null,
     scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
-    noinline parameters: ParametersDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T = remember(qualifier, parameters) {
     scope.get(qualifier, parameters)
 }
@@ -44,7 +44,7 @@ inline fun <reified T> get(
 inline fun <reified T> inject(
     qualifier: Qualifier? = null,
     scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
-    noinline parameters: ParametersDefinition? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> = remember(qualifier, parameters) {
     scope.inject(qualifier, LazyThreadSafetyMode.NONE, parameters)
 }

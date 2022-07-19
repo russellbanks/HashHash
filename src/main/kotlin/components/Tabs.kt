@@ -54,7 +54,7 @@ fun Tabs() {
             leadingMargin = 30.dp,
             trailingMargin = 30.dp,
             contentSeparatorKind = TabContentSeparatorKind.Single,
-            tabContentPadding = PaddingValues(horizontal = 30.dp, vertical = 6.dp),
+            tabContentPadding = PaddingValues(horizontal = 30.dp, vertical = 6.dp)
         )
     ).project()
 }

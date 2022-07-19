@@ -49,7 +49,6 @@ interface SettingsRoot {
         object TitleBar : Child()
 
         object WindowCorner : Child()
-
     }
 }
 
@@ -66,7 +65,6 @@ class SettingsRootComponent(
     )
 
     override val childStack: Value<ChildStack<*, SettingsRoot.Child>> get() = stack
-
 
     override fun onThemeTabClicked() {
         navigation.bringToFront(Config.Theme)

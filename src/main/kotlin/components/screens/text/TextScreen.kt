@@ -66,7 +66,7 @@ fun TextScreen() {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val scope = rememberCoroutineScope() { Dispatchers.Default }
+    val scope = rememberCoroutineScope { Dispatchers.Default }
     Column(
         modifier = Modifier.padding(16.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)

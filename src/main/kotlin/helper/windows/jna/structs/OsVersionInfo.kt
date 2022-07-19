@@ -31,13 +31,13 @@ import com.sun.jna.platform.win32.WinDef.ULONG
     "minorVersion",
     "buildNumber",
     "platformId",
-    "csdVersion",
+    "csdVersion"
 )
 internal class OsVersionInfo(
     @JvmField var majorVersion: Int = 0,
     @JvmField var minorVersion: Int = 0,
     @JvmField var buildNumber: Int = 0,
-    @JvmField var platformId: Int = 0,
+    @JvmField var platformId: Int = 0
 ) : BaseStructure() {
 
     @JvmField

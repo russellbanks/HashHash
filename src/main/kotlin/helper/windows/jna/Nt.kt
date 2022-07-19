@@ -20,10 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper.windows.jna
 
-import helper.windows.jna.structs.OsVersionInfo
 import com.sun.jna.Native
 import com.sun.jna.win32.StdCallLibrary
 import com.sun.jna.win32.W32APIOptions
+import helper.windows.jna.structs.OsVersionInfo
 
 internal object Nt {
     fun getVersion() = OsVersionInfo().also { NtImpl.RtlGetVersion(it) }

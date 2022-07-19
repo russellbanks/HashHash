@@ -24,4 +24,4 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import org.koin.core.annotation.Single
 
 @Single
-class HashHashLifecycleRegistry: LifecycleRegistry by LifecycleRegistry()
+class HashHashLifecycleRegistry : LifecycleRegistry by LifecycleRegistry()

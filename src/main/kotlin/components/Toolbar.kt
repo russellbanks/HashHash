@@ -63,7 +63,7 @@ fun Toolbar(
         ) {
             Row(
                 modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 // TODO
             }

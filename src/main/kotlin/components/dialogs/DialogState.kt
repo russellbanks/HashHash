@@ -67,7 +67,6 @@ class DialogState {
         }
 
         override fun isOpen() = dialogsMap[Dialogs.Update] == true
-
     }
 
     interface Dialog {
@@ -83,5 +82,4 @@ class DialogState {
         Settings,
         Update
     }
-
 }

@@ -93,19 +93,26 @@ fun TextScreen() {
         Box {
             Column(Modifier.padding(top = 10.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(20.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    CommandButtonProjection(
-                        contentModel = Command(
-                            text = "Hash text line-by-line",
-                            extraText = "test",
-                            action = {
-                                if (component.givenText.isNotEmpty()) {
-                                    scope.launch { component.hashTextLineByLine(component.givenText) }
-                                } else {
-                                    component.isTextLineByLineErrorVisible = true
+                    Column {
+                        CommandButtonProjection(
+                            contentModel = Command(
+                                text = "Hash text line-by-line",
+                                extraText = "test",
+                                action = {
+                                    if (component.givenText.isNotEmpty()) {
+                                        scope.launch { component.hashTextLineByLine(component.givenText) }
+                                    } else {
+                                        component.isTextLineByLineErrorVisible = true
+                                    }
                                 }
-                            }
-                        )
-                    ).project()
+                            )
+                        ).project()
+                        AnimatedVisibility(visible = component.isTextLineByLineErrorVisible) {
+                            LabelProjection(
+                                contentModel = LabelContentModel(text = "No text entered")
+                            ).project()
+                        }
+                    }
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "Hash file line-by-line",
@@ -151,11 +158,6 @@ fun TextScreen() {
                             selected = component.includeSourceText,
                             onTriggerSelectedChange = { component.includeSourceText = it }
                         )
-                    ).project()
-                }
-                AnimatedVisibility(visible = component.isTextLineByLineErrorVisible) {
-                    LabelProjection(
-                        contentModel = LabelContentModel(text = "No text entered")
                     ).project()
                 }
             }

@@ -59,7 +59,7 @@ jobs:
       - uses: vedantmgoyal2009/winget-releaser@latest
         with:
           identifier: RussellBanks.HashHash
-          installers-regex: '\.msi$'
+          installers-regex: '\.(exe|msi)'
           delete-previous-version: 'true'
           token: ${{ secrets.WINGET_TOKEN }}
 

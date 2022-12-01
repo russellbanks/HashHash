@@ -28,6 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
+import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfiguration
+import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfigurations
 import java.util.prefs.Preferences
 
 @Single
@@ -37,10 +39,14 @@ class TitleBarHandler : Klogging {
 
     private var cachedTitleBar: TitleBar? by mutableStateOf(null)
 
+    val auroraTitleBarConfiguration: AuroraWindowTitlePaneConfiguration
+        get() = getTitleBar().toAuroraTitlePane()
+
     fun getTitleBar(): TitleBar {
-        return cachedTitleBar
-            ?: if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) TitleBar.Custom
-            else { TitleBar.Native }.also { cachedTitleBar = it }
+        return cachedTitleBar ?: when (preferences.getInt(titleBarKey, TitleBar.Native.ordinal)) {
+            TitleBar.Custom.ordinal -> TitleBar.Custom
+            else -> TitleBar.Native
+        }.also { cachedTitleBar = it }
     }
 
     fun putTitleBar(titleBar: TitleBar) {
@@ -51,6 +57,13 @@ class TitleBarHandler : Klogging {
                 "Put ${titleBar.name} into preferences with the key of " +
                         "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
             }
+        }
+    }
+
+    private fun TitleBar?.toAuroraTitlePane(): AuroraWindowTitlePaneConfiguration {
+        return when (this) {
+            TitleBar.Custom -> AuroraWindowTitlePaneConfigurations.AuroraPlain()
+            else -> AuroraWindowTitlePaneConfigurations.System
         }
     }
 

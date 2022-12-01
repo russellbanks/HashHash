@@ -30,8 +30,6 @@ import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.pushingpixels.aurora.window.AuroraApplicationScope
-import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfigurations
-import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
@@ -66,19 +64,18 @@ class ApplicationWindowState(
     private val windowCornerHandler: WindowCornerHandler by inject()
     private val titleBarHandler: TitleBarHandler by inject()
 
-    val titlePaneConfiguration = if (titleBarHandler.getTitleBar() == TitleBar.Native) {
-        AuroraWindowTitlePaneConfigurations.System
-    } else {
-        AuroraWindowTitlePaneConfigurations.AuroraPlain()
-    }
+    private val titleBar = titleBarHandler.getTitleBar()
 
     private val windowCorner = windowCornerHandler.getWindowCorner()
+
+    val titlePaneConfiguration = titleBarHandler.auroraTitleBarConfiguration
 
     var needsRestarting by mutableStateOf(false)
 
     fun checkWindowNeedsRestarting() {
-        needsRestarting = titleBarHandler.getTitleBar() == TitleBar.Custom != (titlePaneConfiguration == AuroraWindowTitlePaneConfigurations.AuroraPlain()) ||
-                windowCornerHandler.getWindowCorner() != windowCorner
+        if (titleBar != titleBarHandler.getTitleBar() || windowCorner != windowCornerHandler.getWindowCorner()) {
+            needsRestarting = true
+        }
     }
 
     fun restart() {

@@ -142,21 +142,21 @@ fun TextScreen() {
                         contentModel = SelectorContentModel(
                             text = "Ignore empty lines",
                             selected = component.ignoreEmptyLines,
-                            onTriggerSelectedChange = { component.ignoreEmptyLines = it }
+                            onClick = { component.ignoreEmptyLines = !component.ignoreEmptyLines }
                         )
                     ).project()
                     CheckBoxProjection(
                         contentModel = SelectorContentModel(
                             text = "Uppercase hash",
                             selected = component.isTextLineByLineUppercase,
-                            onTriggerSelectedChange = { component.isTextLineByLineUppercase = it }
+                            onClick = { component.isTextLineByLineUppercase = !component.isTextLineByLineUppercase }
                         )
                     ).project()
                     CheckBoxProjection(
                         contentModel = SelectorContentModel(
                             text = "Include source text in output",
                             selected = component.includeSourceText,
-                            onTriggerSelectedChange = { component.includeSourceText = it }
+                            onClick = { component.includeSourceText = !component.includeSourceText }
                         )
                     ).project()
                 }

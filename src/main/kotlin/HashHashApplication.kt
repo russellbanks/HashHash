@@ -81,7 +81,7 @@ fun hashHashApplication() = auroraApplication {
                 icon = Icons.logo(),
                 onCloseRequest = { applicationState.exitApplication(this) },
                 menuCommands = Window.Header.commands(auroraApplicationScope = this, windowState = windowState),
-                undecorated = window.isUndecorated,
+                windowTitlePaneConfiguration = window.titlePaneConfiguration,
                 onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
             ) {
                 WindowStyle(

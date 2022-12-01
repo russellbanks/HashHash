@@ -47,7 +47,9 @@ fun ModeSelector() {
             contentModel = SelectorContentModel(
                 text = "",
                 selected = modeHandler.selectedMode == Mode.SIMPLE,
-                onTriggerSelectedChange = { modeHandler.putMode(if (it) Mode.SIMPLE else Mode.ADVANCED) }
+                onClick = {
+                    modeHandler.putMode(if (modeHandler.selectedMode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE)
+                }
             )
         ).project()
     }

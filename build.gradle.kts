@@ -95,7 +95,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_18.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
     }
 }

@@ -73,9 +73,9 @@ class ApplicationWindowState(
     var needsRestarting by mutableStateOf(false)
 
     fun checkWindowNeedsRestarting() {
-        if (titleBar != titleBarHandler.getTitleBar() || windowCorner != windowCornerHandler.getWindowCorner()) {
-            needsRestarting = true
-        }
+        val titleBarChanged = titleBar != titleBarHandler.getTitleBar()
+        val windowCornerChanged = windowCorner != windowCornerHandler.getWindowCorner()
+        needsRestarting = titleBarChanged || windowCornerChanged
     }
 
     fun restart() {

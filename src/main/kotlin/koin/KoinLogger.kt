@@ -30,11 +30,12 @@ import org.koin.core.logger.Logger
 class KoinLogger : Logger(), Klogging {
     val scope = CoroutineScope(Dispatchers.Default)
 
-    override fun log(level: Level, msg: String) {
+    override fun display(level: Level, msg: String) {
         scope.launch {
             when (level) {
                 Level.DEBUG -> logger.debug(msg)
                 Level.INFO -> logger.info(msg)
+                Level.WARNING -> logger.warn(msg)
                 Level.ERROR -> logger.error(msg)
                 Level.NONE -> logger.log(io.klogging.Level.NONE, msg)
             }

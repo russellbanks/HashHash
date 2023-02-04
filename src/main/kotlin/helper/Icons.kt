@@ -67,8 +67,12 @@ object Icons : Klogging {
                         getSystemImage(modifier, file)
                     }
                 )
-            } else getSystemImage(modifier, file)
-        } else FileImage(modifier)
+            } else {
+                getSystemImage(modifier, file)
+            }
+        } else {
+            FileImage(modifier)
+        }
     }
 
     private fun File.isImage(): Boolean {
@@ -88,7 +92,9 @@ object Icons : Klogging {
                 contentDescription = null,
                 modifier = modifier
             )
-        } else FileImage(modifier)
+        } else {
+            FileImage(modifier)
+        }
     }
 
     private fun getSystemIcon(file: File): Icon? {
@@ -105,6 +111,7 @@ object Icons : Klogging {
         }
     }
 
+    @Suppress("TooManyFunctions")
     object Utility {
 
         private const val prefixPath = "utility icons"

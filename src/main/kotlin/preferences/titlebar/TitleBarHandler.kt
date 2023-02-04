@@ -43,10 +43,13 @@ class TitleBarHandler : Klogging {
         get() = getTitleBar().toAuroraTitlePane()
 
     fun getTitleBar(): TitleBar {
-        return cachedTitleBar ?: when (preferences.getInt(titleBarKey, TitleBar.Native.ordinal)) {
-            TitleBar.Custom.ordinal -> TitleBar.Custom
-            else -> TitleBar.Native
-        }.also { cachedTitleBar = it }
+        return cachedTitleBar ?: (
+            if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) {
+                TitleBar.Custom
+            } else {
+                TitleBar.Native
+            }
+        ).also { cachedTitleBar = it }
     }
 
     fun putTitleBar(titleBar: TitleBar) {
@@ -61,9 +64,10 @@ class TitleBarHandler : Klogging {
     }
 
     private fun TitleBar?.toAuroraTitlePane(): AuroraWindowTitlePaneConfiguration {
-        return when (this) {
-            TitleBar.Custom -> AuroraWindowTitlePaneConfigurations.AuroraPlain()
-            else -> AuroraWindowTitlePaneConfigurations.System
+        return if (this == TitleBar.Custom) {
+            AuroraWindowTitlePaneConfigurations.AuroraPlain()
+        } else {
+            AuroraWindowTitlePaneConfigurations.System
         }
     }
 

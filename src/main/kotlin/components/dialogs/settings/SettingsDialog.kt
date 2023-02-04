@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import components.dialogs.Dialog
@@ -55,7 +54,6 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.IconFilterStrategy
 
-@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun SettingsDialog(window: ApplicationWindowState) {
     val root: SettingsRoot by inject()

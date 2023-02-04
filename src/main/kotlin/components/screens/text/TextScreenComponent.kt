@@ -64,7 +64,9 @@ class TextScreenComponent(
                     if (hashedTextUppercase) uppercase() else lowercase()
                 }
             }
-        } else givenTextHash = ""
+        } else {
+            givenTextHash = ""
+        }
     }
 
     suspend fun onAlgorithmClick() = hashGivenText()
@@ -84,8 +86,11 @@ class TextScreenComponent(
             singleFilterDescription = "Comma separated values (*.csv)"
         )?.let { path ->
             csvWriter().openAsync(path) {
-                if (includeSourceText) writeRow("Text", "${parent.algorithm.algorithmName} hash")
-                else writeRow("Hash")
+                if (includeSourceText) {
+                    writeRow("Text", "${parent.algorithm.algorithmName} hash")
+                } else {
+                    writeRow("Hash")
+                }
                 lines
                     .filterNot { if (ignoreEmptyLines) it.isEmpty() else false }
                     .forEach {
@@ -96,7 +101,9 @@ class TextScreenComponent(
                                     if (isTextLineByLineUppercase) uppercase() else lowercase()
                                 }
                             )
-                        } else writeRow(it)
+                        } else {
+                            writeRow(it)
+                        }
                     }
             }
         }
@@ -104,10 +111,13 @@ class TextScreenComponent(
 
     suspend fun hashFileLineByLine() {
         FileUtils.openFileDialogAndGetResult()?.useLines { lines ->
-            if (selectedDelimiter == Delimiter.NewLine) hashTextLineByLine(lines)
-            else hashTextLineByLine(
-                lines.joinToString(Delimiter.NewLine.delimiter).splitToSequence(selectedDelimiter.delimiter)
-            )
+            if (selectedDelimiter == Delimiter.NewLine) {
+                hashTextLineByLine(lines)
+            } else {
+                hashTextLineByLine(
+                    lines.joinToString(Delimiter.NewLine.delimiter).splitToSequence(selectedDelimiter.delimiter)
+                )
+            }
         }
     }
 
@@ -118,6 +128,8 @@ class TextScreenComponent(
     fun getFooterText(): String {
         return if (exception != null) {
             "${parent.algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar { it.titlecase() }}"
-        } else ""
+        } else {
+            ""
+        }
     }
 }

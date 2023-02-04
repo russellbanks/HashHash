@@ -41,8 +41,11 @@ class ModeHandler : Klogging {
 
     private fun getMode(): Mode {
         return cachedMode
-            ?: if (preferences.getInt(modeKey, Mode.SIMPLE.ordinal) == Mode.ADVANCED.ordinal) Mode.ADVANCED
-            else { Mode.SIMPLE }.also { cachedMode = it }
+            ?: if (preferences.getInt(modeKey, Mode.SIMPLE.ordinal) == Mode.ADVANCED.ordinal) {
+                Mode.ADVANCED
+            } else {
+                Mode.SIMPLE
+            }.also { cachedMode = it }
     }
 
     fun putMode(mode: Mode) {

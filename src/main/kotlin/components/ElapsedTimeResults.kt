@@ -37,28 +37,36 @@ fun ElapsedTimeResults(instantBeforeHash: Instant?, instantAfterHash: Instant?) 
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = "Started at: ${
-                        if (instantBeforeHash != null) SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
-                            .format(instantBeforeHash.toEpochMilliseconds())
-                        else "-"
+                        if (instantBeforeHash != null) {
+                            SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(instantBeforeHash.toEpochMilliseconds())
+                        } else {
+                            "-"
+                        }
                     }"
                 )
             ).project()
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = "Finished at: ${
-                        if (instantAfterHash != null) SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
-                            .format(instantAfterHash.toEpochMilliseconds())
-                        else "-"
+                        if (instantAfterHash != null) {
+                            SimpleDateFormat("dd MMMM yyyy, HH:mm:ss").format(instantAfterHash.toEpochMilliseconds())
+                        } else {
+                            "-"
+                        }
                     }"
                 )
             ).project()
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = "Time taken: ${
-                        if (instantBeforeHash != null && instantAfterHash != null &&
+                        if (
+                            instantBeforeHash != null && instantAfterHash != null &&
                             (instantAfterHash - instantBeforeHash).isPositive()
-                        ) (instantAfterHash - instantBeforeHash).toString(unit = DurationUnit.SECONDS, decimals = 3)
-                        else "-"
+                        ) {
+                            (instantAfterHash - instantBeforeHash).toString(unit = DurationUnit.SECONDS, decimals = 3)
+                        } else {
+                            "-"
+                        }
                     }"
                 )
             ).project()

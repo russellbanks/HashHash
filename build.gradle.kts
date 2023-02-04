@@ -54,7 +54,6 @@ dependencies {
 
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
-    implementation(libs.klogging.slf4j)
 
     // Detekt Formatting Plugin - https://github.com/detekt/detekt
     detektPlugins(libs.detekt.formatting)
@@ -88,6 +87,9 @@ dependencies {
     implementation(libs.lwjgl.tinyfd)
     runtimeOnly(variantOf(libs.lwjgl.core) { classifier(lwjglNatives()) })
     runtimeOnly(variantOf(libs.lwjgl.tinyfd) { classifier(lwjglNatives()) })
+
+    // SLF4J No-operation implementation - https://www.slf4j.org
+    implementation(libs.slf4j.nop)
 
     // Window Styler - https://github.com/MayakaApps/ComposeWindowStyler
     implementation(libs.windowstyler)

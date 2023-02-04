@@ -77,7 +77,7 @@ object Icons : Klogging {
 
     private fun File.isImage(): Boolean {
         return try {
-            ImageIO.read(inputStream()) != null
+            inputStream().use { ImageIO.read(it) } != null
         } catch (_: Exception) {
             false
         }

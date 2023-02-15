@@ -55,7 +55,7 @@ jobs:
     needs: [ build_release ]
     runs-on: windows-latest
     steps:
-      - uses: vedantmgoyal2009/winget-releaser@v1
+      - uses: vedantmgoyal2009/winget-releaser@v2
         with:
           identifier: RussellBanks.HashHash
           token: ${{ secrets.WINGET_TOKEN }}

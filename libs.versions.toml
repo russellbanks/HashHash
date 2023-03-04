@@ -8,6 +8,7 @@ cryptohash = "0.10.1"
 decompose = "1.0.0"
 detekt = "1.22.0"
 flowext = "0.5.0"
+github-api = "1.314"
 jna = "5.13.0"
 jsystemthemedetector = "3.8"
 kamel = "0.4.1"
@@ -17,9 +18,7 @@ koin-ksp = "1.1.1"
 kotlin = "1.7.20"
 kotlin-csv = "1.8.0"
 kotlinx-datetime = "0.4.0"
-kotlinx-serialization = "1.5.0"
 ksp = "1.7.20-1.0.8"
-ktor = "2.2.4"
 lwjgl = "3.3.1"
 slf4j = "2.0.6"
 windowstyler = "0.3.2"
@@ -42,6 +41,8 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 
 flowext = { module = "io.github.hoc081098:FlowExt", version.ref = "flowext" }
 
+github-api = { module = "org.kohsuke:github-api", version.ref = "github-api" }
+
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
 
@@ -57,15 +58,7 @@ koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref =
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-
 kotlincsv = { module = "com.github.doyaaaaaken:kotlin-csv", version.ref = "kotlin-csv" }
-
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
-ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
 lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
@@ -79,5 +72,4 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

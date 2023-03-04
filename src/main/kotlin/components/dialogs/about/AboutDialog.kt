@@ -35,7 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import api.Ktor
+import api.GitHubImpl
 import com.russellbanks.HashHash.BuildConfig
 import components.dialogs.Dialog
 import components.dialogs.DialogState
@@ -48,7 +48,7 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun AboutDialog() {
-    val ktor: Ktor by inject()
+    val gitHubImpl: GitHubImpl by inject()
     val scope = rememberCoroutineScope { Dispatchers.Default }
     Dialog(dialog = DialogState.Dialogs.About) {
         Row(Modifier.padding(30.dp)) {
@@ -65,14 +65,14 @@ fun AboutDialog() {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "Check for Updates",
-                            action = { ktor.checkForHashHashUpdate(scope) }
+                            action = { gitHubImpl.checkForHashHashUpdate(scope) }
                         ),
                         presentationModel = CommandButtonPresentationModel(
                             textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
                         )
                     ).project()
-                    AnimatedVisibility(ktor.checkingGitHubAPI || ktor.httpResponse != null) {
-                        UpdateCheckText(ktor = ktor)
+                    AnimatedVisibility(gitHubImpl.checkingGitHubAPI || gitHubImpl.latestRelease != null) {
+                        UpdateCheckText(gitHubImpl = gitHubImpl)
                     }
                 }
             }

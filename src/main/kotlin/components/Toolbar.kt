@@ -32,7 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import api.Ktor
+import api.GitHubImpl
 import components.dialogs.DialogState
 import helper.Icons
 import koin.inject
@@ -52,7 +52,7 @@ fun Toolbar(
     iconDimension: Dp = 16.dp
 ) {
     val dialogState: DialogState by inject()
-    val ktor: Ktor by inject()
+    val gitHubImpl: GitHubImpl by inject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Toolbar) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -68,7 +68,7 @@ fun Toolbar(
                 // TODO
             }
             Row {
-                AnimatedVisibility(ktor.isUpdateAvailable) {
+                AnimatedVisibility(gitHubImpl.isUpdateAvailable) {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "",

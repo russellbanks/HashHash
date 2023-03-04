@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
 
@@ -43,6 +42,9 @@ dependencies {
     // Flow Extensions - https://github.com/hoc081098/FlowExt
     implementation(libs.flowext)
 
+    // GitHub API - https://github.com/hub4j/github-api
+    implementation(libs.github.api)
+
     // Java Native Access - https://github.com/java-native-access/jna
     implementation(libs.jna)
     implementation(libs.jna.platform)
@@ -69,16 +71,6 @@ dependencies {
 
     // Kotlin CSV - https://github.com/doyaaaaaken/kotlin-csv
     implementation(libs.kotlincsv)
-
-    // KotlinX Serialization - https://github.com/Kotlin/kotlinx.serialization
-    implementation(libs.kotlinx.serialization.json)
-
-    // Ktor - https://github.com/ktorio/ktor
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.contentnegotiation)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.serialization.kotlinx.json)
 
     // LWJGL - https://github.com/LWJGL/lwjgl3
     implementation(libs.lwjgl.core)
@@ -118,7 +110,7 @@ compose.desktop {
             }
             macOS {
                 iconFile.set(project.file("src/main/resources/logo.icns"))
-                bundleID = "${project.group}.${project.name.toLowerCase()}"
+                bundleID = "${project.group}.${project.name.lowercase()}"
             }
             windows {
                 iconFile.set(project.file("src/main/resources/logo.ico"))

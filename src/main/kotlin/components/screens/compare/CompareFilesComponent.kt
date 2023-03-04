@@ -82,18 +82,18 @@ class CompareFilesComponent(
     private val parent: ParentComponent by inject()
     val algorithm = parent.algorithm
     var fileOne: File? by mutableStateOf(null)
-    var fileOneHashUppercase by mutableStateOf(true)
+    private var fileOneHashUppercase by mutableStateOf(true)
     private var fileOneHashProgress by mutableStateOf(0F)
     private var fileOneTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
-    var fileOneResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
+    private var fileOneResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
     var fileTwo: File? by mutableStateOf(null)
-    var fileTwoHashUppercase by mutableStateOf(true)
+    private var fileTwoHashUppercase by mutableStateOf(true)
     private var fileTwoHashProgress by mutableStateOf(0F)
     private var fileTwoTimer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
-    var fileTwoResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
+    private var fileTwoResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
-    var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
+    private var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {

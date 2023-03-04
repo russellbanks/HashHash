@@ -30,47 +30,47 @@ import java.io.IOException
 
 object Hashing : Klogging {
 
-    @Throws(IOException::class, IllegalArgumentException::class, IllegalStateException::class)
+    private const val hex255 = 0xff
+    private const val hex256 = 0x100
+
     suspend fun File.hash(
         algorithm: Algorithm,
-        hashProgressCallback: (Float) -> Unit
+        hashProgressCallback: (Float) -> Unit = {}
     ): String {
         val digest = algorithm.createDigest()
-        val fileInputStream = withContext(Dispatchers.IO) { FileInputStream(this@hash) }
+        withContext(Dispatchers.IO) {
+            FileInputStream(this@hash).use {
+                val buffer = ByteArray(size = 32_768)
+                var bytesCount: Int
 
-        val byteArray = ByteArray(size = 32_768)
-        var bytesCount: Int
-
-        val totalRuns = ((length() / byteArray.size) + 1).toFloat()
-        var count = 0
-        while (withContext(Dispatchers.IO) { fileInputStream.read(byteArray) }.also { bytesCount = it } != -1) {
-            digest.update(byteArray, 0, bytesCount)
-            hashProgressCallback(count++ / totalRuns)
+                val totalRuns = ((length() / buffer.size) + 1).toFloat()
+                var count = 0
+                while (withContext(Dispatchers.IO) { it.read(buffer) }.also { bytesCount = it } != -1) {
+                    digest.update(buffer, 0, bytesCount)
+                    hashProgressCallback(count++ / totalRuns)
+                }
+                hashProgressCallback(count / totalRuns)
+            }
         }
-        hashProgressCallback(count / totalRuns)
-
-        withContext(Dispatchers.IO) { fileInputStream.close() }
-
         return buildHash(digest.digest())
     }
 
-    @Throws(IllegalArgumentException::class, IllegalArgumentException::class)
     fun String.hash(algorithm: Algorithm) = buildHash(algorithm.createDigest().apply { update(toByteArray()) }.digest())
 
-    private fun buildHash(bytes: ByteArray) = StringBuilder().apply {
-        bytes.indices.forEach { index ->
-            append(((bytes[index].toInt() and 0xff) + 0x100).toString(radix = 16).substring(startIndex = 1))
+    private fun buildHash(bytes: ByteArray) = buildString {
+        bytes.forEach { byte ->
+            append(((byte.toInt() and hex255) + hex256).toString(radix = 16).substring(startIndex = 1))
         }
-    }.toString()
+    }
 
     suspend fun catchFileHashingExceptions(exceptionCallback: (Exception) -> Unit = {}, block: suspend () -> Unit) {
         try {
             withContext(Dispatchers.IO) { block() }
         } catch (_: CancellationException) {
             // Cancellations are intended
-        } catch (IOException: IOException) {
-            exceptionCallback(IOException)
-            withContext(Dispatchers.Default) { logger.error(IOException.localizedMessage, IOException) }
+        } catch (ioException: IOException) {
+            exceptionCallback(ioException)
+            withContext(Dispatchers.Default) { logger.error(ioException.localizedMessage, ioException) }
         } catch (fileNotFoundException: FileNotFoundException) {
             exceptionCallback(fileNotFoundException)
             withContext(Dispatchers.Default) {

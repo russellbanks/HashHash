@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import api.Ktor
+import api.GitHubImpl
 import helper.Icons
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -49,7 +49,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import java.text.SimpleDateFormat
 
 @Composable
-fun UpdateCheckText(ktor: Ktor) {
+fun UpdateCheckText(gitHubImpl: GitHubImpl) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -64,7 +64,7 @@ fun UpdateCheckText(ktor: Ktor) {
     SelectionContainer {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (ktor.checkingGitHubAPI) {
+                if (gitHubImpl.checkingGitHubAPI) {
                     Image(
                         painter = Icons.Utility.refresh(),
                         contentDescription = null,
@@ -73,16 +73,16 @@ fun UpdateCheckText(ktor: Ktor) {
                     )
                 }
                 LabelProjection(
-                    contentModel = LabelContentModel(text = ktor.getUpdateResponseText()),
+                    contentModel = LabelContentModel(text = gitHubImpl.getUpdateResponseText()),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 12.sp))
                 ).project()
             }
-            AnimatedVisibility(ktor.lastChecked != null) {
+            AnimatedVisibility(gitHubImpl.lastChecked != null) {
                 LabelProjection(
                     contentModel = LabelContentModel(
                         text = "Last checked: " +
                             SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
-                                .format(ktor.lastChecked?.toEpochMilliseconds())
+                                .format(gitHubImpl.lastChecked?.toEpochMilliseconds())
                     ),
                     presentationModel = LabelPresentationModel(
                         textStyle = TextStyle(fontSize = 12.sp)

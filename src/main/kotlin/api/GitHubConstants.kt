@@ -18,16 +18,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-package helper
+package api
 
-object GitHub {
+object GitHubConstants {
     private const val githubWebsite = "https://github.com"
-    private const val APIWebsite = "https://api.github.com"
 
     object HashHash {
-        object API {
-            const val latest = "$APIWebsite/repos/russellbanks/HashHash/releases/latest"
-        }
         object Repository {
             const val website = "$githubWebsite/russellbanks/HashHash"
             const val releases = "$website/releases"

@@ -31,7 +31,8 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
-import api.Ktor
+import api.GitHubConstants
+import api.GitHubImpl
 import application.ApplicationState
 import components.dialogs.DialogState
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +45,7 @@ import org.pushingpixels.aurora.component.model.CommandMenuContentModel
 import org.pushingpixels.aurora.window.AuroraApplicationScope
 import java.awt.Dimension
 import java.awt.Window
-import java.net.URL
+import java.net.URI
 
 object Window {
 
@@ -91,14 +92,14 @@ object Window {
             auroraApplicationScope: AuroraApplicationScope,
             windowState: WindowState
         ): CommandGroup {
-            val ktor: Ktor by inject()
+            val gitHubImpl: GitHubImpl by inject()
             val dialogState: DialogState by inject()
             return CommandGroup(
                 commands = listOf(
                     fileHeaderButton(auroraApplicationScope = auroraApplicationScope, dialogState = dialogState),
                     viewHeaderButton(windowState = windowState),
                     windowHeaderButton(windowState = windowState),
-                    helpHeaderButton(ktor = ktor, dialogState = dialogState)
+                    helpHeaderButton(gitHubImpl = gitHubImpl, dialogState = dialogState)
                 )
             )
         }
@@ -166,7 +167,7 @@ object Window {
 
         @Composable
         private fun helpHeaderButton(
-            ktor: Ktor,
+            gitHubImpl: GitHubImpl,
             dialogState: DialogState
         ): Command {
             val scope = rememberCoroutineScope()
@@ -180,7 +181,7 @@ object Window {
                                     text = "Report issue",
                                     action = {
                                         scope.launch(Dispatchers.Default) {
-                                            Browser.open(URL(GitHub.HashHash.Repository.newIssue))
+                                            Browser.open(URI(GitHubConstants.HashHash.Repository.newIssue))
                                         }
                                     }
                                 ),
@@ -188,7 +189,7 @@ object Window {
                                     text = "Go to GitHub",
                                     action = {
                                         scope.launch(Dispatchers.Default) {
-                                            Browser.open(URL(GitHub.HashHash.Repository.website))
+                                            Browser.open(URI(GitHubConstants.HashHash.Repository.website))
                                         }
                                     }
                                 ),
@@ -197,7 +198,10 @@ object Window {
                                     action = {
                                         scope.launch(Dispatchers.Default) {
                                             Browser.open(
-                                                URL(ktor.githubData?.htmlUrl ?: GitHub.HashHash.Repository.releases)
+                                                URI(
+                                                    gitHubImpl.latestRelease?.htmlUrl?.toString()
+                                                        ?: GitHubConstants.HashHash.Repository.releases
+                                                )
                                             )
                                         }
                                     }

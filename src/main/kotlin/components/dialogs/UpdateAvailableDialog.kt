@@ -33,10 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import api.Ktor
+import api.GitHubConstants
+import api.GitHubImpl
 import com.russellbanks.HashHash.BuildConfig
 import helper.Browser
-import helper.GitHub
 import helper.Icons
 import koin.get
 import kotlinx.coroutines.Dispatchers
@@ -46,10 +46,10 @@ import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
-import java.net.URL
+import java.net.URI
 
 @Composable
-fun UpdateAvailableDialog(ktor: Ktor = get()) {
+fun UpdateAvailableDialog(gitHubImpl: GitHubImpl = get()) {
     val scope = rememberCoroutineScope { Dispatchers.Default }
     Dialog(dialog = DialogState.Dialogs.Update) {
         Row(Modifier.padding(30.dp)) {
@@ -66,14 +66,21 @@ fun UpdateAvailableDialog(ktor: Ktor = get()) {
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontWeight = FontWeight.SemiBold))
                 ).project()
                 LabelProjection(
-                    contentModel = LabelContentModel(text = "${BuildConfig.appVersion} ➝ ${ktor.getReleasedVersion()}")
+                    contentModel = LabelContentModel(
+                        text = "${BuildConfig.appVersion} ➝ ${gitHubImpl.getReleasedVersionName()}"
+                    )
                 ).project()
                 CommandButtonProjection(
                     contentModel = Command(
                         text = "Go to release page",
                         action = {
                             scope.launch {
-                                Browser.open(URL(ktor.githubData?.htmlUrl ?: GitHub.HashHash.Repository.releases))
+                                Browser.open(
+                                    URI(
+                                        gitHubImpl.latestRelease?.htmlUrl?.toString()
+                                            ?: GitHubConstants.HashHash.Repository.releases
+                                    )
+                                )
                             }
                         }
                     )

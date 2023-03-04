@@ -78,7 +78,7 @@ class FileScreenComponent(
     val parent: ParentComponent by inject()
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
-    var fileHashJob: Job? by mutableStateOf(null)
+    private var fileHashJob: Job? by mutableStateOf(null)
     var hashProgress by mutableStateOf(0F)
     var instantBeforeHash: Instant? by mutableStateOf(null)
     var instantAfterHash: Instant? by mutableStateOf(null)

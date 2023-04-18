@@ -49,6 +49,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.Side
 import org.pushingpixels.aurora.theming.Sides
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
@@ -67,7 +68,7 @@ fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit)
             rotate = !rotate
             onClick()
         },
-        sides = Sides(straightSides = Side.values().toSet())
+        sides = Sides(straightSides = Side.entries.toSet())
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(

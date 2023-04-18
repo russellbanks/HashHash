@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -90,7 +91,13 @@ tasks.withType<KotlinCompile> {
     compilerOptions {
         jvmTarget.set(JVM_17)
         freeCompilerArgs.set(listOf("-opt-in=kotlin.RequiresOptIn"))
+        languageVersion.set(KotlinVersion.KOTLIN_1_9)
     }
+}
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = JavaVersion.current().toString()
+    targetCompatibility = JavaVersion.VERSION_17.toString()
 }
 
 compose.desktop {

@@ -42,6 +42,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.theme.Theme
 import preferences.theme.ThemeHandler
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun ThemeScreen() {
     val scope = rememberCoroutineScope()
@@ -49,7 +50,7 @@ fun ThemeScreen() {
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
         LazyColumn {
-            items(Theme.values()) { theme ->
+            items(Theme.entries) { theme ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
                     selected = theme == themeHandler.getTheme(),

@@ -42,6 +42,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.Side
 import org.pushingpixels.aurora.theming.Sides
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun NestedAlgorithmLazyColumn(
     algorithm: Algorithm,
@@ -63,7 +64,7 @@ fun NestedAlgorithmLazyColumn(
                     .background(if (itemIndex % 2 == 0) backgroundEvenRows else backgroundOddRows),
                 selected = algorithm == nestedItem,
                 onClick = { onAlgorithmClick(nestedItem) },
-                sides = Sides(straightSides = Side.values().toSet())
+                sides = Sides(straightSides = Side.entries.toSet())
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),

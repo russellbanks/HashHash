@@ -42,6 +42,7 @@ import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.windowcorner.WindowCornerHandler
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun WindowCornerScreen(window: ApplicationWindowState) {
     val windowCornerHandler: WindowCornerHandler by inject()
@@ -54,7 +55,7 @@ fun WindowCornerScreen(window: ApplicationWindowState) {
             )
         ).project()
         LazyColumn {
-            items(WindowCornerPreference.values()) { windowCornerPreference ->
+            items(WindowCornerPreference.entries) { windowCornerPreference ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
                     selected = windowCornerPreference == windowCornerHandler.getWindowCorner(),
@@ -69,7 +70,7 @@ fun WindowCornerScreen(window: ApplicationWindowState) {
                         contentModel = LabelContentModel(
                             text = windowCornerPreference.name
                                 .lowercase()
-                                .replaceFirstChar { char -> char.titlecase() }
+                                .replaceFirstChar(Char::titlecase)
                                 .replace(oldValue = "_", newValue = " ")
                         ),
                         presentationModel = LabelPresentationModel(

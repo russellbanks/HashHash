@@ -34,6 +34,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.Side
 import org.pushingpixels.aurora.theming.Sides
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun AlgorithmBox(item: Algorithm, algorithm: Algorithm, index: Int, onAlgorithmClick: (Algorithm) -> Unit) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
@@ -46,7 +47,7 @@ fun AlgorithmBox(item: Algorithm, algorithm: Algorithm, index: Int, onAlgorithmC
             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),
         selected = (algorithm == item),
         onClick = { onAlgorithmClick(item) },
-        sides = Sides(straightSides = Side.values().toSet())
+        sides = Sides(straightSides = Side.entries.toSet())
     ) {
         LabelProjection(contentModel = LabelContentModel(text = item.algorithmName)).project()
     }

@@ -42,6 +42,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun TitleBarScreen(window: ApplicationWindowState) {
     val titleBarHandler: TitleBarHandler by inject()
@@ -54,7 +55,7 @@ fun TitleBarScreen(window: ApplicationWindowState) {
             )
         ).project()
         LazyColumn {
-            items(TitleBar.values()) { titleBar ->
+            items(TitleBar.entries) { titleBar ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
                     selected = titleBar == titleBarHandler.getTitleBar(),

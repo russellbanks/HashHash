@@ -60,6 +60,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun TextScreen() {
     val component: TextScreenComponent by inject()
@@ -125,7 +126,7 @@ fun TextScreen() {
                         ).project()
                         ComboBoxProjection(
                             contentModel = ComboBoxContentModel(
-                                items = Delimiter.values().toList(),
+                                items = Delimiter.entries,
                                 selectedItem = component.selectedDelimiter,
                                 onTriggerItemSelectedChange = {
                                     component.selectedDelimiter = it

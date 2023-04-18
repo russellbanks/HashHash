@@ -38,7 +38,6 @@ import api.GitHubImpl
 import com.russellbanks.HashHash.BuildConfig
 import helper.Browser
 import helper.Icons
-import koin.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -49,7 +48,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import java.net.URI
 
 @Composable
-fun UpdateAvailableDialog(gitHubImpl: GitHubImpl = get()) {
+fun UpdateAvailableDialog() {
     val scope = rememberCoroutineScope { Dispatchers.Default }
     Dialog(dialog = DialogState.Dialogs.Update) {
         Row(Modifier.padding(30.dp)) {
@@ -67,7 +66,7 @@ fun UpdateAvailableDialog(gitHubImpl: GitHubImpl = get()) {
                 ).project()
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "${BuildConfig.appVersion} ➝ ${gitHubImpl.getReleasedVersionName()}"
+                        text = "${BuildConfig.appVersion} ➝ ${GitHubImpl.releasedVersionName}"
                     )
                 ).project()
                 CommandButtonProjection(
@@ -77,7 +76,7 @@ fun UpdateAvailableDialog(gitHubImpl: GitHubImpl = get()) {
                             scope.launch {
                                 Browser.open(
                                     URI(
-                                        gitHubImpl.latestRelease?.htmlUrl?.toString()
+                                        GitHubImpl.latestRelease?.htmlUrl?.toString()
                                             ?: GitHubConstants.HashHash.Repository.releases
                                     )
                                 )

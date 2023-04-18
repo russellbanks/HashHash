@@ -27,39 +27,32 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import java.util.prefs.Preferences
 
-@Single
-class ModeHandler : Klogging {
+object ModeHandler : Klogging {
+    private const val modeKey = "mode"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
     private var cachedMode: Mode? = null
 
-    var selectedMode by mutableStateOf(getMode())
+    var selectedMode by mutableStateOf(mode)
 
-    private fun getMode(): Mode {
-        return cachedMode
+    var mode: Mode
+        get() = cachedMode
             ?: if (preferences.getInt(modeKey, Mode.SIMPLE.ordinal) == Mode.ADVANCED.ordinal) {
                 Mode.ADVANCED
             } else {
                 Mode.SIMPLE
             }.also { cachedMode = it }
-    }
-
-    fun putMode(mode: Mode) {
-        preferences.putInt(modeKey, mode.ordinal)
-        cachedMode = mode
-        selectedMode = mode
-        CoroutineScope(Dispatchers.Default).launch {
-            logger.info {
-                "Put ${mode.name} into preferences with the key of \"$modeKey\" and the value of ${mode.ordinal}"
+        set(value) {
+            preferences.putInt(modeKey, value.ordinal)
+            cachedMode = value
+            selectedMode = value
+            CoroutineScope(Dispatchers.Default).launch {
+                logger.info {
+                    "Put ${value.name} into preferences with the key of \"$modeKey\" and the value of ${value.ordinal}"
+                }
             }
         }
-    }
-
-    companion object {
-        private const val modeKey = "mode"
-    }
 }

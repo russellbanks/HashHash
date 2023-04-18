@@ -36,9 +36,7 @@ import api.GitHubImpl
 import application.ApplicationState
 import components.dialogs.DialogState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
@@ -54,7 +52,7 @@ object Window {
 
     @Composable
     fun setupAWTWindow(window: Window) {
-        val scope = rememberCoroutineScope { Dispatchers.Default }
+        val scope = rememberCoroutineScope(Dispatchers::Default)
         with(window) {
             minimumSize = Dimension(minWindowWidth, minWindowHeight)
             dropTarget = DragAndDrop.target(scope) { droppedItems ->
@@ -85,140 +83,115 @@ object Window {
     }
 
     object Header : KoinComponent {
-        private val applicationState: ApplicationState by inject()
-
         @Composable
         fun commands(
             auroraApplicationScope: AuroraApplicationScope,
             windowState: WindowState
-        ): CommandGroup {
-            val gitHubImpl: GitHubImpl by inject()
-            val dialogState: DialogState by inject()
-            return CommandGroup(
-                commands = listOf(
-                    fileHeaderButton(auroraApplicationScope = auroraApplicationScope, dialogState = dialogState),
-                    viewHeaderButton(windowState = windowState),
-                    windowHeaderButton(windowState = windowState),
-                    helpHeaderButton(gitHubImpl = gitHubImpl, dialogState = dialogState)
-                )
+        ): CommandGroup = CommandGroup(
+            commands = listOf(
+                fileHeaderButton(auroraApplicationScope),
+                viewHeaderButton(windowState),
+                windowHeaderButton(windowState),
+                helpHeaderButton()
             )
-        }
+        )
 
         private fun fileHeaderButton(
-            auroraApplicationScope: AuroraApplicationScope,
-            dialogState: DialogState
-        ): Command {
-            return Command(
-                text = "File",
-                secondaryContentModel = CommandMenuContentModel(
-                    listOf(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Settings",
-                                    action = dialogState.Settings()::open
-                                )
-                            )
-                        ),
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Exit",
-                                    action = { applicationState.exitApplication(auroraApplicationScope) }
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        }
-
-        private fun viewHeaderButton(windowState: WindowState): Command {
-            return Command(
-                text = "View",
-                secondaryContentModel = CommandMenuContentModel(
+            auroraApplicationScope: AuroraApplicationScope
+        ): Command = Command(
+            text = "File",
+            secondaryContentModel = CommandMenuContentModel(
+                listOf(
                     CommandGroup(
                         commands = listOf(
                             Command(
-                                text = "Toggle Full Screen",
-                                action = { toggleFullscreen(windowState) }
+                                text = "Settings",
+                                action = DialogState.Settings::open
                             )
                         )
-                    )
-                )
-            )
-        }
-
-        private fun windowHeaderButton(windowState: WindowState): Command {
-            return Command(
-                text = "Window",
-                secondaryContentModel = CommandMenuContentModel(
+                    ),
                     CommandGroup(
                         commands = listOf(
                             Command(
-                                text = "Minimise",
-                                action = { windowState.isMinimized = true }
+                                text = "Exit",
+                                action = { ApplicationState.exitApplication(auroraApplicationScope) }
                             )
                         )
                     )
                 )
             )
-        }
+        )
+
+        private fun viewHeaderButton(windowState: WindowState): Command = Command(
+            text = "View",
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(
+                            text = "Toggle Full Screen",
+                            action = { toggleFullscreen(windowState) }
+                        )
+                    )
+                )
+            )
+        )
+
+        private fun windowHeaderButton(windowState: WindowState): Command = Command(
+            text = "Window",
+            secondaryContentModel = CommandMenuContentModel(
+                CommandGroup(
+                    commands = listOf(
+                        Command(
+                            text = "Minimise",
+                            action = { windowState.isMinimized = true }
+                        )
+                    )
+                )
+            )
+        )
 
         @Composable
-        private fun helpHeaderButton(
-            gitHubImpl: GitHubImpl,
-            dialogState: DialogState
-        ): Command {
-            val scope = rememberCoroutineScope()
-            return Command(
-                text = "Help",
-                secondaryContentModel = CommandMenuContentModel(
-                    listOf(
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "Report issue",
-                                    action = {
-                                        scope.launch(Dispatchers.Default) {
-                                            Browser.open(URI(GitHubConstants.HashHash.Repository.newIssue))
-                                        }
-                                    }
-                                ),
-                                Command(
-                                    text = "Go to GitHub",
-                                    action = {
-                                        scope.launch(Dispatchers.Default) {
-                                            Browser.open(URI(GitHubConstants.HashHash.Repository.website))
-                                        }
-                                    }
-                                ),
-                                Command(
-                                    text = "Go to release notes",
-                                    action = {
-                                        scope.launch(Dispatchers.Default) {
-                                            Browser.open(
-                                                URI(
-                                                    gitHubImpl.latestRelease?.htmlUrl?.toString()
-                                                        ?: GitHubConstants.HashHash.Repository.releases
-                                                )
-                                            )
-                                        }
-                                    }
-                                )
+        private fun helpHeaderButton(): Command = Command(
+            text = "Help",
+            secondaryContentModel = CommandMenuContentModel(
+                listOf(
+                    CommandGroup(
+                        commands = listOf(
+                            Command(
+                                text = "Report issue",
+                                action = {
+                                    Browser.open(URI(GitHubConstants.HashHash.Repository.newIssue))
+                                }
+                            ),
+                            Command(
+                                text = "Go to GitHub",
+                                action = {
+                                    Browser.open(URI(GitHubConstants.HashHash.Repository.website))
+                                }
+                            ),
+                            Command(
+                                text = "Go to release notes",
+                                action = {
+                                    Browser.open(
+                                        URI(
+                                            GitHubImpl.latestRelease?.htmlUrl?.toString()
+                                                ?: GitHubConstants.HashHash.Repository.releases
+                                        )
+                                    )
+                                }
                             )
-                        ),
-                        CommandGroup(
-                            commands = listOf(
-                                Command(
-                                    text = "About",
-                                    action = dialogState.About()::open
-                                )
+                        )
+                    ),
+                    CommandGroup(
+                        commands = listOf(
+                            Command(
+                                text = "About",
+                                action = DialogState.About::open
                             )
                         )
                     )
                 )
             )
-        }
+        )
     }
 }

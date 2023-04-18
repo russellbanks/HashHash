@@ -21,25 +21,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.dialogs
 
 import androidx.compose.runtime.mutableStateMapOf
-import org.koin.core.annotation.Single
 
-@Single
-class DialogState {
+object DialogState {
     private var dialogsMap = mutableStateMapOf(
         Dialogs.About to false, Dialogs.Settings to false, Dialogs.Update to false
     )
 
-    fun areDialogsOpen() = dialogsMap.values.any { it }
+    val areDialogsOpen get() = dialogsMap.values.any { it }
 
     fun closeAllDialogs() = dialogsMap.forEach { dialogsMap[it.key] = false }
 
-    fun getClass(dialog: Dialogs) = when (dialog) {
-        Dialogs.About -> About()
-        Dialogs.Settings -> Settings()
-        Dialogs.Update -> Update()
+    fun getClassForDialog(dialog: Dialogs) = when (dialog) {
+        Dialogs.About -> About
+        Dialogs.Settings -> Settings
+        Dialogs.Update -> Update
     }
 
-    inner class Settings : Dialog {
+    object Settings : Dialog {
         override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Settings }
 
         override fun close() {
@@ -49,7 +47,7 @@ class DialogState {
         override fun isOpen() = dialogsMap[Dialogs.Settings] == true
     }
 
-    inner class About : Dialog {
+    object About : Dialog {
         override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.About }
 
         override fun close() {
@@ -59,7 +57,7 @@ class DialogState {
         override fun isOpen() = dialogsMap[Dialogs.About] == true
     }
 
-    inner class Update : Dialog {
+    object Update : Dialog {
         override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Update }
 
         override fun close() {

@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import api.GitHubImpl
 import components.dialogs.DialogState
 import helper.Icons
-import koin.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
@@ -51,8 +50,6 @@ fun Toolbar(
     modifier: Modifier = Modifier,
     iconDimension: Dp = 16.dp
 ) {
-    val dialogState: DialogState by inject()
-    val gitHubImpl: GitHubImpl by inject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Toolbar) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -68,12 +65,12 @@ fun Toolbar(
                 // TODO
             }
             Row {
-                AnimatedVisibility(gitHubImpl.isUpdateAvailable) {
+                AnimatedVisibility(GitHubImpl.isUpdateAvailable) {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "",
                             icon = Icons.Utility.info(),
-                            action = dialogState.Update()::open
+                            action = DialogState.Update::open
                         ),
                         presentationModel = CommandButtonPresentationModel(
                             backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,
@@ -90,7 +87,7 @@ fun Toolbar(
                     contentModel = Command(
                         text = "",
                         icon = Icons.Utility.settings(),
-                        action = dialogState.Settings()::open
+                        action = DialogState.Settings::open
                     ),
                     presentationModel = CommandButtonPresentationModel(
                         backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,

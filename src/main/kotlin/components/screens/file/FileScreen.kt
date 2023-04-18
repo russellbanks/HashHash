@@ -38,6 +38,7 @@ import components.ComparisonTextFieldRow
 import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
+import components.screens.ParentComponent
 import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -65,20 +66,20 @@ fun FileScreen() {
         }
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         OutputTextFieldRow(
-            value = component.resultMap.getOrDefault(component.parent.algorithm, ""),
+            value = component.resultMap.getOrDefault(ParentComponent.algorithm, ""),
             isValueUppercase = component.hashedTextUppercase,
             onCaseClick = component::switchHashCase
         )
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         val clipboardManager = LocalClipboardManager.current
         ComparisonTextFieldRow(
-            hashedOutput = component.resultMap.getOrDefault(component.parent.algorithm, ""),
+            hashedOutput = component.resultMap.getOrDefault(ParentComponent.algorithm, ""),
             comparisonHash = component.comparisonHash,
             onPasteClick = {
-                component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
+                component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot(Char::isWhitespace)
             },
             onClearClick = { component.comparisonHash = "" },
-            onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
+            onTextFieldChange = { component.comparisonHash = it.filterNot(Char::isWhitespace) }
         )
         HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
         HashProgress(fileHashProgress = component.hashProgress, timer = component.timer)

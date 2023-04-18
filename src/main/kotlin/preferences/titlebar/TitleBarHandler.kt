@@ -27,41 +27,36 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfiguration
 import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfigurations
 import java.util.prefs.Preferences
 
-@Single
-class TitleBarHandler : Klogging {
+object TitleBarHandler : Klogging {
+    private const val titleBarKey = "titleBar"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
     private var cachedTitleBar: TitleBar? by mutableStateOf(null)
 
-    val auroraTitleBarConfiguration: AuroraWindowTitlePaneConfiguration
-        get() = getTitleBar().toAuroraTitlePane()
+    val auroraTitleBarConfiguration: AuroraWindowTitlePaneConfiguration get() = titleBar.toAuroraTitlePane()
 
-    fun getTitleBar(): TitleBar {
-        return cachedTitleBar ?: (
-            if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) {
+    var titleBar: TitleBar
+        get() = cachedTitleBar
+            ?: (if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) {
                 TitleBar.Custom
             } else {
                 TitleBar.Native
-            }
-        ).also { cachedTitleBar = it }
-    }
-
-    fun putTitleBar(titleBar: TitleBar) {
-        preferences.putInt(titleBarKey, titleBar.ordinal)
-        cachedTitleBar = titleBar
-        CoroutineScope(Dispatchers.Default).launch {
-            logger.info {
-                "Put ${titleBar.name} into preferences with the key of " +
-                        "\"$titleBarKey\" and the value of ${titleBar.ordinal}"
+            }).also { cachedTitleBar = it }
+        set(value) {
+            preferences.putInt(titleBarKey, value.ordinal)
+            cachedTitleBar = value
+            CoroutineScope(Dispatchers.Default).launch {
+                logger.info {
+                    "Put ${value.name} into preferences with the key of " +
+                            "\"$titleBarKey\" and the value of ${value.ordinal}"
+                }
             }
         }
-    }
 
     private fun TitleBar?.toAuroraTitlePane(): AuroraWindowTitlePaneConfiguration {
         return if (this == TitleBar.Custom) {
@@ -69,9 +64,5 @@ class TitleBarHandler : Klogging {
         } else {
             AuroraWindowTitlePaneConfigurations.System
         }
-    }
-
-    companion object {
-        private const val titleBarKey = "titleBar"
     }
 }

@@ -20,10 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.dialogs.settings
 
-fun Category.toComponent(): SettingsRoot.Child {
-    return when (this) {
-        Category.Theme -> SettingsRoot.Child.Theme
-        Category.TitleBar -> SettingsRoot.Child.TitleBar
-        Category.WindowCorner -> SettingsRoot.Child.WindowCorner
-    }
+fun Category.toComponent(): SettingsRoot.Child = when (this) {
+    Category.Theme -> SettingsRoot.Child.Theme
+    Category.TitleBar -> SettingsRoot.Child.TitleBar
+    Category.WindowCorner -> SettingsRoot.Child.WindowCorner
 }

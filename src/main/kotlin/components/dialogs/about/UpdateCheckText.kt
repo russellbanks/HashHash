@@ -49,7 +49,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import java.text.SimpleDateFormat
 
 @Composable
-fun UpdateCheckText(gitHubImpl: GitHubImpl) {
+fun UpdateCheckText() {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
@@ -64,7 +64,7 @@ fun UpdateCheckText(gitHubImpl: GitHubImpl) {
     SelectionContainer {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (gitHubImpl.checkingGitHubAPI) {
+                if (GitHubImpl.checkingGitHubAPI) {
                     Image(
                         painter = Icons.Utility.refresh(),
                         contentDescription = null,
@@ -73,16 +73,16 @@ fun UpdateCheckText(gitHubImpl: GitHubImpl) {
                     )
                 }
                 LabelProjection(
-                    contentModel = LabelContentModel(text = gitHubImpl.getUpdateResponseText()),
+                    contentModel = LabelContentModel(text = GitHubImpl.updateResponseText),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 12.sp))
                 ).project()
             }
-            AnimatedVisibility(gitHubImpl.lastChecked != null) {
+            AnimatedVisibility(GitHubImpl.lastChecked != null) {
                 LabelProjection(
                     contentModel = LabelContentModel(
                         text = "Last checked: " +
                             SimpleDateFormat("dd MMMM yyyy, HH:mm:ss")
-                                .format(gitHubImpl.lastChecked?.toEpochMilliseconds())
+                                .format(GitHubImpl.lastChecked?.toEpochMilliseconds())
                     ),
                     presentationModel = LabelPresentationModel(
                         textStyle = TextStyle(fontSize = 12.sp)

@@ -57,7 +57,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -75,7 +74,6 @@ import kotlin.time.toDuration
 class FileScreenComponent(
     lifecycle: LifecycleRegistry
 ) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent {
-    val parent: ParentComponent by inject()
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
     private var fileHashJob: Job? by mutableStateOf(null)
@@ -86,6 +84,15 @@ class FileScreenComponent(
     var resultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
     var timer by mutableStateOf(Timer(minutes = 0L, seconds = 0L))
     private var exception: Exception? by mutableStateOf(null)
+
+    val footerText: String get() = when {
+        exception != null -> exception?.message as String
+        fileHashJob?.isActive == true -> "Hashing file"
+        resultMap[ParentComponent.algorithm] != null -> "Done!"
+        file != null -> "No hash"
+        else -> "No file selected"
+    }
+
 
     private fun onCalculateClicked(scope: CoroutineScope) {
         file?.let { file ->
@@ -100,8 +107,8 @@ class FileScreenComponent(
                 fileHashJob = scope.launch(Dispatchers.IO) {
                     instantBeforeHash = Clock.System.now()
                     Hashing.catchFileHashingExceptions(exceptionCallback = { exception = it }) {
-                        resultMap[parent.algorithm] = file.hash(
-                            algorithm = parent.algorithm,
+                        resultMap[ParentComponent.algorithm] = file.hash(
+                            algorithm = ParentComponent.algorithm,
                             hashProgressCallback = { hashProgress = it }
                         ).run { if (hashedTextUppercase) uppercase() else lowercase() }
                         instantAfterHash = Clock.System.now()
@@ -123,9 +130,7 @@ class FileScreenComponent(
     }
 
     private fun selectFile() {
-        FileUtils.openFileDialogAndGetResult().also {
-            setComponentFile(it)
-        }
+        FileUtils.openFileDialogAndGetResult().also(::setComponentFile)
     }
 
     fun setComponentFile(file: File?) {
@@ -137,18 +142,8 @@ class FileScreenComponent(
 
     fun switchHashCase() {
         hashedTextUppercase = !hashedTextUppercase
-        resultMap[parent.algorithm]?.run {
-            resultMap[parent.algorithm] = if (hashedTextUppercase) uppercase() else lowercase()
-        }
-    }
-
-    fun getFooterText(): String {
-        return when {
-            exception != null -> exception?.message!!
-            fileHashJob?.isActive == true -> "Hashing file"
-            resultMap[parent.algorithm] != null -> "Done!"
-            file != null -> "No hash"
-            else -> "No file selected"
+        resultMap[ParentComponent.algorithm]?.run {
+            resultMap[ParentComponent.algorithm] = if (hashedTextUppercase) uppercase() else lowercase()
         }
     }
 

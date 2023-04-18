@@ -44,11 +44,11 @@ interface SettingsRoot {
 
     sealed class Child {
 
-        object Theme : Child()
+        data object Theme : Child()
 
-        object TitleBar : Child()
+        data object TitleBar : Child()
 
-        object WindowCorner : Child()
+        data object WindowCorner : Child()
     }
 }
 
@@ -87,12 +87,12 @@ class SettingsRootComponent(
 
     private sealed class Config : Parcelable {
         @Parcelize
-        object Theme : Config()
+        data object Theme : Config()
 
         @Parcelize
-        object TitleBar : Config()
+        data object TitleBar : Config()
 
         @Parcelize
-        object WindowCorner : Config()
+        data object WindowCorner : Config()
     }
 }

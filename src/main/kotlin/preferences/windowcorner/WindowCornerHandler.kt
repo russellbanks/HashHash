@@ -28,38 +28,31 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import java.util.prefs.Preferences
 
-@Single
-class WindowCornerHandler : Klogging {
+object WindowCornerHandler : Klogging {
+    private const val windowCornerKey = "windowCorner"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
     private var cachedWindowCorner: WindowCornerPreference? by mutableStateOf(null)
 
-    fun getWindowCorner(): WindowCornerPreference {
-        return cachedWindowCorner
+    var windowCorner: WindowCornerPreference
+        get() = cachedWindowCorner
             ?: when (preferences.getInt(windowCornerKey, WindowCornerPreference.DEFAULT.ordinal)) {
                 WindowCornerPreference.NOT_ROUNDED.ordinal -> WindowCornerPreference.NOT_ROUNDED
                 WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.SMALL_ROUNDED.ordinal -> WindowCornerPreference.SMALL_ROUNDED
                 else -> WindowCornerPreference.DEFAULT
             }.also { cachedWindowCorner = it }
-    }
-
-    fun putWindowCorner(windowCornerPreference: WindowCornerPreference) {
-        preferences.putInt(windowCornerKey, windowCornerPreference.ordinal)
-        cachedWindowCorner = windowCornerPreference
-        CoroutineScope(Dispatchers.Default).launch {
-            logger.info {
-                "Put ${windowCornerPreference.name} into preferences with the key of " +
-                        "\"$windowCornerKey\" and the value of ${windowCornerPreference.ordinal}"
+        set(value) {
+            preferences.putInt(windowCornerKey, value.ordinal)
+            cachedWindowCorner = value
+            CoroutineScope(Dispatchers.Default).launch {
+                logger.info {
+                    "Put ${value.name} into preferences with the key of " +
+                            "\"$windowCornerKey\" and the value of ${value.ordinal}"
+                }
             }
         }
-    }
-
-    companion object {
-        private const val windowCornerKey = "windowCorner"
-    }
 }

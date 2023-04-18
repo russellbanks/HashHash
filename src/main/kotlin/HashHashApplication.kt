@@ -57,7 +57,6 @@ import components.screens.text.TextScreen
 import helper.Icons
 import helper.Window
 import koin.get
-import koin.inject
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -70,16 +69,15 @@ fun hashHashApplication() = auroraApplication {
         position = WindowPosition(Alignment.Center),
         size = DpSize(width = 1035.dp, height = 750.dp)
     )
-    val applicationState: ApplicationState by inject()
-    for (window in applicationState.windows) {
+    for (window in ApplicationState.windows) {
         key(window) {
             LifecycleController(get(), windowState)
             AuroraWindow(
-                skin = get<ThemeHandler>().auroraSkin,
+                skin = ThemeHandler.auroraSkin,
                 state = windowState,
                 title = BuildConfig.appName,
                 icon = Icons.logo(),
-                onCloseRequest = { applicationState.exitApplication(this) },
+                onCloseRequest = { ApplicationState.exitApplication(this) },
                 menuCommands = Window.Header.commands(auroraApplicationScope = this, windowState = windowState),
                 windowTitlePaneConfiguration = window.titlePaneConfiguration,
                 onPreviewKeyEvent = { Window.onKeyEvent(it, windowState) }
@@ -87,7 +85,7 @@ fun hashHashApplication() = auroraApplication {
                 WindowStyle(
                     isDarkTheme = true,
                     backdropType = WindowBackdrop.Mica,
-                    frameStyle = WindowFrameStyle(cornerPreference = get<WindowCornerHandler>().getWindowCorner())
+                    frameStyle = WindowFrameStyle(cornerPreference = WindowCornerHandler.windowCorner)
                 )
                 Window.setupAWTWindow(window = this.window)
                 Box {

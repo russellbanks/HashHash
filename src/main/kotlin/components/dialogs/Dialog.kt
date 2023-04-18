@@ -44,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import helper.Icons
-import koin.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -61,9 +60,8 @@ fun Dialog(dialog: DialogState.Dialogs, content: @Composable () -> Unit) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val dialogState: DialogState by inject()
     AnimatedVisibility(
-        visible = dialogState.getClass(dialog).isOpen(),
+        visible = DialogState.getClassForDialog(dialog).isOpen(),
         enter = fadeIn() + slideInVertically(initialOffsetY = { -it / 10 }),
         exit = fadeOut() + slideOutVertically(targetOffsetY = { -it / 10 })
     ) {
@@ -89,7 +87,7 @@ fun Dialog(dialog: DialogState.Dialogs, content: @Composable () -> Unit) {
                             contentModel = Command(
                                 text = "",
                                 icon = Icons.Utility.close(),
-                                action = dialogState.getClass(dialog)::close
+                                action = DialogState.getClassForDialog(dialog)::close
                             ),
                             presentationModel = CommandButtonPresentationModel(
                                 backgroundAppearanceStrategy = BackgroundAppearanceStrategy.Flat,

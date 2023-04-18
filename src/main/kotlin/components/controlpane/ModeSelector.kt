@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.SelectorContentModel
 import org.pushingpixels.aurora.component.projection.CheckBoxProjection
@@ -34,21 +33,20 @@ import preferences.mode.ModeHandler
 
 @Composable
 fun ModeSelector() {
-    val modeHandler: ModeHandler by inject()
     Row {
         Box(Modifier.weight(1f)) {
             LabelProjection(
                 contentModel = LabelContentModel(
-                    text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar { it.titlecase() }} list"
+                    text = "${Mode.SIMPLE.name.lowercase().replaceFirstChar(Char::titlecaseChar)} list"
                 )
             ).project()
         }
         CheckBoxProjection(
             contentModel = SelectorContentModel(
                 text = "",
-                selected = modeHandler.selectedMode == Mode.SIMPLE,
+                selected = ModeHandler.selectedMode == Mode.SIMPLE,
                 onClick = {
-                    modeHandler.putMode(if (modeHandler.selectedMode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE)
+                    ModeHandler.mode = if (ModeHandler.selectedMode == Mode.SIMPLE) Mode.ADVANCED else Mode.SIMPLE
                 }
             )
         ).project()

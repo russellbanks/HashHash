@@ -49,9 +49,9 @@ fun Footer() {
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = when (root.childStack.subscribeAsState().value.active.instance) {
-                        is Root.Child.File -> fileScreen.getFooterText()
-                        is Root.Child.Text -> textScreen.getFooterText()
-                        is Root.Child.CompareFiles -> compareScreen.getFooterText()
+                        is Root.Child.File -> fileScreen.footerText
+                        is Root.Child.Text -> textScreen.footerText
+                        is Root.Child.CompareFiles -> compareScreen.footerText
                     }
                 )
             ).project()

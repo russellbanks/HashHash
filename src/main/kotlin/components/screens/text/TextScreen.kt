@@ -181,10 +181,10 @@ fun TextScreen() {
             hashedOutput = component.givenTextHash,
             comparisonHash = component.comparisonHash,
             onPasteClick = {
-                component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot { it.isWhitespace() }
+                component.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot(Char::isWhitespace)
             },
             onClearClick = { component.comparisonHash = "" },
-            onTextFieldChange = { component.comparisonHash = it.filterNot { char -> char.isWhitespace() } }
+            onTextFieldChange = { component.comparisonHash = it.filterNot(Char::isWhitespace) }
         )
     }
     LabelProjection(

@@ -89,7 +89,7 @@ fun CompareFilesScreen() {
             )
         ).project(Modifier.align(Alignment.CenterHorizontally).width(100.dp).height(30.dp))
         AnimatedVisibility(modifier = Modifier.fillMaxWidth(), visible = component.areHashesNotBlank()) {
-            val hashesMatch = component.doHashesMatch()
+            val hashesMatch = component.doHashesMatch
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = if (hashesMatch) "Files match" else "Files do not match",

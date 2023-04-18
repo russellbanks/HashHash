@@ -26,15 +26,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import koin.inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -45,20 +41,16 @@ import preferences.theme.ThemeHandler
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun ThemeScreen() {
-    val scope = rememberCoroutineScope()
-    val themeHandler: ThemeHandler by inject()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
         LazyColumn {
             items(Theme.entries) { theme ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
-                    selected = theme == themeHandler.getTheme(),
+                    selected = theme == ThemeHandler.theme,
                     onClick = {
-                        if (themeHandler.getTheme() != theme) {
-                            scope.launch(Dispatchers.Default) {
-                                themeHandler.putTheme(theme)
-                            }
+                        if (ThemeHandler.theme != theme) {
+                            ThemeHandler.theme = theme
                         }
                     }
                 ) {

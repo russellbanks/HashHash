@@ -41,7 +41,7 @@ fun Tabs() {
                 TabContentModel(text = "Text"),
                 TabContentModel(text = "Compare Files")
             ),
-            selectedTabIndex = root.childStack.subscribeAsState().value.active.instance.toInt(),
+            selectedTabIndex = root.childStack.subscribeAsState().value.active.instance.ordinal,
             onTriggerTabSelected = {
                 when (it) {
                     0 -> root.onFileTabClicked()

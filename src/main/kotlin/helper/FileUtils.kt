@@ -30,18 +30,25 @@ import org.lwjgl.system.NativeType
 import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_openFileDialog
 import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_saveFileDialog
 import java.io.File
-import java.util.Locale
 
 object FileUtils {
 
     fun getFormattedBytes(bytes: Long): String {
+        // Check for a simple case when bytes are less than 1024
         if (bytes < 1024) return "$bytes B"
-        val unitIndex = (63 - bytes.countLeadingZeroBits()) / 10
-        return String.format(
-            Locale.getDefault(),
-            "%.1f %sB",
-            bytes.toDouble() / (1L shl unitIndex * 10), " KMGTPE"[unitIndex]
-        )
+
+        // Define an array of unit prefixes
+        val unitPrefixes = arrayOf(" ", "K", "M", "G", "T", "P", "E")
+
+        // Calculate the unit index by dividing the number of bits needed for the bytes value by 10
+        // The 'coerceAtMost' function ensures the index stays within the bounds of the 'unitPrefixes' array
+        val unitIndex = ((63 - bytes.countLeadingZeroBits()) / 10).coerceAtMost(unitPrefixes.lastIndex)
+
+        // Calculate the value with a corresponding unit index
+        val value = bytes.toDouble() / (1L shl unitIndex * 10)
+
+        // Format the result string using the value and unit prefix
+        return "%.1f %sB".format(value, unitPrefixes[unitIndex])
     }
 
     /**

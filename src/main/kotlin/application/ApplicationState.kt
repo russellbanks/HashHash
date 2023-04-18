@@ -26,15 +26,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.essenty.lifecycle.destroy
-import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.pushingpixels.aurora.window.AuroraApplicationScope
 import preferences.titlebar.TitleBarHandler
 import preferences.windowcorner.WindowCornerHandler
 
-@Single
-class ApplicationState : KoinComponent {
+object ApplicationState : KoinComponent {
     val windows = mutableStateListOf<ApplicationWindowState>()
     private val lifecycle: LifecycleRegistry by inject()
 
@@ -61,20 +59,17 @@ class ApplicationWindowState(
     val openNewWindow: () -> Unit,
     private val close: (ApplicationWindowState) -> Unit
 ) : KoinComponent {
-    private val windowCornerHandler: WindowCornerHandler by inject()
-    private val titleBarHandler: TitleBarHandler by inject()
+    private val titleBar = TitleBarHandler.titleBar
 
-    private val titleBar = titleBarHandler.getTitleBar()
+    private val windowCorner = WindowCornerHandler.windowCorner
 
-    private val windowCorner = windowCornerHandler.getWindowCorner()
-
-    val titlePaneConfiguration = titleBarHandler.auroraTitleBarConfiguration
+    val titlePaneConfiguration = TitleBarHandler.auroraTitleBarConfiguration
 
     var needsRestarting by mutableStateOf(false)
 
     fun checkWindowNeedsRestarting() {
-        val titleBarChanged = titleBar != titleBarHandler.getTitleBar()
-        val windowCornerChanged = windowCorner != windowCornerHandler.getWindowCorner()
+        val titleBarChanged = titleBar != TitleBarHandler.titleBar
+        val windowCornerChanged = windowCorner != WindowCornerHandler.windowCorner
         needsRestarting = titleBarChanged || windowCornerChanged
     }
 

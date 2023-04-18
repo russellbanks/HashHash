@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
 import com.mayakapps.compose.windowstyler.WindowCornerPreference
-import koin.inject
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -45,7 +44,6 @@ import preferences.windowcorner.WindowCornerHandler
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun WindowCornerScreen(window: ApplicationWindowState) {
-    val windowCornerHandler: WindowCornerHandler by inject()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Window Corner")).project()
         LabelProjection(
@@ -58,10 +56,10 @@ fun WindowCornerScreen(window: ApplicationWindowState) {
             items(WindowCornerPreference.entries) { windowCornerPreference ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
-                    selected = windowCornerPreference == windowCornerHandler.getWindowCorner(),
+                    selected = windowCornerPreference == WindowCornerHandler.windowCorner,
                     onClick = {
-                        if (windowCornerHandler.getWindowCorner() != windowCornerPreference) {
-                            windowCornerHandler.putWindowCorner(windowCornerPreference)
+                        if (WindowCornerHandler.windowCorner != windowCornerPreference) {
+                            WindowCornerHandler.windowCorner = windowCornerPreference
                             window.checkWindowNeedsRestarting()
                         }
                     }
@@ -70,8 +68,8 @@ fun WindowCornerScreen(window: ApplicationWindowState) {
                         contentModel = LabelContentModel(
                             text = windowCornerPreference.name
                                 .lowercase()
-                                .replaceFirstChar(Char::titlecase)
-                                .replace(oldValue = "_", newValue = " ")
+                                .replaceFirstChar(Char::titlecaseChar)
+                                .replace('_', ' ')
                         ),
                         presentationModel = LabelPresentationModel(
                             textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)

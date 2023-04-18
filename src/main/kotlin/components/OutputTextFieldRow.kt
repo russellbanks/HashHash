@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import components.screens.ParentComponent
 import helper.Icons
-import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
@@ -52,12 +51,11 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 
 @Composable
 fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: () -> Unit) {
-    val parent: ParentComponent by inject()
     val clipboardManager = LocalClipboardManager.current
-    val scope = rememberCoroutineScope { Dispatchers.Default }
+    val scope = rememberCoroutineScope(Dispatchers::Default)
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
-            contentModel = LabelContentModel(text = "${parent.algorithm.algorithmName} Hash"),
+            contentModel = LabelContentModel(text = "${ParentComponent.algorithm.algorithmName} Hash"),
             presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 15.sp))
         ).project()
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -80,8 +78,8 @@ fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: ()
                             action = {
                                 if (value.isNotBlank()) {
                                     clipboardManager.setText(AnnotatedString(text = value))
-                                    parent.snackbarHostState.currentSnackbarData?.dismiss()
-                                    scope.launch { parent.snackbarHostState.showSnackbar("Copied to clipboard") }
+                                    ParentComponent.snackbarHostState.currentSnackbarData?.dismiss()
+                                    scope.launch { ParentComponent.snackbarHostState.showSnackbar("Copied to clipboard") }
                                 }
                             }
                         ),

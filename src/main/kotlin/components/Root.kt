@@ -44,18 +44,16 @@ interface Root {
 
     sealed class Child {
 
-        object File : Child()
+        data object File : Child()
 
-        object Text : Child()
+        data object Text : Child()
 
-        object CompareFiles : Child()
+        data object CompareFiles : Child()
 
-        fun toInt(): Int {
-            return when (this) {
-                is File -> 0
-                is Text -> 1
-                is CompareFiles -> 2
-            }
+        val ordinal: Int get() = when (this) {
+            is File -> 0
+            is Text -> 1
+            is CompareFiles -> 2
         }
     }
 }

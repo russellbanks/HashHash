@@ -63,7 +63,7 @@ object Icons : Klogging {
                     modifier = modifier,
                     onLoading = { getSystemImage(modifier, file) },
                     onFailure = {
-                        rememberCoroutineScope { Dispatchers.Default }.launch { logger.error(it.message) }
+                        rememberCoroutineScope(Dispatchers::Default).launch { logger.error(it.message) }
                         getSystemImage(modifier, file)
                     }
                 )
@@ -77,7 +77,7 @@ object Icons : Klogging {
 
     private fun File.isImage(): Boolean {
         return try {
-            inputStream().use { ImageIO.read(it) } != null
+            inputStream().use(ImageIO::read) != null
         } catch (_: Exception) {
             false
         }

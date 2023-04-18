@@ -34,17 +34,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import components.screens.ParentComponent
 import helper.Icons
-import koin.inject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
 fun BoxScope.Snackbar() {
-    val parentComponent: ParentComponent by inject()
     SnackbarHost(
         modifier = Modifier.align(Alignment.BottomCenter).padding(50.dp),
-        hostState = parentComponent.snackbarHostState,
+        hostState = ParentComponent.snackbarHostState,
         snackbar = { snackbarData: SnackbarData ->
             val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
                 decorationAreaType = AuroraSkin.decorationAreaType

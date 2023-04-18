@@ -40,7 +40,6 @@ import com.russellbanks.HashHash.BuildConfig
 import components.dialogs.Dialog
 import components.dialogs.DialogState
 import helper.Icons
-import koin.inject
 import kotlinx.coroutines.Dispatchers
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -48,7 +47,6 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun AboutDialog() {
-    val gitHubImpl: GitHubImpl by inject()
     val scope = rememberCoroutineScope { Dispatchers.Default }
     Dialog(dialog = DialogState.Dialogs.About) {
         Row(Modifier.padding(30.dp)) {
@@ -65,14 +63,14 @@ fun AboutDialog() {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "Check for Updates",
-                            action = { gitHubImpl.checkForHashHashUpdate(scope) }
+                            action = { GitHubImpl.checkForHashHashUpdate(scope) }
                         ),
                         presentationModel = CommandButtonPresentationModel(
                             textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
                         )
                     ).project()
-                    AnimatedVisibility(gitHubImpl.checkingGitHubAPI || gitHubImpl.latestRelease != null) {
-                        UpdateCheckText(gitHubImpl = gitHubImpl)
+                    AnimatedVisibility(GitHubImpl.checkingGitHubAPI || GitHubImpl.latestRelease != null) {
+                        UpdateCheckText()
                     }
                 }
             }

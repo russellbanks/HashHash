@@ -25,8 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.IOException
 
 object Hashing : Klogging {
 
@@ -68,35 +66,9 @@ object Hashing : Klogging {
             withContext(Dispatchers.IO) { block() }
         } catch (_: CancellationException) {
             // Cancellations are intended
-        } catch (ioException: IOException) {
-            exceptionCallback(ioException)
-            withContext(Dispatchers.Default) { logger.error(ioException.localizedMessage, ioException) }
-        } catch (fileNotFoundException: FileNotFoundException) {
-            exceptionCallback(fileNotFoundException)
-            withContext(Dispatchers.Default) {
-                logger.error(fileNotFoundException.localizedMessage, fileNotFoundException)
-            }
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            exceptionCallback(illegalArgumentException)
-            withContext(Dispatchers.Default) {
-                logger.error(illegalArgumentException.localizedMessage, illegalArgumentException)
-            }
-        } catch (illegalStateException: IllegalStateException) {
-            exceptionCallback(illegalStateException)
-            withContext(Dispatchers.Default) {
-                logger.error(illegalStateException.localizedMessage, illegalStateException)
-            }
-        }
-    }
-
-    suspend fun catchTextHashingException(exceptionCallback: (Exception?) -> Unit = {}, block: suspend () -> Unit) {
-        try {
-            withContext(Dispatchers.Default) { block() }
-            exceptionCallback(null)
-        } catch (illegalArgumentException: IllegalArgumentException) {
-            exceptionCallback(illegalArgumentException)
-        } catch (illegalStateException: IllegalStateException) {
-            exceptionCallback(illegalStateException)
+        } catch (exception: Exception) {
+            exceptionCallback(exception)
+            withContext(Dispatchers.Default) { logger.error(exception.localizedMessage, exception) }
         }
     }
 }

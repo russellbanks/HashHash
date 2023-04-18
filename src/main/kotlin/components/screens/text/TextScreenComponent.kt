@@ -20,11 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.text
 
-import Hashing.catchTextHashingException
 import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.appmattus.crypto.Algorithm
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
@@ -33,7 +33,6 @@ import components.screens.ParentComponent
 import helper.FileUtils
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.lwjgl.BufferUtils
 import org.lwjgl.system.MemoryUtil
 
@@ -41,7 +40,6 @@ import org.lwjgl.system.MemoryUtil
 class TextScreenComponent(
     lifecycle: LifecycleRegistry
 ) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent {
-    private val parent: ParentComponent by inject()
     var givenText by mutableStateOf("")
     var givenTextHash by mutableStateOf("")
     var comparisonHash by mutableStateOf("")
@@ -54,22 +52,23 @@ class TextScreenComponent(
     var includeSourceText by mutableStateOf(true)
     var selectedDelimiter by mutableStateOf(Delimiter.NewLine)
 
-    suspend fun hashGivenText() {
-        if (givenText.isNotEmpty()) {
-            catchTextHashingException(exceptionCallback = {
-                exception = it
-                if (exception != null) givenTextHash = ""
-            }) {
-                givenTextHash = givenText.hash(parent.algorithm).run {
-                    if (hashedTextUppercase) uppercase() else lowercase()
-                }
+    val footerText: String get() = if (exception != null) {
+        "${ParentComponent.algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar(Char::titlecaseChar)}"
+    } else {
+        ""
+    }
+
+    fun hashGivenText(algorithm: Algorithm = ParentComponent.algorithm) {
+        givenTextHash = if (givenText.isNotEmpty()) {
+            givenText.hash(algorithm).run {
+                if (hashedTextUppercase) uppercase() else lowercase()
             }
         } else {
-            givenTextHash = ""
+            ""
         }
     }
 
-    suspend fun onAlgorithmClick() = hashGivenText()
+    fun onAlgorithmClick(algorithm: Algorithm) = hashGivenText(algorithm)
 
     suspend fun hashTextLineByLine(text: String) {
         hashTextLineByLine(text.splitToSequence(selectedDelimiter.delimiter))
@@ -87,7 +86,7 @@ class TextScreenComponent(
         )?.let { path ->
             csvWriter().openAsync(path) {
                 if (includeSourceText) {
-                    writeRow("Text", "${parent.algorithm.algorithmName} hash")
+                    writeRow("Text", "${ParentComponent.algorithm.algorithmName} hash")
                 } else {
                     writeRow("Hash")
                 }
@@ -97,7 +96,7 @@ class TextScreenComponent(
                         if (includeSourceText) {
                             writeRow(
                                 it,
-                                it.hash(parent.algorithm).run {
+                                it.hash(ParentComponent.algorithm).run {
                                     if (isTextLineByLineUppercase) uppercase() else lowercase()
                                 }
                             )
@@ -123,13 +122,5 @@ class TextScreenComponent(
 
     fun characterCountAsString(): String {
         return "${"%,d".format(givenText.count())} character${if (givenText.count() != 1) "s" else ""}"
-    }
-
-    fun getFooterText(): String {
-        return if (exception != null) {
-            "${parent.algorithm.algorithmName}: ${exception?.localizedMessage?.replaceFirstChar { it.titlecase() }}"
-        } else {
-            ""
-        }
     }
 }

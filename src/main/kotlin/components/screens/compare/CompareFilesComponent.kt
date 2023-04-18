@@ -60,7 +60,6 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -79,8 +78,7 @@ import kotlin.time.toDuration
 class CompareFilesComponent(
     lifecycle: LifecycleRegistry
 ) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent, Klogging {
-    private val parent: ParentComponent by inject()
-    val algorithm = parent.algorithm
+    val algorithm = ParentComponent.algorithm
     var fileOne: File? by mutableStateOf(null)
     private var fileOneHashUppercase by mutableStateOf(true)
     private var fileOneHashProgress by mutableStateOf(0F)
@@ -94,6 +92,24 @@ class CompareFilesComponent(
     private var fileTwoResultMap: SnapshotStateMap<Algorithm, String> = mutableStateMapOf()
 
     private var comparisonJobList: List<Deferred<Unit>>? by mutableStateOf(null)
+
+    val footerText: String get() = when {
+        fileOne == null && fileTwo == null -> "No files selected"
+        fileOne == null && fileTwo != null -> "1st file not selected"
+        fileOne != null && fileTwo == null -> "2nd file not selected"
+        fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
+            "No hashes"
+        }
+        fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true -> {
+            "No hash for 1st file"
+        }
+        fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
+            "No hash for 2nd file"
+        }
+        else -> ""
+    }
+
+    val doHashesMatch get() = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
 
     fun onCalculateClicked(scope: CoroutineScope) {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
@@ -196,29 +212,9 @@ class CompareFilesComponent(
         }
     }
 
-    fun getFooterText(): String {
-        return when {
-            fileOne == null && fileTwo == null -> "No files selected"
-            fileOne == null && fileTwo != null -> "1st file not selected"
-            fileOne != null && fileTwo == null -> "2nd file not selected"
-            fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
-                "No hashes"
-            }
-            fileOneResultMap[algorithm]?.isBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true -> {
-                "No hash for 1st file"
-            }
-            fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isBlank() == true -> {
-                "No hash for 2nd file"
-            }
-            else -> ""
-        }
-    }
-
     fun areHashesNotBlank(): Boolean {
         return fileOneResultMap[algorithm]?.isNotBlank() == true && fileTwoResultMap[algorithm]?.isNotBlank() == true
     }
-
-    fun doHashesMatch() = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
 
     enum class FileComparison {
         One,

@@ -31,12 +31,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import koin.inject
 
 @Composable
 fun TranslucentDialogOverlay() {
-    val dialogState: DialogState by inject()
-    AnimatedVisibility(visible = dialogState.areDialogsOpen(), enter = fadeIn(), exit = fadeOut()) {
+    AnimatedVisibility(visible = DialogState.areDialogsOpen, enter = fadeIn(), exit = fadeOut()) {
         Box(
             Modifier
                 .fillMaxSize()
@@ -44,7 +42,7 @@ fun TranslucentDialogOverlay() {
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
-                    onClick = dialogState::closeAllDialogs
+                    onClick = DialogState::closeAllDialogs
                 )
         )
     }

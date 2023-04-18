@@ -28,14 +28,13 @@ import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
 import org.pushingpixels.aurora.theming.AuroraSkinDefinition
 import org.pushingpixels.aurora.theming.geminiSkin
 import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
 
-@Single
-class ThemeHandler : Klogging {
+object ThemeHandler : Klogging {
+    private const val themeKey = "theme"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
@@ -43,30 +42,28 @@ class ThemeHandler : Klogging {
 
     private val osThemeDetector = OsThemeDetector.getDetector()
 
-    var auroraSkin by mutableStateOf(getTheme().toAuroraTheme())
+    var auroraSkin by mutableStateOf(theme.toAuroraTheme())
 
-    init {
-        osThemeDetector.registerListener {
-            getTheme().also { if (it == Theme.System) auroraSkin = it.toAuroraTheme() }
-        }
-    }
-
-    fun getTheme(): Theme {
-        return cachedTheme ?: when (preferences.getInt(themeKey, Theme.System.ordinal)) {
+    var theme: Theme
+        get() = cachedTheme ?: when (preferences.getInt(themeKey, Theme.System.ordinal)) {
             Theme.Light.ordinal -> Theme.Light
             Theme.Dark.ordinal -> Theme.Dark
             else -> Theme.System
         }.also { cachedTheme = it }
-    }
-
-    fun putTheme(theme: Theme) {
-        preferences.putInt(themeKey, theme.ordinal)
-        cachedTheme = theme
-        auroraSkin = theme.toAuroraTheme()
-        CoroutineScope(Dispatchers.Default).launch {
-            logger.info {
-                "Put ${theme.name} into preferences with the key of \"$themeKey\" and the value of ${theme.ordinal}"
+        set(value) {
+            preferences.putInt(themeKey, value.ordinal)
+            cachedTheme = value
+            auroraSkin = value.toAuroraTheme()
+            CoroutineScope(Dispatchers.Default).launch {
+                logger.info {
+                    "Put ${value.name} into preferences with the key of \"$themeKey\" and the value of ${value.ordinal}"
+                }
             }
+        }
+
+    init {
+        osThemeDetector.registerListener {
+            theme.also { if (it == Theme.System) auroraSkin = it.toAuroraTheme() }
         }
     }
 
@@ -76,9 +73,5 @@ class ThemeHandler : Klogging {
             Theme.Dark -> nightShadeSkin()
             else -> if (osThemeDetector.isDark) nightShadeSkin() else geminiSkin()
         }
-    }
-
-    companion object {
-        const val themeKey = "theme"
     }
 }

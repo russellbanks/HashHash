@@ -34,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
-import koin.inject
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -45,7 +44,6 @@ import preferences.titlebar.TitleBarHandler
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun TitleBarScreen(window: ApplicationWindowState) {
-    val titleBarHandler: TitleBarHandler by inject()
     Column(Modifier.padding(10.dp)) {
         LabelProjection(contentModel = LabelContentModel(text = "Title Bar")).project()
         LabelProjection(
@@ -58,10 +56,10 @@ fun TitleBarScreen(window: ApplicationWindowState) {
             items(TitleBar.entries) { titleBar ->
                 AuroraBoxWithHighlights(
                     modifier = Modifier.fillMaxWidth().padding(6.dp),
-                    selected = titleBar == titleBarHandler.getTitleBar(),
+                    selected = titleBar == TitleBarHandler.titleBar,
                     onClick = {
-                        if (titleBarHandler.getTitleBar() != titleBar) {
-                            titleBarHandler.putTitleBar(titleBar)
+                        if (TitleBarHandler.titleBar != titleBar) {
+                            TitleBarHandler.titleBar = titleBar
                             window.checkWindowNeedsRestarting()
                         }
                     }

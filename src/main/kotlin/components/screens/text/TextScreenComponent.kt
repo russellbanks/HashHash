@@ -59,12 +59,16 @@ class TextScreenComponent(
     }
 
     fun hashGivenText(algorithm: Algorithm = ParentComponent.algorithm) {
-        givenTextHash = if (givenText.isNotEmpty()) {
-            givenText.hash(algorithm).run {
-                if (hashedTextUppercase) uppercase() else lowercase()
+        try {
+            givenTextHash = if (givenText.isNotEmpty()) {
+                givenText.hash(algorithm).run {
+                    if (hashedTextUppercase) uppercase() else lowercase()
+                }
+            } else {
+                ""
             }
-        } else {
-            ""
+        } catch (exception: Exception) {
+            this.exception = exception
         }
     }
 

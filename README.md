@@ -5,7 +5,7 @@
 <p>
 
 <p align="center">
-    A Multiplatform GUI for Hashing, written in Compose for Desktop
+    A Sleek, Multiplatform GUI for File Hashing
     <br/>
     <br/>
     <a href="https://github.com/BanDev/HashHash/issues">Report Bug</a>
@@ -17,13 +17,17 @@
 
 ## About The Project
 
-HashHash is a Multiplatform Graphical User Interface for hashing files, written in JetBrains Compose for Desktop. It was created with the purpose of providing a clean UI that can hash data whilst remaining multiplatform. It supports Windows, Linux and macOS.
+Welcome to **HashHash** - your go-to solution for hashing files across multiple platforms with a seamless and visually appealing user interface. Developed using JetBrains Compose for Desktop, HashHash is designed to bring you a consistent and intuitive experience, no matter which platform you're working on.
 
-![java_GmbKKGqWY1](https://user-images.githubusercontent.com/74878137/177767561-f3560a4c-638e-442d-95fd-cfe1ea609835.png)
+Light             |
+:-------------------------:
+![HashHash in light mode](https://user-images.githubusercontent.com/74878137/236931570-806dca0c-f736-4a62-8a62-5a41b186ea58.png)  |
+Dark             |
+![HashHash in dark mode](https://user-images.githubusercontent.com/74878137/236931606-777be9f6-fc65-47da-868f-b3bc616b69ec.png)   |
 
 ## Supporting algorithms
 
-HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here](https://github.com/appmattus/crypto/blob/main/cryptohash/README.md).
+HashHash harnesses the power of the [crypto](https://github.com/appmattus/crypto) library to provide seamless integration of various hashing algorithms. It supports a comprehensive list of hashes. For an extensive overview of the available hashing algorithms, please refer to the [ReadMe](https://github.com/appmattus/crypto/blob/main/cryptohash/README.md).
 
 ## Built With
 
@@ -39,7 +43,7 @@ HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) i
 You can get the latest copy of HashHash from GitHub releases, or via WinGet:
 
 ```
-winget install RussellBanks.HashHash
+winget install hashhash
 ```
 
 ## Usage
@@ -49,23 +53,6 @@ HashHash has three main screens: the file hashing screen, the text hashing scree
 1. On the file screen, you can input a file and press the calculate button.
 2. On the text screen, you can input text, and it will begin hashing straight away.
 3. On the compare files screen, you can input two files, and press the calculate button. HashHash will then tell you if the files match or do not match, according to the hashing algorithm.
-
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-* If you have suggestions for adding or removing projects, feel free to [open an issue](https://github.com/BanDev/HashHash/issues/new) to discuss it, or directly create a pull request after you edit the *README.md* file with necessary changes.
-* Please make sure you check your spelling and grammar.
-* Create individual PR for each suggestion.
-* Please also read through the [Code Of Conduct](https://github.com/BanDev/HashHash/blob/main/CODE_OF_CONDUCT.md) before posting your first idea as well.
-
-### Creating A Pull Request
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## License
 

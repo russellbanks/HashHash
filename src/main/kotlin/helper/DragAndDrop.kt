@@ -20,9 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
-import components.Root
-import components.screens.compare.CompareFilesComponent
-import components.screens.file.FileScreenComponent
+import components.screens.compare.CompareFilesModel
+import components.screens.file.FileScreenModel
 import io.klogging.Klogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,9 +37,8 @@ import java.io.File
 import java.io.IOException
 
 object DragAndDrop : KoinComponent, Klogging {
-    private val fileScreenComponent: FileScreenComponent by inject()
-    private val compareFilesComponent: CompareFilesComponent by inject()
-    private val root: Root by inject()
+    private val fileScreenModel: FileScreenModel by inject()
+    private val compareFilesModel: CompareFilesModel by inject()
 
     fun target(
         scope: CoroutineScope,
@@ -61,14 +59,13 @@ object DragAndDrop : KoinComponent, Klogging {
         }
     }
 
-    fun setResult(droppedItems: List<*>) {
-        val activeComponent = root.childStack.value.active.instance
+    fun setResult(currentTabIndex: Int, droppedItems: List<*>) {
         droppedItems.first().let {
             if (it is File && it.isFile) {
-                if (activeComponent is Root.Child.File) {
-                    fileScreenComponent.setComponentFile(it)
-                } else if (activeComponent is Root.Child.CompareFiles) {
-                    compareFilesComponent.setDroppedFile(it)
+                if (currentTabIndex == 0) {
+                    fileScreenModel.setComponentFile(it)
+                } else if (currentTabIndex == 2) {
+                    compareFilesModel.setDroppedFile(it)
                 }
             }
         }

@@ -4,7 +4,6 @@ buildconfig = "4.0.4"
 compose = "1.4.0"
 coroutines = "1.7.0"
 cryptohash = "0.10.1"
-decompose = "1.0.0"
 detekt = "1.22.0"
 flowext = "0.6.0"
 github-api = "1.314"
@@ -21,6 +20,7 @@ kotlinx-datetime = "0.4.0"
 ksp = "1.8.20-1.0.11"
 lwjgl = "3.3.2"
 slf4j = "2.0.7"
+voyager = "1.0.0-rc06"
 windowstyler = "0.3.2"
 
 [libraries]
@@ -31,9 +31,6 @@ aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "au
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "cryptohash" }
-
-decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
-decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose-jetbrains", version.ref = "decompose" }
 
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
@@ -63,6 +60,9 @@ lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
 lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
 
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
+
+voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
+voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 
 windowstyler = { module = "com.mayakapps.compose:window-styler", version.ref = "windowstyler" }
 

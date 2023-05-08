@@ -33,17 +33,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import cafe.adriel.voyager.navigator.tab.CurrentTab
+import cafe.adriel.voyager.navigator.tab.TabNavigator
 import components.dialogs.Dialog
 import components.dialogs.DialogState
-import components.dialogs.settings.screens.ThemeScreen
-import components.dialogs.settings.screens.TitleBarScreen
-import components.dialogs.settings.screens.WindowCornerScreen
-import helper.Icons
+import components.dialogs.settings.screens.ThemeTab
+import components.dialogs.settings.screens.TitleBarTab
+import components.dialogs.settings.screens.WindowCornerTab
 import helper.windows.windowsBuild
 import org.jetbrains.skiko.hostOs
-import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -55,62 +53,51 @@ import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 @Composable
 fun SettingsDialog(window: ApplicationWindowState) {
-    val root: SettingsRoot = koinInject()
-    val childStack = root.childStack.subscribeAsState()
-    val activeComponent = childStack.value.active.instance
     Dialog(dialog = DialogState.Dialogs.Settings) {
         Row {
-            val list = listOfCategories()
-            Column(Modifier.padding(horizontal = 15.dp, vertical = 6.dp)) {
-                LazyColumn {
-                    items(list) { category ->
-                        AuroraBoxWithHighlights(
-                            modifier = Modifier.width(140.dp).padding(6.dp),
-                            selected = activeComponent == category.first.toComponent(),
-                            onClick = when (category.first) {
-                                Category.Theme -> root::onThemeTabClicked
-                                Category.TitleBar -> root::onTitleBarTabClicked
-                                Category.WindowCorner -> root::onWindowCornerTabClicked
+            val tabs = listOfSettingsTabs(window)
+            TabNavigator(ThemeTab) { tabNavigator ->
+                Column(Modifier.padding(horizontal = 15.dp, vertical = 6.dp)) {
+                    LazyColumn {
+                        items(tabs) { tab ->
+                            AuroraBoxWithHighlights(
+                                modifier = Modifier.width(140.dp).padding(6.dp),
+                                selected = tabNavigator.current == tab,
+                                onClick = { tabNavigator.current = tab }
+                            ) {
+                                LabelProjection(
+                                    contentModel = LabelContentModel(
+                                        text = tab.options.title,
+                                        icon = tab.options.icon
+                                    ),
+                                    presentationModel = LabelPresentationModel(
+                                        textStyle = TextStyle(fontSize = 12.sp),
+                                        iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText
+                                    )
+                                ).project(Modifier.padding(4.dp))
                             }
-                        ) {
-                            LabelProjection(
-                                contentModel = LabelContentModel(
-                                    text = category.first.name.toFriendlyCase(),
-                                    icon = category.second
-                                ),
-                                presentationModel = LabelPresentationModel(
-                                    textStyle = TextStyle(fontSize = 12.sp),
-                                    iconEnabledFilterStrategy = IconFilterStrategy.ThemedFollowText
-                                )
-                            ).project(Modifier.padding(4.dp))
                         }
                     }
+                    AnimatedVisibility(visible = window.needsRestarting) {
+                        CommandButtonProjection(
+                            contentModel = Command(
+                                text = "Restart",
+                                action = window::restart
+                            ),
+                            presentationModel = CommandButtonPresentationModel(
+                                textStyle = TextStyle(fontSize = 12.sp),
+                                horizontalGapScaleFactor = 1.8f,
+                                verticalGapScaleFactor = 1.5f
+                            )
+                        ).project(Modifier.width(140.dp).padding(6.dp))
+                    }
                 }
-                AnimatedVisibility(visible = window.needsRestarting) {
-                    CommandButtonProjection(
-                        contentModel = Command(text = "Restart", action = window::restart),
-                        presentationModel = CommandButtonPresentationModel(
-                            textStyle = TextStyle(fontSize = 12.sp),
-                            horizontalGapScaleFactor = 1.8f,
-                            verticalGapScaleFactor = 1.5f
-                        )
-                    ).project(Modifier.width(140.dp).padding(6.dp))
-                }
-            }
-            Children(stack = root.childStack) {
-                when (it.instance) {
-                    is SettingsRoot.Child.Theme -> ThemeScreen()
-                    is SettingsRoot.Child.TitleBar -> TitleBarScreen(window)
-                    is SettingsRoot.Child.WindowCorner -> WindowCornerScreen(window)
-                }
+                CurrentTab()
             }
         }
     }
 }
 
 @Composable
-fun listOfCategories() = listOf(
-    Category.Theme to Icons.Utility.paintBrush(),
-    Category.TitleBar to Icons.Utility.windowAlt(),
-    Category.WindowCorner to Icons.Utility.window()
-).filter { if (it.first == Category.WindowCorner) hostOs.isWindows && windowsBuild >= 22_000 else true }
+fun listOfSettingsTabs(window: ApplicationWindowState) = listOf(ThemeTab, TitleBarTab(window), WindowCornerTab(window))
+    .filter { if (it is WindowCornerTab) hostOs.isWindows && windowsBuild >= 22_000 else true }

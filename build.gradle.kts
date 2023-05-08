@@ -35,10 +35,6 @@ dependencies {
     // Crypto - https://github.com/appmattus/crypto
     implementation(libs.crypto.cryptohash)
 
-    // Decompose - https://github.com/arkivanov/Decompose
-    implementation(libs.decompose.core)
-    implementation(libs.decompose.jetbrains)
-
     // Flow Extensions - https://github.com/hoc081098/FlowExt
     implementation(libs.flowext)
 
@@ -81,6 +77,10 @@ dependencies {
 
     // SLF4J No-operation implementation - https://www.slf4j.org
     implementation(libs.slf4j.nop)
+
+    // Voyager - https://github.com/adrielcafe/voyager
+    implementation(libs.voyager.navigator)
+    implementation(libs.voyager.tabNavigator)
 
     // Window Styler - https://github.com/MayakaApps/ComposeWindowStyler
     implementation(libs.windowstyler)

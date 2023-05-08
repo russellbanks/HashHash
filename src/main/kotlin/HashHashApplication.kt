@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,17 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import application.ApplicationState
-import application.LifecycleController
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
-import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import cafe.adriel.voyager.navigator.tab.CurrentTab
+import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.mayakapps.compose.windowstyler.WindowBackdrop
 import com.mayakapps.compose.windowstyler.WindowFrameStyle
 import com.mayakapps.compose.windowstyler.WindowStyle
 import com.russellbanks.HashHash.BuildConfig
 import components.Footer
-import components.Root
 import components.Snackbar
 import components.Tabs
 import components.Toolbar
@@ -51,19 +46,15 @@ import components.dialogs.TranslucentDialogOverlay
 import components.dialogs.UpdateAvailableDialog
 import components.dialogs.about.AboutDialog
 import components.dialogs.settings.SettingsDialog
-import components.screens.compare.CompareFilesScreen
-import components.screens.file.FileScreen
-import components.screens.text.TextScreen
+import components.screens.file.FileTab
 import helper.Icons
 import helper.Window
-import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
 import preferences.theme.ThemeHandler
 import preferences.windowcorner.WindowCornerHandler
 
-@OptIn(ExperimentalDecomposeApi::class)
 fun hashHashApplication() = auroraApplication {
     val windowState = rememberWindowState(
         position = WindowPosition(Alignment.Center),
@@ -71,7 +62,6 @@ fun hashHashApplication() = auroraApplication {
     )
     for (window in ApplicationState.windows) {
         key(window) {
-            LifecycleController(koinInject(), windowState)
             AuroraWindow(
                 skin = ThemeHandler.auroraSkin,
                 state = windowState,
@@ -87,34 +77,27 @@ fun hashHashApplication() = auroraApplication {
                     backdropType = WindowBackdrop.Mica,
                     frameStyle = WindowFrameStyle(cornerPreference = WindowCornerHandler.windowCorner)
                 )
-                Window.setupAWTWindow(window = this.window)
-                Box {
-                    Column {
-                        Toolbar()
-                        Tabs()
-                        Row(Modifier.fillMaxSize().weight(1f)) {
-                            ControlPane()
-                            VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
-                            Column {
-                                Children(
-                                    stack = koinInject<Root>().childStack,
-                                    animation = stackAnimation(fade(tween(durationMillis = 200)))
-                                ) {
-                                    when (it.instance) {
-                                        is Root.Child.File -> FileScreen()
-                                        is Root.Child.Text -> TextScreen()
-                                        is Root.Child.CompareFiles -> CompareFilesScreen()
-                                    }
+                TabNavigator(FileTab) { tabNavigator ->
+                    Window.setupAWTWindow(window = this.window)
+                    Box {
+                        Column {
+                            Toolbar()
+                            Tabs(tabNavigator)
+                            Row(Modifier.fillMaxSize().weight(1f)) {
+                                ControlPane()
+                                VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
+                                Box {
+                                    CurrentTab()
                                 }
                             }
+                            Footer()
                         }
-                        Footer()
+                        Snackbar()
+                        TranslucentDialogOverlay()
+                        UpdateAvailableDialog()
+                        SettingsDialog(window)
+                        AboutDialog()
                     }
-                    Snackbar()
-                    TranslucentDialogOverlay()
-                    UpdateAvailableDialog()
-                    SettingsDialog(window)
-                    AboutDialog()
                 }
             }
         }

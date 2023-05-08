@@ -33,7 +33,7 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun TextFieldShortcuts() {
-    val component: TextScreenComponent = koinInject()
+    val component: TextScreenModel = koinInject()
     Row(
         modifier = Modifier.fillMaxWidth().padding(4.dp),
         horizontalArrangement = Arrangement.Center

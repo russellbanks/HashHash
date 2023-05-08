@@ -44,6 +44,7 @@ import org.pushingpixels.aurora.component.model.CommandStripPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.model.StripOrientation
+import org.pushingpixels.aurora.component.model.TextFieldPresentationModel
 import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
 import org.pushingpixels.aurora.component.projection.CommandButtonStripProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
@@ -66,7 +67,8 @@ fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: ()
                         placeholder = "Output Hash",
                         readOnly = true,
                         onValueChange = {}
-                    )
+                    ),
+                    presentationModel = TextFieldPresentationModel(showBorder = false)
                 ).project(Modifier.fillMaxWidth())
             }
             CommandButtonStripProjection(

@@ -34,6 +34,7 @@ import androidx.compose.ui.window.WindowState
 import api.GitHubConstants
 import api.GitHubImpl
 import application.ApplicationState
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.dialogs.DialogState
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
@@ -53,10 +54,11 @@ object Window {
     @Composable
     fun setupAWTWindow(window: Window) {
         val scope = rememberCoroutineScope(Dispatchers::Default)
+        val currentTabIndex = LocalTabNavigator.current.current.options.index.toInt()
         with(window) {
             minimumSize = Dimension(minWindowWidth, minWindowHeight)
             dropTarget = DragAndDrop.target(scope) { droppedItems ->
-                DragAndDrop.setResult(droppedItems = droppedItems)
+                DragAndDrop.setResult(currentTabIndex = currentTabIndex, droppedItems = droppedItems)
             }
         }
     }

@@ -27,10 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import components.screens.compare.CompareFilesComponent
-import components.screens.file.FileScreenComponent
-import components.screens.text.TextScreenComponent
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import components.screens.compare.CompareFilesModel
+import components.screens.file.FileScreenModel
+import components.screens.text.TextScreenModel
 import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
@@ -40,18 +40,19 @@ import org.pushingpixels.aurora.theming.decoration.AuroraDecorationArea
 
 @Composable
 fun Footer() {
-    val root: Root = koinInject()
-    val fileScreen: FileScreenComponent = koinInject()
-    val textScreen: TextScreenComponent = koinInject()
-    val compareScreen: CompareFilesComponent = koinInject()
+    val tabNavigator = LocalTabNavigator.current
+    val fileScreen: FileScreenModel = koinInject()
+    val textScreen: TextScreenModel = koinInject()
+    val compareScreen: CompareFilesModel = koinInject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(
                 contentModel = LabelContentModel(
-                    text = when (root.childStack.subscribeAsState().value.active.instance) {
-                        is Root.Child.File -> fileScreen.footerText
-                        is Root.Child.Text -> textScreen.footerText
-                        is Root.Child.CompareFiles -> compareScreen.footerText
+                    text = when (tabNavigator.current.options.index.toInt()) {
+                        0 -> fileScreen.footerText
+                        1 -> textScreen.footerText
+                        2 -> compareScreen.footerText
+                        else -> ""
                     }
                 )
             ).project()

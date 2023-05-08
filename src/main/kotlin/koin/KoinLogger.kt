@@ -28,7 +28,7 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 
 class KoinLogger : Logger(), Klogging {
-    val scope = CoroutineScope(Dispatchers.Default)
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     override fun display(level: Level, msg: String) {
         scope.launch {

@@ -24,22 +24,18 @@ import Hashing.hash
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import cafe.adriel.voyager.core.model.ScreenModel
 import com.appmattus.crypto.Algorithm
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import components.screens.ParentComponent
 import helper.FileUtils
-import org.koin.core.annotation.Single
+import org.koin.core.annotation.Factory
 import org.koin.core.component.KoinComponent
 import org.lwjgl.BufferUtils
 import org.lwjgl.system.MemoryUtil
 
-@Single
-class TextScreenComponent(
-    lifecycle: LifecycleRegistry
-) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent {
+@Factory
+class TextScreenModel : ScreenModel, KoinComponent {
     var givenText by mutableStateOf("")
     var givenTextHash by mutableStateOf("")
     var comparisonHash by mutableStateOf("")

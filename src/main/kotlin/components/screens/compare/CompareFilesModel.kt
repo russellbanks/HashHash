@@ -39,10 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import com.appmattus.crypto.Algorithm
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.hoc081098.flowext.interval
 import components.HashProgress
 import components.OutputTextFieldRow
@@ -51,14 +50,13 @@ import components.screens.ParentComponent
 import helper.FileUtils
 import helper.Icons
 import io.klogging.Klogging
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Single
+import org.koin.core.annotation.Factory
 import org.koin.core.component.KoinComponent
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -74,10 +72,8 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-@Single
-class CompareFilesComponent(
-    lifecycle: LifecycleRegistry
-) : ComponentContext by DefaultComponentContext(lifecycle), KoinComponent, Klogging {
+@Factory
+class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
     val algorithm = ParentComponent.algorithm
     var fileOne: File? by mutableStateOf(null)
     private var fileOneHashUppercase by mutableStateOf(true)
@@ -111,9 +107,9 @@ class CompareFilesComponent(
 
     val doHashesMatch get() = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
 
-    fun onCalculateClicked(scope: CoroutineScope) {
+    fun onCalculateClicked() {
         if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
-            scope.launch(Dispatchers.Default) {
+            coroutineScope.launch(Dispatchers.Default) {
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
                         Hashing.catchFileHashingExceptions {
@@ -132,7 +128,7 @@ class CompareFilesComponent(
                         }
                     }
                 )
-                scope.launch(Dispatchers.Default) {
+                coroutineScope.launch(Dispatchers.Default) {
                     interval(Duration.ZERO, 1.seconds)
                         .takeWhile { comparisonJobList?.first()?.isActive == true }
                         .collect {
@@ -142,7 +138,7 @@ class CompareFilesComponent(
                             )
                         }
                 }
-                scope.launch(Dispatchers.Default) {
+                coroutineScope.launch(Dispatchers.Default) {
                     interval(Duration.ZERO, 1.seconds)
                         .takeWhile { comparisonJobList?.get(1)?.isActive == true }
                         .collect {

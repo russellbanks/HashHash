@@ -26,11 +26,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
+import helper.Icons
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -38,28 +42,43 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.theme.Theme
 import preferences.theme.ThemeHandler
 
-@OptIn(ExperimentalStdlibApi::class)
-@Composable
-fun ThemeScreen() {
-    Column(Modifier.padding(10.dp)) {
-        LabelProjection(contentModel = LabelContentModel(text = "Theme")).project()
-        LazyColumn {
-            items(Theme.entries) { theme ->
-                AuroraBoxWithHighlights(
-                    modifier = Modifier.fillMaxWidth().padding(6.dp),
-                    selected = theme == ThemeHandler.theme,
-                    onClick = {
-                        if (ThemeHandler.theme != theme) {
-                            ThemeHandler.theme = theme
+object ThemeTab : Tab {
+    override val options: TabOptions
+        @Composable
+        get() {
+            val icon = Icons.Utility.paintBrush()
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = "Theme",
+                    icon = icon
+                )
+            }
+        }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    @Composable
+    override fun Content() {
+        Column(Modifier.padding(10.dp)) {
+            LabelProjection(contentModel = LabelContentModel(text = options.title)).project()
+            LazyColumn {
+                items(Theme.entries) { theme ->
+                    AuroraBoxWithHighlights(
+                        modifier = Modifier.fillMaxWidth().padding(6.dp),
+                        selected = theme == ThemeHandler.theme,
+                        onClick = {
+                            if (ThemeHandler.theme != theme) {
+                                ThemeHandler.theme = theme
+                            }
                         }
+                    ) {
+                        LabelProjection(
+                            contentModel = LabelContentModel(text = theme.name),
+                            presentationModel = LabelPresentationModel(
+                                textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                            )
+                        ).project(Modifier.padding(4.dp))
                     }
-                ) {
-                    LabelProjection(
-                        contentModel = LabelContentModel(text = theme.name),
-                        presentationModel = LabelPresentationModel(
-                            textStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                        )
-                    ).project(Modifier.padding(4.dp))
                 }
             }
         }

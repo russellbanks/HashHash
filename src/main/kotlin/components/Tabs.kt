@@ -23,8 +23,11 @@ package components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import org.koin.compose.koinInject
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.TabNavigator
+import components.screens.compare.CompareFilesTab
+import components.screens.file.FileTab
+import components.screens.text.TextTab
 import org.pushingpixels.aurora.component.model.TabContentModel
 import org.pushingpixels.aurora.component.model.TabsContentModel
 import org.pushingpixels.aurora.component.model.TabsPresentationModel
@@ -32,21 +35,20 @@ import org.pushingpixels.aurora.component.projection.TabsProjection
 import org.pushingpixels.aurora.theming.TabContentSeparatorKind
 
 @Composable
-fun Tabs() {
-    val root: Root = koinInject()
+fun Tabs(tabNavigator: TabNavigator = LocalTabNavigator.current) {
     TabsProjection(
         contentModel = TabsContentModel(
             tabs = listOf(
-                TabContentModel(text = "File"),
-                TabContentModel(text = "Text"),
-                TabContentModel(text = "Compare Files")
+                TabContentModel(text = FileTab.options.title),
+                TabContentModel(text = TextTab.options.title),
+                TabContentModel(text = CompareFilesTab.options.title)
             ),
-            selectedTabIndex = root.childStack.subscribeAsState().value.active.instance.ordinal,
+            selectedTabIndex = tabNavigator.current.options.index.toInt(),
             onTriggerTabSelected = {
                 when (it) {
-                    0 -> root.onFileTabClicked()
-                    1 -> root.onTextTabClicked()
-                    2 -> root.onCompareFilesTabClicked()
+                    0 -> tabNavigator.current = FileTab
+                    1 -> tabNavigator.current = TextTab
+                    2 -> tabNavigator.current = CompareFilesTab
                 }
             }
         ),

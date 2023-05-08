@@ -30,7 +30,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import api.GitHubImpl
 import components.dialogs.DialogState
@@ -43,12 +43,12 @@ import org.pushingpixels.aurora.theming.BackgroundAppearanceStrategy
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.IconFilterStrategy
 import org.pushingpixels.aurora.theming.auroraBackground
-import org.pushingpixels.aurora.window.AuroraDecorationArea
+import org.pushingpixels.aurora.theming.decoration.AuroraDecorationArea
 
 @Composable
 fun Toolbar(
     modifier: Modifier = Modifier,
-    iconDimension: Dp = 16.dp
+    iconDimension: DpSize = DpSize(16.dp, 16.dp)
 ) {
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Toolbar) {
         Row(

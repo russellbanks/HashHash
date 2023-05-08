@@ -30,7 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberOldScrollbarAdapter
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -103,7 +103,7 @@ fun AlgorithmSelectionList() {
         }
         AuroraVerticalScrollbar(
             modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(2.dp),
-            adapter = rememberOldScrollbarAdapter(scrollState = lazyListState)
+            adapter = rememberScrollbarAdapter(scrollState = lazyListState)
         )
     }
 }

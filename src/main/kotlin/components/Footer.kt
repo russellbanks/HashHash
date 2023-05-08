@@ -36,7 +36,7 @@ import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
-import org.pushingpixels.aurora.window.AuroraDecorationArea
+import org.pushingpixels.aurora.theming.decoration.AuroraDecorationArea
 
 @Composable
 fun Footer() {

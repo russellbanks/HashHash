@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import components.controlpane.algorithmselection.AlgorithmSelectionList
 import org.pushingpixels.aurora.theming.DecorationAreaType
 import org.pushingpixels.aurora.theming.auroraBackground
-import org.pushingpixels.aurora.window.AuroraDecorationArea
+import org.pushingpixels.aurora.theming.decoration.AuroraDecorationArea
 
 @Composable
 fun ControlPane() {

@@ -101,7 +101,7 @@ object Window {
         ): Command = Command(
             text = "File",
             secondaryContentModel = CommandMenuContentModel(
-                listOf(
+                groups = listOf(
                     CommandGroup(
                         commands = listOf(
                             Command(
@@ -154,7 +154,7 @@ object Window {
         private fun helpHeaderButton(): Command = Command(
             text = "Help",
             secondaryContentModel = CommandMenuContentModel(
-                listOf(
+                groups = listOf(
                     CommandGroup(
                         commands = listOf(
                             Command(

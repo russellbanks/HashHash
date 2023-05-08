@@ -1,5 +1,5 @@
 [versions]
-aurora = "1.3.0"
+aurora = "2.0-20230423.032104-3"
 buildconfig = "4.0.4"
 compose = "1.4.0"
 coroutines = "1.7.0"

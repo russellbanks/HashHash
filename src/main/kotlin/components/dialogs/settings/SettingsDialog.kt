@@ -91,7 +91,7 @@ fun SettingsDialog(window: ApplicationWindowState) {
                     CommandButtonProjection(
                         contentModel = Command(text = "Restart", action = window::restart),
                         presentationModel = CommandButtonPresentationModel(
-                            textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center),
+                            textStyle = TextStyle(fontSize = 12.sp),
                             horizontalGapScaleFactor = 1.8f,
                             verticalGapScaleFactor = 1.5f
                         )

@@ -116,7 +116,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
                             fileOneResultMap[algorithm] = fileOne?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileOneHashProgress = it }
-                            )?.run { if (fileOneHashUppercase) uppercase() else lowercase() } ?: ""
+                            )?.run { if (fileOneHashUppercase) uppercase() else lowercase() }.orEmpty()
                         }
                     },
                     async(Dispatchers.IO) {
@@ -124,7 +124,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
                             fileTwoResultMap[algorithm] = fileTwo?.hash(
                                 algorithm = algorithm,
                                 hashProgressCallback = { fileTwoHashProgress = it }
-                            )?.run { if (fileTwoHashUppercase) uppercase() else lowercase() } ?: ""
+                            )?.run { if (fileTwoHashUppercase) uppercase() else lowercase() }.orEmpty()
                         }
                     }
                 )
@@ -171,14 +171,14 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
     fun areJobsActive() = (comparisonJobList?.count { it.isActive } ?: 0) <= 0
 
     private fun selectFile(fileComparison: FileComparison) {
-        FileUtils.openFileDialogAndGetResult().also {
-            if (it != null) {
+        FileUtils.openFileDialogAndGetResult().also { file ->
+            if (file != null) {
                 if (fileComparison == FileComparison.One) {
                     fileOneResultMap.clear()
-                    fileOne = it
+                    fileOne = file
                 } else if (fileComparison == FileComparison.Two) {
                     fileTwoResultMap.clear()
-                    fileTwo = it
+                    fileTwo = file
                 }
             }
         }
@@ -269,7 +269,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
                         )
                     ).project()
                     LabelProjection(
-                        contentModel = LabelContentModel(text = "Extension: ${file?.extension ?: ""}")
+                        contentModel = LabelContentModel(text = "Extension: ${file?.extension.orEmpty()}")
                     ).project()
                     LabelProjection(
                         contentModel = LabelContentModel(
@@ -277,7 +277,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
                         )
                     ).project()
                     LabelProjection(
-                        contentModel = LabelContentModel(text = "Path: ${file?.absolutePath ?: ""}")
+                        contentModel = LabelContentModel(text = "Path: ${file?.absolutePath.orEmpty()}")
                     ).project()
                 }
             }

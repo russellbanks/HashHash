@@ -4,7 +4,7 @@ buildconfig = "4.0.4"
 compose = "1.4.0"
 coroutines = "1.7.0"
 cryptohash = "0.10.1"
-detekt = "1.22.0"
+detekt = "1.23.0-RC3"
 flowext = "0.6.0"
 github-api = "1.314"
 jna = "5.13.0"
@@ -57,7 +57,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 kotlincsv = { module = "com.github.doyaaaaaken:kotlin-csv", version.ref = "kotlin-csv" }
 
 lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
-lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
+lwjgl-nativefiledialogs = { module = "org.lwjgl:lwjgl-nfd", version.ref = "lwjgl" }
 
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
 

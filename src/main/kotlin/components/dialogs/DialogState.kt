@@ -23,7 +23,7 @@ package components.dialogs
 import androidx.compose.runtime.mutableStateMapOf
 
 object DialogState {
-    private var dialogsMap = mutableStateMapOf(
+    private val dialogsMap = mutableStateMapOf(
         Dialogs.About to false, Dialogs.Settings to false, Dialogs.Update to false
     )
 
@@ -38,7 +38,9 @@ object DialogState {
     }
 
     object Settings : Dialog {
-        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Settings }
+        override fun open() {
+            dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Settings }
+        }
 
         override fun close() {
             dialogsMap[Dialogs.Settings] = false
@@ -48,7 +50,9 @@ object DialogState {
     }
 
     object About : Dialog {
-        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.About }
+        override fun open() {
+            dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.About }
+        }
 
         override fun close() {
             dialogsMap[Dialogs.About] = false
@@ -58,7 +62,9 @@ object DialogState {
     }
 
     object Update : Dialog {
-        override fun open() = dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Update }
+        override fun open() {
+            dialogsMap.forEach { dialogsMap[it.key] = it.key == Dialogs.Update }
+        }
 
         override fun close() {
             dialogsMap[Dialogs.Update] = false

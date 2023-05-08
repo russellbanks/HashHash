@@ -20,18 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package helper
 
+import io.klogging.Klogging
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.lwjgl.PointerBuffer
-import org.lwjgl.system.Checks.remainingSafe
-import org.lwjgl.system.MemoryStack.stackGet
-import org.lwjgl.system.MemoryUtil.NULL
-import org.lwjgl.system.MemoryUtil.memAddressSafe
-import org.lwjgl.system.MemoryUtil.memUTF8Safe
-import org.lwjgl.system.NativeType
-import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_openFileDialog
-import org.lwjgl.util.tinyfd.TinyFileDialogs.ntinyfd_saveFileDialog
+import org.lwjgl.system.MemoryStack.stackPush
+import org.lwjgl.util.nfd.NFDFilterItem
+import org.lwjgl.util.nfd.NativeFileDialog.NFD_CANCEL
+import org.lwjgl.util.nfd.NativeFileDialog.NFD_FreePath
+import org.lwjgl.util.nfd.NativeFileDialog.NFD_GetError
+import org.lwjgl.util.nfd.NativeFileDialog.NFD_OKAY
+import org.lwjgl.util.nfd.NativeFileDialog.NFD_OpenDialog
+import org.lwjgl.util.nfd.NativeFileDialog.NFD_SaveDialog
 import java.io.File
+import java.nio.ByteBuffer
 
-object FileUtils {
+object FileUtils : Klogging {
 
     fun getFormattedBytes(bytes: Long): String {
         // Check for a simple case when bytes are less than 1024
@@ -51,96 +56,53 @@ object FileUtils {
         return "%.1f %sB".format(value, unitPrefixes[unitIndex])
     }
 
-    /**
-     * Displays a file open dialog.
-     *
-     * @param title                   the dialog title or {@code NULL}
-     * @param defaultPathAndFile      the default path and/or file or {@code NULL}
-     * @param filterPatterns          an array of file type patterns ({@code NULL} or {"*.jpg","*.png"}
-     * @param singleFilterDescription {@code NULL} or "image files"
-     * @param allowMultipleSelects    if true, multiple selections are allowed
-     *
-     * @return the file(s) selected or {@code NULL} on cancel. In case of multiple files, the separator is '|'.
-     */
-    @NativeType("char const *")
-    fun openFileDialog(
-        @NativeType("char const *") title: CharSequence?,
-        @NativeType("char const *") defaultPathAndFile: CharSequence?,
-        @NativeType("char const * const *") filterPatterns: PointerBuffer?,
-        @NativeType("char const *") singleFilterDescription: CharSequence?,
-        @NativeType("int") allowMultipleSelects: Boolean
-    ): String? {
-        val stack = stackGet()
-        val stackPointer = stack.pointer
-        return try {
-            stack.nUTF8Safe(title, true)
-            val titleEncoded = if (title == null) NULL else stack.pointerAddress
-            stack.nUTF8Safe(defaultPathAndFile, true)
-            val defaultPathAndFileEncoded = if (defaultPathAndFile == null) NULL else stack.pointerAddress
-            stack.nUTF8Safe(singleFilterDescription, true)
-            val singleFilterDescriptionEncoded = if (singleFilterDescription == null) NULL else stack.pointerAddress
-            val result = ntinyfd_openFileDialog(
-                titleEncoded,
-                defaultPathAndFileEncoded,
-                remainingSafe(filterPatterns),
-                memAddressSafe(filterPatterns),
-                singleFilterDescriptionEncoded,
-                if (allowMultipleSelects) 1 else 0
-            )
-            memUTF8Safe(result)
-        } finally {
-            stack.pointer = stackPointer
+    private fun openFileDialog(): String? {
+        stackPush().use { stack ->
+            val pointerBuffer: PointerBuffer = stack.mallocPointer(1)
+            return when (NFD_OpenDialog(pointerBuffer, null, null as ByteBuffer?)) {
+                NFD_OKAY -> pointerBuffer.getStringUTF8(0).also { NFD_FreePath(pointerBuffer.get(0)) }
+                NFD_CANCEL -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        logger.info("User pressed cancel in open file dialog")
+                    }
+                    null
+                }
+                else -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        logger.error("Open file dialog error: ${NFD_GetError()}")
+                    }
+                    null
+                }
+            }
         }
     }
 
     fun openFileDialogAndGetResult(): File? {
-        openFileDialog(
-            title = "Open",
-            defaultPathAndFile = null,
-            filterPatterns = null,
-            singleFilterDescription = null,
-            allowMultipleSelects = false
-        ).also {
+        openFileDialog().also {
             return if (it != null) File(it) else null
         }
     }
 
-    /**
-     * Displays a file save dialog.
-     *
-     * @param title                   the dialog title or `NULL`
-     * @param defaultPathAndFile      the default path and/or file or `NULL`
-     * @param filterPatterns          an array of file type patterns (`NULL` or {"*.jpg","*.png"}
-     * @param singleFilterDescription `NULL` or "image files"
-     *
-     * @return the selected file path or `NULL` on cancel
-     */
-    @NativeType("char const *")
-    fun openSaveFileDialog(
-        @NativeType("char const *") title: CharSequence?,
-        @NativeType("char const *") defaultPathAndFile: CharSequence?,
-        @NativeType("char const * const *") filterPatterns: PointerBuffer?,
-        @NativeType("char const *") singleFilterDescription: CharSequence?
-    ): String? {
-        val stack = stackGet()
-        val stackPointer = stack.pointer
-        return try {
-            stack.nUTF8Safe(title, true)
-            val titleEncoded = if (title == null) NULL else stack.pointerAddress
-            stack.nUTF8Safe(defaultPathAndFile, true)
-            val defaultPathAndFileEncoded = if (defaultPathAndFile == null) NULL else stack.pointerAddress
-            stack.nUTF8Safe(singleFilterDescription, true)
-            val singleFilterDescriptionEncoded = if (singleFilterDescription == null) NULL else stack.pointerAddress
-            val result = ntinyfd_saveFileDialog(
-                titleEncoded,
-                defaultPathAndFileEncoded,
-                remainingSafe(filterPatterns),
-                memAddressSafe(filterPatterns),
-                singleFilterDescriptionEncoded
-            )
-            memUTF8Safe(result)
-        } finally {
-            stack.pointer = stackPointer
+    fun openSaveFileDialog(fileName: String, filter: String, singleFilterDescription: String): String? {
+        stackPush().use { stack ->
+            val filters = NFDFilterItem.malloc(1)
+            filters.first().name(stack.UTF8(singleFilterDescription)).spec(stack.UTF8(filter))
+            val pointerBuffer = stack.mallocPointer(1)
+            return when (NFD_SaveDialog(pointerBuffer, filters, null, fileName)) {
+                NFD_OKAY -> pointerBuffer.getStringUTF8(0).also { NFD_FreePath(pointerBuffer.get(0)) }
+                NFD_CANCEL -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        logger.info("User pressed cancel in save file dialog")
+                    }
+                    null
+                }
+                else -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        logger.error("Save dialog error: ${NFD_GetError()}")
+                    }
+                    null
+                }
+            }
         }
     }
 }

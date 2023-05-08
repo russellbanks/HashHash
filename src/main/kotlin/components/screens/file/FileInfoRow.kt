@@ -48,15 +48,15 @@ fun FileInfoRow(file: File?) {
                     }
                 }
                 LabelProjection(
-                    contentModel = LabelContentModel(text = "Extension: ${file?.extension ?: ""}")
+                    contentModel = LabelContentModel(text = "Extension: ${file?.extension.orEmpty()}")
                 ).project()
                 LabelProjection(
                     contentModel = LabelContentModel(
-                        text = "Size: ${file?.let { FileUtils.getFormattedBytes(it.length()) } ?: ""}"
+                        text = "Size: ${file?.let { FileUtils.getFormattedBytes(it.length()) }.orEmpty()}"
                     )
                 ).project()
                 LabelProjection(
-                    contentModel = LabelContentModel(text = "Path: ${file?.absolutePath ?: ""}")
+                    contentModel = LabelContentModel(text = "Path: ${file?.absolutePath.orEmpty()}")
                 ).project()
             }
         }

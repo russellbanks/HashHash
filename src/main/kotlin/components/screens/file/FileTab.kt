@@ -87,7 +87,7 @@ object FileTab : Tab {
                 hashedOutput = fileScreenModel.resultMap.getOrDefault(ParentComponent.algorithm, ""),
                 comparisonHash = fileScreenModel.comparisonHash,
                 onPasteClick = {
-                    fileScreenModel.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot(Char::isWhitespace)
+                    fileScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
                 },
                 onClearClick = { fileScreenModel.comparisonHash = "" },
                 onTextFieldChange = { fileScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }

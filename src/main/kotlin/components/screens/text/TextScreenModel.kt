@@ -31,8 +31,6 @@ import components.screens.ParentComponent
 import helper.FileUtils
 import org.koin.core.annotation.Factory
 import org.koin.core.component.KoinComponent
-import org.lwjgl.BufferUtils
-import org.lwjgl.system.MemoryUtil
 
 @Factory
 class TextScreenModel : ScreenModel, KoinComponent {
@@ -76,12 +74,8 @@ class TextScreenModel : ScreenModel, KoinComponent {
 
     private suspend fun hashTextLineByLine(lines: Sequence<String>) {
         FileUtils.openSaveFileDialog(
-            title = "Save",
-            defaultPathAndFile = null,
-            filterPatterns = BufferUtils.createPointerBuffer(1).apply {
-                put(MemoryUtil.memASCII("*.csv"))
-                rewind()
-            },
+            fileName = "Output",
+            filter = "csv",
             singleFilterDescription = "Comma separated values (*.csv)"
         )?.let { path ->
             csvWriter().openAsync(path) {

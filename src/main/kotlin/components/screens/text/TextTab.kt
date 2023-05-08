@@ -194,7 +194,7 @@ object TextTab : Tab {
                 hashedOutput = textScreenModel.givenTextHash,
                 comparisonHash = textScreenModel.comparisonHash,
                 onPasteClick = {
-                    textScreenModel.comparisonHash = (clipboardManager.getText()?.text ?: "").filterNot(Char::isWhitespace)
+                    textScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
                 },
                 onClearClick = { textScreenModel.comparisonHash = "" },
                 onTextFieldChange = { textScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }

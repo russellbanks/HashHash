@@ -1,5 +1,4 @@
 [versions]
-accompanist = "0.30.1"
 aurora = "1.3.0"
 buildconfig = "4.0.4"
 compose = "1.4.0"
@@ -24,8 +23,6 @@ slf4j = "2.0.7"
 windowstyler = "0.3.2"
 
 [libraries]
-accompanist-flowlayouts = { module = "ca.gosyer:accompanist-flowlayout", version.ref = "accompanist" }
-
 aurora-component = { module = "org.pushing-pixels:aurora-component", version.ref = "aurora" }
 aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "aurora" }
 aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "aurora" }

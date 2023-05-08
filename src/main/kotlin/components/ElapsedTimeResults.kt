@@ -20,20 +20,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowColumn
 import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import java.text.SimpleDateFormat
 import kotlin.time.DurationUnit
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ElapsedTimeResults(instantBeforeHash: Instant?, instantAfterHash: Instant?) {
     SelectionContainer {
-        FlowColumn(mainAxisSpacing = 4.dp) {
+        FlowColumn(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = "Started at: ${

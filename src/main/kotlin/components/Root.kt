@@ -91,12 +91,12 @@ class RootComponent(lifecycle: LifecycleRegistry) : Root, ComponentContext by De
 
     private sealed class Config : Parcelable {
         @Parcelize
-        object File : Config()
+        data object File : Config()
 
         @Parcelize
-        object Text : Config()
+        data object Text : Config()
 
         @Parcelize
-        object CompareFiles : Config()
+        data object CompareFiles : Config()
     }
 }

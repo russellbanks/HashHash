@@ -31,7 +31,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreenComponent
-import koin.inject
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
@@ -40,10 +40,10 @@ import org.pushingpixels.aurora.theming.decoration.AuroraDecorationArea
 
 @Composable
 fun Footer() {
-    val root: Root by inject()
-    val fileScreen: FileScreenComponent by inject()
-    val textScreen: TextScreenComponent by inject()
-    val compareScreen: CompareFilesComponent by inject()
+    val root: Root = koinInject()
+    val fileScreen: FileScreenComponent = koinInject()
+    val textScreen: TextScreenComponent = koinInject()
+    val compareScreen: CompareFilesComponent = koinInject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(

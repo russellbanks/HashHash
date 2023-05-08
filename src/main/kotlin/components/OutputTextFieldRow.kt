@@ -79,7 +79,9 @@ fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: ()
                                 if (value.isNotBlank()) {
                                     clipboardManager.setText(AnnotatedString(text = value))
                                     ParentComponent.snackbarHostState.currentSnackbarData?.dismiss()
-                                    scope.launch { ParentComponent.snackbarHostState.showSnackbar("Copied to clipboard") }
+                                    scope.launch {
+                                        ParentComponent.snackbarHostState.showSnackbar("Copied to clipboard")
+                                    }
                                 }
                             }
                         ),

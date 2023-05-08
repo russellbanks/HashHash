@@ -27,13 +27,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import koin.inject
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun TextFieldShortcuts() {
-    val component: TextScreenComponent by inject()
+    val component: TextScreenComponent = koinInject()
     Row(
         modifier = Modifier.fillMaxWidth().padding(4.dp),
         horizontalArrangement = Arrangement.Center

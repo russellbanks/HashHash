@@ -56,7 +56,7 @@ import components.screens.file.FileScreen
 import components.screens.text.TextScreen
 import helper.Icons
 import helper.Window
-import koin.get
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -71,7 +71,7 @@ fun hashHashApplication() = auroraApplication {
     )
     for (window in ApplicationState.windows) {
         key(window) {
-            LifecycleController(get(), windowState)
+            LifecycleController(koinInject(), windowState)
             AuroraWindow(
                 skin = ThemeHandler.auroraSkin,
                 state = windowState,
@@ -97,7 +97,7 @@ fun hashHashApplication() = auroraApplication {
                             VerticalSeparatorProjection().project(Modifier.fillMaxHeight())
                             Column {
                                 Children(
-                                    stack = get<Root>().childStack,
+                                    stack = koinInject<Root>().childStack,
                                     animation = stackAnimation(fade(tween(durationMillis = 200)))
                                 ) {
                                     when (it.instance) {

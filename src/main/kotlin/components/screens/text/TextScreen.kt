@@ -43,9 +43,9 @@ import androidx.compose.ui.unit.sp
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
 import components.dialogs.settings.toFriendlyCase
-import koin.inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.ComboBoxContentModel
 import org.pushingpixels.aurora.component.model.ComboBoxPresentationModel
 import org.pushingpixels.aurora.component.model.Command
@@ -63,7 +63,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun TextScreen() {
-    val component: TextScreenComponent by inject()
+    val component: TextScreenComponent = koinInject()
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )

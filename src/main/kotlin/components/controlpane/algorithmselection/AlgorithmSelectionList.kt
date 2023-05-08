@@ -47,15 +47,15 @@ import components.screens.ParentComponent
 import components.screens.compare.CompareFilesComponent
 import components.screens.file.FileScreenComponent
 import components.screens.text.TextScreenComponent
-import koin.inject
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
 
 @Composable
 fun AlgorithmSelectionList() {
-    val fileScreenComponent: FileScreenComponent by inject()
-    val textScreenComponent: TextScreenComponent by inject()
-    val compareFilesComponent: CompareFilesComponent by inject()
+    val fileScreenComponent: FileScreenComponent = koinInject()
+    val textScreenComponent: TextScreenComponent = koinInject()
+    val compareFilesComponent: CompareFilesComponent = koinInject()
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
         LazyColumn(

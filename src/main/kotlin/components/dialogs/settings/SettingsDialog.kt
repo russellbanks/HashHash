@@ -30,7 +30,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import application.ApplicationWindowState
@@ -43,8 +42,8 @@ import components.dialogs.settings.screens.TitleBarScreen
 import components.dialogs.settings.screens.WindowCornerScreen
 import helper.Icons
 import helper.windows.windowsBuild
-import koin.inject
 import org.jetbrains.skiko.hostOs
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -56,7 +55,7 @@ import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 @Composable
 fun SettingsDialog(window: ApplicationWindowState) {
-    val root: SettingsRoot by inject()
+    val root: SettingsRoot = koinInject()
     val childStack = root.childStack.subscribeAsState()
     val activeComponent = childStack.value.active.instance
     Dialog(dialog = DialogState.Dialogs.Settings) {

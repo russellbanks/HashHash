@@ -40,7 +40,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import helper.Icons
-import koin.inject
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -52,7 +52,7 @@ import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 @Composable
 fun CompareFilesScreen() {
-    val component: CompareFilesComponent by inject()
+    val component: CompareFilesComponent = koinInject()
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )

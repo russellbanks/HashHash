@@ -39,7 +39,7 @@ import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
 import components.screens.ParentComponent
-import koin.inject
+import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -48,7 +48,7 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 
 @Composable
 fun FileScreen() {
-    val component: FileScreenComponent by inject()
+    val component: FileScreenComponent = koinInject()
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
         decorationAreaType = AuroraSkin.decorationAreaType
     )

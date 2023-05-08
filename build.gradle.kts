@@ -67,6 +67,7 @@ dependencies {
     // Koin - https://github.com/InsertKoinIO/koin
     implementation(libs.koin.core)
     implementation(libs.koin.annotations)
+    implementation(libs.koin.compose)
     ksp(libs.koin.ksp.compiler)
 
     // Kotlin CSV - https://github.com/doyaaaaaken/kotlin-csv

@@ -23,12 +23,12 @@ HashHash is a Multiplatform Graphical User Interface for hashing files, written 
 
 ## Supporting algorithms
 
-HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here](https://github.com/appmattus/crypto/tree/main/cryptohash).
+HashHash uses functionality from [crypto](https://github.com/appmattus/crypto) in order to implement each individual hash. The full list of available hashes implemented by crypto can be read [here](https://github.com/appmattus/crypto/blob/main/cryptohash/README.md).
 
 ## Built With
 
-* [Compose for Desktop](https://github.com/JetBrains/compose-jb)
-* [Kotlin](https://kotlinlang.org/) - The Kotlin Programming Language
+* [Compose for Desktop](https://github.com/JetBrains/compose-multiplatform)
+* [Kotlin](https://kotlinlang.org) - The Kotlin Programming Language
 * [Aurora](https://github.com/kirill-grouchnikov/aurora) - A modern, responsive, and beautiful UI framework for Compose for Desktop
 * [crypto](https://github.com/appmattus/crypto) - Provides the functionality for each hash
 * [LWJGL](https://github.com/LWJGL/lwjgl3) - Java bindings to [Tiny File Dialogs](https://sourceforge.net/projects/tinyfiledialogs/)

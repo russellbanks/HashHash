@@ -105,7 +105,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             modules("java.instrument", "java.management", "java.prefs", "jdk.unsupported")
-            javaHome = System.getenv("JAVA_HOME")
+            System.getenv("JAVA_HOME")?.let { javaHome = it }
             packageName = project.name
             packageVersion = project.version.toString()
             description = "A Multiplatform GUI for Hashing"

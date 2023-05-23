@@ -34,14 +34,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.DragData
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.onExternalDrag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import helper.Icons
+import java.io.File
+import java.net.URI
 import koin.getScreenModel
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
@@ -62,6 +67,7 @@ object CompareFilesTab : Tab {
             )
         }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
         val compareFilesModel = getScreenModel<CompareFilesModel>()
@@ -78,11 +84,31 @@ object CompareFilesTab : Tab {
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 compareFilesModel.FileComparisonColumn(
-                    modifier = Modifier.fillMaxWidth(0.5f),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .onExternalDrag { externalDragValue ->
+                            val dragData = externalDragValue.dragData
+                            if (dragData is DragData.FilesList) {
+                                compareFilesModel.setDroppedFile(
+                                    fileComparison = CompareFilesModel.FileComparison.One,
+                                    file = File(URI(dragData.readFiles().first()))
+                                )
+                            }
+                        },
                     fileComparison = CompareFilesModel.FileComparison.One
                 )
                 compareFilesModel.FileComparisonColumn(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onExternalDrag { externalDragValue ->
+                            val dragData = externalDragValue.dragData
+                            if (dragData is DragData.FilesList) {
+                                compareFilesModel.setDroppedFile(
+                                    fileComparison = CompareFilesModel.FileComparison.Two,
+                                    file = File(URI(dragData.readFiles().first()))
+                                )
+                            }
+                        },
                     fileComparison = CompareFilesModel.FileComparison.Two
                 )
             }

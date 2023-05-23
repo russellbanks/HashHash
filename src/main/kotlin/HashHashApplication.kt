@@ -49,6 +49,7 @@ import components.dialogs.settings.SettingsDialog
 import components.screens.file.FileTab
 import helper.Icons
 import helper.Window
+import java.awt.Dimension
 import org.pushingpixels.aurora.component.projection.VerticalSeparatorProjection
 import org.pushingpixels.aurora.window.AuroraWindow
 import org.pushingpixels.aurora.window.auroraApplication
@@ -78,7 +79,7 @@ fun hashHashApplication() = auroraApplication {
                     frameStyle = WindowFrameStyle(cornerPreference = WindowCornerHandler.windowCorner)
                 )
                 TabNavigator(FileTab) { tabNavigator ->
-                    Window.setupAWTWindow(window = this.window)
+                    this.window.minimumSize = Dimension(Window.minWindowWidth, Window.minWindowHeight)
                     Box {
                         Column {
                             Toolbar()

@@ -29,8 +29,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.DragData
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.onExternalDrag
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -42,6 +45,8 @@ import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
 import components.screens.ParentComponent
+import java.io.File
+import java.net.URI
 import koin.getScreenModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -59,6 +64,7 @@ object FileTab : Tab {
             )
         }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
         val fileScreenModel = getScreenModel<FileScreenModel>()
@@ -69,7 +75,13 @@ object FileTab : Tab {
             modifier = Modifier
                 .padding(16.dp)
                 .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
-                .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp)
+                .onExternalDrag { externalDragValue ->
+                    val dragData = externalDragValue.dragData
+                    if (dragData is DragData.FilesList) {
+                        fileScreenModel.setComponentFile(File(URI(dragData.readFiles().first())))
+                    }
+                },
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             SelectFileRow(fileScreenModel::selectFile)

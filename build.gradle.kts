@@ -94,9 +94,9 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<JavaCompile> {
-    sourceCompatibility = JavaVersion.current().toString()
-    targetCompatibility = JavaVersion.VERSION_17.toString()
+java {
+    sourceCompatibility = JavaVersion.current()
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 compose.desktop {

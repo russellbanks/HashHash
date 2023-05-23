@@ -48,20 +48,8 @@ import java.net.URI
 
 object Window {
 
-    private const val minWindowWidth = 750
-    private const val minWindowHeight = 600
-
-    @Composable
-    fun setupAWTWindow(window: Window) {
-        val scope = rememberCoroutineScope(Dispatchers::Default)
-        val currentTabIndex = LocalTabNavigator.current.current.options.index.toInt()
-        with(window) {
-            minimumSize = Dimension(minWindowWidth, minWindowHeight)
-            dropTarget = DragAndDrop.target(scope) { droppedItems ->
-                DragAndDrop.setResult(currentTabIndex = currentTabIndex, droppedItems = droppedItems)
-            }
-        }
-    }
+    const val minWindowWidth = 750
+    const val minWindowHeight = 600
 
     fun toggleFullscreen(windowState: WindowState) {
         if (windowState.placement != WindowPlacement.Fullscreen) {

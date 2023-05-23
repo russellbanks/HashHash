@@ -184,11 +184,11 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
         }
     }
 
-    fun setDroppedFile(file: File?) {
-        if (fileOne == null) {
+    fun setDroppedFile(fileComparison: FileComparison, file: File?) {
+        if (fileComparison == FileComparison.One) {
             fileOneResultMap.clear()
             fileOne = file
-        } else {
+        } else if (fileComparison == FileComparison.Two) {
             fileTwoResultMap.clear()
             fileTwo = file
         }

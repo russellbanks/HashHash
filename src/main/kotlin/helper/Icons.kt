@@ -29,14 +29,14 @@ import androidx.compose.ui.res.painterResource
 import io.kamel.image.KamelImage
 import io.kamel.image.lazyPainterResource
 import io.klogging.Klogging
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.filechooser.FileSystemView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object Icons : Klogging {
 

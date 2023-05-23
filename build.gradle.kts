@@ -69,6 +69,9 @@ dependencies {
     // Kotlin CSV - https://github.com/doyaaaaaken/kotlin-csv
     implementation(libs.kotlincsv)
 
+    // Ktor - https://github.com/ktorio/ktor
+    implementation(libs.ktor.client.java)
+
     // LWJGL - https://github.com/LWJGL/lwjgl3
     implementation(libs.lwjgl.core)
     implementation(libs.lwjgl.nativefiledialogs)

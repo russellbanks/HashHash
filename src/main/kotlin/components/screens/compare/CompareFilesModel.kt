@@ -108,7 +108,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
     val doHashesMatch get() = fileOneResultMap[algorithm].equals(fileTwoResultMap[algorithm], ignoreCase = true)
 
     fun onCalculateClicked() {
-        if ((comparisonJobList?.count { it.isActive } ?: 0) <= 0) {
+        if ((comparisonJobList?.count(Deferred<Unit>::isActive) ?: 0) <= 0) {
             coroutineScope.launch(Dispatchers.Default) {
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
@@ -168,7 +168,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
         }
     }
 
-    fun areJobsActive() = (comparisonJobList?.count { it.isActive } ?: 0) <= 0
+    fun areJobsActive() = (comparisonJobList?.count(Deferred<Unit>::isActive) ?: 0) <= 0
 
     private fun selectFile(fileComparison: FileComparison) {
         FileUtils.openFileDialogAndGetResult().also { file ->

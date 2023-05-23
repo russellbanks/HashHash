@@ -26,7 +26,7 @@ import com.sun.jna.win32.W32APIOptions
 import helper.windows.jna.structs.OsVersionInfo
 
 internal object Nt {
-    fun getVersion() = OsVersionInfo().also { NtImpl.RtlGetVersion(it) }
+    fun getVersion() = OsVersionInfo().also(NtImpl::RtlGetVersion)
 }
 
 @Suppress("SpellCheckingInspection")

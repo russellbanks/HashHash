@@ -22,15 +22,11 @@ package helper
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.res.painterResource
-import io.kamel.image.KamelImage
-import io.kamel.image.lazyPainterResource
 import io.klogging.Klogging
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
 import java.io.File
@@ -57,15 +53,10 @@ object Icons : Klogging {
     fun SystemIcon(modifier: Modifier, file: File?) {
         if (file != null) {
             if (file.isImage()) {
-                KamelImage(
-                    resource = lazyPainterResource(file),
+                Image(
+                    bitmap = org.jetbrains.skia.Image.makeFromEncoded(file.readBytes()).toComposeImageBitmap(),
                     contentDescription = null,
                     modifier = modifier,
-                    onLoading = { getSystemImage(modifier, file) },
-                    onFailure = {
-                        rememberCoroutineScope(Dispatchers::Default).launch { logger.error(it.message) }
-                        getSystemImage(modifier, file)
-                    }
                 )
             } else {
                 getSystemImage(modifier, file)

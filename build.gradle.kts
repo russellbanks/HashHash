@@ -45,9 +45,6 @@ dependencies {
     implementation(libs.jna)
     implementation(libs.jna.platform)
 
-    // Kamel - https://github.com/alialbaali/Kamel
-    implementation(libs.kamel.image)
-
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
 

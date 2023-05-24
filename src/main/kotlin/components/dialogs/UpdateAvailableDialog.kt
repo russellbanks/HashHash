@@ -76,7 +76,7 @@ fun UpdateAvailableDialog() {
                             scope.launch {
                                 Browser.open(
                                     URI(
-                                        GitHubImpl.latestRelease?.htmlUrl?.toString()
+                                        GitHubImpl.latestRelease?.htmlUrl
                                             ?: GitHubConstants.HashHash.Repository.releases
                                     )
                                 )

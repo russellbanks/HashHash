@@ -69,7 +69,7 @@ object FileUtils : Klogging {
                 }
                 else -> {
                     CoroutineScope(Dispatchers.IO).launch {
-                        logger.error("Open file dialog error: ${NFD_GetError()}")
+                        logger.error("${NFD_GetError()}")
                     }
                     null
                 }

@@ -152,7 +152,7 @@ class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
                 comparisonJobList = null
             }
         } else {
-            comparisonJobList?.forEach { it.cancel() }
+            comparisonJobList?.forEach(Deferred<Unit>::cancel)
             comparisonJobList = null
             fileOneHashProgress = 0F
             fileTwoHashProgress = 0F

@@ -50,14 +50,18 @@ import components.screens.ParentComponent
 import helper.FileUtils
 import helper.Icons
 import io.klogging.Klogging
+import java.io.File
+import java.nio.file.Files
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
-import org.koin.core.component.KoinComponent
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -65,15 +69,8 @@ import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.IconFilterStrategy
-import java.io.File
-import java.nio.file.Files
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
-@Factory
-class CompareFilesModel : ScreenModel, KoinComponent, Klogging {
+object CompareFilesModel : ScreenModel, Klogging {
     val algorithm = ParentComponent.algorithm
     var fileOne: File? by mutableStateOf(null)
     private var fileOneHashUppercase by mutableStateOf(true)

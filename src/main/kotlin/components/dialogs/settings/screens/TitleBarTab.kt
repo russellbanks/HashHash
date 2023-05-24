@@ -38,7 +38,6 @@ import application.ApplicationWindowState
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import helper.Icons
-import org.koin.core.component.KoinComponent
 import org.pushingpixels.aurora.component.AuroraBoxWithHighlights
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
@@ -46,7 +45,7 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import preferences.titlebar.TitleBar
 import preferences.titlebar.TitleBarHandler
 
-class TitleBarTab(private val window: ApplicationWindowState) : Tab, KoinComponent {
+class TitleBarTab(private val window: ApplicationWindowState) : Tab {
     override val options: TabOptions
         @Composable
         get() {

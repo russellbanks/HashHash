@@ -47,7 +47,6 @@ import components.OutputTextFieldRow
 import components.screens.ParentComponent
 import java.io.File
 import java.net.URI
-import koin.getScreenModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -67,7 +66,6 @@ object FileTab : Tab {
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
-        val fileScreenModel = getScreenModel<FileScreenModel>()
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
             decorationAreaType = AuroraSkin.decorationAreaType
         )
@@ -79,37 +77,37 @@ object FileTab : Tab {
                 .onExternalDrag { externalDragValue ->
                     val dragData = externalDragValue.dragData
                     if (dragData is DragData.FilesList) {
-                        fileScreenModel.setComponentFile(File(URI(dragData.readFiles().first())))
+                        FileScreenModel.setComponentFile(File(URI(dragData.readFiles().first())))
                     }
                 },
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            SelectFileRow(fileScreenModel::selectFile)
-            FileInfoRow(fileScreenModel.file)
-            HashButton(fileScreenModel.file, fileScreenModel.fileHashJob) { fileScreenModel.onCalculateClicked() }
+            SelectFileRow(FileScreenModel::selectFile)
+            FileInfoRow(FileScreenModel.file)
+            HashButton(FileScreenModel.file, FileScreenModel.fileHashJob) { FileScreenModel.onCalculateClicked() }
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
             OutputTextFieldRow(
-                value = fileScreenModel.resultMap.getOrDefault(ParentComponent.algorithm, ""),
-                isValueUppercase = fileScreenModel.hashedTextUppercase,
-                onCaseClick = fileScreenModel::switchHashCase
+                value = FileScreenModel.resultMap.getOrDefault(ParentComponent.algorithm, ""),
+                isValueUppercase = FileScreenModel.hashedTextUppercase,
+                onCaseClick = FileScreenModel::switchHashCase
             )
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
             val clipboardManager = LocalClipboardManager.current
             ComparisonTextFieldRow(
-                hashedOutput = fileScreenModel.resultMap.getOrDefault(ParentComponent.algorithm, ""),
-                comparisonHash = fileScreenModel.comparisonHash,
+                hashedOutput = FileScreenModel.resultMap.getOrDefault(ParentComponent.algorithm, ""),
+                comparisonHash = FileScreenModel.comparisonHash,
                 onPasteClick = {
-                    fileScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
+                    FileScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
                 },
-                onClearClick = { fileScreenModel.comparisonHash = "" },
-                onTextFieldChange = { fileScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }
+                onClearClick = { FileScreenModel.comparisonHash = "" },
+                onTextFieldChange = { FileScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }
             )
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-            HashProgress(fileHashProgress = fileScreenModel.hashProgress, timer = fileScreenModel.timer)
+            HashProgress(fileHashProgress = FileScreenModel.hashProgress, timer = FileScreenModel.timer)
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
             ElapsedTimeResults(
-                instantBeforeHash = fileScreenModel.instantBeforeHash,
-                instantAfterHash = fileScreenModel.instantAfterHash
+                instantBeforeHash = FileScreenModel.instantBeforeHash,
+                instantAfterHash = FileScreenModel.instantAfterHash
             )
         }
         LabelProjection(

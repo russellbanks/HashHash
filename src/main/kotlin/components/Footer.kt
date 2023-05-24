@@ -31,7 +31,6 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.screens.compare.CompareFilesModel
 import components.screens.file.FileScreenModel
 import components.screens.text.TextScreenModel
-import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.DecorationAreaType
@@ -41,17 +40,14 @@ import org.pushingpixels.aurora.theming.decoration.AuroraDecorationArea
 @Composable
 fun Footer() {
     val tabNavigator = LocalTabNavigator.current
-    val fileScreen: FileScreenModel = koinInject()
-    val textScreen: TextScreenModel = koinInject()
-    val compareScreen: CompareFilesModel = koinInject()
     AuroraDecorationArea(decorationAreaType = DecorationAreaType.Footer) {
         Box(Modifier.fillMaxWidth().auroraBackground().padding(6.dp), contentAlignment = Alignment.Center) {
             LabelProjection(
                 contentModel = LabelContentModel(
                     text = when (tabNavigator.current.options.index.toInt()) {
-                        0 -> fileScreen.footerText
-                        1 -> textScreen.footerText
-                        2 -> compareScreen.footerText
+                        0 -> FileScreenModel.footerText
+                        1 -> TextScreenModel.footerText
+                        2 -> CompareFilesModel.footerText
                         else -> ""
                     }
                 )

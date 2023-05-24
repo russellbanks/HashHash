@@ -41,13 +41,14 @@ import components.dialogs.Dialog
 import components.dialogs.DialogState
 import helper.Icons
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun AboutDialog() {
-    val scope = rememberCoroutineScope { Dispatchers.Default }
+    val scope = rememberCoroutineScope(Dispatchers::IO)
     Dialog(dialog = DialogState.Dialogs.About) {
         Row(Modifier.padding(30.dp)) {
             Box(Modifier.padding(end = 30.dp)) {
@@ -63,7 +64,11 @@ fun AboutDialog() {
                     CommandButtonProjection(
                         contentModel = Command(
                             text = "Check for Updates",
-                            action = { GitHubImpl.checkForHashHashUpdate(scope) }
+                            action = {
+                                scope.launch {
+                                    GitHubImpl.checkForHashHashUpdate()
+                                }
+                            }
                         ),
                         presentationModel = CommandButtonPresentationModel(
                             textStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)

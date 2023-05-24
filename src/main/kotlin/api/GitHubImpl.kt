@@ -60,15 +60,13 @@ object GitHubImpl : Klogging {
         isUpdateAvailable = isVersionLatest
     }
 
-    fun checkForHashHashUpdate(scope: CoroutineScope) {
+    suspend fun checkForHashHashUpdate() {
         if (!checkingGitHubAPI) {
-            scope.launch {
-                checkingGitHubAPI = true
-                latestRelease = gitHub.fetchLatestRelease("russellbanks", "HashHash").getOrNull()
-                lastChecked = Clock.System.now()
-                checkingGitHubAPI = false
-                isUpdateAvailable = isVersionLatest
-            }
+            checkingGitHubAPI = true
+            latestRelease = gitHub.fetchLatestRelease("russellbanks", "HashHash").getOrNull()
+            lastChecked = Clock.System.now()
+            checkingGitHubAPI = false
+            isUpdateAvailable = isVersionLatest
         }
     }
 }

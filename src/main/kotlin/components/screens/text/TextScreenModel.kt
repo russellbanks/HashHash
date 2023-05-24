@@ -29,11 +29,8 @@ import com.appmattus.crypto.Algorithm
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import components.screens.ParentComponent
 import helper.FileUtils
-import org.koin.core.annotation.Factory
-import org.koin.core.component.KoinComponent
 
-@Factory
-class TextScreenModel : ScreenModel, KoinComponent {
+object TextScreenModel : ScreenModel {
     var givenText by mutableStateOf("")
     var givenTextHash by mutableStateOf("")
     var comparisonHash by mutableStateOf("")

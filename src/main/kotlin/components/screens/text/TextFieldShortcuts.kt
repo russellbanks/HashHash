@@ -27,13 +27,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.projection.CommandButtonProjection
 
 @Composable
 fun TextFieldShortcuts() {
-    val component: TextScreenModel = koinInject()
     Row(
         modifier = Modifier.fillMaxWidth().padding(4.dp),
         horizontalArrangement = Arrangement.Center
@@ -42,7 +40,7 @@ fun TextFieldShortcuts() {
             contentModel = Command(
                 text = "Uppercase",
                 action = {
-                    with(component) {
+                    with(TextScreenModel) {
                         givenText = givenText.uppercase()
                         hashGivenText()
                     }
@@ -53,7 +51,7 @@ fun TextFieldShortcuts() {
             contentModel = Command(
                 text = "Lowercase",
                 action = {
-                    with(component) {
+                    with(TextScreenModel) {
                         givenText = givenText.lowercase()
                         hashGivenText()
                     }
@@ -64,7 +62,7 @@ fun TextFieldShortcuts() {
             contentModel = Command(
                 text = "Clear text area",
                 action = {
-                    with(component) {
+                    with(TextScreenModel) {
                         givenText = ""
                         givenTextHash = ""
                     }

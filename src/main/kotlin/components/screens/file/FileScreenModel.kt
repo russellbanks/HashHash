@@ -40,16 +40,13 @@ import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import org.koin.core.annotation.Factory
-import org.koin.core.component.KoinComponent
 import java.io.File
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-@Factory
-class FileScreenModel : ScreenModel, KoinComponent {
+object FileScreenModel : ScreenModel {
     var comparisonHash by mutableStateOf("")
     var file: File? by mutableStateOf(null)
     var fileHashJob: Job? by mutableStateOf(null)

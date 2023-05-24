@@ -33,8 +33,6 @@ import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.Icon
 import javax.swing.filechooser.FileSystemView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 object Icons : Klogging {
 

@@ -20,17 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import io.klogging.config.ANSI_CONSOLE
 import io.klogging.config.loggingConfiguration
-import koin.KoinLogger
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.ksp.generated.defaultModule
 
 fun main() {
     loggingConfiguration { ANSI_CONSOLE() }
-
-    startKoin {
-        defaultModule()
-        logger(KoinLogger())
-    }
 
     hashHashApplication()
 }

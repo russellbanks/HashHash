@@ -47,7 +47,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import helper.Icons
 import java.io.File
 import java.net.URI
-import koin.getScreenModel
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -70,7 +69,6 @@ object CompareFilesTab : Tab {
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun Content() {
-        val compareFilesModel = getScreenModel<CompareFilesModel>()
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
             decorationAreaType = AuroraSkin.decorationAreaType
         )
@@ -83,13 +81,13 @@ object CompareFilesTab : Tab {
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                compareFilesModel.FileComparisonColumn(
+                CompareFilesModel.FileComparisonColumn(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .onExternalDrag { externalDragValue ->
                             val dragData = externalDragValue.dragData
                             if (dragData is DragData.FilesList) {
-                                compareFilesModel.setDroppedFile(
+                                CompareFilesModel.setDroppedFile(
                                     fileComparison = CompareFilesModel.FileComparison.One,
                                     file = File(URI(dragData.readFiles().first()))
                                 )
@@ -97,13 +95,13 @@ object CompareFilesTab : Tab {
                         },
                     fileComparison = CompareFilesModel.FileComparison.One
                 )
-                compareFilesModel.FileComparisonColumn(
+                CompareFilesModel.FileComparisonColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .onExternalDrag { externalDragValue ->
                             val dragData = externalDragValue.dragData
                             if (dragData is DragData.FilesList) {
-                                compareFilesModel.setDroppedFile(
+                                CompareFilesModel.setDroppedFile(
                                     fileComparison = CompareFilesModel.FileComparison.Two,
                                     file = File(URI(dragData.readFiles().first()))
                                 )
@@ -114,10 +112,10 @@ object CompareFilesTab : Tab {
             }
             CommandButtonProjection(
                 contentModel = Command(
-                    text = if (compareFilesModel.areJobsActive()) "Compare" else "Cancel",
+                    text = if (CompareFilesModel.areJobsActive()) "Compare" else "Cancel",
                     icon = Icons.Utility.microChip(),
-                    action = { compareFilesModel.onCalculateClicked() },
-                    isActionEnabled = compareFilesModel.fileOne != null && compareFilesModel.fileTwo != null
+                    action = { CompareFilesModel.onCalculateClicked() },
+                    isActionEnabled = CompareFilesModel.fileOne != null && CompareFilesModel.fileTwo != null
                 ),
                 presentationModel = CommandButtonPresentationModel(
                     iconDisabledFilterStrategy = IconFilterStrategy.ThemedFollowText,
@@ -125,8 +123,8 @@ object CompareFilesTab : Tab {
                     iconActiveFilterStrategy = IconFilterStrategy.ThemedFollowText
                 )
             ).project(Modifier.align(Alignment.CenterHorizontally).width(100.dp).height(30.dp))
-            AnimatedVisibility(modifier = Modifier.fillMaxWidth(), visible = compareFilesModel.areHashesNotBlank()) {
-                val hashesMatch = compareFilesModel.doHashesMatch
+            AnimatedVisibility(modifier = Modifier.fillMaxWidth(), visible = CompareFilesModel.areHashesNotBlank()) {
+                val hashesMatch = CompareFilesModel.doHashesMatch
                 LabelProjection(
                     contentModel = LabelContentModel(
                         text = if (hashesMatch) "Files match" else "Files do not match",

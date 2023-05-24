@@ -47,15 +47,11 @@ import components.screens.ParentComponent
 import components.screens.compare.CompareFilesModel
 import components.screens.file.FileScreenModel
 import components.screens.text.TextScreenModel
-import org.koin.compose.koinInject
 import org.pushingpixels.aurora.component.AuroraVerticalScrollbar
 import org.pushingpixels.aurora.component.ScrollBarSizingConstants
 
 @Composable
 fun AlgorithmSelectionList() {
-    val fileScreenModel: FileScreenModel = koinInject()
-    val textScreenModel: TextScreenModel = koinInject()
-    val compareFilesModel: CompareFilesModel = koinInject()
     Box(Modifier.fillMaxWidth()) {
         val lazyListState = rememberLazyListState()
         LazyColumn(
@@ -74,9 +70,9 @@ fun AlgorithmSelectionList() {
                         onAlgorithmClick = {
                             if (it != ParentComponent.algorithm) {
                                 ParentComponent.algorithm = it
-                                fileScreenModel.onAlgorithmClick(it)
-                                textScreenModel.onAlgorithmClick(it)
-                                compareFilesModel.onAlgorithmClick(it)
+                                FileScreenModel.onAlgorithmClick(it)
+                                TextScreenModel.onAlgorithmClick(it)
+                                CompareFilesModel.onAlgorithmClick(it)
                             }
                         }
                     )
@@ -91,9 +87,9 @@ fun AlgorithmSelectionList() {
                             onAlgorithmClick = {
                                 if (it != ParentComponent.algorithm) {
                                     ParentComponent.algorithm = it
-                                    fileScreenModel.onAlgorithmClick(it)
-                                    textScreenModel.onAlgorithmClick(it)
-                                    compareFilesModel.onAlgorithmClick(it)
+                                    FileScreenModel.onAlgorithmClick(it)
+                                    TextScreenModel.onAlgorithmClick(it)
+                                    CompareFilesModel.onAlgorithmClick(it)
                                 }
                             }
                         )

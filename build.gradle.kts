@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin)
-    alias(libs.plugins.ksp)
 }
 
 group = "com.russellbanks"
@@ -53,12 +52,6 @@ dependencies {
 
     // jSystemThemeDetector - https://github.com/Dansoftowner/jSystemThemeDetector
     implementation(libs.jsystemthemedetector)
-
-    // Koin - https://github.com/InsertKoinIO/koin
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)
-    implementation(libs.koin.compose)
-    ksp(libs.koin.ksp.compiler)
 
     // Kotlin CSV - https://github.com/doyaaaaaken/kotlin-csv
     implementation(libs.kotlincsv)
@@ -131,10 +124,6 @@ compose.desktop {
 
 detekt {
     ignoreFailures = true
-}
-
-sourceSets.main {
-    kotlin.srcDirs("build/generated/ksp/main/kotlin")
 }
 
 buildConfig {

@@ -46,7 +46,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
 import components.dialogs.settings.toFriendlyCase
-import koin.getScreenModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.ComboBoxContentModel
@@ -76,11 +75,10 @@ object TextTab : Tab {
     @OptIn(ExperimentalStdlibApi::class)
     @Composable
     override fun Content() {
-        val textScreenModel = getScreenModel<TextScreenModel>()
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
             decorationAreaType = AuroraSkin.decorationAreaType
         )
-        val scope = rememberCoroutineScope { Dispatchers.Default }
+        val scope = rememberCoroutineScope(Dispatchers::Default)
         Column(
             modifier = Modifier.padding(16.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -88,13 +86,13 @@ object TextTab : Tab {
             val clipboardManager = LocalClipboardManager.current
             Column {
                 LabelProjection(
-                    contentModel = LabelContentModel(text = textScreenModel.characterCountAsString())
+                    contentModel = LabelContentModel(text = TextScreenModel.characterCountAsString())
                 ).project(Modifier.align(Alignment.End))
                 TextFieldStringProjection(
                     contentModel = TextFieldStringContentModel(
-                        value = textScreenModel.givenText,
+                        value = TextScreenModel.givenText,
                         onValueChange = {
-                            with(textScreenModel) {
+                            with(TextScreenModel) {
                                 givenText = it
                                 isTextLineByLineErrorVisible = false
                                 scope.launch { hashGivenText() }
@@ -113,15 +111,15 @@ object TextTab : Tab {
                                     text = "Hash text line-by-line",
                                     extraText = "test",
                                     action = {
-                                        if (textScreenModel.givenText.isNotEmpty()) {
-                                            scope.launch { textScreenModel.hashTextLineByLine(textScreenModel.givenText) }
+                                        if (TextScreenModel.givenText.isNotEmpty()) {
+                                            scope.launch { TextScreenModel.hashTextLineByLine(TextScreenModel.givenText) }
                                         } else {
-                                            textScreenModel.isTextLineByLineErrorVisible = true
+                                            TextScreenModel.isTextLineByLineErrorVisible = true
                                         }
                                     }
                                 )
                             ).project()
-                            AnimatedVisibility(visible = textScreenModel.isTextLineByLineErrorVisible) {
+                            AnimatedVisibility(visible = TextScreenModel.isTextLineByLineErrorVisible) {
                                 LabelProjection(
                                     contentModel = LabelContentModel(text = "No text entered")
                                 ).project()
@@ -130,7 +128,7 @@ object TextTab : Tab {
                         CommandButtonProjection(
                             contentModel = Command(
                                 text = "Hash file line-by-line",
-                                action = { scope.launch { textScreenModel.hashFileLineByLine() } }
+                                action = { scope.launch { TextScreenModel.hashFileLineByLine() } }
                             )
                         ).project()
                         Row {
@@ -140,9 +138,9 @@ object TextTab : Tab {
                             ComboBoxProjection(
                                 contentModel = ComboBoxContentModel(
                                     items = Delimiter.entries,
-                                    selectedItem = textScreenModel.selectedDelimiter,
+                                    selectedItem = TextScreenModel.selectedDelimiter,
                                     onTriggerItemSelectedChange = {
-                                        textScreenModel.selectedDelimiter = it
+                                        TextScreenModel.selectedDelimiter = it
                                     }
                                 ),
                                 presentationModel = ComboBoxPresentationModel(
@@ -155,22 +153,22 @@ object TextTab : Tab {
                         CheckBoxProjection(
                             contentModel = SelectorContentModel(
                                 text = "Ignore empty lines",
-                                selected = textScreenModel.ignoreEmptyLines,
-                                onClick = { textScreenModel.ignoreEmptyLines = !textScreenModel.ignoreEmptyLines }
+                                selected = TextScreenModel.ignoreEmptyLines,
+                                onClick = { TextScreenModel.ignoreEmptyLines = !TextScreenModel.ignoreEmptyLines }
                             )
                         ).project()
                         CheckBoxProjection(
                             contentModel = SelectorContentModel(
                                 text = "Uppercase hash",
-                                selected = textScreenModel.isTextLineByLineUppercase,
-                                onClick = { textScreenModel.isTextLineByLineUppercase = !textScreenModel.isTextLineByLineUppercase }
+                                selected = TextScreenModel.isTextLineByLineUppercase,
+                                onClick = { TextScreenModel.isTextLineByLineUppercase = !TextScreenModel.isTextLineByLineUppercase }
                             )
                         ).project()
                         CheckBoxProjection(
                             contentModel = SelectorContentModel(
                                 text = "Include source text in output",
-                                selected = textScreenModel.includeSourceText,
-                                onClick = { textScreenModel.includeSourceText = !textScreenModel.includeSourceText }
+                                selected = TextScreenModel.includeSourceText,
+                                onClick = { TextScreenModel.includeSourceText = !TextScreenModel.includeSourceText }
                             )
                         ).project()
                     }
@@ -181,23 +179,23 @@ object TextTab : Tab {
                 ).project(Modifier.padding(horizontal = 10.dp).background(backgroundColorScheme.backgroundFillColor))
             }
             OutputTextFieldRow(
-                value = textScreenModel.givenTextHash,
-                isValueUppercase = textScreenModel.hashedTextUppercase,
+                value = TextScreenModel.givenTextHash,
+                isValueUppercase = TextScreenModel.hashedTextUppercase,
                 onCaseClick = {
-                    with(textScreenModel) {
+                    with(TextScreenModel) {
                         hashedTextUppercase = !hashedTextUppercase
                         givenTextHash = givenTextHash.run { if (hashedTextUppercase) uppercase() else lowercase() }
                     }
                 }
             )
             ComparisonTextFieldRow(
-                hashedOutput = textScreenModel.givenTextHash,
-                comparisonHash = textScreenModel.comparisonHash,
+                hashedOutput = TextScreenModel.givenTextHash,
+                comparisonHash = TextScreenModel.comparisonHash,
                 onPasteClick = {
-                    textScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
+                    TextScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
                 },
-                onClearClick = { textScreenModel.comparisonHash = "" },
-                onTextFieldChange = { textScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }
+                onClearClick = { TextScreenModel.comparisonHash = "" },
+                onTextFieldChange = { TextScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }
             )
         }
         LabelProjection(

@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package helper
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
@@ -34,17 +33,12 @@ import androidx.compose.ui.window.WindowState
 import api.GitHubConstants
 import api.GitHubImpl
 import application.ApplicationState
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import components.dialogs.DialogState
-import kotlinx.coroutines.Dispatchers
-import org.koin.core.component.KoinComponent
+import java.net.URI
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandGroup
 import org.pushingpixels.aurora.component.model.CommandMenuContentModel
 import org.pushingpixels.aurora.window.AuroraApplicationScope
-import java.awt.Dimension
-import java.awt.Window
-import java.net.URI
 
 object Window {
 
@@ -72,7 +66,7 @@ object Window {
         }
     }
 
-    object Header : KoinComponent {
+    object Header {
         @Composable
         fun commands(
             auroraApplicationScope: AuroraApplicationScope,
@@ -164,7 +158,7 @@ object Window {
                                 action = {
                                     Browser.open(
                                         URI(
-                                            GitHubImpl.latestRelease?.htmlUrl?.toString()
+                                            GitHubImpl.latestRelease?.htmlUrl
                                                 ?: GitHubConstants.HashHash.Repository.releases
                                         )
                                     )

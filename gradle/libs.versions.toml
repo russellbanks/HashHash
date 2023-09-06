@@ -1,7 +1,7 @@
 [versions]
 aurora = "2.0-20230423.032104-3"
 buildconfig = "4.1.2"
-compose = "1.4.3"
+compose = "1.5.1"
 coroutines = "1.7.3"
 cryptohash = "0.10.1"
 detekt = "1.23.1"

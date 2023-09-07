@@ -83,7 +83,6 @@ tasks.withType<KotlinCompile> {
     compilerOptions {
         jvmTarget.set(JVM_17)
         freeCompilerArgs.set(listOf("-opt-in=kotlin.RequiresOptIn"))
-        languageVersion.set(KotlinVersion.KOTLIN_1_9)
     }
 }
 

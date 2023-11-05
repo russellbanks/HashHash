@@ -16,7 +16,7 @@ ktgithub = "b02824c1ba"
 ktor = "2.3.5"
 lwjgl = "3.3.3"
 slf4j = "2.0.9"
-voyager = "1.0.0-rc08"
+voyager = "1.0.0-rc09"
 windowstyler = "0.3.2"
 
 [libraries]

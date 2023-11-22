@@ -72,7 +72,6 @@ object TextTab : Tab {
             )
         }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Composable
     override fun Content() {
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(

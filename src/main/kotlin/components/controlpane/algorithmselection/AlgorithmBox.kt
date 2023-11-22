@@ -34,7 +34,6 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.Side
 import org.pushingpixels.aurora.theming.Sides
 
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun AlgorithmBox(item: Algorithm, algorithm: Algorithm, index: Int, onAlgorithmClick: (Algorithm) -> Unit) {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(

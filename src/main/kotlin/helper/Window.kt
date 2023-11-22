@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package helper
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.KeyEventType
@@ -53,7 +52,6 @@ object Window {
         }
     }
 
-    @OptIn(ExperimentalComposeUiApi::class)
     fun onKeyEvent(keyEvent: KeyEvent, windowState: WindowState): Boolean {
         return if (keyEvent.key == Key.F11 && keyEvent.type == KeyEventType.KeyUp) {
             toggleFullscreen(windowState)

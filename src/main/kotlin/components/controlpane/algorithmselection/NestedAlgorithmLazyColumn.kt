@@ -42,7 +42,6 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.Side
 import org.pushingpixels.aurora.theming.Sides
 
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun NestedAlgorithmLazyColumn(
     algorithm: Algorithm,

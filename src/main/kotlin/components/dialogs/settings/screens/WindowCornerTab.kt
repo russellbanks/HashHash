@@ -59,7 +59,6 @@ class WindowCornerTab(private val window: ApplicationWindowState) : Tab {
             }
         }
 
-    @OptIn(ExperimentalStdlibApi::class)
     @Composable
     override fun Content() {
         Column(Modifier.padding(10.dp)) {

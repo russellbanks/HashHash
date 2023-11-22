@@ -21,13 +21,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package api
 
 object GitHubConstants {
-    private const val githubWebsite = "https://github.com"
+    private const val GITHUB_WEBSITE = "https://github.com"
 
     object HashHash {
         object Repository {
-            const val website = "$githubWebsite/russellbanks/HashHash"
-            const val releases = "$website/releases"
-            const val newIssue = "$website/issues/new/choose"
+            const val WEBSITE = "$GITHUB_WEBSITE/russellbanks/HashHash"
+            const val RELEASES = "$WEBSITE/releases"
+            const val NEW_ISSUE = "$WEBSITE/issues/new/choose"
         }
     }
 }

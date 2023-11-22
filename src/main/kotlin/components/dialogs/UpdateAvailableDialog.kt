@@ -77,7 +77,7 @@ fun UpdateAvailableDialog() {
                                 Browser.open(
                                     URI(
                                         GitHubImpl.latestRelease?.htmlUrl
-                                            ?: GitHubConstants.HashHash.Repository.releases
+                                            ?: GitHubConstants.HashHash.Repository.RELEASES
                                     )
                                 )
                             }

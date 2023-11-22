@@ -79,7 +79,7 @@ fun hashHashApplication() = auroraApplication {
                     frameStyle = WindowFrameStyle(cornerPreference = WindowCornerHandler.windowCorner)
                 )
                 TabNavigator(FileTab) { tabNavigator ->
-                    this.window.minimumSize = Dimension(Window.minWindowWidth, Window.minWindowHeight)
+                    this.window.minimumSize = Dimension(Window.MIN_WINDOW_WIDTH, Window.MIN_WINDOW_HEIGHT)
                     Box {
                         Column {
                             Toolbar()

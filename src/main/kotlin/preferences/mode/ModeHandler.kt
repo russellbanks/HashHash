@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
 object ModeHandler : Klogging {
-    private const val modeKey = "mode"
+    private const val MODE_KEY = "mode"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
@@ -40,18 +40,18 @@ object ModeHandler : Klogging {
 
     var mode: Mode
         get() = cachedMode
-            ?: if (preferences.getInt(modeKey, Mode.SIMPLE.ordinal) == Mode.ADVANCED.ordinal) {
+            ?: if (preferences.getInt(MODE_KEY, Mode.SIMPLE.ordinal) == Mode.ADVANCED.ordinal) {
                 Mode.ADVANCED
             } else {
                 Mode.SIMPLE
             }.also { cachedMode = it }
         set(value) {
-            preferences.putInt(modeKey, value.ordinal)
+            preferences.putInt(MODE_KEY, value.ordinal)
             cachedMode = value
             selectedMode = value
             CoroutineScope(Dispatchers.Default).launch {
                 logger.info {
-                    "Put ${value.name} into preferences with the key of \"$modeKey\" and the value of ${value.ordinal}"
+                    "Put ${value.name} into preferences with the key of \"$MODE_KEY\" and the value of ${value.ordinal}"
                 }
             }
         }

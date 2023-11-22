@@ -41,8 +41,8 @@ import org.pushingpixels.aurora.window.AuroraApplicationScope
 
 object Window {
 
-    const val minWindowWidth = 750
-    const val minWindowHeight = 600
+    const val MIN_WINDOW_WIDTH = 750
+    const val MIN_WINDOW_HEIGHT = 600
 
     fun toggleFullscreen(windowState: WindowState) {
         if (windowState.placement != WindowPlacement.Fullscreen) {
@@ -142,13 +142,13 @@ object Window {
                             Command(
                                 text = "Report issue",
                                 action = {
-                                    Browser.open(URI(GitHubConstants.HashHash.Repository.newIssue))
+                                    Browser.open(URI(GitHubConstants.HashHash.Repository.NEW_ISSUE))
                                 }
                             ),
                             Command(
                                 text = "Go to GitHub",
                                 action = {
-                                    Browser.open(URI(GitHubConstants.HashHash.Repository.website))
+                                    Browser.open(URI(GitHubConstants.HashHash.Repository.WEBSITE))
                                 }
                             ),
                             Command(
@@ -157,7 +157,7 @@ object Window {
                                     Browser.open(
                                         URI(
                                             GitHubImpl.latestRelease?.htmlUrl
-                                                ?: GitHubConstants.HashHash.Repository.releases
+                                                ?: GitHubConstants.HashHash.Repository.RELEASES
                                         )
                                     )
                                 }

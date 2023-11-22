@@ -34,7 +34,7 @@ import org.pushingpixels.aurora.theming.nightShadeSkin
 import java.util.prefs.Preferences
 
 object ThemeHandler : Klogging {
-    private const val themeKey = "theme"
+    private const val THEME_KEY = "theme"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
@@ -45,18 +45,18 @@ object ThemeHandler : Klogging {
     var auroraSkin by mutableStateOf(theme.toAuroraTheme())
 
     var theme: Theme
-        get() = cachedTheme ?: when (preferences.getInt(themeKey, Theme.System.ordinal)) {
+        get() = cachedTheme ?: when (preferences.getInt(THEME_KEY, Theme.System.ordinal)) {
             Theme.Light.ordinal -> Theme.Light
             Theme.Dark.ordinal -> Theme.Dark
             else -> Theme.System
         }.also { cachedTheme = it }
         set(value) {
-            preferences.putInt(themeKey, value.ordinal)
+            preferences.putInt(THEME_KEY, value.ordinal)
             cachedTheme = value
             auroraSkin = value.toAuroraTheme()
             CoroutineScope(Dispatchers.Default).launch {
                 logger.info {
-                    "Put ${value.name} into preferences with the key of \"$themeKey\" and the value of ${value.ordinal}"
+                    "Put ${value.name} into preferences with the key of \"$THEME_KEY\" and the value of ${value.ordinal}"
                 }
             }
         }

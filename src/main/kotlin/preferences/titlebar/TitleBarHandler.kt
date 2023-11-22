@@ -32,7 +32,7 @@ import org.pushingpixels.aurora.window.AuroraWindowTitlePaneConfigurations
 import java.util.prefs.Preferences
 
 object TitleBarHandler : Klogging {
-    private const val titleBarKey = "titleBar"
+    private const val TITLE_BAR_KEY = "titleBar"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
@@ -42,18 +42,18 @@ object TitleBarHandler : Klogging {
 
     var titleBar: TitleBar
         get() = cachedTitleBar
-            ?: (if (preferences.getInt(titleBarKey, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) {
+            ?: (if (preferences.getInt(TITLE_BAR_KEY, TitleBar.Native.ordinal) == TitleBar.Custom.ordinal) {
                 TitleBar.Custom
             } else {
                 TitleBar.Native
             }).also { cachedTitleBar = it }
         set(value) {
-            preferences.putInt(titleBarKey, value.ordinal)
+            preferences.putInt(TITLE_BAR_KEY, value.ordinal)
             cachedTitleBar = value
             CoroutineScope(Dispatchers.Default).launch {
                 logger.info {
                     "Put ${value.name} into preferences with the key of " +
-                            "\"$titleBarKey\" and the value of ${value.ordinal}"
+                            "\"$TITLE_BAR_KEY\" and the value of ${value.ordinal}"
                 }
             }
         }

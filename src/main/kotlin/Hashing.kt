@@ -27,10 +27,6 @@ import java.io.File
 import java.io.FileInputStream
 
 object Hashing : Klogging {
-
-    private const val hex255 = 0xff
-    private const val hex256 = 0x100
-
     suspend fun File.hash(
         algorithm: Algorithm,
         hashProgressCallback: (Float) -> Unit = {}
@@ -57,7 +53,7 @@ object Hashing : Klogging {
 
     private fun buildHash(bytes: ByteArray) = buildString {
         bytes.forEach { byte ->
-            append(((byte.toInt() and hex255) + hex256).toString(radix = 16).substring(startIndex = 1))
+            append(((byte.toInt() and 255) + 256).toString(radix = 16).substring(startIndex = 1))
         }
     }
 

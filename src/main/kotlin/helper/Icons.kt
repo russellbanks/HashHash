@@ -105,57 +105,57 @@ object Icons : Klogging {
     @Suppress("TooManyFunctions")
     object Utility {
 
-        private const val prefixPath = "utility icons"
+        private const val PREFIX_PATH = "utility icons"
 
         @Composable
-        fun check() = painterResource("$prefixPath/check.svg")
+        fun check() = painterResource("$PREFIX_PATH/check.svg")
 
         @Composable
-        fun chevronRight() = painterResource("$prefixPath/chevron-right.svg")
+        fun chevronRight() = painterResource("$PREFIX_PATH/chevron-right.svg")
 
         @Composable
-        fun clipboard() = painterResource("$prefixPath/clipboard.svg")
+        fun clipboard() = painterResource("$PREFIX_PATH/clipboard.svg")
 
         @Composable
-        fun close() = painterResource("$prefixPath/window-close.svg")
+        fun close() = painterResource("$PREFIX_PATH/window-close.svg")
 
         @Composable
-        fun copy() = painterResource("$prefixPath/copy.svg")
+        fun copy() = painterResource("$PREFIX_PATH/copy.svg")
 
         @Composable
-        fun cross() = painterResource("$prefixPath/cross.svg")
+        fun cross() = painterResource("$PREFIX_PATH/cross.svg")
 
         @Composable
-        fun eraser() = painterResource("$prefixPath/eraser.svg")
+        fun eraser() = painterResource("$PREFIX_PATH/eraser.svg")
 
         @Composable
-        fun folderOpen() = painterResource("$prefixPath/bxs-folder-open.svg")
+        fun folderOpen() = painterResource("$PREFIX_PATH/bxs-folder-open.svg")
 
         @Composable
-        fun info() = painterResource("$prefixPath/info.svg")
+        fun info() = painterResource("$PREFIX_PATH/info.svg")
 
         @Composable
-        fun microChip() = painterResource("$prefixPath/bxs-microchip.svg")
+        fun microChip() = painterResource("$PREFIX_PATH/bxs-microchip.svg")
 
         @Composable
-        fun paintBrush() = painterResource("$prefixPath/paint-brush.svg")
+        fun paintBrush() = painterResource("$PREFIX_PATH/paint-brush.svg")
 
         @Composable
-        fun refresh() = painterResource("$prefixPath/refresh.svg")
+        fun refresh() = painterResource("$PREFIX_PATH/refresh.svg")
 
         @Composable
-        fun settings() = painterResource("$prefixPath/settings.svg")
+        fun settings() = painterResource("$PREFIX_PATH/settings.svg")
 
         @Composable
-        fun window() = painterResource("$prefixPath/bx-window.svg")
+        fun window() = painterResource("$PREFIX_PATH/bx-window.svg")
 
         @Composable
-        fun windowAlt() = painterResource("$prefixPath/bxs-window-alt.svg")
+        fun windowAlt() = painterResource("$PREFIX_PATH/bxs-window-alt.svg")
 
         @Composable
-        fun capitalA() = painterResource("$prefixPath/capital-a.svg")
+        fun capitalA() = painterResource("$PREFIX_PATH/capital-a.svg")
 
         @Composable
-        fun lowerCaseA() = painterResource("$prefixPath/lowercase-a.svg")
+        fun lowerCaseA() = painterResource("$PREFIX_PATH/lowercase-a.svg")
     }
 }

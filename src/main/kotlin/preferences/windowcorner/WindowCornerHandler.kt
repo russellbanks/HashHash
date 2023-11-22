@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import java.util.prefs.Preferences
 
 object WindowCornerHandler : Klogging {
-    private const val windowCornerKey = "windowCorner"
+    private const val WINDOW_CORNER_KEY = "windowCorner"
 
     private val preferences = Preferences.userNodeForPackage(javaClass)
 
@@ -39,19 +39,19 @@ object WindowCornerHandler : Klogging {
 
     var windowCorner: WindowCornerPreference
         get() = cachedWindowCorner
-            ?: when (preferences.getInt(windowCornerKey, WindowCornerPreference.DEFAULT.ordinal)) {
+            ?: when (preferences.getInt(WINDOW_CORNER_KEY, WindowCornerPreference.DEFAULT.ordinal)) {
                 WindowCornerPreference.NOT_ROUNDED.ordinal -> WindowCornerPreference.NOT_ROUNDED
                 WindowCornerPreference.ROUNDED.ordinal -> WindowCornerPreference.ROUNDED
                 WindowCornerPreference.SMALL_ROUNDED.ordinal -> WindowCornerPreference.SMALL_ROUNDED
                 else -> WindowCornerPreference.DEFAULT
             }.also { cachedWindowCorner = it }
         set(value) {
-            preferences.putInt(windowCornerKey, value.ordinal)
+            preferences.putInt(WINDOW_CORNER_KEY, value.ordinal)
             cachedWindowCorner = value
             CoroutineScope(Dispatchers.Default).launch {
                 logger.info {
                     "Put ${value.name} into preferences with the key of " +
-                            "\"$windowCornerKey\" and the value of ${value.ordinal}"
+                            "\"$WINDOW_CORNER_KEY\" and the value of ${value.ordinal}"
                 }
             }
         }

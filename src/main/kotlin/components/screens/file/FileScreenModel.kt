@@ -28,7 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.appmattus.crypto.Algorithm
 import com.hoc081098.flowext.interval
 import components.Timer
@@ -69,14 +69,14 @@ object FileScreenModel : ScreenModel {
     fun onCalculateClicked() {
         file?.let { file ->
             if (fileHashJob?.isActive != true) {
-                coroutineScope.launch(Dispatchers.Default) {
+                screenModelScope.launch(Dispatchers.Default) {
                     interval(Duration.ZERO, 1.seconds)
                         .takeWhile { fileHashJob?.isActive == true }
                         .collect {
                             timer = Timer(minutes = it.toDuration(DurationUnit.SECONDS).inWholeMinutes, seconds = it)
                         }
                 }
-                fileHashJob = coroutineScope.launch(Dispatchers.IO) {
+                fileHashJob = screenModelScope.launch(Dispatchers.IO) {
                     instantBeforeHash = Clock.System.now()
                     Hashing.catchFileHashingExceptions(exceptionCallback = { exception = it }) {
                         resultMap[ParentComponent.algorithm] = file.hash(

@@ -40,7 +40,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.coroutineScope
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.appmattus.crypto.Algorithm
 import com.hoc081098.flowext.interval
 import components.HashProgress
@@ -106,7 +106,7 @@ object CompareFilesModel : ScreenModel, Klogging {
 
     fun onCalculateClicked() {
         if ((comparisonJobList?.count(Deferred<Unit>::isActive) ?: 0) <= 0) {
-            coroutineScope.launch(Dispatchers.Default) {
+            screenModelScope.launch(Dispatchers.Default) {
                 comparisonJobList = listOf(
                     async(Dispatchers.IO) {
                         Hashing.catchFileHashingExceptions {
@@ -125,7 +125,7 @@ object CompareFilesModel : ScreenModel, Klogging {
                         }
                     }
                 )
-                coroutineScope.launch(Dispatchers.Default) {
+                screenModelScope.launch(Dispatchers.Default) {
                     interval(Duration.ZERO, 1.seconds)
                         .takeWhile { comparisonJobList?.first()?.isActive == true }
                         .collect {
@@ -135,7 +135,7 @@ object CompareFilesModel : ScreenModel, Klogging {
                             )
                         }
                 }
-                coroutineScope.launch(Dispatchers.Default) {
+                screenModelScope.launch(Dispatchers.Default) {
                     interval(Duration.ZERO, 1.seconds)
                         .takeWhile { comparisonJobList?.get(1)?.isActive == true }
                         .collect {

@@ -43,6 +43,8 @@ import preferences.theme.Theme
 import preferences.theme.ThemeHandler
 
 object ThemeTab : Tab {
+    private fun readResolve(): Any = ThemeTab
+
     override val options: TabOptions
         @Composable
         get() {

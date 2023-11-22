@@ -57,6 +57,8 @@ import org.pushingpixels.aurora.theming.AuroraSkin
 import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 object CompareFilesTab : Tab {
+    private fun readResolve(): Any = CompareFilesTab
+
     override val options: TabOptions
         @Composable
         get() = remember {

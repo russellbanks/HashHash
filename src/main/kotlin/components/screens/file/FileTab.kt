@@ -54,6 +54,8 @@ import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 object FileTab : Tab {
+    private fun readResolve(): Any = FileTab
+
     override val options: TabOptions
         @Composable
         get() = remember {

@@ -63,6 +63,8 @@ import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 
 object TextTab : Tab {
+    private fun readResolve(): Any = TextTab
+
     override val options: TabOptions
         @Composable
         get() = remember {

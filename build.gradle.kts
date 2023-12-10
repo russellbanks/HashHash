@@ -72,6 +72,7 @@ dependencies {
 
     // Voyager - https://github.com/adrielcafe/voyager
     implementation(libs.voyager.navigator)
+    implementation(libs.voyager.screenmodel)
     implementation(libs.voyager.tabNavigator)
 
     // Window Styler - https://github.com/MayakaApps/ComposeWindowStyler

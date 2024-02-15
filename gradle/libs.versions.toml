@@ -2,7 +2,7 @@
 aurora = "2.0-20231104.160413-6"
 buildconfig = "5.3.5"
 compose = "1.5.12"
-coroutines = "1.7.3"
+coroutines = "1.8.0"
 cryptohash = "0.10.1"
 detekt = "1.23.5"
 flowext = "0.7.5"

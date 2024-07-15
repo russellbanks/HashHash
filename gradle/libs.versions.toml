@@ -32,8 +32,8 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 
 flowext = { module = "io.github.hoc081098:FlowExt", version.ref = "flowext" }
 
-jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
-jna-platform = { module = "net.java.dev.jna:jna-platform", version.ref = "jna" }
+jna = { module = "net.java.dev.jna:jna-jpms", version.ref = "jna" }
+jna-platform = { module = "net.java.dev.jna:jna-platform-jpms", version.ref = "jna" }
 
 jsystemthemedetector = { module = "com.github.Dansoftowner:jSystemThemeDetector", version.ref = "jsystemthemedetector" }
 

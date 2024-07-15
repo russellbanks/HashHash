@@ -9,7 +9,7 @@ flowext = "0.8.1"
 jna = "5.14.0"
 jsystemthemedetector = "3.9.1"
 klogging = "0.5.14"
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 kotlin-csv = "1.9.3"
 kotlinx-datetime = "0.6.0"
 ktgithub = "b02824c1ba"
@@ -60,6 +60,7 @@ windowstyler = { module = "com.mayakapps.compose:window-styler", version.ref = "
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

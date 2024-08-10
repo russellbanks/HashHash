@@ -25,7 +25,8 @@ object GitHubConstants {
 
     object HashHash {
         object Repository {
-            const val WEBSITE = "$GITHUB_WEBSITE/russellbanks/HashHash"
+            const val FULL_NAME = "russellbanks/HashHash"
+            const val WEBSITE = "$GITHUB_WEBSITE/$FULL_NAME"
             const val RELEASES = "$WEBSITE/releases"
             const val NEW_ISSUE = "$WEBSITE/issues/new/choose"
         }

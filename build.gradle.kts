@@ -37,6 +37,9 @@ dependencies {
     // Flow Extensions - https://github.com/hoc081098/FlowExt
     implementation(libs.flowext)
 
+    // GitHub API - https://github.com/hub4j/github-api
+    implementation(libs.github.api)
+
     // Java Native Access - https://github.com/java-native-access/jna
     implementation(libs.jna)
     implementation(libs.jna.platform)
@@ -55,9 +58,6 @@ dependencies {
 
     // Kotlin CSV - https://github.com/doyaaaaaken/kotlin-csv
     implementation(libs.kotlincsv)
-
-    // KtGitHub - https://github.com/russellbanks/KtGitHub
-    implementation(libs.ktgithub)
 
     // Ktor - https://github.com/ktorio/ktor
     implementation(libs.ktor.client.java)

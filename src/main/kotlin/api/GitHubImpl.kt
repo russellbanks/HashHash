@@ -24,22 +24,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.russellbanks.HashHash.BuildConfig
-import com.russellbanks.ktgithub.GitHub
-import com.russellbanks.ktgithub.objects.GHRelease
 import io.klogging.Klogging
-import io.ktor.client.engine.java.Java
+import java.io.IOException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.kohsuke.github.GHRelease
+import org.kohsuke.github.GitHub
 
 object GitHubImpl : Klogging {
     var checkingGitHubAPI by mutableStateOf(false)
     var lastChecked: Instant? by mutableStateOf(null)
     var isUpdateAvailable by mutableStateOf(false)
     var latestRelease: GHRelease? = null
-    private val gitHub = GitHub.create(Java)
+
+    private val gitHub = GitHub.connectAnonymously()
 
     private val isVersionLatest get() = latestRelease?.tagName?.contains(BuildConfig.appVersion) == false
 
@@ -54,7 +55,13 @@ object GitHubImpl : Klogging {
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            latestRelease = gitHub.fetchLatestRelease("russellbanks", "HashHash").getOrNull()
+            try {
+                latestRelease = gitHub.getRepository(GitHubConstants.HashHash.Repository.FULL_NAME).latestRelease
+            } catch (ioException: IOException) {
+                CoroutineScope(Dispatchers.Default).launch {
+                    logger.warn(ioException)
+                }
+            }
         }
         lastChecked = Clock.System.now()
         isUpdateAvailable = isVersionLatest
@@ -63,7 +70,11 @@ object GitHubImpl : Klogging {
     suspend fun checkForHashHashUpdate() {
         if (!checkingGitHubAPI) {
             checkingGitHubAPI = true
-            latestRelease = gitHub.fetchLatestRelease("russellbanks", "HashHash").getOrNull()
+            try {
+                latestRelease = gitHub.getRepository(GitHubConstants.HashHash.Repository.FULL_NAME).latestRelease
+            } catch (ioException: IOException) {
+                logger.warn(ioException)
+            }
             lastChecked = Clock.System.now()
             checkingGitHubAPI = false
             isUpdateAvailable = isVersionLatest

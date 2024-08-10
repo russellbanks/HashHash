@@ -8,16 +8,16 @@
     A Sleek, Multiplatform GUI for File Hashing
     <br/>
     <br/>
-    <a href="https://github.com/BanDev/HashHash/issues">Report Bug</a>
+    <a href="https://github.com/russellbanks/HashHash/issues">Report Bug</a>
     .
-    <a href="https://github.com/BanDev/HashHash/issues">Request Feature</a>
+    <a href="https://github.com/russellbanks/HashHash/issues">Request Feature</a>
 </p>
 
 ![Contributors](https://img.shields.io/github/contributors/BanDev/HashHash?color=dark-green) ![Issues](https://img.shields.io/github/issues/BanDev/HashHash) ![License](https://img.shields.io/github/license/BanDev/HashHash)
 
 ## About The Project
 
-Welcome to **HashHash** - your go-to solution for hashing files across multiple platforms with a seamless and visually appealing user interface. Developed using JetBrains Compose for Desktop, HashHash is designed to bring you a consistent and intuitive experience, no matter which platform you're working on.
+HashHash is a multiplatform GUI for hashing files and text, built using Compose for Desktop.
 
 Light             |
 :-------------------------:
@@ -27,7 +27,7 @@ Dark             |
 
 ## Supporting algorithms
 
-HashHash harnesses the power of the [crypto](https://github.com/appmattus/crypto) library to provide seamless integration of various hashing algorithms. It supports a comprehensive list of hashes. For an extensive overview of the available hashing algorithms, please refer to the [ReadMe](https://github.com/appmattus/crypto/blob/main/cryptohash/README.md).
+HashHash uses [crypto](https://github.com/appmattus/crypto) for each hashing algorithm. For a complete list of the available hashing algorithms, please refer to their [ReadMe](https://github.com/appmattus/crypto/blob/main/cryptohash/README.md).
 
 ## Built With
 

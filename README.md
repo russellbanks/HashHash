@@ -35,7 +35,7 @@ HashHash harnesses the power of the [crypto](https://github.com/appmattus/crypto
 * [Kotlin](https://kotlinlang.org) - The Kotlin Programming Language
 * [Aurora](https://github.com/kirill-grouchnikov/aurora) - A modern, responsive, and beautiful UI framework for Compose for Desktop
 * [crypto](https://github.com/appmattus/crypto) - Provides the functionality for each hash
-* [LWJGL](https://github.com/LWJGL/lwjgl3) - Bindings to [Native File Dialog Extended](https://github.com/btzy/nativefiledialog-extended)
+* [LWJGL](https://github.com/LWJGL/lwjgl3) - Bindings to [Tiny File Dialogs](https://sourceforge.net/projects/tinyfiledialogs/)
 * [Compose Window Styler](https://github.com/MayakaApps/ComposeWindowStyler) - Styles the window to be more native and modern
 
 ## Installation

@@ -29,6 +29,8 @@ import com.appmattus.crypto.Algorithm
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import components.screens.ParentComponent
 import helper.FileUtils
+import org.lwjgl.BufferUtils
+import org.lwjgl.system.MemoryUtil
 
 object TextScreenModel : ScreenModel {
     var givenText by mutableStateOf("")
@@ -71,8 +73,12 @@ object TextScreenModel : ScreenModel {
 
     private suspend fun hashTextLineByLine(lines: Sequence<String>) {
         FileUtils.openSaveFileDialog(
-            fileName = "Output",
-            filter = "csv",
+            title = "Save",
+            defaultPathAndFile = null,
+            filterPatterns = BufferUtils.createPointerBuffer(1).apply {
+                put(MemoryUtil.memASCII("*.csv"))
+                rewind()
+            },
             singleFilterDescription = "Comma separated values (*.csv)"
         )?.let { path ->
             csvWriter().openAsync(path) {

@@ -64,9 +64,9 @@ dependencies {
 
     // LWJGL - https://github.com/LWJGL/lwjgl3
     implementation(libs.lwjgl.core)
-    implementation(libs.lwjgl.nativefiledialogs)
+    implementation(libs.lwjgl.tinyfd)
     runtimeOnly(variantOf(libs.lwjgl.core) { classifier(lwjglNatives) })
-    runtimeOnly(variantOf(libs.lwjgl.nativefiledialogs) { classifier(lwjglNatives) })
+    runtimeOnly(variantOf(libs.lwjgl.tinyfd) { classifier(lwjglNatives) })
 
     // SLF4J No-operation implementation - https://www.slf4j.org
     implementation(libs.slf4j.nop)

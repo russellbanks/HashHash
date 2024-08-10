@@ -48,7 +48,7 @@ kotlincsv = { module = "com.github.doyaaaaaken:kotlin-csv", version.ref = "kotli
 ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 
 lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
-lwjgl-nativefiledialogs = { module = "org.lwjgl:lwjgl-nfd", version.ref = "lwjgl" }
+lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
 
 slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
 

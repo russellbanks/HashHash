@@ -1,6 +1,6 @@
 [versions]
 aurora = "2.0-20241117.023511-7"
-buildconfig = "5.5.0"
+buildconfig = "5.5.1"
 compose = "1.7.1"
 coroutines = "1.9.0"
 cryptohash = "1.0.2"

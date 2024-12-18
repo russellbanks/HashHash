@@ -21,8 +21,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package components.screens.compare
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,9 +36,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.DragData
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draganddrop.DragAndDropEvent
+import androidx.compose.ui.draganddrop.DragAndDropTarget
+import androidx.compose.ui.draganddrop.DragData
+import androidx.compose.ui.draganddrop.awtTransferable
+import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.onExternalDrag
 import androidx.compose.ui.text.TextStyle
@@ -45,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import helper.Icons
+import java.awt.datatransfer.DataFlavor
 import java.io.File
 import java.net.URI
 import org.pushingpixels.aurora.component.model.Command
@@ -68,7 +75,7 @@ object CompareFilesTab : Tab {
             )
         }
 
-    @OptIn(ExperimentalComposeUiApi::class)
+    @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
@@ -86,29 +93,41 @@ object CompareFilesTab : Tab {
                 CompareFilesModel.FileComparisonColumn(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .onExternalDrag { externalDragValue ->
-                            val dragData = externalDragValue.dragData
-                            if (dragData is DragData.FilesList) {
-                                CompareFilesModel.setDroppedFile(
-                                    fileComparison = CompareFilesModel.FileComparison.One,
-                                    file = File(URI(dragData.readFiles().first()))
-                                )
+                        .dragAndDropTarget(
+                            shouldStartDragAndDrop = { event ->
+                                event.awtTransferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+                            },
+                            target = object : DragAndDropTarget {
+                                override fun onDrop(event: DragAndDropEvent): Boolean {
+                                    val files = event.awtTransferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+                                    CompareFilesModel.setDroppedFile(
+                                        fileComparison = CompareFilesModel.FileComparison.One,
+                                        file = files.first()
+                                    )
+                                    return true
+                                }
                             }
-                        },
+                        ),
                     fileComparison = CompareFilesModel.FileComparison.One
                 )
                 CompareFilesModel.FileComparisonColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .onExternalDrag { externalDragValue ->
-                            val dragData = externalDragValue.dragData
-                            if (dragData is DragData.FilesList) {
-                                CompareFilesModel.setDroppedFile(
-                                    fileComparison = CompareFilesModel.FileComparison.Two,
-                                    file = File(URI(dragData.readFiles().first()))
-                                )
+                        .dragAndDropTarget(
+                            shouldStartDragAndDrop = { event ->
+                                event.awtTransferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+                            },
+                            target = object : DragAndDropTarget {
+                                override fun onDrop(event: DragAndDropEvent): Boolean {
+                                    val files = event.awtTransferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+                                    CompareFilesModel.setDroppedFile(
+                                        fileComparison = CompareFilesModel.FileComparison.Two,
+                                        file = files.first()
+                                    )
+                                    return true
+                                }
                             }
-                        },
+                        ),
                     fileComparison = CompareFilesModel.FileComparison.Two
                 )
             }

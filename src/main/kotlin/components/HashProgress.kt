@@ -30,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.pushingpixels.aurora.component.model.DeterminateProgressContentModel
 import org.pushingpixels.aurora.component.model.HorizontalAlignment
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
-import org.pushingpixels.aurora.component.model.ProgressDeterminateContentModel
 import org.pushingpixels.aurora.component.projection.DeterminateLinearProgressProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 
@@ -58,7 +58,7 @@ fun HashProgress(fileHashProgress: Float, timer: Timer?) {
             }
         }
         DeterminateLinearProgressProjection(
-            contentModel = ProgressDeterminateContentModel(progress = fileHashProgress)
+            contentModel = DeterminateProgressContentModel(progress = fileHashProgress)
         ).project(Modifier.fillMaxWidth())
     }
 }

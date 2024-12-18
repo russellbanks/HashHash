@@ -20,8 +20,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package components.screens.file
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,11 +31,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.DragData
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draganddrop.DragAndDropEvent
+import androidx.compose.ui.draganddrop.DragAndDropTarget
+import androidx.compose.ui.draganddrop.awtTransferable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.onExternalDrag
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -45,8 +48,8 @@ import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
 import components.screens.ParentComponent
+import java.awt.datatransfer.DataFlavor
 import java.io.File
-import java.net.URI
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -65,7 +68,7 @@ object FileTab : Tab {
             )
         }
 
-    @OptIn(ExperimentalComposeUiApi::class)
+    @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
@@ -76,12 +79,18 @@ object FileTab : Tab {
                 .padding(16.dp)
                 .border(1.dp, Color.Gray, RoundedCornerShape(6.dp))
                 .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 16.dp)
-                .onExternalDrag { externalDragValue ->
-                    val dragData = externalDragValue.dragData
-                    if (dragData is DragData.FilesList) {
-                        FileScreenModel.setComponentFile(File(URI(dragData.readFiles().first())))
+                .dragAndDropTarget(
+                    shouldStartDragAndDrop = { event ->
+                        event.awtTransferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+                    },
+                    target = object : DragAndDropTarget {
+                        override fun onDrop(event: DragAndDropEvent): Boolean {
+                            val files = event.awtTransferable.getTransferData(DataFlavor.javaFileListFlavor) as List<File>
+                            FileScreenModel.setComponentFile(files.first())
+                            return true
+                        }
                     }
-                },
+                ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             SelectFileRow(FileScreenModel::selectFile)

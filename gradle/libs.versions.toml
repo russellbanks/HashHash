@@ -16,7 +16,7 @@ kotlinx-datetime = "0.6.1"
 ktor = "3.0.3"
 lwjgl = "3.3.5"
 slf4j = "2.0.16"
-voyager = "1.0.0"
+voyager = "1.0.1"
 windowstyler = "0.3.2"
 
 [libraries]

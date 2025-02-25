@@ -15,7 +15,7 @@ kotlin-csv = "1.10.0"
 kotlinx-datetime = "0.6.2"
 ktor = "3.1.1"
 lwjgl = "3.3.6"
-slf4j = "2.0.16"
+slf4j = "2.0.17"
 voyager = "1.0.1"
 windowstyler = "0.3.2"
 

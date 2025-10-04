@@ -47,7 +47,9 @@ import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
 import java.text.SimpleDateFormat
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun UpdateCheckText() {
     val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(

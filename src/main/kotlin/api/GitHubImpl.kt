@@ -26,14 +26,16 @@ import androidx.compose.runtime.setValue
 import com.russellbanks.HashHash.BuildConfig
 import io.klogging.Klogging
 import java.io.IOException
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import org.kohsuke.github.GHRelease
 import org.kohsuke.github.GitHub
 
+@OptIn(ExperimentalTime::class)
 object GitHubImpl : Klogging {
     var checkingGitHubAPI by mutableStateOf(false)
     var lastChecked: Instant? by mutableStateOf(null)

@@ -12,7 +12,6 @@ jsystemthemedetector = "3.9.1"
 klogging = "0.11.6"
 kotlin = "2.2.20"
 kotlin-csv = "1.10.0"
-kotlinx-datetime = "0.7.1-0.6.x-compat"
 ktor = "3.3.0"
 lwjgl = "3.3.6"
 slf4j = "2.0.17"
@@ -40,8 +39,6 @@ jna-platform = { module = "net.java.dev.jna:jna-platform-jpms", version.ref = "j
 jsystemthemedetector = { module = "com.github.Dansoftowner:jSystemThemeDetector", version.ref = "jsystemthemedetector" }
 
 klogging-jvm = { module = "io.klogging:klogging-jvm", version.ref = "klogging" }
-
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 kotlincsv = { module = "com.github.doyaaaaaken:kotlin-csv", version.ref = "kotlin-csv" }
 

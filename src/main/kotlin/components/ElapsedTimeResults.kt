@@ -26,13 +26,14 @@ import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.Instant
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import java.text.SimpleDateFormat
 import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalTime::class)
 @Composable
 fun ElapsedTimeResults(instantBeforeHash: Instant?, instantAfterHash: Instant?) {
     SelectionContainer {

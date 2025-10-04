@@ -50,9 +50,6 @@ dependencies {
     // Detekt Formatting Plugin - https://github.com/detekt/detekt
     detektPlugins(libs.detekt.formatting)
 
-    // KotlinX DateTime - https://github.com/Kotlin/kotlinx-datetime
-    implementation(libs.kotlinx.datetime)
-
     // jSystemThemeDetector - https://github.com/Dansoftowner/jSystemThemeDetector
     implementation(libs.jsystemthemedetector)
 

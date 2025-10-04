@@ -50,6 +50,7 @@ import components.OutputTextFieldRow
 import components.screens.ParentComponent
 import java.awt.datatransfer.DataFlavor
 import java.io.File
+import kotlin.time.ExperimentalTime
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
@@ -68,7 +69,7 @@ object FileTab : Tab {
             )
         }
 
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
+    @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class, ExperimentalTime::class)
     @Composable
     override fun Content() {
         val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(

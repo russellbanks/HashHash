@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
  */
 
-import io.klogging.config.ANSI_CONSOLE
+import io.klogging.config.ANSI_INFO
 import io.klogging.config.loggingConfiguration
 
 fun main() {
-    loggingConfiguration { ANSI_CONSOLE() }
+    loggingConfiguration { ANSI_INFO() }
 
     hashHashApplication()
 }

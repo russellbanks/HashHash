@@ -44,7 +44,6 @@ import androidx.compose.ui.draganddrop.DragData
 import androidx.compose.ui.draganddrop.awtTransferable
 import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.onExternalDrag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp

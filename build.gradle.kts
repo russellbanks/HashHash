@@ -95,6 +95,7 @@ java {
 compose.desktop {
     application {
         mainClass = "MainKt"
+        jvmArgs += "--enable-native-access=ALL-UNNAMED"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             modules("java.instrument", "java.management", "java.prefs", "jdk.unsupported")

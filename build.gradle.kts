@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.buildconfig)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin)
 }

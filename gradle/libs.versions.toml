@@ -2,6 +2,7 @@
 aurora = "2.0-SNAPSHOT"
 buildconfig = "5.6.8"
 compose = "1.9.0"
+composeHotReload = "1.0.0-beta08"
 coroutines = "1.10.2"
 cryptohash = "1.0.2"
 detekt = "1.23.8"
@@ -58,6 +59,7 @@ windowstyler = { module = "com.mayakapps.compose:window-styler", version.ref = "
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -37,7 +37,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +45,8 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import components.ComparisonTextFieldRow
 import components.OutputTextFieldRow
 import components.dialogs.settings.toFriendlyCase
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.pushingpixels.aurora.component.model.ComboBoxContentModel
@@ -84,7 +85,6 @@ object TextTab : Tab {
             modifier = Modifier.padding(16.dp).border(1.dp, Color.Gray, RoundedCornerShape(6.dp)).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            val clipboardManager = LocalClipboardManager.current
             Column {
                 LabelProjection(
                     contentModel = LabelContentModel(text = TextScreenModel.characterCountAsString())
@@ -193,7 +193,9 @@ object TextTab : Tab {
                 hashedOutput = TextScreenModel.givenTextHash,
                 comparisonHash = TextScreenModel.comparisonHash,
                 onPasteClick = {
-                    TextScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
+                    val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+                    val pasteString = clipboard.getData(DataFlavor.stringFlavor) as String
+                    TextScreenModel.comparisonHash = pasteString.filterNot(Char::isWhitespace)
                 },
                 onClearClick = { TextScreenModel.comparisonHash = "" },
                 onTextFieldChange = { TextScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }

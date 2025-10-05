@@ -28,8 +28,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,10 +47,11 @@ import org.pushingpixels.aurora.component.model.TextFieldStringContentModel
 import org.pushingpixels.aurora.component.projection.CommandButtonStripProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.component.projection.TextFieldStringProjection
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 
 @Composable
 fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: () -> Unit) {
-    val clipboardManager = LocalClipboardManager.current
     val scope = rememberCoroutineScope(Dispatchers::Default)
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LabelProjection(
@@ -79,7 +78,8 @@ fun OutputTextFieldRow(value: String, isValueUppercase: Boolean, onCaseClick: ()
                             icon = Icons.Utility.copy(),
                             action = {
                                 if (value.isNotBlank()) {
-                                    clipboardManager.setText(AnnotatedString(text = value))
+                                    val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+                                    clipboard.setContents(StringSelection(value), null)
                                     ParentComponent.snackbarHostState.currentSnackbarData?.dismiss()
                                     scope.launch {
                                         ParentComponent.snackbarHostState.showSnackbar("Copied to clipboard")

@@ -37,7 +37,6 @@ import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.awtTransferable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,14 +47,15 @@ import components.ElapsedTimeResults
 import components.HashProgress
 import components.OutputTextFieldRow
 import components.screens.ParentComponent
-import java.awt.datatransfer.DataFlavor
-import java.io.File
-import kotlin.time.ExperimentalTime
 import org.pushingpixels.aurora.component.model.LabelContentModel
 import org.pushingpixels.aurora.component.model.LabelPresentationModel
 import org.pushingpixels.aurora.component.projection.HorizontalSeparatorProjection
 import org.pushingpixels.aurora.component.projection.LabelProjection
 import org.pushingpixels.aurora.theming.AuroraSkin
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+import java.io.File
+import kotlin.time.ExperimentalTime
 
 object FileTab : Tab {
     private fun readResolve(): Any = FileTab
@@ -104,12 +104,13 @@ object FileTab : Tab {
                 onCaseClick = FileScreenModel::switchHashCase
             )
             HorizontalSeparatorProjection().project(Modifier.fillMaxWidth())
-            val clipboardManager = LocalClipboardManager.current
             ComparisonTextFieldRow(
                 hashedOutput = FileScreenModel.resultMap.getOrDefault(ParentComponent.algorithm, ""),
                 comparisonHash = FileScreenModel.comparisonHash,
                 onPasteClick = {
-                    FileScreenModel.comparisonHash = (clipboardManager.getText()?.text.orEmpty()).filterNot(Char::isWhitespace)
+                    val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+                    val pasteString = clipboard.getData(DataFlavor.stringFlavor) as String
+                    FileScreenModel.comparisonHash = pasteString.filterNot(Char::isWhitespace)
                 },
                 onClearClick = { FileScreenModel.comparisonHash = "" },
                 onTextFieldChange = { FileScreenModel.comparisonHash = it.filterNot(Char::isWhitespace) }

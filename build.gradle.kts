@@ -29,6 +29,9 @@ dependencies {
     implementation(libs.aurora.theming)
     implementation(libs.aurora.window)
 
+    // Coil - https://github.com/coil-kt/coil
+    implementation(libs.coil.compose)
+
     // Kotlin Coroutines - https://github.com/Kotlin/kotlinx.coroutines
     implementation(libs.coroutines.core)
 

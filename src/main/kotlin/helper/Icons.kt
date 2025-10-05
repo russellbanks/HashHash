@@ -23,9 +23,9 @@ package helper
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.graphics.toPainter
 import androidx.compose.ui.res.painterResource
+import coil3.compose.AsyncImage
 import io.klogging.Klogging
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
@@ -53,13 +53,13 @@ object Icons : Klogging {
     fun SystemIcon(modifier: Modifier, file: File?) {
         if (file != null) {
             if (file.isImage()) {
-                Image(
-                    bitmap = org.jetbrains.skia.Image.makeFromEncoded(file.readBytes()).toComposeImageBitmap(),
+                AsyncImage(
+                    model = file.path,
                     contentDescription = null,
                     modifier = modifier,
                 )
             } else {
-                getSystemImage(modifier, file)
+                SystemImage(modifier, file)
             }
         } else {
             FileImage(modifier)
@@ -75,7 +75,7 @@ object Icons : Klogging {
     }
 
     @Composable
-    private fun getSystemImage(modifier: Modifier, file: File) {
+    private fun SystemImage(modifier: Modifier, file: File) {
         val icon = getSystemIcon(file)
         return if (icon != null) {
             Image(

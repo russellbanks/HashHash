@@ -1,6 +1,7 @@
 [versions]
 aurora = "2.0-SNAPSHOT"
 buildconfig = "5.6.8"
+coil = "3.3.0"
 compose = "1.9.0"
 composeHotReload = "1.0.0-beta08"
 coroutines = "1.10.2"
@@ -23,6 +24,8 @@ windowstyler = "0.3.2"
 aurora-component = { module = "org.pushing-pixels:aurora-component", version.ref = "aurora" }
 aurora-theming = { module = "org.pushing-pixels:aurora-theming", version.ref = "aurora" }
 aurora-window = { module = "org.pushing-pixels:aurora-window", version.ref = "aurora" }
+
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 

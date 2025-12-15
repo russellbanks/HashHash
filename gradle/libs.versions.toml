@@ -1,5 +1,5 @@
 [versions]
-aurora = "2.0-SNAPSHOT"
+aurora = "2.0.0"
 buildconfig = "5.7.1"
 coil = "3.3.0"
 compose = "1.9.2"

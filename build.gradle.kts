@@ -1,5 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -51,9 +51,6 @@ dependencies {
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
 
-    // Detekt Formatting Plugin - https://github.com/detekt/detekt
-    detektPlugins(libs.detekt.formatting)
-
     // jSystemThemeDetector - https://github.com/Dansoftowner/jSystemThemeDetector
     implementation(libs.jsystemthemedetector)
 
@@ -83,14 +80,14 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     compilerOptions {
-        jvmTarget.set(JVM_21)
+        jvmTarget.set(JVM_25)
         freeCompilerArgs.set(listOf("-opt-in=kotlin.RequiresOptIn"))
     }
 }
 
 java {
     sourceCompatibility = JavaVersion.current()
-    targetCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 compose.desktop {

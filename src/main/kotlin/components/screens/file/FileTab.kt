@@ -72,7 +72,7 @@ object FileTab : Tab {
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class, ExperimentalTime::class)
     @Composable
     override fun Content() {
-        val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+        val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
             decorationAreaType = AuroraSkin.decorationAreaType
         )
         Column(
@@ -127,7 +127,7 @@ object FileTab : Tab {
             contentModel = LabelContentModel(text = "Single file hashing"),
             presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 18.sp))
         ).project(
-            Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorScheme.backgroundFillColor)
+            Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorTokens.containerSurface)
         )
     }
 }

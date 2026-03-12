@@ -52,7 +52,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 @Composable
 fun UpdateCheckText() {
-    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+    val backgroundColorScheme = AuroraSkin.colors.getNeutralContainerTokens(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
     val infiniteTransition = rememberInfiniteTransition()
@@ -71,7 +71,7 @@ fun UpdateCheckText() {
                         painter = Icons.Utility.refresh(),
                         contentDescription = null,
                         modifier = Modifier.size(16.dp).graphicsLayer { rotationZ = rotationAngle },
-                        colorFilter = ColorFilter.tint(backgroundColorScheme.foregroundColor)
+                        colorFilter = ColorFilter.tint(backgroundColorScheme.onContainerVariant)
                     )
                 }
                 LabelProjection(

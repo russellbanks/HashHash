@@ -44,12 +44,12 @@ fun BoxScope.Snackbar() {
         modifier = Modifier.align(Alignment.BottomCenter).padding(50.dp),
         hostState = ParentComponent.snackbarHostState,
         snackbar = { snackbarData: SnackbarData ->
-            val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+            val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
                 decorationAreaType = AuroraSkin.decorationAreaType
             )
             Surface(
                 shape = RoundedCornerShape(8.dp),
-                color = backgroundColorScheme.backgroundFillColor,
+                color = backgroundColorTokens.containerSurface,
                 border = BorderStroke(1.dp, Color.Gray),
                 elevation = 4.dp
             ) {

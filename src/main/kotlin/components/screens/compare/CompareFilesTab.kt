@@ -40,9 +40,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
-import androidx.compose.ui.draganddrop.DragData
 import androidx.compose.ui.draganddrop.awtTransferable
-import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -52,7 +50,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import helper.Icons
 import java.awt.datatransfer.DataFlavor
 import java.io.File
-import java.net.URI
 import org.pushingpixels.aurora.component.model.Command
 import org.pushingpixels.aurora.component.model.CommandButtonPresentationModel
 import org.pushingpixels.aurora.component.model.LabelContentModel
@@ -77,7 +74,7 @@ object CompareFilesTab : Tab {
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
-        val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+        val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
             decorationAreaType = AuroraSkin.decorationAreaType
         )
         Column(
@@ -157,7 +154,7 @@ object CompareFilesTab : Tab {
             contentModel = LabelContentModel(text = "Compare files"),
             presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 18.sp))
         ).project(
-            Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorScheme.backgroundFillColor)
+            Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorTokens.containerSurface)
         )
     }
 }

@@ -36,11 +36,15 @@ import org.pushingpixels.aurora.theming.Sides
 
 @Composable
 fun AlgorithmBox(item: Algorithm, algorithm: Algorithm, index: Int, onAlgorithmClick: (Algorithm) -> Unit) {
-    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+    val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
-    val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
+    val backgroundEvenRows = backgroundColorTokens.containerSurface
+    val backgroundOddRows = if (backgroundColorTokens.isDark) {
+        backgroundColorTokens.containerSurfaceHigh
+    } else {
+        backgroundColorTokens.containerSurfaceLow
+    }
     AuroraBoxWithHighlights(
         modifier = Modifier.fillMaxWidth().height(32.dp)
             .background(if (index % 2 == 0) backgroundEvenRows else backgroundOddRows),

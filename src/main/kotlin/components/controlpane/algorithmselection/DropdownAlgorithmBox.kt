@@ -51,11 +51,15 @@ import org.pushingpixels.aurora.theming.Sides
 
 @Composable
 fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit) {
-    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+    val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
-    val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
+    val backgroundEvenRows = backgroundColorTokens.containerSurface
+    val backgroundOddRows = if (backgroundColorTokens.isDark) {
+        backgroundColorTokens.containerSurfaceHigh
+    } else {
+        backgroundColorTokens.containerSurfaceLow
+    }
     var rotate by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(targetValue = if (rotate) 90F else 0F)
     AuroraBoxWithHighlights(
@@ -83,7 +87,7 @@ fun DropDownAlgorithmBox(item: NestedAlgorithm, index: Int, onClick: () -> Unit)
                     .size(32.dp)
                     .padding(horizontal = 6.dp)
                     .rotate(rotationAngle),
-                colorFilter = ColorFilter.tint(color = backgroundColorScheme.foregroundColor)
+                colorFilter = ColorFilter.tint(color = backgroundColorTokens.onContainerVariant)
             )
         }
     }

@@ -77,7 +77,7 @@ object TextTab : Tab {
 
     @Composable
     override fun Content() {
-        val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+        val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
             decorationAreaType = AuroraSkin.decorationAreaType
         )
         val scope = rememberCoroutineScope(Dispatchers::Default)
@@ -177,7 +177,7 @@ object TextTab : Tab {
                 LabelProjection(
                     contentModel = LabelContentModel(text = "Line-By-Line hashing options"),
                     presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 12.sp))
-                ).project(Modifier.padding(horizontal = 10.dp).background(backgroundColorScheme.backgroundFillColor))
+                ).project(Modifier.padding(horizontal = 10.dp).background(backgroundColorTokens.containerSurface))
             }
             OutputTextFieldRow(
                 value = TextScreenModel.givenTextHash,
@@ -205,7 +205,7 @@ object TextTab : Tab {
             contentModel = LabelContentModel(text = "Text hashing"),
             presentationModel = LabelPresentationModel(textStyle = TextStyle(fontSize = 18.sp))
         ).project(
-            Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorScheme.backgroundFillColor)
+            Modifier.padding(horizontal = 32.dp, vertical = 3.dp).background(backgroundColorTokens.containerSurface)
         )
     }
 }

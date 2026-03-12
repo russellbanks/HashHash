@@ -57,7 +57,7 @@ import org.pushingpixels.aurora.theming.IconFilterStrategy
 
 @Composable
 fun Dialog(dialog: DialogState.Dialogs, content: @Composable () -> Unit) {
-    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+    val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
     AnimatedVisibility(
@@ -69,7 +69,11 @@ fun Dialog(dialog: DialogState.Dialogs, content: @Composable () -> Unit) {
             Surface(
                 modifier = Modifier.width(500.dp),
                 shape = RoundedCornerShape(8.dp),
-                color = backgroundColorScheme.accentedBackgroundFillColor,
+                color = if (backgroundColorTokens.isDark) {
+                    backgroundColorTokens.containerSurfaceHigh
+                } else {
+                    backgroundColorTokens.containerSurfaceLow
+                },
                 border = BorderStroke(1.dp, Color.Black),
                 elevation = 4.dp
             ) {

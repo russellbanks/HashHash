@@ -49,11 +49,15 @@ fun NestedAlgorithmLazyColumn(
     itemIndex: Int,
     onAlgorithmClick: (item: Algorithm) -> Unit
 ) {
-    val backgroundColorScheme = AuroraSkin.colors.getBackgroundColorScheme(
+    val backgroundColorTokens = AuroraSkin.colors.getNeutralContainerTokens(
         decorationAreaType = AuroraSkin.decorationAreaType
     )
-    val backgroundEvenRows = backgroundColorScheme.backgroundFillColor
-    val backgroundOddRows = backgroundColorScheme.accentedBackgroundFillColor
+    val backgroundEvenRows = backgroundColorTokens.containerSurface
+    val backgroundOddRows = if (backgroundColorTokens.isDark) {
+        backgroundColorTokens.containerSurfaceHigh
+    } else {
+        backgroundColorTokens.containerSurfaceLow
+    }
     LazyColumn(Modifier.fillMaxWidth().height((32 * item.listOfAlgorithms.count()).dp)) {
         items(item.listOfAlgorithms) { nestedItem ->
             AuroraBoxWithHighlights(
@@ -70,7 +74,7 @@ fun NestedAlgorithmLazyColumn(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Canvas(Modifier.padding(start = 12.dp)) {
-                        drawCircle(color = backgroundColorScheme.foregroundColor, radius = 2f)
+                        drawCircle(color = backgroundColorTokens.onContainerVariant, radius = 2f)
                     }
                     LabelProjection(contentModel = LabelContentModel(text = nestedItem.algorithmName)).project()
                 }

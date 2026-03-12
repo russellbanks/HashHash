@@ -51,9 +51,6 @@ dependencies {
     // Klogging - https://github.com/klogging/klogging
     implementation(libs.klogging.jvm)
 
-    // Detekt Formatting Plugin - https://github.com/detekt/detekt
-    detektPlugins(libs.detekt.formatting)
-
     // jSystemThemeDetector - https://github.com/Dansoftowner/jSystemThemeDetector
     implementation(libs.jsystemthemedetector)
 

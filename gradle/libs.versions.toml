@@ -6,7 +6,7 @@ compose = "1.9.2"
 composeHotReload = "1.0.0-rc02"
 coroutines = "1.10.2"
 cryptohash = "1.0.2"
-detekt = "1.23.8"
+detekt = "2.0.0-alpha.2"
 flowext = "1.0.0"
 github-api = "1.330"
 jna = "5.18.1"
@@ -30,8 +30,6 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 crypto-cryptohash = { module = "com.appmattus.crypto:cryptohash", version.ref = "cryptohash" }
-
-detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 flowext = { module = "io.github.hoc081098:FlowExt", version.ref = "flowext" }
 
@@ -64,5 +62,5 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

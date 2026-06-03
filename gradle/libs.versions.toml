@@ -2,7 +2,7 @@
 aurora = "2.0.0"
 buildconfig = "6.0.9"
 coil = "3.4.0"
-compose = "1.11.0"
+compose = "1.11.1"
 composeHotReload = "1.1.1"
 coroutines = "1.11.0"
 cryptohash = "1.0.2"

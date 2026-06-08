@@ -17,7 +17,7 @@ kotlin-csv = "1.10.0"
 ktor = "3.5.0"
 lwjgl = "3.4.1"
 slf4j = "2.0.18"
-voyager = "1.0.1"
+voyager = "2.2.21-1.10.3"
 windowstyler = "0.3.2"
 
 [libraries]

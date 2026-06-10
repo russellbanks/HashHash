@@ -1,7 +1,7 @@
 [versions]
 aurora = "2.0.0"
 buildconfig = "6.0.10"
-coil = "3.4.0"
+coil = "3.5.0"
 compose = "1.11.1"
 composeHotReload = "1.1.1"
 coroutines = "1.11.0"
